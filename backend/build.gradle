@@ -35,7 +35,7 @@ dependencies {
 }
 
 task copySecret(type: Copy) {
-    from file('./lv2-final-mission-submodule')
+    from file('./backend-submodule')
     include 'application*.yml'
     into 'src/main/resources'
 }
