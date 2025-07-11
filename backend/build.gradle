@@ -34,6 +34,15 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
+task copySecret(type: Copy) {
+    from file('./lv2-final-mission-submodule')
+    include 'application*.yml'
+    into 'src/main/resources'
+}
+
+compileJava.dependsOn copySecret
+processResources.dependsOn copySecret
+
+test {
     useJUnitPlatform()
 }
