@@ -1,0 +1,137 @@
+name: Discord Notification
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  notify-discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord notification
+        env:
+          # PR 이벤트용 데이터 미리 추출
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels) }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_MERGED: ${{ github.event.pull_request.merged }}
+
+          # 리뷰 이벤트용 데이터
+          REVIEW_STATE: ${{ github.event.review.state }}
+          REVIEW_AUTHOR: ${{ github.event.review.user.login }}
+          REVIEW_PR_URL: ${{ github.event.review.pull_request_url }}
+
+          # 웹훅 URLs
+          WEBHOOK_FRONTEND: ${{ secrets.DISCORD_WEBHOOK_FRONTEND }}
+          WEBHOOK_BACKEND: ${{ secrets.DISCORD_WEBHOOK_BACKEND }}
+
+        run: |
+          # 이벤트 타입에 따라 처리
+          if [[ "${{ github.event_name }}" == "pull_request_review" ]]; then
+            # 리뷰 이벤트 - API로 PR 정보 가져오기
+            echo "Processing review event..."
+          
+            PR_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "$REVIEW_PR_URL")
+            LABELS=$(echo "$PR_DATA" | jq -r '.labels | map(.name) | join(", ")')
+            TITLE=$(echo "$PR_DATA" | jq -r '.title')
+            URL=$(echo "$PR_DATA" | jq -r '.html_url')
+            AUTHOR="$REVIEW_AUTHOR"
+            TYPE="Code Review"
+          
+            # 리뷰 상태에 따른 액션 및 색상
+            case "$REVIEW_STATE" in
+              "approved") 
+                ACTION="approved"
+                COLOR=3066993 ;;      # 초록색
+              "changes_requested") 
+                ACTION="requested changes"
+                COLOR=15158332 ;;     # 빨간색
+              "commented") 
+                ACTION="commented"
+                COLOR=3447003 ;;      # 파란색
+              *) 
+                ACTION="reviewed"
+                COLOR=3447003 ;;      # 파란색
+            esac
+          
+          else
+            # PR 이벤트
+            echo "Processing pull request event..."
+          
+            LABELS=$(echo "$PR_LABELS" | jq -r 'map(.name) | join(", ")')
+            TITLE="$PR_TITLE"
+            URL="$PR_URL"
+            AUTHOR="$PR_AUTHOR"
+            TYPE="Pull Request"
+            COLOR=5814783  # 기본 보라색
+          
+            # PR 액션 처리 (merged 여부 구분)
+            if [[ "${{ github.event.action }}" == "closed" ]]; then
+              if [[ "$PR_MERGED" == "true" ]]; then
+                ACTION="merged"
+              else
+                ACTION="closed"
+              fi
+            else
+              ACTION="${{ github.event.action }}"
+            fi
+          fi
+          
+          echo "Labels: $LABELS"
+          echo "Action: $ACTION"
+          
+          # 라벨에 따라 웹훅 URL 선택
+          WEBHOOK_URL=""
+          if echo "$LABELS" | grep -q "frontend"; then
+            WEBHOOK_URL="$WEBHOOK_FRONTEND"
+            CHANNEL="frontend"
+          elif echo "$LABELS" | grep -q "backend"; then
+            WEBHOOK_URL="$WEBHOOK_BACKEND"
+            CHANNEL="backend"
+          else
+            echo "No relevant labels found (frontend/backend), skipping notification"
+            exit 0
+          fi
+          
+          # 웹훅 URL 존재 여부 체크
+          if [[ -z "$WEBHOOK_URL" ]]; then
+            echo "Webhook URL not set for $CHANNEL channel. Please check secrets."
+            exit 1
+          fi
+          
+          # 메시지 구성
+          MESSAGE=$(cat <<EOF
+          {
+            "embeds": [{
+              "title": "$TYPE $ACTION",
+              "description": "**$TITLE**",
+              "url": "$URL",
+              "color": $COLOR,
+              "fields": [
+                {"name": "Author", "value": "$AUTHOR", "inline": true},
+                {"name": "Labels", "value": "$LABELS", "inline": true},
+                {"name": "Channel", "value": "$CHANNEL", "inline": true}
+              ]
+            }]
+          }
+          EOF
+          )
+          
+          # 디스코드로 전송
+          echo "Sending notification to $CHANNEL channel..."
+          
+          RESPONSE=$(curl -s -w "%{http_code}" -o /tmp/discord_response \
+            -H "Content-Type: application/json" \
+            -d "$MESSAGE" \
+            "$WEBHOOK_URL")
+          
+          if [[ "$RESPONSE" == "204" ]]; then
+            echo "✅ Successfully sent notification to $CHANNEL channel"
+          else
+            echo "❌ Failed to send notification. HTTP status: $RESPONSE"
+            echo "Response: $(cat /tmp/discord_response)"
+            exit 1
+          fi
