@@ -1,0 +1,23 @@
+services:
+  feed-zupzup-server:
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      feed-zupzup-db:
+        condition: service_healthy
+
+  feed-zupzup-db:
+    image: mysql:8.4
+    container_name: feed-zupzup-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 12341234
+      MYSQL_DATABASE: feed-zupzup
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+      interval: 3s
+      retries: 10
