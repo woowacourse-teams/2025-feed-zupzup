@@ -85,14 +85,14 @@ jobs:
           
           # 라벨에 따라 웹훅 URL 선택
           WEBHOOK_URL=""
-          if echo "$LABELS" | grep -q "frontend"; then
+          if echo "$LABELS" | grep -q "🐤frontend"; then
             WEBHOOK_URL="$WEBHOOK_FRONTEND"
             CHANNEL="frontend"
-          elif echo "$LABELS" | grep -q "backend"; then
+          elif echo "$LABELS" | grep -q "🐧backend"; then
             WEBHOOK_URL="$WEBHOOK_BACKEND"
             CHANNEL="backend"
           else
-            echo "No relevant labels found (frontend/backend), skipping notification"
+            echo "No relevant labels found (🐤frontend/🐧backend), skipping notification"
             exit 0
           fi
           
