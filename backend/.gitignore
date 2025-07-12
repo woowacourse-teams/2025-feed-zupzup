@@ -38,3 +38,6 @@ out/
 
 ### application ###
 src/main/resources/*.yml
+
+### mysql volume ###
+/mysql/
