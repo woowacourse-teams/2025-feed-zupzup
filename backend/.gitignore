@@ -36,5 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+### application ###
+src/main/resources/*.yml
+
 ### mysql volume ###
 /mysql/
