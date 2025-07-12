@@ -76,79 +76,42 @@ jobs:
           echo "Labels: $LABELS"
           echo "Action: $ACTION"
           
-          # 디버깅용 - 라벨 상세 출력
-          echo "🔍 Debug - Raw labels output:"
-          echo "$LABELS" | od -c
+          # 라벨에 따라 웹훅 선택
+          WEBHOOK_URL=""
+          CHANNEL=""
           
-          # 라벨에 따라 전송할 채널들 결정
-          CHANNELS=()
-          WEBHOOKS=()
-          
-          # frontend 라벨 체크 (여러 패턴으로)
-          if echo "$LABELS" | grep -q -i -E "(frontend|🐤frontend|front)"; then
-            echo "✓ Frontend label detected"
-            CHANNELS+=("frontend")
-            WEBHOOKS+=("$WEBHOOK_FRONTEND")
+          if echo "$LABELS" | grep -q "🐧backend"; then
+            WEBHOOK_URL="$WEBHOOK_BACKEND"
+            CHANNEL="backend"
+          elif echo "$LABELS" | grep -q "🐤frontend"; then
+            WEBHOOK_URL="$WEBHOOK_FRONTEND"
+            CHANNEL="frontend"
           else
-            echo "✗ Frontend label not found"
-          fi
-          
-          # backend 라벨 체크 (여러 패턴으로)
-          if echo "$LABELS" | grep -q -i -E "(backend|🐧backend|back)"; then
-            echo "✓ Backend label detected"
-            CHANNELS+=("backend")
-            WEBHOOKS+=("$WEBHOOK_BACKEND")
-          else
-            echo "✗ Backend label not found"
-          fi
-          
-          echo "📋 Detected channels: ${CHANNELS[*]}"
-          
-          # 전송할 채널이 없으면 종료
-          if [[ ${#CHANNELS[@]} -eq 0 ]]; then
             echo "No relevant labels found (🐤frontend/🐧backend), skipping notification"
             exit 0
           fi
           
-          # 각 채널에 메시지 전송
-          SUCCESS_COUNT=0
-          TOTAL_COUNT=${#CHANNELS[@]}
+          # 웹훅 URL 체크
+          if [[ -z "$WEBHOOK_URL" ]]; then
+            echo "Webhook URL not configured for $CHANNEL channel"
+            exit 1
+          fi
           
-          for i in "${!CHANNELS[@]}"; do
-            CHANNEL="${CHANNELS[$i]}"
-            WEBHOOK_URL="${WEBHOOKS[$i]}"
+          # Discord 메시지 생성 (JSON을 한 줄로)
+          MESSAGE='{"username":"GitHub Bot","avatar_url":"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png","embeds":[{"title":"'$TYPE' '$ACTION'","description":"**'$TITLE'**","url":"'$URL'","color":'$COLOR',"fields":[{"name":"Author","value":"'$AUTHOR'","inline":true},{"name":"Labels","value":"'$LABELS'","inline":true},{"name":"Channel","value":"'$CHANNEL'","inline":true}],"timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"}]}'
           
-            # 웹훅 URL 체크
-            if [[ -z "$WEBHOOK_URL" ]]; then
-              echo "❌ Webhook URL not configured for $CHANNEL channel"
-              continue
-            fi
+          echo "Sending to $CHANNEL channel..."
           
-            # Discord 메시지 생성 (JSON을 한 줄로)
-            MESSAGE='{"username":"GitHub Bot","avatar_url":"https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png","embeds":[{"title":"'$TYPE' '$ACTION'","description":"**'$TITLE'**","url":"'$URL'","color":'$COLOR',"fields":[{"name":"Author","value":"'$AUTHOR'","inline":true},{"name":"Labels","value":"'$LABELS'","inline":true},{"name":"Channel","value":"'$CHANNEL'","inline":true}],"timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%S.000Z)'"}]}'
+          # Discord로 전송
+          HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/response.json \
+            -H "Content-Type: application/json" \
+            -d "$MESSAGE" \
+            "$WEBHOOK_URL")
           
-            echo "Sending to $CHANNEL channel..."
-          
-            # Discord로 전송
-            HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/response_${CHANNEL}.json \
-              -H "Content-Type: application/json" \
-              -d "$MESSAGE" \
-              "$WEBHOOK_URL")
-          
-            if [[ "$HTTP_CODE" == "204" ]]; then
-              echo "✅ Successfully sent to $CHANNEL"
-              ((SUCCESS_COUNT++))
-            else
-              echo "❌ Failed to send notification to $CHANNEL. HTTP: $HTTP_CODE"
-              echo "Response: $(cat /tmp/response_${CHANNEL}.json 2>/dev/null || echo 'No response')"
-            fi
-          done
-          
-          # 결과 요약
-          echo "📊 Notification summary: $SUCCESS_COUNT/$TOTAL_COUNT channels succeeded"
-          
-          # 모든 전송이 실패했을 경우에만 exit 1
-          if [[ $SUCCESS_COUNT -eq 0 ]]; then
-            echo "❌ All notifications failed"
+          if [[ "$HTTP_CODE" == "204" ]]; then
+            echo "✅ Successfully sent to $CHANNEL"
+          else
+            echo "❌ Failed to send notification. HTTP: $HTTP_CODE"
+            echo "Response: $(cat /tmp/response.json 2>/dev/null || echo 'No response')"
             exit 1
           fi
