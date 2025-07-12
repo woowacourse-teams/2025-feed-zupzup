@@ -76,19 +76,33 @@ jobs:
           echo "Labels: $LABELS"
           echo "Action: $ACTION"
           
+          # 디버깅용 - 라벨 상세 출력
+          echo "🔍 Debug - Raw labels output:"
+          echo "$LABELS" | od -c
+          
           # 라벨에 따라 전송할 채널들 결정
           CHANNELS=()
           WEBHOOKS=()
           
-          if echo "$LABELS" | grep -q "🐤frontend"; then
+          # frontend 라벨 체크 (여러 패턴으로)
+          if echo "$LABELS" | grep -q -i -E "(frontend|🐤frontend|front)"; then
+            echo "✓ Frontend label detected"
             CHANNELS+=("frontend")
             WEBHOOKS+=("$WEBHOOK_FRONTEND")
+          else
+            echo "✗ Frontend label not found"
           fi
           
-          if echo "$LABELS" | grep -q "🐧backend"; then
+          # backend 라벨 체크 (여러 패턴으로)
+          if echo "$LABELS" | grep -q -i -E "(backend|🐧backend|back)"; then
+            echo "✓ Backend label detected"
             CHANNELS+=("backend")
             WEBHOOKS+=("$WEBHOOK_BACKEND")
+          else
+            echo "✗ Backend label not found"
           fi
+          
+          echo "📋 Detected channels: ${CHANNELS[*]}"
           
           # 전송할 채널이 없으면 종료
           if [[ ${#CHANNELS[@]} -eq 0 ]]; then
