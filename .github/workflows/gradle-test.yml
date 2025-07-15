@@ -5,7 +5,7 @@ on:
     branches: [ "be/develop" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
