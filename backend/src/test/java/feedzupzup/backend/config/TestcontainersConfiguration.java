@@ -14,8 +14,9 @@ public class TestcontainersConfiguration {
     @ServiceConnection
     static MySQLContainer<?> mysqlContainer(final DatabaseProperties databaseProperties) {
         return new MySQLContainer<>(MySQLContainer.NAME + ":" + databaseProperties.version())
-                .withDatabaseName(databaseProperties.databaseName())
-                .withUsername(databaseProperties.username())
-                .withPassword(databaseProperties.password());
+            .withReuse(true)
+            .withDatabaseName(databaseProperties.databaseName())
+            .withUsername(databaseProperties.username())
+            .withPassword(databaseProperties.password());
     }
 }
