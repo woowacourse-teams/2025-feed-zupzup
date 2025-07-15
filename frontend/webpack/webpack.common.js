@@ -1,17 +1,17 @@
-import path from "path";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default {
-  entry: "./src/index.tsx",
+  entry: './src/index.tsx',
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: ['.ts', '.tsx', '.js'],
     alias: {
-      "@": path.resolve(__dirname, "../src"),
+      '@': path.resolve(__dirname, '../src'),
     },
   },
   module: {
@@ -19,17 +19,21 @@ export default {
       {
         test: /\.(js|ts|tsx)$/,
         exclude: /node_modules/,
-        use: "babel-loader",
+        use: 'babel-loader',
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: "asset/resource",
+        type: 'asset/resource',
+      },
+      {
+        test: /.css$/i,
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./public/index.html",
+      template: './public/index.html',
     }),
   ],
 };
