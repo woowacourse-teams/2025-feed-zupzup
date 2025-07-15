@@ -1,7 +1,4 @@
-interface ButtonProps extends React.ComponentProps<'button'> {
-  children: React.ReactNode;
-  css: string | string[];
-}
+import { ButtonProps } from './Button.types';
 
 export default function Button({ children, onClick, css }: ButtonProps) {
   return (
