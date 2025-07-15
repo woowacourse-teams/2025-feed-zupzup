@@ -5,10 +5,14 @@ export default function Input({
   onChange,
   placeholder,
   css,
+  maxLength,
+  minLength,
 }: InputProps) {
   return (
     <input
       css={css}
+      maxLength={maxLength}
+      minLength={minLength}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
