@@ -16,6 +16,8 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "@emotion/babel-plugin": "^11.13.5",
+    "@emotion/react": "^11.14.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
