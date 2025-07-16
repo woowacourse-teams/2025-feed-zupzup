@@ -45,6 +45,7 @@ jobs:
         run: |
           echo "접속 성공"
           echo "현재 디렉토리: $(pwd)"
+          echo ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
 
       - name: EC2 배포
         run: |
