@@ -52,5 +52,5 @@ jobs:
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
           cd /home/ubuntu/docker
-          docker compose down
-          docker compose up -d --build
+          docker-compose down
+          docker-compose up -d --build
