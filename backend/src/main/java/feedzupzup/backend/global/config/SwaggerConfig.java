@@ -3,6 +3,7 @@ package feedzupzup.backend.global.config;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,12 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         return new OpenAPI()
                 .components(new Components()
+                        .addSchemas("SuccessResponse", new Schema<>()
+                                .type("object")
+                                .description("성공 응답 래퍼")
+                                .addProperty("data", new Schema<>().description("응답 데이터"))
+                                .addProperty("status", new Schema<>().type("integer").description("상태 코드").example(200))
+                                .addProperty("message", new Schema<>().type("string").description("상태 메시지").example("OK")))
                         .addResponses("BadRequest", new ApiResponse()
                                 .description("잘못된 요청"))
                         .addResponses("Unauthorized", new ApiResponse()
