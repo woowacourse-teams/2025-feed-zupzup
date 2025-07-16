@@ -19,7 +19,21 @@ export default {
       {
         test: /\.(js|ts|tsx)$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-react',
+                {
+                  runtime: 'automatic',
+                  importSource: '@emotion/react',
+                },
+              ],
+            ],
+            plugins: ['@emotion/babel-plugin'],
+          },
+        },
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
