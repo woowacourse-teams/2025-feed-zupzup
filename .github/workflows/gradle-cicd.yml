@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: 체크아웃
         uses: actions/checkout@v4
@@ -16,6 +17,12 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: 태그 값 디버깅
+        run: |
+          echo "DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}"
+          echo "DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}"
+          echo "생성될 태그: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest"
 
       - name: 이미지 빌드 및 푸시
         uses: docker/build-push-action@v5
@@ -27,6 +34,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: dev
     steps:
       - name: EC2 배포
         uses: appleboy/ssh-action@v0.1.5
