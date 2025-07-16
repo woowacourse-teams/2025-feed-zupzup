@@ -1,26 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "lib": ["DOM", "ES6"],
+    "target": "ES2020",
+    "types": ["cypress", "node"],
+    "useDefineForClassFields": true,
     "module": "ESNext",
-    "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
     "strict": true,
-    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "exactOptionalPropertyTypes": true,
-    "strictBindCallApply": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "types", "cypress"]
 }
