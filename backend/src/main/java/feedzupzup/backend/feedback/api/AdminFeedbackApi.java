@@ -37,7 +37,7 @@ public interface AdminFeedbackApi {
 
     @Operation(summary = "피드백 비밀 상태 변경", description = "피드백의 비밀 상태를 변경합니다. (관리자 전용)")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "변경 성공",useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "200", description = "변경 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
@@ -50,7 +50,7 @@ public interface AdminFeedbackApi {
 
     @Operation(summary = "피드백 삭제", description = "피드백을 삭제합니다. (관리자 전용)")
     @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "삭제 성공",useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "204", description = "삭제 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")

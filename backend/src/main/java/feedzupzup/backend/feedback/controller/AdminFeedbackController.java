@@ -20,7 +20,8 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(Long feedbackId, UpdateFeedbackSecretRequest request) {
+    public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(Long feedbackId,
+            UpdateFeedbackSecretRequest request) {
         throw new UnsupportedOperationException();
     }
 
@@ -30,7 +31,8 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<UpdateFeedStatusResponse> updateFeedbackStatus(Long feedbackId, UpdateFeedbackStatusRequest request) {
+    public SuccessResponse<UpdateFeedStatusResponse> updateFeedbackStatus(Long feedbackId,
+            UpdateFeedbackStatusRequest request) {
         throw new UnsupportedOperationException();
     }
 }
