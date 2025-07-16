@@ -1,6 +1,10 @@
 package feedzupzup.backend.feedback.api;
 
 import feedzupzup.backend.feedback.dto.UpdateFeedStatusResponse;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
+import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,11 +20,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
-import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 
 @Tag(name = "Admin Feedback", description = "피드백 API(관리자 권한)")
 public interface AdminFeedbackApi {

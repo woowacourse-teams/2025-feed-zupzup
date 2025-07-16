@@ -9,16 +9,16 @@ import java.util.List;
 public record AdminFeedbackListResponse(
         @Schema(description = "피드백 목록")
         List<AdminFeedbackItem> feedbacks,
-        
+
         @Schema(description = "다음 페이지 존재 여부", example = "true")
         boolean hasNext,
-        
+
         @Schema(description = "다음 커서 ID", example = "3")
         Long nextCursorId
 ) {
 
-        @Schema(description = "관리자용 피드백 항목")
-        record AdminFeedbackItem(
+    @Schema(description = "관리자용 피드백 항목")
+    record AdminFeedbackItem(
             @Schema(description = "피드백 ID", example = "1")
             Long feedbackId,
 
@@ -39,5 +39,7 @@ public record AdminFeedbackListResponse(
 
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
             LocalDateTime createdAt
-        ) {}
+    ) {
+
+    }
 }

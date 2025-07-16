@@ -6,4 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record UpdateFeedbackStatusRequest(
         @Schema(description = "처리 상태", example = "WAITING", allowableValues = {"WAITING", "CONFIRMED"})
         String status
-) {}
+) {
+
+}

@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 public record UpdateFeedbackSecretResponse(
         @Schema(description = "피드백 ID", example = "1")
         Long feedbackId,
-        
+
         @Schema(description = "비밀 피드백 여부", example = "true")
         boolean isSecret,
-        
+
         @Schema(description = "수정일시", example = "2025-07-13T10:30:00.000Z")
         LocalDateTime modifiedAt
-) {}
+) {
+
+}

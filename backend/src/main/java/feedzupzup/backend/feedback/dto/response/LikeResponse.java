@@ -6,4 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record LikeResponse(
         @Schema(description = "좋아요 상태", example = "true")
         boolean isLiked
-) {}
+) {
+
+}

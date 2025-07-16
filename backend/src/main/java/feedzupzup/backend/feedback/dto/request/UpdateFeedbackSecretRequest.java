@@ -6,4 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record UpdateFeedbackSecretRequest(
         @Schema(description = "비밀 피드백 여부", example = "true")
         boolean isSecret
-) {}
+) {
+
+}
