@@ -1,8 +1,9 @@
 services:
   feed-zupzup-server:
+    container_name: feed-zupzup-server
     build: .
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       feed-zupzup-db:
         condition: service_healthy
@@ -16,8 +17,8 @@ services:
     volumes:
       - ./mysql/data:/var/lib/mysql
     ports:
-      - 3306:3306
+      - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping"]
+      test: [ "CMD", "mysqladmin", "ping" ]
       interval: 3s
       retries: 10

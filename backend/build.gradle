@@ -31,21 +31,33 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     runtimeOnly 'com.mysql:mysql-connector-j'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:mysql'
 }
 
-task copySecret(type: Copy) {
-    from file('./backend-submodule')
+tasks.register('copySecret', Copy) {
+    from file('./backend-submodule/main')
     include 'application*.yml'
     into 'src/main/resources'
 }
 
-compileJava.dependsOn copySecret
+tasks.register('copySecretTest', Copy) {
+    from file('./backend-submodule/test')
+    include 'application*.yml'
+    into 'src/test/resources'
+}
+
+compileJava.dependsOn copySecret, copySecretTest
 processResources.dependsOn copySecret
+processTestResources.dependsOn copySecretTest
 
 test {
     useJUnitPlatform()
