@@ -18,11 +18,18 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 태그 값 디버깅
-        run: |
-          echo "DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}"
-          echo "DOCKER_REPOSITORY: ${{ secrets.DOCKER_REPOSITORY }}"
-          echo "생성될 태그: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest"
+      - name: JDK 21 설정
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Gradle 설정
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+
+      - name: Gradle Wrapper로 빌드
+        run: ./gradlew bootJar
+        working-directory: ./backend
 
       - name: 이미지 빌드 및 푸시
         uses: docker/build-push-action@v5
