@@ -1,8 +1,6 @@
+/** @jsxImportSource @emotion/react */
+import Hero from './domains/user/home/components/Hero/Hero';
+
 export default function App() {
-  return (
-    <div>
-      <h1>하이</h1>
-      <h1>하이</h1>
-    </div>
-  );
+  return <Hero />;
 }
