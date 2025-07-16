@@ -39,17 +39,11 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: dev
+    runs-on: [self-hosted, linux, ARM64]
     steps:
       - name: EC2 배포
-        uses: appleboy/ssh-action@v0.1.5
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest  
-            docker-compose up -d
-            docker logout
+        run: |
+          ssh -i ${{ secrets.EC2_PRIVATE_KEY }} ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
+          docker-compose up -d
+          docker logout
