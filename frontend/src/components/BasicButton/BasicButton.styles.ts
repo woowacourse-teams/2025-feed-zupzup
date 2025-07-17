@@ -42,11 +42,7 @@ export const basicButtonText = (
   variant: 'primary' | 'secondary' = 'primary'
 ) => css`
   margin: 0;
-  font-family: ${theme.typography.inter.small.fontFamily};
-  font-size: ${theme.typography.inter.small.fontSize}px;
-  font-weight: ${theme.typography.inter.small.fontWeight};
-  line-height: ${theme.typography.inter.small.lineHeight}px;
-  letter-spacing: ${theme.typography.inter.small.letterSpacing}px;
+  ${theme.typography.inter.small};
   color: ${variant === 'primary'
     ? theme.colors.black[100]
     : theme.colors.darkGray[100]};
