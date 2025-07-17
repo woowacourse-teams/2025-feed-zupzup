@@ -1,9 +1,10 @@
 #root {
+  position: relative;
   max-width: 600px;
   width: 100%;
   height: 100vh;
   margin: 0 auto;
-  background-color: white;
+  background-color: #f9fafb;
   border-left: 1px solid lightgrey;
   border-right: 1px solid lightgrey;
   padding: 14px;
