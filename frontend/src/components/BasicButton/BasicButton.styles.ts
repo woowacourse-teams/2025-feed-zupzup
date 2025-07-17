@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
-import { Theme } from '../../theme';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { Theme } from '@/theme';
 
 export const basicButton = (
   theme: Theme,
@@ -10,7 +11,7 @@ export const basicButton = (
   justify-content: center;
   align-items: center;
   gap: 14px;
-  width: ${typeof width === 'number' ? `${width}px` : width || 'auto'};
+  width: ${typeof width === 'number' ? `${width}px` : width || '100%'};
   height: 42px;
   padding: 12px 16px;
   background-color: ${variant === 'primary'

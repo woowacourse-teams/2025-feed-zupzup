@@ -1,7 +1,9 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import ArrowLeft from '../ArrowLeftButton/ArrowLeft';
+
 import Glitter from '../icons/Glitter';
 import { HeaderProps } from './Header.type';
+import ArrowLeftButton from '../ArrowLeftButton/ArrowLeftButton';
+
 import {
   captionSection,
   header,
@@ -16,7 +18,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   return (
     <header css={header}>
       <div css={headerSection}>
-        <ArrowLeft onClick={() => console.log('뒤로가기 버튼 클릭')} />
+        <ArrowLeftButton onClick={() => console.log('뒤로가기 버튼 클릭')} />
         <div css={captionSection}>
           <p css={[headerTitle(theme), theme.typography.inter.bodyBold]}>
             {title}
