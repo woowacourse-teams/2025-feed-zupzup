@@ -8,8 +8,10 @@ import {
   heroLogo,
   heroDescription,
   heroHeader,
+  catAnimation,
 } from './Hero.styles';
 import feedzupzupLogo from '@/assets/images/feedzupzup-logo.png';
+import catImage from '@/assets/images/cat.png';
 import { HeroProps } from './Hero.types';
 import GhostButton from '@/components/GhostButton/GhostButton';
 import Profile from '@/components/icons/Profile';
@@ -29,14 +31,17 @@ export default function Hero({ title, onClick }: HeroProps) {
           <br />
           여러분의 목소리가 필요합니다
         </p>
-        <BasicButton
-          width='100%'
-          onClick={onClick}
-          icon={<PlusIcon />}
-          variant='primary'
-        >
-          건의하기
-        </BasicButton>
+        <div style={{ position: 'relative', width: '100%' }}>
+          <img src={catImage} alt='움직이는 고양이' css={catAnimation} />
+          <BasicButton
+            width='100%'
+            onClick={onClick}
+            icon={<PlusIcon />}
+            variant='primary'
+          >
+            건의하기
+          </BasicButton>
+        </div>
       </div>
     </div>
   );

@@ -68,3 +68,25 @@ export const heroDescription = css`
   text-align: left;
   line-height: 1.5;
 `;
+
+export const catAnimation = css`
+  position: absolute;
+  width: 60px;
+  height: auto;
+  bottom: 32px;
+  right: 24px;
+  animation: catMove 3s ease-in-out infinite;
+  z-index: 1;
+
+  @keyframes catMove {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(-100px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+`;
