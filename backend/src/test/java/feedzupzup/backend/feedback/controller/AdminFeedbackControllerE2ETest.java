@@ -3,9 +3,9 @@ package feedzupzup.backend.feedback.controller;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.fixture.CreateFeedbackRequestFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;

@@ -47,7 +47,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // given
             final Long nonExistingId = 999L;
 
-            // when & then - 예외가 발생해야 함
+            // when & then
             assertThatCode(() -> adminFeedbackService.delete(nonExistingId)).doesNotThrowAnyException();
         }
     }
