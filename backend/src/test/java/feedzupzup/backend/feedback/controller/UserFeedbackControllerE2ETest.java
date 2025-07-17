@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
-import feedzupzup.backend.feedback.fixture.CreateFeedbackRequestFixture;
+import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void create_secret_feedback_success() {
         // given
         final Long placeId = 1L;
-        final CreateFeedbackRequest request = CreateFeedbackRequestFixture.createRequestWithContent("피드백");
+        final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
         // when & then
         given()

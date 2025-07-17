@@ -25,4 +25,14 @@ public class FeedbackFixture {
                 .imageUrl("https://example.com/image.jpg")
                 .build();
     }
+
+    public static Feedback createFeedbackWithSecret(final boolean isSecret) {
+        return Feedback.builder()
+                .content("장소별 피드백")
+                .isSecret(isSecret)
+                .status(ProcessStatus.WAITING)
+                .placeId(1L)
+                .imageUrl("https://example.com/image.jpg")
+                .build();
+    }
 }
