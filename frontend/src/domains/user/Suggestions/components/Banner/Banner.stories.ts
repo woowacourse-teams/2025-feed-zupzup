@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import Banner from './Banner';
 import { BannerProps } from './Banner.type';
+import Banner from './Banner';
 
 const meta: Meta<BannerProps> = {
   title: 'Components/Banner',

@@ -3,6 +3,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 import Banner from './components/Banner/Banner';
+import SuggestionsFormField from './components/SuggestionsFormField/SuggestionsFormField';
 
 export default function Suggestions() {
   const theme = useAppTheme();
@@ -16,6 +17,9 @@ export default function Suggestions() {
           description='여러분의 소중한 의견이 더 좋은 카페를 만들어
 갑니다'
         />
+        <SuggestionsFormField label='카테고리 선택'>
+          <div>카테코리 선택</div>
+        </SuggestionsFormField>
       </div>
     </>
   );
@@ -23,6 +27,10 @@ export default function Suggestions() {
 
 const suggestions = (theme: Theme) => css`
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   width: 100%;
   height: 100vh;
   margin-top: 64px; /* Header height */
