@@ -45,7 +45,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
           build-args: |
-            PROFILE=dev
+            SPRING_ACTIVE_PROFILE=dev
 
   deploy:
     needs: build
@@ -58,3 +58,4 @@ jobs:
           cd /home/ubuntu/docker
           docker-compose down
           docker-compose up -d --build
+          docker image prune -f

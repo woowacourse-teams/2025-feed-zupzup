@@ -1,7 +1,7 @@
 FROM openjdk:21-jdk
 
-ARG PROFILE
-ENV PROFILE=${PROFILE}
+ARG SPRING_ACTIVE_PROFILE
+ENV PROFILE=${SPRING_ACTIVE_PROFILE}
 
 COPY build/libs/*SNAPSHOT.jar /feed-zupzup-server.jar
 
