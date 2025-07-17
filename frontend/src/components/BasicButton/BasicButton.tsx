@@ -9,7 +9,7 @@ import Button from '@/components/commons/Button/Button';
 
 export default function BasicButton({
   children,
-  width,
+  width = '100%',
   icon,
   variant = 'primary',
 }: BasicButtonProps) {
