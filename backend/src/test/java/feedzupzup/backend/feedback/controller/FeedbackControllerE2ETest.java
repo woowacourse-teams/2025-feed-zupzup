@@ -30,11 +30,12 @@ class FeedbackControllerE2ETest extends E2EHelper {
 
         // when & then
         given()
+                .log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
                 .post("/places/{placeId}/feedbacks", placeId)
-                .then()
+                .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(201))
