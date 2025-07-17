@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class FeedbackServiceTest extends ServiceIntegrationHelper{
+class UserFeedbackServiceTest extends ServiceIntegrationHelper{
 
     @Autowired
-    private FeedbackService feedbackService;
+    private UserFeedbackService userFeedbackService;
 
     @Nested
     @DisplayName("피드백 생성 테스트")
@@ -27,7 +27,7 @@ class FeedbackServiceTest extends ServiceIntegrationHelper{
             final CreateFeedbackRequest request = new CreateFeedbackRequest("윌슨", "맛있어요", false);
 
             //when
-            final CreateFeedbackResponse response = feedbackService.create(request, placeId);
+            final CreateFeedbackResponse response = userFeedbackService.create(request, placeId);
 
             //then
             assertAll(

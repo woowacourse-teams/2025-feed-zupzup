@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class FeedbackService {
+public class UserFeedbackService {
 
     private final FeedBackRepository feedBackRepository;
 
