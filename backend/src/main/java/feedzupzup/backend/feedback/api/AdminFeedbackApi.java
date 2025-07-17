@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
-import feedzupzup.backend.feedback.dto.UpdateFeedStatusResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
@@ -71,7 +71,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @PatchMapping("/admin/feedbacks/{feedbackId}/status")
-    SuccessResponse<UpdateFeedStatusResponse> updateFeedbackStatus(
+    SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackStatusRequest request
     );
