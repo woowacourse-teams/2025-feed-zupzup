@@ -4,15 +4,15 @@ export default function TextArea({
   value,
   onChange,
   placeholder,
-  css,
+  customCSS,
   maxLength,
   minLength,
 }: TextAreaProps) {
   return (
     <textarea
+      css={customCSS}
       minLength={minLength}
       maxLength={maxLength}
-      css={css}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
