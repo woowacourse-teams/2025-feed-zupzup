@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: 체크아웃
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+          submodules: true
 
       - name: Docker Hub 로그인
         uses: docker/login-action@v3
@@ -49,12 +52,6 @@ jobs:
     runs-on: [self-hosted, linux, ARM64]
     environment: dev
     steps:
-      - name: 로깅
-        run: |
-          echo "접속 성공"
-          echo "현재 디렉토리: $(pwd)"
-          echo ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}
-
       - name: EC2 배포
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
