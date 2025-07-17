@@ -1,7 +1,10 @@
 services:
   feed-zupzup-server:
     container_name: feed-zupzup-server
-    build: .
+    build:
+      context: .
+      args:
+        - PROFILE=local
     ports:
       - "8080:8080"
     depends_on:

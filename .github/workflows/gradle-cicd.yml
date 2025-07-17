@@ -37,6 +37,8 @@ jobs:
           context: ./backend
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
+          build-args: |
+            PROFILE=dev
 
   deploy:
     runs-on: [self-hosted, linux, ARM64]
