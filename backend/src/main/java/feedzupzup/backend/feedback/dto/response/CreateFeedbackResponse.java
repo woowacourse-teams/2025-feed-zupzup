@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.dto.response;
 
+import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -21,11 +22,19 @@ public record CreateFeedbackResponse(
         @Schema(description = "비밀 피드백 여부", example = "false")
         boolean isSecret,
 
-        @Schema(description = "사용자가 좋아요했는지 여부", example = "false")
-        boolean isLiked,
-
         @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
         LocalDateTime createdAt
 ) {
+
+        public static CreateFeedbackResponse from(final Feedback feedback) {
+                return new CreateFeedbackResponse(
+                        feedback.getId(),
+                        feedback.getContent(),
+                        feedback.getStatus(),
+                        feedback.getImageUrl(),
+                        feedback.isSecret(),
+                        feedback.getCreatedAt()
+                );
+        }
 
 }

@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.dto.request;
 
+import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "피드백 생성 요청")
@@ -14,4 +16,13 @@ public record CreateFeedbackRequest(
         boolean isSecret
 ) {
 
+    public Feedback toFeedback(final Long placeId) {
+        return Feedback.builder()
+                .content(content)
+                .imageUrl(imageUrl)
+                .placeId(placeId)
+                .status(ProcessStatus.WATING)
+                .isSecret(isSecret)
+                .build();
+    }
 }

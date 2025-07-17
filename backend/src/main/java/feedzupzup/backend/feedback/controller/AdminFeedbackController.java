@@ -7,11 +7,9 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
 public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
