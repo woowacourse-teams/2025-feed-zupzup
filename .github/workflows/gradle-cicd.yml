@@ -41,6 +41,7 @@ jobs:
             PROFILE=dev
 
   deploy:
+    needs: build
     runs-on: [self-hosted, linux, ARM64]
     environment: dev
     steps:
