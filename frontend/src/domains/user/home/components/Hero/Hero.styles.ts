@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import heroBackground from '@/assets/images/hero-background.png';
 import { colors } from '@/theme';
 
-export const heroStyle = css`
+export const hero = css`
   background-image:
     linear-gradient(${colors.black[100]}59, ${colors.black[100]}59),
     url(${heroBackground});

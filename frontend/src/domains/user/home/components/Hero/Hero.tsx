@@ -1,10 +1,10 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import PlusIcon from '@/components/icons/Plus';
-import { heroStyle } from './Hero.styles';
+import { hero } from './Hero.styles';
 
 export default function Hero() {
   return (
-    <div css={heroStyle}>
+    <div css={hero}>
       <BasicButton
         width={294}
         onClick={() => console.log('clicked')}

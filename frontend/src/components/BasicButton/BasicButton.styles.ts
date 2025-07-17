@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { Theme } from '../../theme';
 
-export const basicButtonStyle = (
+export const basicButton = (
   theme: Theme,
   width?: string | number,
   variant: 'primary' | 'secondary' = 'primary'
@@ -37,7 +37,7 @@ export const basicButtonStyle = (
   }
 `;
 
-export const basicButtonTextStyle = (
+export const basicButtonText = (
   theme: Theme,
   variant: 'primary' | 'secondary' = 'primary'
 ) => css`
@@ -52,7 +52,7 @@ export const basicButtonTextStyle = (
     : theme.colors.darkGray[100]};
 `;
 
-export const basicButtonIconStyle = css`
+export const basicButtonIcon = css`
   display: flex;
   justify-content: center;
   align-items: center;

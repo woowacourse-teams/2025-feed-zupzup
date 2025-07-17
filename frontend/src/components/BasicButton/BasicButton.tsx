@@ -1,9 +1,9 @@
 import { useAppTheme } from '../../hooks/useAppTheme';
 import { BasicButtonProps } from './BasicButton.types';
 import {
-  basicButtonStyle,
-  basicButtonTextStyle,
-  basicButtonIconStyle,
+  basicButton,
+  basicButtonText,
+  basicButtonIcon,
 } from './BasicButton.styles';
 import Button from '@/components/commons/Button/Button';
 
@@ -16,9 +16,9 @@ export default function BasicButton({
   const theme = useAppTheme();
 
   return (
-    <Button css={basicButtonStyle(theme, width, variant)}>
-      {icon && <span css={basicButtonIconStyle}>{icon}</span>}
-      <span css={basicButtonTextStyle(theme, variant)}>{children}</span>
+    <Button css={basicButton(theme, width, variant)}>
+      {icon && <span css={basicButtonIcon}>{icon}</span>}
+      <span css={basicButtonText(theme, variant)}>{children}</span>
     </Button>
   );
 }
