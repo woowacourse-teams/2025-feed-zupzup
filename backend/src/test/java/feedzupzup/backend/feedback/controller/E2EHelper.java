@@ -23,5 +23,6 @@ public abstract class E2EHelper {
     void setUp() {
         dataInitializer.deleteAll();
         RestAssured.port = port;
+        RestAssured.basePath = "/api";
     }
 }
