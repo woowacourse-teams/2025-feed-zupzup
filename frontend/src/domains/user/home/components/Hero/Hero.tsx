@@ -9,13 +9,14 @@ import {
   heroDescription,
 } from './Hero.styles';
 import feedzupzupLogo from '@/assets/images/feedzupzup-logo.png';
+import { HeroProps } from './Hero.types';
 
-export default function Hero() {
+export default function Hero({ title, onClick }: HeroProps) {
   return (
     <div css={hero}>
       <div css={heroContent}>
         <hr css={heroHr} />
-        <h1 css={heroTitle}>우테코 건의</h1>
+        <h1 css={heroTitle}>{title} 건의</h1>
         <img src={feedzupzupLogo} alt='피드줍줍 로고' css={heroLogo} />
         <p css={heroDescription}>
           더 나은 카페를 만들기 위해
@@ -23,7 +24,8 @@ export default function Hero() {
           여러분의 목소리가 필요합니다
         </p>
         <BasicButton
-          onClick={() => console.log('clicked')}
+          width='100%'
+          onClick={onClick}
           icon={<PlusIcon />}
           variant='primary'
         >
