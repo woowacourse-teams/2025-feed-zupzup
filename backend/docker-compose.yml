@@ -1,7 +1,13 @@
 services:
   feed-zupzup-server:
     container_name: feed-zupzup-server
-    build: .
+    build:
+      context: .
+      platforms:
+        - linux/arm64
+        - linux/amd64
+      args:
+        - SPRING_ACTIVE_PROFILE=local
     ports:
       - "8080:8080"
     depends_on:
