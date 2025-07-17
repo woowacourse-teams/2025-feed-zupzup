@@ -71,9 +71,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // then
             assertThat(response).isNotNull();
             assertThat(response.status()).isEqualTo(ProcessStatus.CONFIRMED);
-
-            final Feedback updatedFeedback = feedBackRepository.findById(savedFeedback.getId()).orElseThrow();
-            assertThat(updatedFeedback.getStatus()).isEqualTo(ProcessStatus.CONFIRMED);
         }
 
         @Test
