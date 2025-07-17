@@ -10,7 +10,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class UserFeedbackServiceTest extends ServiceIntegrationHelper{
+class
+UserFeedbackServiceTest extends ServiceIntegrationHelper{
 
     @Autowired
     private UserFeedbackService userFeedbackService;

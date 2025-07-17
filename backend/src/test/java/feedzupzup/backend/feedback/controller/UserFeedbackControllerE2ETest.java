@@ -9,13 +9,9 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestcontainersTest
-class FeedbackControllerE2ETest extends E2EHelper {
+class UserFeedbackControllerE2ETest extends E2EHelper {
 
     @Test
     @DisplayName("피드백을 성공적으로 생성한다")
