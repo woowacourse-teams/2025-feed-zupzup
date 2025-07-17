@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -41,14 +42,13 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         }
 
         @Test
-        @DisplayName("존재하지 않는 피드백 삭제 시 예외가 발생한다")
+        @DisplayName("존재하지 않는 피드백 삭제 시 예외가 발생 하지 않는다.")
         void delete_non_existing_feedback_exception() {
             // given
             final Long nonExistingId = 999L;
 
             // when & then - 예외가 발생해야 함
-            assertThatThrownBy(() -> adminFeedbackService.delete(nonExistingId))
-                    .isInstanceOf(IllegalArgumentException.class);
+            assertThatCode(() -> adminFeedbackService.delete(nonExistingId)).doesNotThrowAnyException();
         }
     }
 

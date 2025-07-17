@@ -17,9 +17,7 @@ public class AdminFeedbackService {
 
     @Transactional
     public void delete(final Long feedbackId) {
-        final Feedback feedback = feedBackRepository.findById(feedbackId)
-                .orElseThrow(IllegalArgumentException::new);
-        feedBackRepository.delete(feedback);
+        feedBackRepository.deleteById(feedbackId);
     }
 
     @Transactional
