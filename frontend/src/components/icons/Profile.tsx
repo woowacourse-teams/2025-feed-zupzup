@@ -1,4 +1,4 @@
-export default function Plus() {
+export default function Profile() {
   return (
     <svg
       width='15'

@@ -1,10 +1,11 @@
 import { css } from '@emotion/react';
 import heroBackground from '@/assets/images/hero-background.png';
-import { colors, theme } from '@/theme';
 
-export const hero = css`
+import { useAppTheme } from '@/hooks/useAppTheme';
+
+export const hero = (theme: ReturnType<typeof useAppTheme>) => css`
   background-image:
-    linear-gradient(${colors.black[100]}59, ${colors.black[100]}59),
+    linear-gradient(${theme.colors.black[100]}59, ${theme.colors.black[100]}59),
     url(${heroBackground});
   background-size: cover;
   background-position: center;
@@ -20,10 +21,10 @@ export const hero = css`
   box-sizing: border-box;
 `;
 
-export const heroHeader = css`
+export const heroHeader = (theme: ReturnType<typeof useAppTheme>) => css`
   width: 100%;
   height: 56px;
-  background-color: ${colors.black[100]}33;
+  background-color: ${theme.colors.black[100]}33;
   margin: 0 -20px 0 -20px;
   display: flex;
   justify-content: flex-end;
@@ -36,22 +37,22 @@ export const heroContent = css`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 0 6px 20px 6px;
+  margin: 0 8px 20px 8px;
   width: 100%;
   padding: 0 20px;
 `;
 
-export const heroHr = css`
+export const heroHr = (theme: ReturnType<typeof useAppTheme>) => css`
   width: 56px;
   height: 2px;
-  background-color: ${colors.yellow[200]};
+  background-color: ${theme.colors.yellow[200]};
   border: none;
   margin: 0 0 14px 0;
 `;
 
-export const heroTitle = css`
+export const heroTitle = (theme: ReturnType<typeof useAppTheme>) => css`
   ${theme.typography.inter.small};
-  color: ${colors.yellow[200]};
+  color: ${theme.colors.yellow[200]};
   margin: 0 0 14px 0;
 `;
 
@@ -61,9 +62,9 @@ export const heroLogo = css`
   margin: 0 0 16px 0;
 `;
 
-export const heroDescription = css`
+export const heroDescription = (theme: ReturnType<typeof useAppTheme>) => css`
   ${theme.typography.inter.small};
-  color: ${colors.white[100]};
+  color: ${theme.colors.white[100]};
   margin: 0 0 24px 0;
   text-align: left;
   line-height: 1.5;

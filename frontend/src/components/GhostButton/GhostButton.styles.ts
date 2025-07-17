@@ -1,7 +1,8 @@
 import { css } from '@emotion/react';
-import { colors, theme } from '@/theme';
+import { colors } from '@/theme';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
-export const ghostButton = css`
+export const ghostButton = (theme: ReturnType<typeof useAppTheme>) => css`
   ${theme.typography.inter.caption};
   background-color: ${colors.white[100]}33;
   border: 1px solid ${colors.white[100]}33;

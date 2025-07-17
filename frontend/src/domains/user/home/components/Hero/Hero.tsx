@@ -15,22 +15,25 @@ import catImage from '@/assets/images/cat.png';
 import { HeroProps } from './Hero.types';
 import GhostButton from '@/components/GhostButton/GhostButton';
 import Profile from '@/components/icons/Profile';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export default function Hero({
   title,
   onLoginClick,
   onSuggestClick,
 }: HeroProps) {
+  const theme = useAppTheme();
+
   return (
-    <div css={hero}>
-      <div css={heroHeader}>
+    <div css={hero(theme)}>
+      <div css={heroHeader(theme)}>
         <GhostButton icon={<Profile />} text='로그인' onClick={onLoginClick} />
       </div>
       <div css={heroContent}>
-        <hr css={heroHr} />
-        <h1 css={heroTitle}>{title} 건의</h1>
+        <hr css={heroHr(theme)} />
+        <h1 css={heroTitle(theme)}>{title} 건의</h1>
         <img src={feedzupzupLogo} alt='피드줍줍 로고' css={heroLogo} />
-        <p css={heroDescription}>
+        <p css={heroDescription(theme)}>
           더 나은 카페를 만들기 위해
           <br />
           여러분의 목소리가 필요합니다
