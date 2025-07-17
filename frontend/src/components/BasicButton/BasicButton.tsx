@@ -5,7 +5,7 @@ import {
   basicButtonTextStyle,
   basicButtonIconStyle,
 } from './BasicButton.styles';
-import Button from '../commons/Button/Button';
+import Button from '@/components/commons/Button/Button';
 
 export default function BasicButton({
   children,

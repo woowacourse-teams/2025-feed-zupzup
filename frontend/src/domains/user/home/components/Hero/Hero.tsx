@@ -1,6 +1,6 @@
-import BasicButton from '../../../../../components/BasicButton/BasicButton';
+import BasicButton from '@/components/BasicButton/BasicButton';
+import PlusIcon from '@/components/icons/Plus';
 import { heroStyle } from './Hero.styles';
-import PlusIcon from '../../../../../components/icons/Plus';
 
 export default function Hero() {
   return (

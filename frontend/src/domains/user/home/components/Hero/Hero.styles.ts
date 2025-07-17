@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
-import heroBackground from '../../../../../assets/images/hero-background.png';
-import { colors } from '../../../../../theme';
+import heroBackground from '@/assets/images/hero-background.png';
+import { colors } from '@/theme';
 
 export const heroStyle = css`
   background-image:
