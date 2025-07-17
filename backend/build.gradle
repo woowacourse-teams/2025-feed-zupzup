@@ -43,7 +43,6 @@ dependencies {
     testImplementation 'org.testcontainers:mysql'
     
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
-    testImplementation 'io.rest-assured:spring-mock-mvc:5.5.0'
 }
 
 tasks.register('copySecret', Copy) {
