@@ -12,13 +12,23 @@ export const hero = css`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   color: white;
   text-align: center;
   margin: -14px -14px 0 -14px;
-  padding: 0 20px;
   box-sizing: border-box;
+`;
+
+export const heroHeader = css`
+  width: 100%;
+  height: 56px;
+  background-color: ${colors.black[100]}33;
+  margin: 0 -20px 0 -20px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 14px;
 `;
 
 export const heroContent = css`
@@ -28,6 +38,7 @@ export const heroContent = css`
   align-items: flex-start;
   margin: 0 6px 20px 6px;
   width: 100%;
+  padding: 0 20px;
 `;
 
 export const heroHr = css`

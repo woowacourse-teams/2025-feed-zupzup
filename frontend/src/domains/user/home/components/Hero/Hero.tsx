@@ -7,13 +7,19 @@ import {
   heroTitle,
   heroLogo,
   heroDescription,
+  heroHeader,
 } from './Hero.styles';
 import feedzupzupLogo from '@/assets/images/feedzupzup-logo.png';
 import { HeroProps } from './Hero.types';
+import GhostButton from '@/components/GhostButton/GhostButton';
+import Profile from '@/components/icons/Profile';
 
 export default function Hero({ title, onClick }: HeroProps) {
   return (
     <div css={hero}>
+      <div css={heroHeader}>
+        <GhostButton icon={<Profile />} text='로그인' />
+      </div>
       <div css={heroContent}>
         <hr css={heroHr} />
         <h1 css={heroTitle}>{title} 건의</h1>
