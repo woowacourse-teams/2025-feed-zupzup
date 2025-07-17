@@ -1,7 +1,6 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import ArrowLeft from '../ArrowLeftButton/ArrowLeft';
+import ArrowLeftButton from '../ArrowLeftButton/ArrowLeftButton';
 import Glitter from '../icons/Glitter';
-import { HeaderProps } from './Header.type';
 import {
   captionSection,
   header,
@@ -9,6 +8,7 @@ import {
   headerSubtitle,
   headerTitle,
 } from './Header.style';
+import { HeaderProps } from './Header.type';
 
 export default function Header({ title, subtitle }: HeaderProps) {
   const theme = useAppTheme();
@@ -16,7 +16,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   return (
     <header css={header}>
       <div css={headerSection}>
-        <ArrowLeft onClick={() => console.log('뒤로가기 버튼 클릭')} />
+        <ArrowLeftButton onClick={() => console.log('뒤로가기 버튼 클릭')} />
         <div css={captionSection}>
           <p css={[headerTitle(theme), theme.typography.inter.bodyBold]}>
             {title}
