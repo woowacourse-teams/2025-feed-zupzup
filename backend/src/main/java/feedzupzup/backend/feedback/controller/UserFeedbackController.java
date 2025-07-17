@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
-import feedzupzup.backend.feedback.application.FeedbackService;
+import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserFeedbackController implements UserFeedbackApi {
 
-    private final FeedbackService feedbackService;
+    private final UserFeedbackService userFeedbackService;
 
     @Override
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(Long placeId, int size, Long cursorId) {
@@ -25,7 +25,7 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<CreateFeedbackResponse> create(Long placeId, CreateFeedbackRequest request) {
-        final CreateFeedbackResponse response = feedbackService.create(request, placeId);
+        final CreateFeedbackResponse response = userFeedbackService.create(request, placeId);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 
