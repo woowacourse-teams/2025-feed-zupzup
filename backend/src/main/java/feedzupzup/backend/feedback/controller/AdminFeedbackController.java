@@ -28,7 +28,8 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             Long feedbackId,
             UpdateFeedbackSecretRequest request
     ) {
-        throw new UnsupportedOperationException();
+        UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(feedbackId, request);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override

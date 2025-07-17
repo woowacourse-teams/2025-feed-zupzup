@@ -44,4 +44,8 @@ public class Feedback extends BaseTimeEntity {
     public void updateStatus(final ProcessStatus status) {
         this.status = status;
     }
+
+    public void updateSecret(final boolean isSecret) {
+        this.isSecret = isSecret;
+    }
 }

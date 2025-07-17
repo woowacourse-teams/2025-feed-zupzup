@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.dto.response;
 
+import feedzupzup.backend.feedback.domain.Feedback;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
@@ -15,4 +16,11 @@ public record UpdateFeedbackSecretResponse(
         LocalDateTime modifiedAt
 ) {
 
+        public static UpdateFeedbackSecretResponse from(Feedback feedback) {
+                return new UpdateFeedbackSecretResponse(
+                        feedback.getId(),
+                        feedback.isSecret(),
+                        feedback.getModifiedAt()
+                );
+        }
 }
