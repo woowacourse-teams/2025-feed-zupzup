@@ -3,5 +3,4 @@ export interface BasicButtonProps extends React.ComponentProps<'button'> {
   width?: string | number;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary';
-  onClick: () => void;
 }

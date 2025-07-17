@@ -31,7 +31,7 @@ export default function Hero({
       </div>
       <div css={heroContent}>
         <hr css={heroHr(theme)} />
-        <h1 css={heroTitle(theme)}>{title} 건의</h1>
+        <p css={heroTitle(theme)}>{title} 건의</p>
         <img src={feedzupzupLogo} alt='피드줍줍 로고' css={heroLogo} />
         <p css={heroDescription(theme)}>
           더 나은 카페를 만들기 위해
