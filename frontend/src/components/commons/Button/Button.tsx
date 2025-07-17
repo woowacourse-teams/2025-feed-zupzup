@@ -1,8 +1,8 @@
 import { ButtonProps } from './Button.types';
 
-export default function Button({ children, css, ...props }: ButtonProps) {
+export default function Button({ children, customCSS, ...props }: ButtonProps) {
   return (
-    <button css={css} {...props}>
+    <button css={customCSS} {...props}>
       {children}
     </button>
   );
