@@ -2,8 +2,9 @@ import { css } from '@emotion/react';
 import heroBackground from '@/assets/images/hero-background.png';
 
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { Theme } from '@/theme';
 
-export const hero = (theme: ReturnType<typeof useAppTheme>) => css`
+export const hero = (theme: Theme) => css`
   background-image:
     linear-gradient(${theme.colors.black[100]}59, ${theme.colors.black[100]}59),
     url(${heroBackground});
@@ -21,7 +22,7 @@ export const hero = (theme: ReturnType<typeof useAppTheme>) => css`
   box-sizing: border-box;
 `;
 
-export const heroHeader = (theme: ReturnType<typeof useAppTheme>) => css`
+export const heroHeader = (theme: Theme) => css`
   width: 100%;
   height: 56px;
   background-color: ${theme.colors.black[100]}33;
@@ -42,7 +43,7 @@ export const heroContent = css`
   padding: 0 20px;
 `;
 
-export const heroHr = (theme: ReturnType<typeof useAppTheme>) => css`
+export const heroHr = (theme: Theme) => css`
   width: 56px;
   height: 2px;
   background-color: ${theme.colors.yellow[200]};
@@ -50,7 +51,7 @@ export const heroHr = (theme: ReturnType<typeof useAppTheme>) => css`
   margin: 0 0 14px 0;
 `;
 
-export const heroTitle = (theme: ReturnType<typeof useAppTheme>) => css`
+export const heroTitle = (theme: Theme) => css`
   ${theme.typography.inter.small};
   color: ${theme.colors.yellow[200]};
   margin: 0 0 14px 0;
@@ -62,7 +63,7 @@ export const heroLogo = css`
   margin: 0 0 16px 0;
 `;
 
-export const heroDescription = (theme: ReturnType<typeof useAppTheme>) => css`
+export const heroDescription = (theme: Theme) => css`
   ${theme.typography.inter.small};
   color: ${theme.colors.white[100]};
   margin: 0 0 24px 0;

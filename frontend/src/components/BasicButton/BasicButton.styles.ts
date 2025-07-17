@@ -1,8 +1,9 @@
 import { css } from '@emotion/react';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { Theme } from '@/theme';
 
 export const basicButton = (
-  theme: ReturnType<typeof useAppTheme>,
+  theme: Theme,
   width?: string | number,
   variant: 'primary' | 'secondary' = 'primary'
 ) => css`
@@ -38,7 +39,7 @@ export const basicButton = (
 `;
 
 export const basicButtonText = (
-  theme: ReturnType<typeof useAppTheme>,
+  theme: Theme,
   variant: 'primary' | 'secondary' = 'primary'
 ) => css`
   margin: 0;
