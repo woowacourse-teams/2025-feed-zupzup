@@ -12,12 +12,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "User Feedback", description = "피드백 API(사용자 권한)")
 public interface UserFeedbackApi {
@@ -27,10 +29,11 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/places/{placeId}/feedbacks")
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
             @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
-            @Parameter(description = "페이지 크기", example = "3") @RequestParam(defaultValue = "3") final int size,
+            @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID", example = "1") @RequestParam(required = false) final Long cursorId
     );
 
@@ -40,6 +43,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/places/{placeId}/feedbacks")
     SuccessResponse<CreateFeedbackResponse> create(
             @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
