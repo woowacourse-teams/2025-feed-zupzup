@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +29,15 @@ public class Feedback extends BaseTimeEntity {
     private ProcessStatus status;
 
     private Long placeId;
+
+    private String imageUrl;
+
+    @Builder
+    public Feedback(String content, boolean isSecret, ProcessStatus status, Long placeId, String imageUrl) {
+        this.content = content;
+        this.isSecret = isSecret;
+        this.status = status;
+        this.placeId = placeId;
+        this.imageUrl = imageUrl;
+    }
 }
