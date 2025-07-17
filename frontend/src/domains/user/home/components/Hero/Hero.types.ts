@@ -1,4 +1,5 @@
 export interface HeroProps extends React.ComponentProps<'div'> {
-  onClick: () => void;
+  onLoginClick: () => void;
+  onSuggestClick: () => void;
   title: string;
 }

@@ -16,11 +16,15 @@ import { HeroProps } from './Hero.types';
 import GhostButton from '@/components/GhostButton/GhostButton';
 import Profile from '@/components/icons/Profile';
 
-export default function Hero({ title, onClick }: HeroProps) {
+export default function Hero({
+  title,
+  onLoginClick,
+  onSuggestClick,
+}: HeroProps) {
   return (
     <div css={hero}>
       <div css={heroHeader}>
-        <GhostButton icon={<Profile />} text='로그인' />
+        <GhostButton icon={<Profile />} text='로그인' onClick={onLoginClick} />
       </div>
       <div css={heroContent}>
         <hr css={heroHr} />
@@ -35,9 +39,9 @@ export default function Hero({ title, onClick }: HeroProps) {
           <img src={catImage} alt='움직이는 고양이' css={catAnimation} />
           <BasicButton
             width='100%'
-            onClick={onClick}
             icon={<PlusIcon />}
             variant='primary'
+            onClick={onSuggestClick}
           >
             건의하기
           </BasicButton>

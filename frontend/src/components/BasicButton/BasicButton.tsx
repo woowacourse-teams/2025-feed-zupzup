@@ -11,12 +11,13 @@ export default function BasicButton({
   children,
   width = '100%',
   icon,
+  onClick,
   variant = 'primary',
 }: BasicButtonProps) {
   const theme = useAppTheme();
 
   return (
-    <Button css={basicButton(theme, width, variant)}>
+    <Button css={basicButton(theme, width, variant)} onClick={onClick}>
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant)}>{children}</span>
     </Button>

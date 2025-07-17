@@ -1,14 +1,10 @@
 import { ghostButton } from './GhostButton.styles';
 import Button from '@/components/commons/Button/Button';
-export default function GhostButton({
-  icon,
-  text,
-}: {
-  icon: React.ReactNode;
-  text: string;
-}) {
+import { GhostButtonProps } from './GhostButton.types';
+
+export default function GhostButton({ icon, text, onClick }: GhostButtonProps) {
   return (
-    <Button css={ghostButton}>
+    <Button css={ghostButton} onClick={onClick}>
       {icon}
       <span>{text}</span>
     </Button>
