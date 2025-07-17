@@ -21,7 +21,7 @@ public record CreateFeedbackRequest(
                 .content(content)
                 .imageUrl(imageUrl)
                 .placeId(placeId)
-                .status(ProcessStatus.WATING)
+                .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)
                 .build();
     }

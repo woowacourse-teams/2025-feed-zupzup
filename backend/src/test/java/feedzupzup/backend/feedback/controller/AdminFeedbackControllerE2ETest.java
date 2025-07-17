@@ -4,6 +4,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.fixture.CreateFeedbackRequestFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +19,7 @@ public class AdminFeedbackControllerE2ETest extends E2EHelper {
     void admin_delete_feedback_success() {
         // given
         final Long placeId = 1L;
-        final CreateFeedbackRequest createRequest = new CreateFeedbackRequest(
-                "삭제될 피드백",
-                "https://example.com/image.jpg",
-                false
-        );
+        final CreateFeedbackRequest createRequest = CreateFeedbackRequestFixture.createRequestWithContent("삭제될 피드백");
 
         // 피드백 생성하여 ID 추출
         final Long feedbackId = given()
@@ -44,5 +43,59 @@ public class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"));
+    }
+
+    @Test
+    @DisplayName("관리자가 피드백 상태를 성공적으로 업데이트한다")
+    void admin_update_feedback_status_success() {
+        // given
+        final Long placeId = 1L;
+        final CreateFeedbackRequest createRequest = CreateFeedbackRequestFixture.createRequestWithContent("상태 변경될 피드백");
+
+        // 피드백 생성하여 ID 추출
+        final Long feedbackId = given()
+                .contentType(ContentType.JSON)
+                .body(createRequest)
+                .when()
+                .post("/places/{placeId}/feedbacks", placeId)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .jsonPath()
+                .getLong("data.feedbackId");
+
+        final UpdateFeedbackStatusRequest updateRequest = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
+
+        // when & then
+        given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(updateRequest)
+                .when()
+                .patch("/admin/feedbacks/{feedbackId}/status", feedbackId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.status", equalTo("CONFIRMED"));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 피드백 상태 업데이트 시 예외가 발생한다")
+    void admin_update_feedback_status_not_found() {
+        // given
+        final Long nonExistentFeedbackId = 999L;
+        final UpdateFeedbackStatusRequest updateRequest = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
+
+        // when & then
+        given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(updateRequest)
+                .when()
+                .patch("/admin/feedbacks/{feedbackId}/status", nonExistentFeedbackId)
+                .then().log().all()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
