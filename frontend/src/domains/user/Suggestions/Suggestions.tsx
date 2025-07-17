@@ -8,7 +8,7 @@ export default function Suggestions() {
 
   return (
     <>
-      <Header />
+      <Header title='건의사항 작성' subtitle='소중한 의견을 들려주세요' />
       <div css={suggestions(theme)}>
         <div>suggestion</div>
       </div>
