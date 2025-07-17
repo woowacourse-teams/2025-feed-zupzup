@@ -37,7 +37,7 @@ jobs:
       - name: 이미지 빌드 및 푸시
         uses: docker/build-push-action@v5
         with:
-          context: ./backend\
+          context: ./backend
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
