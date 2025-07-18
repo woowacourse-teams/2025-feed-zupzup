@@ -107,10 +107,10 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     savedFeedback.getId(), request);
 
             // then
-            assertAll(() -> {
-                assertThat(response.feedbackId()).isEqualTo(savedFeedback.getId());
-                assertThat(response.isSecret()).isTrue();
-            });
+            assertAll(
+                    () -> assertThat(response.feedbackId()).isEqualTo(savedFeedback.getId()),
+                    () -> assertThat(response.isSecret()).isTrue()
+            );
         }
 
         @Test
