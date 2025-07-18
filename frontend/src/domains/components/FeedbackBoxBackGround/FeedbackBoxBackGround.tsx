@@ -1,10 +1,11 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
+import { Type } from '@/types/feedbackStatus.types';
 import { css } from '@emotion/react';
 
 interface FeedbackBoxBackGroundProps {
   children: React.ReactNode;
-  type: 'complete' | 'incomplete';
+  type: Type;
 }
 
 export default function FeedbackBoxBackGround({

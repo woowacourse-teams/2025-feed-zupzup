@@ -2,12 +2,11 @@ import Tag from '@/components/Tag/Tag';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { container, content } from './StatusTag.styles';
 import Complete from '@/components/icons/Complete';
+import { Type } from '@/types/feedbackStatus.types';
 
 export interface StatusTagProps {
-  type: StatusType;
+  type: Type;
 }
-
-export type StatusType = 'complete' | 'incomplete';
 
 export default function StatusTag({ type = 'incomplete' }: StatusTagProps) {
   const theme = useAppTheme();

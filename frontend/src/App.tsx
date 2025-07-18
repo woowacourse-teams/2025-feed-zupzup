@@ -7,6 +7,7 @@ export default function App() {
       <AdminFeedbackBox type='complete' />
       <AdminFeedbackBox type='incomplete' />
       <UserFeedbackBox type='complete' />
+      <UserFeedbackBox type='incomplete' />
     </p>
   );
 }

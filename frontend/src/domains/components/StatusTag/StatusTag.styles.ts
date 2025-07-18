@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
-import { StatusType } from './StatusTag';
+import { Type } from '@/types/feedbackStatus.types';
 
 export const content = css`
   display: flex;
@@ -8,7 +8,7 @@ export const content = css`
   gap: 4px;
 `;
 
-export const container = (theme: Theme, type: StatusType) => css`
+export const container = (theme: Theme, type: Type) => css`
   color: ${type === 'complete' && theme.colors.white[100]};
   background-color: ${type === 'incomplete'
     ? theme.colors.yellow[100]
