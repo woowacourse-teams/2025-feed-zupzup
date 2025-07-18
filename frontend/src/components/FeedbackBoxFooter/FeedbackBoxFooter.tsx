@@ -16,8 +16,10 @@ export default function FeedbackBoxFooter({
   return (
     <div css={container}>
       <div css={calendar(theme)}>
-        <Calendar />
-        <div css={day}>2025-01-08</div>
+        <span>
+          <Calendar />
+        </span>
+        <span css={day}>2025-01-08</span>
       </div>
       <div css={content(theme)}>
         <LikeButton like={false} /> {likeCount}
@@ -33,7 +35,6 @@ const container = css`
 
 const calendar = (theme: Theme) => css`
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 4px;
   font-size: 8px;
