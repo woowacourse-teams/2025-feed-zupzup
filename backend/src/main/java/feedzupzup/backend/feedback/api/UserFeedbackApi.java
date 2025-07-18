@@ -31,6 +31,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/places/{placeId}/feedbacks")
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
             @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
