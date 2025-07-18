@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.feedback.application.FeedbackPaginationHelper.PaginationData;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminFeedbackService {
 
     private final FeedBackRepository feedBackRepository;
+    private final FeedbackPaginationHelper paginationHelper;
 
     @Transactional
     public void delete(final Long feedbackId) {
@@ -50,22 +52,7 @@ public class AdminFeedbackService {
     public AdminFeedbackListResponse getFeedbackPage(final int size, final Long cursorId) {
         final Pageable pageable = Pageable.ofSize(size + 1);
         final List<Feedback> feedbacks = feedBackRepository.findPageByCursorIdOrderByDesc(cursorId, pageable);
-        final boolean hasNext = feedbacks.size() > size;
-        trimExtraFeedbacks(feedbacks, hasNext);
-        final Long nextCursorId = calculateNextCursorId(feedbacks);
-        return AdminFeedbackListResponse.of(feedbacks, hasNext, nextCursorId);
-    }
-
-    private void trimExtraFeedbacks(final List<Feedback> feedbacks, final boolean hasNext) {
-        if (hasNext) {
-            feedbacks.removeLast();
-        }
-    }
-
-    private Long calculateNextCursorId(final List<Feedback> feedbacks) {
-        if (feedbacks.isEmpty()) {
-            return null;
-        }
-        return feedbacks.getLast().getId();
+        final PaginationData paginationData = paginationHelper.processFeedbackPagination(feedbacks, size);
+        return AdminFeedbackListResponse.of(paginationData.feedbacks(), paginationData.hasNext(), paginationData.nextCursorId());
     }
 }
