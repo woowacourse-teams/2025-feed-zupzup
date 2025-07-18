@@ -43,9 +43,10 @@ export const basicButtonText = (
 ) => css`
   margin: 0;
   ${theme.typography.inter.small};
+
   color: ${variant === 'primary'
     ? theme.colors.black[100]
-    : theme.colors.darkGray[100]};
+    : theme.colors.white[100]};
 `;
 
 export const basicButtonIcon = css`
