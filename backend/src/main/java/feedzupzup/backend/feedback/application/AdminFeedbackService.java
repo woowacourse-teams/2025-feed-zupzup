@@ -51,7 +51,7 @@ public class AdminFeedbackService {
     public AdminFeedbackListResponse getFeedbackPage(final int size, final Long cursorId) {
         final Pageable pageable = Pageable.ofSize(size + 1);
         final List<Feedback> feedbacks = feedBackRepository.findPageByCursorIdOrderByDesc(cursorId, pageable);
-        final FeedbackPage feedbackPage = new FeedbackPage(feedbacks, size);
+        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         return AdminFeedbackListResponse.from(feedbackPage);
     }
 }

@@ -9,10 +9,14 @@ public class FeedbackPage {
     private final List<Feedback> feedbacks;
     private final boolean hasNext;
 
-    public FeedbackPage(final List<Feedback> feedbacks, final int size) {
+    private FeedbackPage(final List<Feedback> feedbacks, final int size) {
         this.hasNext = feedbacks.size() > size;
         trimExtraFeedback(feedbacks);
         this.feedbacks = feedbacks;
+    }
+
+    public static FeedbackPage createCursorPage(final List<Feedback> feedbacks, final int size) {
+        return new FeedbackPage(feedbacks, size);
     }
 
     public Long calculateNextCursorId() {
