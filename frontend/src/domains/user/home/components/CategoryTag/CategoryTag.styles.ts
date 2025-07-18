@@ -6,4 +6,6 @@ export const container = (theme: Theme, type: CategoryType) => css`
   background-color: ${type === 'incomplete'
     ? theme.colors.yellow[200]
     : theme.colors.gray[200]};
+  border: 1px solid
+    ${type === 'incomplete' ? theme.colors.yellow[200] : theme.colors.gray[200]};
 `;
