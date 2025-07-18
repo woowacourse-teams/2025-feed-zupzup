@@ -1,5 +1,5 @@
-import { Theme } from '@/theme';
 import { css } from '@emotion/react';
+import { Theme } from '@/theme';
 
 export const basicButton = (
   theme: Theme,
@@ -43,6 +43,7 @@ export const basicButtonText = (
 ) => css`
   margin: 0;
   ${theme.typography.inter.small};
+
   color: ${variant === 'primary'
     ? theme.colors.black[100]
     : theme.colors.darkGray[100]};

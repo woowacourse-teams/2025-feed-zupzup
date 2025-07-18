@@ -1,7 +1,5 @@
 import { css } from '@emotion/react';
 import heroBackground from '@/assets/images/hero-background.png';
-
-import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 
 export const hero = (theme: Theme) => css`
