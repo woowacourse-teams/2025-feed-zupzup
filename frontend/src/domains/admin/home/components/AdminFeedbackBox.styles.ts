@@ -1,7 +1,8 @@
 import { Theme } from '@/theme';
+import { Type } from '@/types/feedbackStatus.types';
 import { css } from '@emotion/react';
 
-export const container = (theme: Theme, type: 'incomplete' | 'complete') => css`
+export const container = (theme: Theme, type: Type) => css`
   display: flex;
   flex-direction: column;
   gap: 14px;

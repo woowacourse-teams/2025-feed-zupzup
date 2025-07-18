@@ -17,7 +17,7 @@ export default function FeedbackBoxBackGround({
   return <section css={container(theme, type)}>{children}</section>;
 }
 
-export const container = (theme: Theme, type: 'incomplete' | 'complete') => css`
+export const container = (theme: Theme, type: Type) => css`
   display: flex;
   flex-direction: column;
   gap: 14px;

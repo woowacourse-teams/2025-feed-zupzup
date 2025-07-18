@@ -4,9 +4,10 @@ import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { tagContainer } from './UserFeedbackBox.styles';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
+import { Type } from '@/types/feedbackStatus.types';
 
 interface UserFeedbackBox {
-  type: 'incomplete' | 'complete';
+  type: Type;
 }
 
 export default function UserFeedbackBox({ type }: UserFeedbackBox) {

@@ -8,8 +8,6 @@ export interface CategoryTagProps {
   type: Type;
 }
 
-export type CategoryType = 'complete' | 'incomplete';
-
 export default function CategoryTag({
   text,
   type = 'incomplete',
