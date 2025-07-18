@@ -6,6 +6,7 @@ import Banner from './components/Banner/Banner';
 import SuggestionsFormField from './components/SuggestionsFormField/SuggestionsFormField';
 import UploadBox from './components/UploadBox/UploadBox';
 import SecretPostOption from './components/SecretPostOption/SecretPostOption';
+import BasicButton from '@/components/BasicButton/BasicButton';
 
 export default function Suggestions() {
   const [suggestions, setSuggestions] = useState<string>('');
@@ -47,6 +48,11 @@ export default function Suggestions() {
         </SuggestionsFormField>
 
         <SecretPostOption />
+
+        <div css={buttonContainer}>
+          <BasicButton variant='secondary'>취소</BasicButton>
+          <BasicButton>등록하기</BasicButton>
+        </div>
       </div>
     </>
   );
@@ -62,4 +68,10 @@ const suggestionLayout = css`
   height: calc(100vh - 64px);
   margin-top: 64px; /* Header height */
   overflow-y: auto;
+`;
+
+const buttonContainer = css`
+  display: flex;
+  width: 100%;
+  gap: 12px;
 `;
