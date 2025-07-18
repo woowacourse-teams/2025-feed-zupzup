@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 사용법: ./submodule-push.sh "커밋 메시지"
+# 사용법: ./script/submodule-push.sh "커밋 메시지"
 
 # 커밋 메시지 체크
 if [ -z "$1" ]; then
