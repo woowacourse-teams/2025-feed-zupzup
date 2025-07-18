@@ -35,4 +35,14 @@ public class FeedbackFixture {
                 .imageUrl("https://example.com/image.jpg")
                 .build();
     }
+
+    public static Feedback createFeedbackWithContent(final String content) {
+        return Feedback.builder()
+                .content(content)
+                .isSecret(false)
+                .status(ProcessStatus.WAITING)
+                .placeId(1L)
+                .imageUrl("https://example.com/image.jpg")
+                .build();
+    }
 }

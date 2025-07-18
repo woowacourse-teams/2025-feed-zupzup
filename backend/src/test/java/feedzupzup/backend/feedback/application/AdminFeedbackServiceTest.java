@@ -10,6 +10,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
+import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -123,6 +124,77 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.updateFeedbackSecret(nonExistentFeedbackId, request))
                     .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("전체 피드백 조회 테스트")
+    class GetAllFeedbacksTest {
+
+        @Test
+        @DisplayName("커서 기반 페이징으로 피드백 목록을 성공적으로 조회한다")
+        void getAllFeedbacks_success() {
+            // given
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(1L);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(2L);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(3L);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(4L);
+            
+            feedBackRepository.save(feedback1);
+            feedBackRepository.save(feedback2);
+            feedBackRepository.save(feedback3);
+            feedBackRepository.save(feedback4);
+
+            final int size = 2;
+
+            // when
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(size, null);
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(size),
+                    () -> assertThat(response.hasNext()).isTrue(),
+                    () -> assertThat(response.nextCursorId()).isNotNull()
+            );
+        }
+
+        @Test
+        @DisplayName("마지막 페이지에서 hasNext가 false를 반환한다")
+        void getAllFeedbacks_last_page() {
+            // given
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(1L);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(2L);
+            
+            feedBackRepository.save(feedback1);
+            feedBackRepository.save(feedback2);
+
+            final int size = 5;
+
+            // when
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(size, null);
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(2),
+                    () -> assertThat(response.hasNext()).isFalse()
+            );
+        }
+
+        @Test
+        @DisplayName("빈 결과에 대해 적절히 처리한다")
+        void getAllFeedbacks_empty_result() {
+            // given
+            final int size = 10;
+
+            // when
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(size, null);
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbacks()).isEmpty(),
+                    () -> assertThat(response.hasNext()).isFalse(),
+                    () -> assertThat(response.nextCursorId()).isNull()
+            );
         }
     }
 }
