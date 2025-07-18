@@ -24,12 +24,12 @@ export const uploadText = (theme: Theme) => css`
 `;
 
 export const uploadButton = (theme: Theme) => css`
-  color: white;
-  background-color: ${theme.colors.yellow[200]};
-
+  background-color: white;
+  color: ${theme.colors.yellow[200]};
   border: 1px solid ${theme.colors.yellow[200]};
   border-radius: 9999px;
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.small};
+  font-weight: 800;
   padding: 8px 16px;
 `;
 
