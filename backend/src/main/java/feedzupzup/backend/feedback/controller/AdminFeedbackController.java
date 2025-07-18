@@ -2,11 +2,11 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
-import feedzupzup.backend.feedback.dto.UpdateFeedStatusResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,8 +24,10 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(Long feedbackId,
-            UpdateFeedbackSecretRequest request) {
+    public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
+            Long feedbackId,
+            UpdateFeedbackSecretRequest request
+    ) {
         throw new UnsupportedOperationException();
     }
 
@@ -36,8 +38,12 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<UpdateFeedStatusResponse> updateFeedbackStatus(Long feedbackId,
-            UpdateFeedbackStatusRequest request) {
-        throw new UnsupportedOperationException();
+    public SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
+            Long feedbackId,
+            UpdateFeedbackStatusRequest request
+    ) {
+        final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
+                request, feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

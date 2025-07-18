@@ -40,4 +40,8 @@ public class Feedback extends BaseTimeEntity {
         this.placeId = placeId;
         this.imageUrl = imageUrl;
     }
+
+    public void updateStatus(final ProcessStatus status) {
+        this.status = status;
+    }
 }

@@ -4,8 +4,8 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-import feedzupzup.backend.config.TestcontainersTest;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
+import feedzupzup.backend.feedback.fixture.CreateFeedbackRequestFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void create_secret_feedback_success() {
         // given
         final Long placeId = 1L;
-        final CreateFeedbackRequest request = new CreateFeedbackRequest(
-                "개선이 필요해요",
-                "https://example.com/image.jpg",
-                true
-        );
+        final CreateFeedbackRequest request = CreateFeedbackRequestFixture.createRequestWithContent("피드백");
 
         // when & then
         given()
@@ -37,8 +33,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("status", equalTo(201))
                 .body("message", equalTo("CREATED"))
                 .body("data.feedbackId", notNullValue())
-                .body("data.content", equalTo("개선이 필요해요"))
-                .body("data.isSecret", equalTo(true))
+                .body("data.content", equalTo("피드백"))
+                .body("data.isSecret", equalTo(false))
                 .body("data.createdAt", notNullValue());
     }
 }
