@@ -16,7 +16,7 @@ public record UpdateFeedbackSecretResponse(
         LocalDateTime modifiedAt
 ) {
 
-        public static UpdateFeedbackSecretResponse from(Feedback feedback) {
+        public static UpdateFeedbackSecretResponse from(final Feedback feedback) {
                 return new UpdateFeedbackSecretResponse(
                         feedback.getId(),
                         feedback.isSecret(),

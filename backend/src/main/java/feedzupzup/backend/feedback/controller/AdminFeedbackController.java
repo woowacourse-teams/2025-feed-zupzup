@@ -19,29 +19,33 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     private final AdminFeedbackService adminFeedbackService;
 
     @Override
-    public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(Long placeId, int size, Long cursorId) {
+    public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
+            final Long placeId,
+            final int size,
+            final Long cursorId
+    ) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
-            Long feedbackId,
-            UpdateFeedbackSecretRequest request
+            final Long feedbackId,
+            final UpdateFeedbackSecretRequest request
     ) {
         UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(feedbackId, request);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
-    public SuccessResponse<Void> delete(Long feedbackId) {
+    public SuccessResponse<Void> delete(final Long feedbackId) {
         adminFeedbackService.delete(feedbackId);
         return SuccessResponse.success(HttpStatus.OK);
     }
 
     @Override
     public SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
-            Long feedbackId,
-            UpdateFeedbackStatusRequest request
+            final Long feedbackId,
+            final UpdateFeedbackStatusRequest request
     ) {
         final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
                 request, feedbackId);
