@@ -4,9 +4,12 @@ import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
+import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,4 +47,25 @@ public class AdminFeedbackService {
         return UpdateFeedbackSecretResponse.from(feedBack);
     }
 
+    public AdminFeedbackListResponse getFeedbackPage(final int size, final Long cursorId) {
+        final Pageable pageable = Pageable.ofSize(size + 1);
+        final List<Feedback> feedbacks = feedBackRepository.findPageByCursorIdOrderByDesc(cursorId, pageable);
+        final boolean hasNext = feedbacks.size() > size;
+        trimExtraFeedbacks(feedbacks, hasNext);
+        final Long nextCursorId = calculateNextCursorId(feedbacks);
+        return AdminFeedbackListResponse.of(feedbacks, hasNext, nextCursorId);
+    }
+
+    private void trimExtraFeedbacks(final List<Feedback> feedbacks, final boolean hasNext) {
+        if (hasNext) {
+            feedbacks.removeLast();
+        }
+    }
+
+    private Long calculateNextCursorId(final List<Feedback> feedbacks) {
+        if (feedbacks.isEmpty()) {
+            return null;
+        }
+        return feedbacks.getLast().getId();
+    }
 }
