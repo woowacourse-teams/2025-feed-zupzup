@@ -1,5 +1,5 @@
 import { ghostButton } from './GhostButton.styles';
-import Button from '@/components/commons/Button/Button';
+import Button from '@/components/@commons/Button/Button';
 import { GhostButtonProps } from './GhostButton.types';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
