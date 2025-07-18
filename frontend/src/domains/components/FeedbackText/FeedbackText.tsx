@@ -1,10 +1,10 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { feedbackText } from './FeedbackText.styles';
-import { Type } from '@/types/feedbackStatus.types';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 export interface FeedbackTextProps {
   text: string;
-  type: Type;
+  type: FeedbackStatusType;
 }
 
 export default function FeedbackText({ text, type }: FeedbackTextProps) {

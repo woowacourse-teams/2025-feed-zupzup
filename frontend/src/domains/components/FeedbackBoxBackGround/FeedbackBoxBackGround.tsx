@@ -1,11 +1,11 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
-import { Type } from '@/types/feedbackStatus.types';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { css } from '@emotion/react';
 
 interface FeedbackBoxBackGroundProps {
   children: React.ReactNode;
-  type: Type;
+  type: FeedbackStatusType;
 }
 
 export default function FeedbackBoxBackGround({
@@ -17,7 +17,7 @@ export default function FeedbackBoxBackGround({
   return <section css={container(theme, type)}>{children}</section>;
 }
 
-export const container = (theme: Theme, type: Type) => css`
+export const container = (theme: Theme, type: FeedbackStatusType) => css`
   display: flex;
   flex-direction: column;
   gap: 14px;

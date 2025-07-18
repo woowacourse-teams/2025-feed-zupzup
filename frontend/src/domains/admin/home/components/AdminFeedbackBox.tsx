@@ -7,10 +7,10 @@ import { iconWrap, topContainer } from './AdminFeedbackBox.styles';
 import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
-import { Type } from '@/types/feedbackStatus.types';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 interface AdminFeedbackBox {
-  type: Type;
+  type: FeedbackStatusType;
 }
 
 export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {

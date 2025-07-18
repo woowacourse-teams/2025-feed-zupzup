@@ -1,1 +1,1 @@
-export type Type = 'complete' | 'incomplete';
+export type FeedbackStatusType = 'complete' | 'incomplete';

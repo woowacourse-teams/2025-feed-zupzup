@@ -1,11 +1,11 @@
 import Tag from '@/components/Tag/Tag';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { container } from './CategoryTag.styles';
-import { Type } from '@/types/feedbackStatus.types';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 export interface CategoryTagProps {
   text: string;
-  type: Type;
+  type: FeedbackStatusType;
 }
 
 export default function CategoryTag({
