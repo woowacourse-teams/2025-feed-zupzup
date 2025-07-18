@@ -1,8 +1,9 @@
 import CategoryTag from '../../../../components/CategoryTag/CategoryTag';
 import StatusTag from '../../../../components/StatusTag/StatusTag';
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import { tagContainer, container } from './UserFeedbackBox.styles';
+import { tagContainer } from './UserFeedbackBox.styles';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 
 interface UserFeedbackBox {
   type: 'incomplete' | 'complete';
@@ -10,7 +11,7 @@ interface UserFeedbackBox {
 
 export default function UserFeedbackBox({ type }: UserFeedbackBox) {
   return (
-    <div css={container}>
+    <FeedbackBoxBackGround type={type}>
       <div css={tagContainer}>
         <CategoryTag text='맛' type={type} />
         <StatusTag type={type} />
@@ -21,6 +22,6 @@ export default function UserFeedbackBox({ type }: UserFeedbackBox) {
 먹은 음식이 너무 짰어요. 조금 더 담백하게 해주시면 좋겠습니다.'
       />
       <FeedbackBoxFooter />
-    </div>
+    </FeedbackBoxBackGround>
   );
 }
