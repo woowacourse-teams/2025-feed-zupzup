@@ -1,5 +1,5 @@
-import Hero from '@/domains/user/home/components/Hero/Hero';
+import Suggestions from './domains/user/suggestions/Suggestions';
 
 export default function App() {
-  return <Hero />;
+  return <Suggestions />;
 }
