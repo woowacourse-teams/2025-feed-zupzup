@@ -19,7 +19,7 @@
     "strictBindCallApply": true,
     "baseUrl": ".",
     "paths": {
-      "@/": ["src/"]
+      "@/*": ["src/*"]
     },
     "types": ["cypress", "node"],
     "useDefineForClassFields": true,
