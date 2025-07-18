@@ -12,7 +12,7 @@ export default function StatusTag({ type = 'incomplete' }: StatusTagProps) {
   const theme = useAppTheme();
 
   return (
-    <Tag customCss={container(theme, type)}>
+    <Tag customCSS={container(theme, type)}>
       {type === 'incomplete' ? (
         '접수'
       ) : (

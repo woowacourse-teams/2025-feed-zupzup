@@ -14,5 +14,5 @@ export default function CategoryTag({
 }: CategoryTagProps) {
   const theme = useAppTheme();
 
-  return <Tag customCss={container(theme, type)}>{text}</Tag>;
+  return <Tag customCSS={container(theme, type)}>{text}</Tag>;
 }
