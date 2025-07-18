@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Banner from './components/Banner/Banner';
 import SuggestionsFormField from './components/SuggestionsFormField/SuggestionsFormField';
 import UploadBox from './components/UploadBox/UploadBox';
+import SecretPostOption from './components/SecretPostOption/SecretPostOption';
 
 export default function Suggestions() {
   const [suggestions, setSuggestions] = useState<string>('');
@@ -24,7 +25,13 @@ export default function Suggestions() {
 갑니다'
         />
         <SuggestionsFormField label='카테고리 선택'>
-          <div>카테코리 선택</div>
+          <div
+            css={css`
+              background-color: blueviolet;
+            `}
+          >
+            카테코리 선택
+          </div>
         </SuggestionsFormField>
 
         <SuggestionsFormField label='내용'>
@@ -38,6 +45,8 @@ export default function Suggestions() {
         <SuggestionsFormField label='이미지 첨부 (선택사항)'>
           <UploadBox />
         </SuggestionsFormField>
+
+        <SecretPostOption />
       </div>
     </>
   );
