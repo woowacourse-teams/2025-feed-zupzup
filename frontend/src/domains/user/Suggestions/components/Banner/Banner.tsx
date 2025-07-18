@@ -1,6 +1,10 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { banner, bannerDescription } from './Banner.style';
-import { BannerProps } from './Banner.type';
+
+export interface BannerProps {
+  title: string;
+  description: string;
+}
 
 export default function Banner({ title, description }: BannerProps) {
   const theme = useAppTheme();

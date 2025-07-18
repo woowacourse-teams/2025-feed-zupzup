@@ -1,8 +1,14 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-
-import { textArea } from './BasicTextArea.style';
-import { BasicTextAreaProps } from './BasicTextArea.type';
 import TextArea from '../@commons/TextArea/TextArea';
+import { textArea } from './BasicTextArea.style';
+
+export interface BasicTextAreaProps {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  placeholder: string;
+  maxLength?: number;
+  minLength?: number;
+}
 
 export default function BasicTextArea({
   value,

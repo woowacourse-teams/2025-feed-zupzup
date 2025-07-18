@@ -1,6 +1,10 @@
 import { theme } from '@/theme';
-import { SuggestionsFormFieldProps } from './SuggestionsFormField.type';
 import { fieldLabel, formField } from './SuggestionsFormField.style';
+
+export interface SuggestionsFormFieldProps {
+  label: string;
+  children: React.ReactNode;
+}
 
 export default function SuggestionsFormField({
   label,

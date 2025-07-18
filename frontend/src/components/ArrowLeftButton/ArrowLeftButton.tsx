@@ -1,5 +1,8 @@
 import ArrowLeft from '../icons/ArrowLeft';
-import { ArrowLeftButtonProps } from './ArrowLeftButton.type';
+
+export interface ArrowLeftButtonProps extends React.ComponentProps<'button'> {
+  onClick: () => void;
+}
 
 export default function ArrowLeftButton({ onClick }: ArrowLeftButtonProps) {
   return (

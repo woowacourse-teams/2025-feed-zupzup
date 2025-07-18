@@ -1,7 +1,5 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-
 import Glitter from '../icons/Glitter';
-import { HeaderProps } from './Header.type';
 import ArrowLeftButton from '../ArrowLeftButton/ArrowLeftButton';
 
 import {
@@ -11,6 +9,11 @@ import {
   headerSubtitle,
   headerTitle,
 } from './Header.style';
+
+export interface HeaderProps {
+  title: string;
+  subtitle: string;
+}
 
 export default function Header({ title, subtitle }: HeaderProps) {
   const theme = useAppTheme();
