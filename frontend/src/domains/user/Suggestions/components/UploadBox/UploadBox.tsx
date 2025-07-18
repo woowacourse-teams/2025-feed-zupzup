@@ -31,9 +31,7 @@ export default function UploadBox() {
           <p css={uploadText(theme)}>사진을 업로드 하세요</p>
         </>
       )}
-      <button css={uploadButton(theme)} onClick={handleClick}>
-        사진 선택
-      </button>
+      <button css={uploadButton(theme)}>사진 선택</button>
       <input
         type='file'
         accept='image/*'
@@ -68,8 +66,6 @@ const uploadText = (theme: Theme) => css`
 `;
 
 const uploadButton = (theme: Theme) => css`
-  /* background-color: white; */
-  /* color: ${theme.colors.yellow[200]}; */
   color: white;
   background-color: ${theme.colors.yellow[200]};
 

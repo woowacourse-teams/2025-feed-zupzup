@@ -9,6 +9,7 @@ export const textArea = (theme: Theme) => css`
   border: 1px solid #d9d9d9;
   resize: none;
   border-radius: 16px;
+  ${theme.typography.inter.small}
 
   ::placeholder {
     ${theme.typography.inter.small}
