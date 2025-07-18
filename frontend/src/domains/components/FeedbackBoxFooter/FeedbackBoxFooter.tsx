@@ -1,9 +1,7 @@
-import { css } from '@emotion/react';
-
-import { Theme } from '@/theme';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import Calendar from '@/components/icons/Calendar';
 import LikeButton from '@/components/LikeButton/LikeButton';
+import { calendar, container, content, day } from './FeedbackBoxFooter.styles';
 
 interface FeedbackBoxFooterProps {
   likeCount?: number;
@@ -28,30 +26,3 @@ export default function FeedbackBoxFooter({
     </div>
   );
 }
-
-const container = css`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const calendar = (theme: Theme) => css`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 8px;
-  color: ${theme.colors.gray[600]};
-  vertical-align: middle;
-`;
-
-const day = css`
-  line-height: 1;
-`;
-
-const content = (theme: Theme) => css`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: ${theme.colors.gray[600]};
-
-  ${theme.typography.inter.small}
-`;
