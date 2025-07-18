@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -18,15 +19,14 @@ public record AdminFeedbackListResponse(
         Long nextCursorId
 ) {
 
-    public static AdminFeedbackListResponse of(final List<Feedback> feedbacks, final boolean hasNext,
-            final Long nextCursorId) {
-        final List<AdminFeedbackItem> adminFeedbackItems = feedbacks.stream()
+    public static AdminFeedbackListResponse from(final FeedbackPage feedbackPage) {
+        final List<AdminFeedbackItem> adminFeedbackItems = feedbackPage.getFeedbacks().stream()
                 .map(AdminFeedbackItem::from)
                 .toList();
         return new AdminFeedbackListResponse(
                 adminFeedbackItems,
-                hasNext,
-                nextCursorId
+                feedbackPage.isHasNext(),
+                feedbackPage.calculateNextCursorId()
         );
     }
 
