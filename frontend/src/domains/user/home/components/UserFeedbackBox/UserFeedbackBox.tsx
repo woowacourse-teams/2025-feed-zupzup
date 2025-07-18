@@ -1,8 +1,8 @@
-import CategoryTag from '../CategoryTag/CategoryTag';
-import StatusTag from '../StatusTag/StatusTag';
-import FeedbackText from '@/components/FeedbackText/FeedbackText';
-import FeedbackBoxFooter from '@/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import CategoryTag from '../../../../components/CategoryTag/CategoryTag';
+import StatusTag from '../../../../components/StatusTag/StatusTag';
+import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { tagContainer, container } from './UserFeedbackBox.styles';
+import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 
 interface UserFeedbackBox {
   type: 'incomplete' | 'complete';

@@ -1,12 +1,12 @@
-import FeedbackBoxFooter from '@/components/FeedbackBoxFooter/FeedbackBoxFooter';
-import FeedbackImage from '@/components/FeedbackImage/FeedbackImage';
-import FeedbackText from '@/components/FeedbackText/FeedbackText';
+import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import Check from '@/components/icons/Check';
 import TrashCan from '@/components/icons/TrashCan';
-import CategoryTag from '@/domains/user/home/components/CategoryTag/CategoryTag';
-import StatusTag from '@/domains/user/home/components/StatusTag/StatusTag';
+import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
+import StatusTag from '@/domains/components/StatusTag/StatusTag';
 import { container, iconWrap, topContainer } from './AdminFeedbackBox.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
+import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 
 interface AdminFeedbackBox {
   type: 'incomplete' | 'complete';

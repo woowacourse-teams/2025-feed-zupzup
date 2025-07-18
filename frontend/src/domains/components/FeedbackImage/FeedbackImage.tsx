@@ -1,6 +1,6 @@
-import Image from '../icons/Image';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { header, imageStyle, wrapper } from './FeedbackImage.styles';
+import Image from '@/components/icons/Image';
 
 interface FeedbackImageProps {
   src: string;

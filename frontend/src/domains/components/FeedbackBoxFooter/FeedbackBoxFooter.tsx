@@ -1,8 +1,9 @@
 import { css } from '@emotion/react';
-import Calendar from '../icons/Calendar';
-import LikeButton from '../LikeButton/LikeButton';
+
 import { Theme } from '@/theme';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import Calendar from '@/components/icons/Calendar';
+import LikeButton from '@/components/LikeButton/LikeButton';
 
 interface FeedbackBoxFooterProps {
   likeCount?: number;
