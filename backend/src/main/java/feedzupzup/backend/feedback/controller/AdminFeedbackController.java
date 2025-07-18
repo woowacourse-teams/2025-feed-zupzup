@@ -24,7 +24,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final int size,
             final Long cursorId
     ) {
-        throw new UnsupportedOperationException();
+        return SuccessResponse.success(HttpStatus.OK,adminFeedbackService.getFeedbackPage(size, cursorId));
     }
 
     @Override
