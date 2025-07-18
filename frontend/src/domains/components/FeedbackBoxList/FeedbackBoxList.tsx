@@ -1,6 +1,9 @@
-import { PropsWithChildren } from 'react';
 import { container } from './FeedbackBoxList.styles';
 
-export default function FeedbackBoxList({ children }: PropsWithChildren) {
+interface FeedbackBoxListProps {
+  children: React.ReactNode;
+}
+
+export default function FeedbackBoxList({ children }: FeedbackBoxListProps) {
   return <section css={container}>{children}</section>;
 }
