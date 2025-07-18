@@ -14,9 +14,7 @@ export const dropdownButton = (theme: Theme, isOpen: boolean) => css`
   width: 100%;
   height: 32px;
   padding: 0 12px;
-  font-family: ${theme.typography.inter.small.fontFamily};
-  font-size: ${theme.typography.inter.small.fontSize}px;
-  font-weight: ${theme.typography.inter.small.fontWeight};
+  ${theme.typography.inter.small}
   color: ${theme.colors.darkGray[400]};
   background-color: ${theme.colors.white[100]};
   border: 1px solid ${theme.colors.gray[200]};
@@ -66,7 +64,7 @@ export const dropdownList = (theme: Theme) => css`
   border: 1px solid ${theme.colors.gray[200]};
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 9999;
+  z-index: 10;
   max-height: 200px;
   overflow-y: auto;
 `;
@@ -77,8 +75,7 @@ export const dropdownItem = (
   isDisabled: boolean
 ) => css`
   padding: 8px 12px;
-  font-family: ${theme.typography.inter.small.fontFamily};
-  font-size: ${theme.typography.inter.small.fontSize}px;
+  ${theme.typography.inter.small}
   color: ${isDisabled ? theme.colors.gray[400] : theme.colors.darkGray[400]};
   background-color: ${isSelected ? theme.colors.gray[100] : 'transparent'};
   cursor: ${isDisabled ? 'not-allowed' : 'pointer'};

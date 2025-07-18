@@ -9,13 +9,13 @@ import {
 } from './CategorySelector.styles';
 import ArrowBottom from '@/components/icons/ArrowBottom';
 
-export interface SelectorOption {
+interface SelectorOption {
   value: string;
   label: string;
   disabled?: boolean;
 }
 
-export interface CategorySelectorProps {
+interface CategorySelectorProps {
   width?: string | number;
   options: SelectorOption[];
   placeholder: string;
@@ -61,30 +61,28 @@ export default function CategorySelector({
     setIsOpen(false);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-      if (!target.closest('[data-category-selector]')) {
-        setIsOpen(false);
-      }
-    };
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Element;
+    if (!target.closest('[data-category-selector]')) {
+      setIsOpen(false);
+    }
+  };
 
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
     if (isOpen) {
       document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      return () => document.removeEventListener('keydown', handleKeyDown);
+
+      return () => {
+        document.removeEventListener('click', handleClickOutside);
+        document.removeEventListener('keydown', handleKeyDown);
+      };
     }
   }, [isOpen]);
 
