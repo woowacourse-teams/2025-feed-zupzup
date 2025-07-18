@@ -52,6 +52,16 @@ jobs:
     runs-on: [self-hosted, linux, ARM64]
     environment: dev
     steps:
+      - name: 체크아웃
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+          submodules: true
+
+      - name: Docker Compose 파일 복사
+        run: |
+          sudo cp ./backend/backend-submodule/docker/docker-compose.dev.yml /home/ubuntu/docker/docker-compose.yml
+
       - name: EC2 배포
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
