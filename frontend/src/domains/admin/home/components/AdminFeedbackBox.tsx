@@ -1,0 +1,45 @@
+import FeedbackBoxFooter from '@/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import FeedbackImage from '@/components/FeedbackImage/FeedbackImage';
+import FeedbackText from '@/components/FeedbackText/FeedbackText';
+import Check from '@/components/icons/Check';
+import TrashCan from '@/components/icons/TrashCan';
+import CategoryTag from '@/domains/user/home/components/CategoryTag/CategoryTag';
+import StatusTag from '@/domains/user/home/components/StatusTag/StatusTag';
+import { container, iconWrap, topContainer } from './AdminFeedbackBox.styles';
+import { useAppTheme } from '@/hooks/useAppTheme';
+
+interface AdminFeedbackBox {
+  type: 'incomplete' | 'complete';
+}
+
+export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
+  const theme = useAppTheme();
+
+  return (
+    <div css={container(theme, type)}>
+      <div css={topContainer}>
+        <div css={iconWrap}>
+          <CategoryTag text='맛' type={type} />
+          <StatusTag type={type} />
+        </div>
+        <div css={iconWrap}>
+          {type === 'incomplete' && (
+            <button>
+              <Check />
+            </button>
+          )}
+          <button>
+            <TrashCan />
+          </button>
+        </div>
+      </div>
+      <FeedbackText
+        text='평소에 나트륨을 적게 먹으려고 노력하는데, 오늘
+       먹은 음식이 너무 짰어요. 조금 더 담백하게 해주시면 좋겠습니다.'
+        type={type}
+      />
+      <FeedbackImage src='https://i.pinimg.com/236x/44/f9/83/44f9831be884e4c65f167b96e16fa94e.jpg' />
+      <FeedbackBoxFooter likeCount={6} />
+    </div>
+  );
+}
