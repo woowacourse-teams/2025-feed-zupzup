@@ -1,11 +1,18 @@
 import { useAppTheme } from '../../hooks/useAppTheme';
-import { BasicButtonProps } from './BasicButton.types';
+
 import {
   basicButton,
   basicButtonText,
   basicButtonIcon,
 } from './BasicButton.styles';
 import Button from '@/components/@commons/Button/Button';
+
+export interface BasicButtonProps extends React.ComponentProps<'button'> {
+  children: React.ReactNode;
+  width?: string | number;
+  icon?: React.ReactNode;
+  variant?: 'primary' | 'secondary';
+}
 
 export default function BasicButton({
   children,
