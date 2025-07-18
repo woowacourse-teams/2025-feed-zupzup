@@ -46,6 +46,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/secret")
     SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
@@ -72,6 +73,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/status")
     SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,

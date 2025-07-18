@@ -3,11 +3,14 @@ package feedzupzup.backend.feedback.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import org.junit.jupiter.api.DisplayName;
@@ -83,6 +86,42 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.updateFeedbackStatus(
                     request, nonExistentFeedbackId))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("피드백 비밀상태 변경 테스트")
+    class UpdateFeedbackSecretTest {
+
+        @Test
+        @DisplayName("유효한 피드백 ID와 비밀상태로 업데이트 시 성공한다")
+        void updateFeedbackSecret_success() {
+            // given
+            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false);
+            final Feedback savedFeedback = feedBackRepository.save(feedback);
+            final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
+
+            // when
+            final UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(
+                    savedFeedback.getId(), request);
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbackId()).isEqualTo(savedFeedback.getId()),
+                    () -> assertThat(response.isSecret()).isTrue()
+            );
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 피드백 ID로 비밀상태 변경 시 예외가 발생한다")
+        void updateFeedbackSecret_not_found() {
+            // given
+            final Long nonExistentFeedbackId = 999L;
+            final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
+
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.updateFeedbackSecret(nonExistentFeedbackId, request))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }

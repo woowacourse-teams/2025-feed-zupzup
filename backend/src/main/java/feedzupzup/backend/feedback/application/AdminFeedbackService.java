@@ -2,7 +2,9 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,4 +32,16 @@ public class AdminFeedbackService {
         feedBack.updateStatus(request.status());
         return UpdateFeedbackStatusResponse.from(feedBack);
     }
+
+    @Transactional
+    public UpdateFeedbackSecretResponse updateFeedbackSecret(
+            final Long feedbackId,
+            final UpdateFeedbackSecretRequest request
+    ) {
+        final Feedback feedBack = feedBackRepository.findById(feedbackId)
+                .orElseThrow(IllegalArgumentException::new);
+        feedBack.updateSecret(request.isSecret());
+        return UpdateFeedbackSecretResponse.from(feedBack);
+    }
+
 }
