@@ -1,6 +1,11 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { TagProps } from './Tag.types';
 import { container } from './Tag.styles';
+import { SerializedStyles } from '@emotion/react';
+
+export interface TagProps {
+  children: React.ReactNode;
+  customCss?: SerializedStyles;
+}
 
 export default function Tag({ children, customCss }: TagProps) {
   const theme = useAppTheme();

@@ -1,7 +1,13 @@
 import Tag from '@/components/Tag/Tag';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { CategoryTagProps } from './CategoryTag.types';
 import { container } from './CategoryTag.styles';
+
+export interface CategoryTagProps {
+  text: string;
+  type: 'complete' | 'incomplete';
+}
+
+export type CategoryType = 'complete' | 'incomplete';
 
 export default function CategoryTag({
   text,

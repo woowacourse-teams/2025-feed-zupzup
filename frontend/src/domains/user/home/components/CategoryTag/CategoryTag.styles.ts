@@ -1,6 +1,6 @@
 import { Theme } from '@/theme';
-import { CategoryType } from './CategoryTag.types';
 import { css } from '@emotion/react';
+import { CategoryType } from './CategoryTag';
 
 export const container = (theme: Theme, type: CategoryType) => css`
   background-color: ${type === 'incomplete'

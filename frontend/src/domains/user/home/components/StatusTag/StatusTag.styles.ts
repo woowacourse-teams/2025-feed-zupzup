@@ -1,5 +1,5 @@
 import { Theme } from '@/theme';
-import { StatusType } from './StatusTag.types';
+import { StatusType } from './StatusTag';
 import { css } from '@emotion/react';
 
 export const container = (theme: Theme, type: StatusType) => css`

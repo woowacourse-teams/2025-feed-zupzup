@@ -1,7 +1,13 @@
 import Tag from '@/components/Tag/Tag';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { StatusTagProps } from './StatusTag.types';
 import { container } from './StatusTag.styles';
+
+export interface StatusTagProps {
+  children: React.ReactNode;
+  type: StatusType;
+}
+
+export type StatusType = 'complete' | 'incomplete';
 
 export default function StatusTag({
   children,
