@@ -12,10 +12,15 @@ import {
 } from './Hero.styles';
 import feedzupzupLogo from '@/assets/images/feedzupzup-logo.png';
 import catImage from '@/assets/images/cat.png';
-import { HeroProps } from './Hero.types';
+
 import GhostButton from '@/components/GhostButton/GhostButton';
 import Profile from '@/components/icons/Profile';
 import { useAppTheme } from '@/hooks/useAppTheme';
+export interface HeroProps extends React.ComponentProps<'div'> {
+  onLoginClick: () => void;
+  onSuggestClick: () => void;
+  title: string;
+}
 
 export default function Hero({
   title,
