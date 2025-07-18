@@ -4,7 +4,13 @@ import LikeButton from '../LikeButton/LikeButton';
 import { Theme } from '@/theme';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-export default function FeedbackBoxFooter() {
+interface FeedbackBoxFooterProps {
+  likeCount?: number;
+}
+
+export default function FeedbackBoxFooter({
+  likeCount,
+}: FeedbackBoxFooterProps) {
   const theme = useAppTheme();
 
   return (
@@ -13,7 +19,9 @@ export default function FeedbackBoxFooter() {
         <Calendar />
         <div css={day}>2025-01-08</div>
       </div>
-      <LikeButton like={false} />
+      <div css={content(theme)}>
+        <LikeButton like={false} /> {likeCount}
+      </div>
     </div>
   );
 }
@@ -35,4 +43,13 @@ const calendar = (theme: Theme) => css`
 
 const day = css`
   line-height: 1;
+`;
+
+const content = (theme: Theme) => css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${theme.colors.gray[600]};
+
+  ${theme.typography.inter.small}
 `;
