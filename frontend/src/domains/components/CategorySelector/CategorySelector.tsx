@@ -5,6 +5,7 @@ import {
   dropdownButton,
   dropdownList,
   dropdownItem,
+  dropdownText,
 } from './CategorySelector.styles';
 import ArrowBottom from '@/components/icons/ArrowBottom';
 
@@ -99,15 +100,7 @@ export default function CategorySelector({
         aria-expanded={isOpen}
         aria-label={placeholder}
       >
-        <span
-          style={{
-            color: selectedOption
-              ? theme.colors.darkGray[400]
-              : theme.colors.gray[400],
-          }}
-        >
-          {displayText}
-        </span>
+        <span css={dropdownText(theme, !!selectedOption)}>{displayText}</span>
         <ArrowBottom />
       </button>
 

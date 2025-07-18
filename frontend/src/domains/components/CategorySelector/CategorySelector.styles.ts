@@ -50,6 +50,12 @@ export const dropdownButton = (theme: Theme, isOpen: boolean) => css`
   }
 `;
 
+export const dropdownText = (theme: Theme, hasSelectedOption: boolean) => css`
+  color: ${hasSelectedOption
+    ? theme.colors.darkGray[400]
+    : theme.colors.gray[400]};
+`;
+
 export const dropdownList = (theme: Theme) => css`
   position: absolute;
   top: 100%;
