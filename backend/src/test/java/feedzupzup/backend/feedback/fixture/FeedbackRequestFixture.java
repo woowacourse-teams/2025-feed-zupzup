@@ -4,7 +4,7 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 
 public class FeedbackRequestFixture {
 
-    public static CreateFeedbackRequest createRequestWithContent(String content) {
+    public static CreateFeedbackRequest createRequestWithContent(final String content) {
         return new CreateFeedbackRequest(
                 content,
                 "https://example.com/image.jpg",
