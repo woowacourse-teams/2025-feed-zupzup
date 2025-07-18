@@ -1,7 +1,8 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import TextArea from '../commons/TextArea/TextArea';
+
 import { textArea } from './BasicTextArea.style';
 import { BasicTextAreaProps } from './BasicTextArea.type';
+import TextArea from '../@commons/TextArea/TextArea';
 
 export default function BasicTextArea({
   value,
