@@ -1,6 +1,12 @@
+import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 import { StatusType } from './StatusTag';
-import { css } from '@emotion/react';
+
+export const content = css`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
 
 export const container = (theme: Theme, type: StatusType) => css`
   color: ${type === 'complete' && theme.colors.white[100]};
