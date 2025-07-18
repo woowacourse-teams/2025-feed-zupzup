@@ -1,10 +1,8 @@
 import BasicTextArea from '@/components/BasicTextArea/BasicTextArea';
-
 import Header from '@/components/Header/Header';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
-
 import Banner from './components/Banner/Banner';
 import SuggestionsFormField from './components/SuggestionsFormField/SuggestionsFormField';
 import { useState } from 'react';
