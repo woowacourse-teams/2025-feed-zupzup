@@ -15,10 +15,10 @@ export default function FeedbackBoxFooter({
   return (
     <div css={container}>
       <div css={calendar(theme)}>
-        <span>
+        <p>
           <Calendar />
-        </span>
-        <span css={day}>2025-01-08</span>
+        </p>
+        <p css={day}>2025-01-08</p>
       </div>
       <div css={content(theme)}>
         <LikeButton like={false} /> {likeCount}

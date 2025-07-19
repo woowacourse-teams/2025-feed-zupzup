@@ -12,7 +12,6 @@ export const calendar = (theme: Theme) => css`
   gap: 4px;
   font-size: 8px;
   color: ${theme.colors.gray[600]};
-  vertical-align: middle;
 `;
 
 export const day = css`
