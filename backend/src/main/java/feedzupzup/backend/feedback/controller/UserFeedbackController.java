@@ -24,7 +24,11 @@ public class UserFeedbackController implements UserFeedbackApi {
             final int size,
             final Long cursorId
     ) {
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, cursorId);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
+                placeId,
+                size,
+                cursorId
+        );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 

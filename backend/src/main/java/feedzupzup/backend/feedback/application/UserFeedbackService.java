@@ -26,7 +26,11 @@ public class UserFeedbackService {
         return CreateFeedbackResponse.from(savedFeedback);
     }
 
-    public UserFeedbackListResponse getFeedbackPage(final Long placeId, final int size, final Long cursorId) {
+    public UserFeedbackListResponse getFeedbackPage(
+            final Long placeId,
+            final int size,
+            final Long cursorId
+    ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
         final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(placeId, cursorId, pageable);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
