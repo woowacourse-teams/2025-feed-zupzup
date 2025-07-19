@@ -7,7 +7,6 @@ const config: StorybookConfig = {
     '@storybook/addon-webpack5-compiler-swc',
     '@storybook/addon-docs',
     '@storybook/addon-onboarding',
-    '@storybook/addon-themes',
   ],
   framework: {
     name: '@storybook/react-webpack5',
@@ -22,49 +21,6 @@ const config: StorybookConfig = {
     }
 
     if (config.module?.rules) {
-      const jsRule = config.module.rules.find((rule) => {
-        if (typeof rule === 'object' && rule && 'test' in rule) {
-          return rule.test?.toString().includes('jsx?');
-        }
-        return false;
-      });
-
-      if (jsRule && typeof jsRule === 'object' && jsRule && 'use' in jsRule) {
-        const babelLoader = Array.isArray(jsRule.use)
-          ? jsRule.use.find(
-              (loader) =>
-                typeof loader === 'object' &&
-                loader &&
-                'loader' in loader &&
-                loader.loader?.includes('babel-loader')
-            )
-          : typeof jsRule.use === 'object' &&
-              jsRule.use &&
-              'loader' in jsRule.use &&
-              jsRule.use.loader?.includes('babel-loader')
-            ? jsRule.use
-            : null;
-
-        if (
-          babelLoader &&
-          typeof babelLoader === 'object' &&
-          'options' in babelLoader
-        ) {
-          babelLoader.options = {
-            ...(babelLoader.options as Record<string, unknown>),
-            presets: [
-              ...(typeof babelLoader.options === 'object' &&
-              babelLoader.options &&
-              'presets' in babelLoader.options &&
-              Array.isArray(babelLoader.options.presets)
-                ? babelLoader.options.presets
-                : []),
-              '@emotion/babel-preset-css-prop',
-            ],
-          };
-        }
-      }
-
       config.module.rules.push({
         test: /\.(ts|tsx)$/,
         use: [
@@ -79,7 +35,6 @@ const config: StorybookConfig = {
                 '@babel/preset-typescript',
                 '@emotion/babel-preset-css-prop',
               ],
-              plugins: ['@emotion/babel-plugin'],
             },
           },
         ],

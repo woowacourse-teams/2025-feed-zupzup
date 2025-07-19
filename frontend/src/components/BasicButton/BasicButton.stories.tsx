@@ -3,7 +3,6 @@ import { ThemeProvider } from '@emotion/react';
 import { theme } from '@/theme';
 import BasicButton from './BasicButton';
 import Plus from '@/components/icons/Plus';
-import Profile from '@/components/icons/Profile';
 
 const meta: Meta<typeof BasicButton> = {
   title: 'Components/BasicButton',
@@ -61,14 +60,6 @@ export const WithIcon: Story = {
   },
 };
 
-export const WithProfileIcon: Story = {
-  args: {
-    children: '프로필',
-    icon: <Profile />,
-    variant: 'secondary',
-  },
-};
-
 export const CustomWidth: Story = {
   args: {
     children: '커스텀 너비',
@@ -81,13 +72,5 @@ export const LongText: Story = {
   args: {
     children: '매우 긴 버튼 텍스트입니다',
     variant: 'primary',
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    children: '비활성화 버튼',
-    variant: 'primary',
-    disabled: true,
   },
 };
