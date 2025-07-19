@@ -17,9 +17,9 @@ export const basicButton = (
     ? theme.colors.yellow[200]
     : theme.colors.white[100]} !important;
   border: ${variant === 'secondary'
-    ? `1px solid ${theme.colors.darkGray[100]}`
+    ? `1px solid ${theme.colors.gray[200]}`
     : 'none'};
-  border-radius: 14.5px;
+  border-radius: 14px;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
@@ -43,6 +43,7 @@ export const basicButtonText = (
 ) => css`
   margin: 0;
   ${theme.typography.inter.small};
+
   color: ${variant === 'primary'
     ? theme.colors.black[100]
     : theme.colors.darkGray[100]};

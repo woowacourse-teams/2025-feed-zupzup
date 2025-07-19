@@ -4,6 +4,7 @@ import { Theme } from '@/theme';
 
 export const ghostButton = (theme: Theme) => css`
   ${theme.typography.inter.caption};
+
   background-color: ${colors.white[100]}33;
   border: 1px solid ${colors.white[100]}33;
   border-radius: 16px;
