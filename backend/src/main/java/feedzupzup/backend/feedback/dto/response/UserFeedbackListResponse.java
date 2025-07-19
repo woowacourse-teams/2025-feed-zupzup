@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.dto.response;
 
+import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -17,8 +19,19 @@ public record UserFeedbackListResponse(
         Long nextCursorId
 ) {
 
+    public static UserFeedbackListResponse from(final FeedbackPage feedbackPage) {
+        final List<UserFeedbackItem> userFeedbackItems = feedbackPage.getFeedbacks().stream()
+                .map(UserFeedbackItem::from)
+                .toList();
+        return new UserFeedbackListResponse(
+                userFeedbackItems,
+                feedbackPage.isHasNext(),
+                feedbackPage.calculateNextCursorId()
+        );
+    }
+
     @Schema(description = "일반 사용자용 피드백 항목")
-    record UserFeedbackItem(
+    public record UserFeedbackItem(
             @Schema(description = "피드백 ID", example = "1")
             Long feedbackId,
 
@@ -38,6 +51,15 @@ public record UserFeedbackListResponse(
             LocalDateTime createdAt
     ) {
 
+        public static UserFeedbackItem from(final Feedback feedback) {
+            return new UserFeedbackItem(
+                    feedback.getId(),
+                    feedback.getContent(),
+                    feedback.getStatus(),
+                    feedback.isSecret(),
+                    false,
+                    feedback.getCreatedAt()
+            );
+        }
     }
-
 }

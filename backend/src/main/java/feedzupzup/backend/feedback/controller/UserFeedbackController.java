@@ -24,7 +24,12 @@ public class UserFeedbackController implements UserFeedbackApi {
             final int size,
             final Long cursorId
     ) {
-        throw new UnsupportedOperationException();
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
+                placeId,
+                size,
+                cursorId
+        );
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
