@@ -1,7 +1,11 @@
 import { ghostButton } from './GhostButton.styles';
 import Button from '@/components/@commons/Button/Button';
-import { GhostButtonProps } from './GhostButton.types';
 import { useAppTheme } from '@/hooks/useAppTheme';
+
+export interface GhostButtonProps extends React.ComponentProps<'button'> {
+  icon: React.ReactNode;
+  text: string;
+}
 
 export default function GhostButton({ icon, text, onClick }: GhostButtonProps) {
   const theme = useAppTheme();

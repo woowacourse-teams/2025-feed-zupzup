@@ -1,5 +1,4 @@
 import { css } from '@emotion/react';
-import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 
 export const basicButton = (
