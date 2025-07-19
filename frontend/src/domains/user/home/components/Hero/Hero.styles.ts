@@ -7,8 +7,8 @@ export const hero = (theme: Theme) => css`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-box-sizing: border-box;
-  min-height: 100vh;
+  box-sizing: border-box;
+  min-height: 70vh;
   margin: -14px -14px 0;
   text-align: center;
   color: white;
@@ -50,9 +50,9 @@ export const heroHr = (theme: Theme) => css`
 
 export const heroTitle = (theme: Theme) => css`
   ${theme.typography.inter.small};
-
-  color: ${theme.colors.yellow[200]};
   margin: 0 0 14px;
+  color: ${theme.colors.yellow[200]};
+
 `;
 
 export const heroLogo = css`
@@ -63,11 +63,10 @@ export const heroLogo = css`
 
 export const heroDescription = (theme: Theme) => css`
   ${theme.typography.inter.small};
-
-  color: ${theme.colors.white[100]};
   margin: 0 0 24px;
-  text-align: left;
   line-height: 1.5;
+  text-align: left;
+  color: ${theme.colors.white[100]};
 `;
 
 export const catAnimation = css`
@@ -77,9 +76,9 @@ export const catAnimation = css`
   z-index: 1;
   width: 60px;
   height: auto;
-  animation: catMove 3s ease-in-out infinite;
+  animation: cat-move 3s ease-in-out infinite;
 
-  @keyframes catMove {
+  @keyframes cat-move {
     0% {
       transform: translateX(0);
     }
