@@ -1,5 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-webpack5';
-import path from  'path';
+import path from 'path';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
@@ -14,7 +14,6 @@ const config: StorybookConfig = {
     options: {},
   },
   webpackFinal: async (config) => {
-    // 기존 alias 설정
     if (config.resolve) {
       config.resolve.alias = {
         ...config.resolve.alias,
@@ -22,9 +21,7 @@ const config: StorybookConfig = {
       };
     }
 
-    // Emotion CSS prop 지원을 위한 babel 설정
     if (config.module?.rules) {
-      // 기존 JS/JSX 규칙 수정
       const jsRule = config.module.rules.find((rule) => {
         if (typeof rule === 'object' && rule && 'test' in rule) {
           return rule.test?.toString().includes('jsx?');
@@ -54,9 +51,12 @@ const config: StorybookConfig = {
           'options' in babelLoader
         ) {
           babelLoader.options = {
-            ...babelLoader.options,
+            ...(babelLoader.options as Record<string, unknown>),
             presets: [
-              ...(Array.isArray(babelLoader.options?.presets)
+              ...(typeof babelLoader.options === 'object' &&
+              babelLoader.options &&
+              'presets' in babelLoader.options &&
+              Array.isArray(babelLoader.options.presets)
                 ? babelLoader.options.presets
                 : []),
               '@emotion/babel-preset-css-prop',
@@ -65,7 +65,6 @@ const config: StorybookConfig = {
         }
       }
 
-      // TypeScript 파일을 위한 새로운 규칙 추가
       config.module.rules.push({
         test: /\.(ts|tsx)$/,
         use: [
