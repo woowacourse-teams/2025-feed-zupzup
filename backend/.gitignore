@@ -42,3 +42,7 @@ src/test/resources/*.yml
 
 ### mysql volume ###
 /mysql/
+
+
+### docker
+backend/docker-compose.yml
