@@ -1,9 +1,9 @@
-import Photo from '@/components/icons/photo';
+import Photo from '@/components/icons/Photo';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useRef, useState } from 'react';
 import {
   previewImage,
-  uploadBox,
+uploadBox,
   uploadButton,
   uploadText,
 } from './UploadBox.style';
