@@ -9,6 +9,7 @@ export const container = (theme: Theme, type: FeedbackStatusType) => css`
   width: 100%;
   min-height: 100px;
   padding: 18px;
+  background-color: white;
   border-radius: 14px;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 
