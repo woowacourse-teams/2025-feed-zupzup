@@ -1,13 +1,13 @@
+import BasicButton from '@/components/BasicButton/BasicButton';
 import BasicTextArea from '@/components/BasicTextArea/BasicTextArea';
 import Header from '@/components/Header/Header';
-import { css } from '@emotion/react';
+import CategorySelector from '@/domains/components/CategorySelector/CategorySelector';
 import { useState } from 'react';
+import { buttonContainer, suggestionLayout } from './Suggestions.style';
 import Banner from './components/Banner/Banner';
 import SuggestionsFormField from './components/SuggestionsFormField/SuggestionsFormField';
 import UploadBox from './components/UploadBox/UploadBox';
 import SecretPostOption from './components/SecretPostOption/SecretPostOption';
-import BasicButton from '@/components/BasicButton/BasicButton';
-import CategorySelector from '@/domains/components/CategorySelector/CategorySelector';
 
 const selectorOptions = [
   { value: 'general', label: '일반' },
@@ -64,21 +64,3 @@ export default function Suggestions() {
     </>
   );
 }
-
-const suggestionLayout = css`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  width: 100%;
-  height: calc(100vh - 64px);
-  margin-top: 64px; /* Header height */
-  overflow-y: auto;
-`;
-
-const buttonContainer = css`
-  display: flex;
-  gap: 12px;
-  width: 100%;
-`;

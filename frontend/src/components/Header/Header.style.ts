@@ -1,3 +1,4 @@
+import { HEADER_HEIGHT_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
@@ -10,7 +11,7 @@ export const header = css`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 64px;
+  height: ${HEADER_HEIGHT_PX}px;
   padding: 20px;
   background-color: white;
 `;
