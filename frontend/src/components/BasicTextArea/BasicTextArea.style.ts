@@ -1,0 +1,19 @@
+import { Theme } from '@/theme';
+import { css } from '@emotion/react';
+
+export const textArea = (theme: Theme) => css`
+  width: 100%;
+  height: 96px;
+  padding: 12px;
+  background-color: white;
+  border: 1px solid ${theme.colors.gray[200]};
+  resize: none;
+  border-radius: 16px;
+  ${theme.typography.inter.small}
+
+  ::placeholder {
+    ${theme.typography.inter.small}
+
+    color : ${theme.colors.gray[500]};
+  }
+`;

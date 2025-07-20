@@ -2,9 +2,9 @@ import { SerializedStyles } from '@emotion/react';
 
 export interface TextAreaProps extends React.ComponentProps<'textarea'> {
   value: string;
-  onChange: () => void;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder: string;
-  css: SerializedStyles;
+  customCSS: SerializedStyles;
   maxLength: number;
   minLength: number;
 }
@@ -13,15 +13,15 @@ export default function TextArea({
   value,
   onChange,
   placeholder,
-  css,
+  customCSS,
   maxLength,
   minLength,
 }: TextAreaProps) {
   return (
     <textarea
+      css={customCSS}
       minLength={minLength}
       maxLength={maxLength}
-      css={css}
       value={value}
       onChange={onChange}
       placeholder={placeholder}
