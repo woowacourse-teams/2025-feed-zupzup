@@ -7,6 +7,12 @@ import SuggestionsFormField from './components/SuggestionsFormField/SuggestionsF
 import UploadBox from './components/UploadBox/UploadBox';
 import SecretPostOption from './components/SecretPostOption/SecretPostOption';
 import BasicButton from '@/components/BasicButton/BasicButton';
+import CategorySelector from '@/domains/components/CategorySelector/CategorySelector';
+
+const selectorOptions = [
+  { value: 'general', label: '일반' },
+  { value: 'other', label: '기타' },
+];
 
 export default function Suggestions() {
   const [suggestions, setSuggestions] = useState<string>('');
@@ -15,6 +21,8 @@ export default function Suggestions() {
   ) => {
     setSuggestions(e.target.value);
   };
+
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   return (
     <>
@@ -26,13 +34,12 @@ export default function Suggestions() {
 갑니다'
         />
         <SuggestionsFormField label='카테고리 선택'>
-          <div
-            css={css`
-              background-color: blueviolet;
-            `}
-          >
-            카테코리 선택
-          </div>
+          <CategorySelector
+            options={selectorOptions}
+            placeholder='카테고리를 선택하세요'
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          />
         </SuggestionsFormField>
 
         <SuggestionsFormField label='내용'>
@@ -72,6 +79,6 @@ const suggestionLayout = css`
 
 const buttonContainer = css`
   display: flex;
-  width: 100%;
   gap: 12px;
+  width: 100%;
 `;
