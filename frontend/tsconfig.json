@@ -30,5 +30,5 @@
     "noEmit": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "types", "cypress"]
+  "include": ["src", "types", "cypress", ".storybook"]
 }

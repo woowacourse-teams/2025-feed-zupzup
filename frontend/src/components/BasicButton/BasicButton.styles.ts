@@ -19,7 +19,7 @@ export const basicButton = (
   border: ${variant === 'secondary'
     ? `1px solid ${theme.colors.gray[200]}`
     : 'none'};
-  border-radius: 14.5px;
+  border-radius: 14px;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
