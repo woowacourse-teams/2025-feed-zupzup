@@ -6,7 +6,7 @@ export const textArea = (theme: Theme) => css`
   height: 96px;
   padding: 12px;
   background-color: white;
-  border: 1px solid #d9d9d9;
+  border: 1px solid ${theme.colors.gray[200]};
   resize: none;
   border-radius: 16px;
   ${theme.typography.inter.small}
