@@ -1,8 +1,8 @@
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
-import Lock from '@/components/icons/lock';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
 import { secretOption, secretText } from './SecretPostOption.style';
+import Lock from '@/components/icons/Lock';
 
 export default function SecretPostOption() {
   const theme = useAppTheme();
