@@ -8,7 +8,6 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
-import feedzupzup.backend.global.exception.ResourceException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
