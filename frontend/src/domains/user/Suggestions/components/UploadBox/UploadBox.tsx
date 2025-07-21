@@ -1,4 +1,6 @@
 import Photo from '@/components/icons/photo';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useRef, useState } from 'react';
 import {
   previewImage,
   uploadBox,
