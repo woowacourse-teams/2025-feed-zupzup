@@ -1,12 +1,12 @@
 import Photo from '@/components/icons/photo';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useRef, useState } from 'react';
 import {
   previewImage,
   uploadBox,
   uploadButton,
   uploadText,
 } from '@/domains/user/suggestions/components/UploadBox/UploadBox.style';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { useRef, useState } from 'react';
 
 export default function UploadBox() {
   const theme = useAppTheme();
