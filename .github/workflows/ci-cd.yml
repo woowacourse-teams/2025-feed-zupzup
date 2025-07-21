@@ -1,7 +1,7 @@
 name: Build and Deploy
 
 on:
-  pull_request:
+  push:
     branches: [ "be/develop" ]
 
 jobs:
@@ -60,7 +60,7 @@ jobs:
 
       - name: 서브모듈 최신화 업데이트
         run: |
-          git submodule update --remote    
+          git submodule update --remote
 
       - name: Docker Compose 파일 복사
         run: |
