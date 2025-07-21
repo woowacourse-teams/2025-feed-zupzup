@@ -39,7 +39,17 @@ export const apiClient = {
       body,
     }),
 
-  delete: <Response, RequestBody>(
+  delete: <Response>(
+    URI: string,
+    options?: Omit<ApiClientProps<undefined, Response>, 'method' | 'URI'>
+  ) =>
+    baseClient<Response, undefined>({
+      ...options,
+      method: 'DELETE',
+      URI,
+    }),
+
+  deleteWithBody: <Response, RequestBody>(
     URI: string,
     body: RequestBody,
     options?: Omit<

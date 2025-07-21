@@ -67,8 +67,7 @@ import { apiClient, ApiError } from '@/lib/apiClient';
 async function deletePost() {
   try {
     await apiClient.delete<{}, {}>(
-      'https://jsonplaceholder.typicode.com/posts/1',
-      {}
+      'https://jsonplaceholder.typicode.com/posts/1'
     );
     console.log('삭제 성공');
   } catch (error) {
