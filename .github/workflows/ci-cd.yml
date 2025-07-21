@@ -1,7 +1,7 @@
 name: Build and Deploy
 
 on:
-  push:
+  pull_request:
     branches: [ "be/develop" ]
 
 jobs:
@@ -57,6 +57,10 @@ jobs:
         with:
           token: ${{ secrets.SUBMODULE_TOKEN }}
           submodules: true
+
+      - name: 서브모듈 최신화 업데이트
+        run: |
+          git submodule update --remote    
 
       - name: Docker Compose 파일 복사
         run: |
