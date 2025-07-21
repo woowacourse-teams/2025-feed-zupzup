@@ -32,19 +32,23 @@ public class Feedback extends BaseTimeEntity {
 
     private String imageUrl;
 
+    private int likeCount;
+
     @Builder
     public Feedback(
             final String content,
             final boolean isSecret,
             final ProcessStatus status,
             final Long placeId,
-            final String imageUrl
+            final String imageUrl,
+            final int likeCount
     ) {
         this.content = content;
         this.isSecret = isSecret;
         this.status = status;
         this.placeId = placeId;
         this.imageUrl = imageUrl;
+        this.likeCount = likeCount;
     }
 
     public void updateStatus(final ProcessStatus status) {
