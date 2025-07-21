@@ -1,0 +1,36 @@
+name: front-ci
+description: CI workflow for frontend project
+
+on:
+  push:
+    branches: [fe/develop, release, main]
+  pull_request:
+    branches: [fe/develop, release, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type Check
+        run: npm run type-check
+
+      - name: Build project
+        run: npm run build
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
