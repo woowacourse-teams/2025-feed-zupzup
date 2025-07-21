@@ -50,9 +50,9 @@ export const heroHr = (theme: Theme) => css`
 
 export const heroTitle = (theme: Theme) => css`
   ${theme.typography.inter.small};
+
   margin: 0 0 14px;
   color: ${theme.colors.yellow[200]};
-
 `;
 
 export const heroLogo = css`
@@ -63,6 +63,7 @@ export const heroLogo = css`
 
 export const heroDescription = (theme: Theme) => css`
   ${theme.typography.inter.small};
+
   margin: 0 0 24px;
   line-height: 1.5;
   text-align: left;
