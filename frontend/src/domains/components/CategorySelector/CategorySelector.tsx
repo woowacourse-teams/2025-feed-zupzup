@@ -84,10 +84,11 @@ export default function CategorySelector({
         document.removeEventListener('keydown', handleKeyDown);
       };
     }
+    return;
   }, [isOpen]);
 
   return (
-    <div css={dropdownContainer(theme, width)} data-category-selector>
+    <div css={dropdownContainer(width)} data-category-selector>
       <input type='hidden' name={name} id={id} value={value || ''} />
       <button
         type='button'
@@ -107,11 +108,7 @@ export default function CategorySelector({
           {options.map((option) => (
             <div
               key={option.value}
-              css={dropdownItem(
-                theme,
-                option.value === value,
-                !!option.disabled
-              )}
+              css={dropdownItem(theme, !!option.disabled)}
               onClick={() => !option.disabled && handleSelect(option.value)}
               role='option'
               aria-selected={option.value === value}
