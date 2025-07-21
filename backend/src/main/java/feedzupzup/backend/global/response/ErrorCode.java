@@ -1,15 +1,23 @@
 package feedzupzup.backend.global.response;
 
+import static org.springframework.http.HttpStatus.*;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
 
-    TEST("TEST-001", "testErrorMessage"),
+    //Server Error
+    SERVER_ERROR(INTERNAL_SERVER_ERROR,"S01", "예상치 못한 서버 에러가 발생하였습니다"),
+
+    //Global Error
+    RESOURCE_NOT_FOUNT(NOT_FOUND,"G01", "요청한 자원을 찾을 수 없습니다")
     ;
 
+    private final HttpStatus httpStatus;
     private final String code;
     private final String message;
 }

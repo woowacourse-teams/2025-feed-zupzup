@@ -14,6 +14,7 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -87,7 +88,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.updateFeedbackStatus(
                     request, nonExistentFeedbackId))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
     }
 
@@ -123,7 +124,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.updateFeedbackSecret(nonExistentFeedbackId, request))
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
     }
 

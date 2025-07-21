@@ -13,11 +13,11 @@ public record SuccessResponse<T>(
         String message
 ) {
 
-    public static <T> SuccessResponse<T> success(HttpStatus httpStatus, T data) {
+    public static <T> SuccessResponse<T> success(final HttpStatus httpStatus, final T data) {
         return new SuccessResponse<>(data, httpStatus.value(), httpStatus.name());
     }
 
-    public static SuccessResponse<Void> success(HttpStatus httpStatus) {
+    public static SuccessResponse<Void> success(final HttpStatus httpStatus) {
         return success(httpStatus, null);
     }
 }

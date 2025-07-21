@@ -8,6 +8,7 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class AdminFeedbackService {
             final Long feedbackId
     ) {
         final Feedback feedBack = feedBackRepository.findById(feedbackId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
         feedBack.updateStatus(request.status());
         return UpdateFeedbackStatusResponse.from(feedBack);
     }
@@ -43,7 +44,7 @@ public class AdminFeedbackService {
             final UpdateFeedbackSecretRequest request
     ) {
         final Feedback feedBack = feedBackRepository.findById(feedbackId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
         feedBack.updateSecret(request.isSecret());
         return UpdateFeedbackSecretResponse.from(feedBack);
     }

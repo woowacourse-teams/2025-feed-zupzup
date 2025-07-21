@@ -77,7 +77,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .when()
                 .patch("/admin/feedbacks/{feedbackId}/status", nonExistentFeedbackId)
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -119,7 +119,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .when()
                 .patch("/admin/feedbacks/{feedbackId}/secret", nonExistentFeedbackId)
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
