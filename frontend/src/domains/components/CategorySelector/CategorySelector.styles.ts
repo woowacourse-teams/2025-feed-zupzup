@@ -8,13 +8,15 @@ export const dropdownContainer = (width?: string | number) => css`
 `;
 
 export const dropdownButton = (theme: Theme, isOpen: boolean) => css`
+  ${theme.typography.inter.small};
+
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 32px;
   padding: 0 12px;
-  color: ${theme.colors.darkGray[400]};
+  color: ${theme.colors.black[100]};
   background-color: ${theme.colors.white[100]};
   border: 1px solid ${theme.colors.gray[200]};
   border-radius: 14px;
