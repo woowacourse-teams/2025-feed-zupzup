@@ -20,6 +20,7 @@
   "description": "",
   "dependencies": {
     "@emotion/react": "^11.14.0",
+    "dotenv": "^17.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0"
