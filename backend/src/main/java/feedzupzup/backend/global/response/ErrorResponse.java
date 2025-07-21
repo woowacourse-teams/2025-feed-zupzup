@@ -6,7 +6,7 @@ public record ErrorResponse<T>(
         String message
 ) {
 
-    public static <T> ErrorResponse<T> error(ErrorCode errorCode) {
+    public static <T> ErrorResponse<T> error(final ErrorCode errorCode) {
         return new ErrorResponse<>(errorCode.getHttpStatus().value(), errorCode.getCode(), errorCode.getMessage());
     }
 }
