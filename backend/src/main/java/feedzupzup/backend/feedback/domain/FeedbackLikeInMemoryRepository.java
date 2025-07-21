@@ -22,6 +22,11 @@ public class FeedbackLikeInMemoryRepository {
         })).get();
     }
 
+    public int get(final long feedbackId) {
+        final AtomicInteger atomicInteger = feedbackLikes.get(feedbackId);
+        return atomicInteger.get();
+    }
+
     public void clear() {
         feedbackLikes.clear();
     }

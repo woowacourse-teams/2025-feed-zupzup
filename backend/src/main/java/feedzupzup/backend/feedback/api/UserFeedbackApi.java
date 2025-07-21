@@ -3,7 +3,6 @@ package feedzupzup.backend.feedback.api;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.dto.response.UnLikeResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,7 +69,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
     })
     @DeleteMapping("/feedbacks/{feedbackId}/like")
-    SuccessResponse<UnLikeResponse> unlike(
+    SuccessResponse<LikeResponse> unlike(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
     );
 }
