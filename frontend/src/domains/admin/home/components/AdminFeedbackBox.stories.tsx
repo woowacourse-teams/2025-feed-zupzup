@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import StatusTag from './StatusTag';
+import AdminFeedbackBox from './AdminFeedbackBox';
 
-const meta: Meta<typeof StatusTag> = {
-  title: 'Common/StatusTag',
-  component: StatusTag,
+const meta: Meta<typeof AdminFeedbackBox> = {
+  title: 'Admin/AdminFeedbackBox',
+  component: AdminFeedbackBox,
   parameters: {
     layout: 'centered',
   },
@@ -12,15 +12,22 @@ const meta: Meta<typeof StatusTag> = {
     type: {
       control: 'select',
       options: ['incomplete', 'complete'],
-      description: '상태에 따라 태그 스타일이 달라집니다.',
+      description: '상태에 따라 스타일이 달라집니다.',
     },
   },
+  decorators: [
+    (Story) => (
+      <div style={{ width: '500px' }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Incomplete: Story = {
   args: {
     type: 'incomplete',
   },
