@@ -107,9 +107,18 @@ async function baseClient<Response, RequestBody>({
     }
 
     if (isErrorWithStatus(response)) {
-      const errorBody = await response.json();
-      const message =
-        errorBody.message ?? FETCH_ERROR_MESSAGE[String(response.status)];
+      let message =
+        FETCH_ERROR_MESSAGE[String(response.status)] ?? DEFAULT_ERROR_MESSAGE;
+
+      try {
+        const errorBody = await response.json();
+        if (errorBody && typeof errorBody.message === 'string') {
+          message = errorBody.message;
+        }
+      } catch {
+        // response.json() 파싱 실패 시 기본 메시지를 유지
+      }
+
       throw new ApiError(response.status, message);
     }
 
