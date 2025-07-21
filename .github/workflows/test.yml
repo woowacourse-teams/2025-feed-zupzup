@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.SUBMODULE_TOKEN }}
           submodules: true
 
-      - name: 서브모듈 최신 버전으로 업데이트
+      - name: 서브모듈 최신화
         run: |
           git submodule update --remote
 
