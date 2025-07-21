@@ -1,0 +1,144 @@
+import {
+  DEFAULT_ERROR_MESSAGE,
+  FETCH_ERROR_MESSAGE,
+} from '@/constants/errorMessage';
+import {
+  isEmptyResponse,
+  isErrorWithStatus,
+  isSuccess,
+} from '@/utils/fetchUtils';
+
+type FetchMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
+
+interface ApiClientProps<RequestBody, Response> {
+  method: FetchMethodType;
+  URI: string;
+  body?: RequestBody;
+  onSuccess?: (data: Response) => void;
+  onError?: () => void;
+}
+
+export const apiClient = {
+  get: <Response>(
+    URI: string,
+    options?: Omit<ApiClientProps<undefined, Response>, 'method' | 'URI'>
+  ) => baseClient<Response, undefined>({ ...options, method: 'GET', URI }),
+
+  post: <Response, RequestBody>(
+    URI: string,
+    body: RequestBody,
+    options?: Omit<
+      ApiClientProps<RequestBody, Response>,
+      'method' | 'URI' | 'body'
+    >
+  ) =>
+    baseClient<Response, RequestBody>({
+      ...options,
+      method: 'POST',
+      URI,
+      body,
+    }),
+
+  delete: <Response, RequestBody>(
+    URI: string,
+    body: RequestBody,
+    options?: Omit<
+      ApiClientProps<RequestBody, Response>,
+      'method' | 'URI' | 'body'
+    >
+  ) =>
+    baseClient<Response, RequestBody>({
+      ...options,
+      method: 'DELETE',
+      URI,
+      body,
+    }),
+
+  patch: <Response, RequestBody>(
+    URI: string,
+    body: RequestBody,
+    options?: Omit<
+      ApiClientProps<RequestBody, Response>,
+      'method' | 'URI' | 'body'
+    >
+  ) =>
+    baseClient<Response, RequestBody>({
+      ...options,
+      method: 'PATCH',
+      URI,
+      body,
+    }),
+};
+
+async function baseClient<Response, RequestBody>({
+  method,
+  URI,
+  body,
+  onSuccess,
+  onError,
+}: ApiClientProps<RequestBody, Response>): Promise<Response | void> {
+  const headers: Record<string, string> = {
+    'Content-type': 'application/json',
+  };
+
+  try {
+    const response = await fetchWithTimeout(URI, {
+      method,
+      headers,
+      body: body ? JSON.stringify(body) : null,
+    });
+
+    if (isEmptyResponse(response)) return;
+
+    if (isSuccess(response)) {
+      const data = await response.json();
+      onSuccess?.(data);
+      return data;
+    }
+
+    if (isErrorWithStatus(response)) {
+      const errorBody = await response.json();
+      const message =
+        errorBody.message ?? FETCH_ERROR_MESSAGE[String(response.status)];
+      throw new ApiError(response.status, message);
+    }
+
+    throw new Error(DEFAULT_ERROR_MESSAGE);
+  } catch (error) {
+    onError?.();
+    throw error;
+  }
+}
+
+const fetchWithTimeout = (
+  input: RequestInfo,
+  init?: RequestInit,
+  timeout = 5000
+): Promise<Response> => {
+  // 네트워크 오류
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error('요청 시간이 초과되었습니다.'));
+    }, timeout);
+
+    fetch(input, init)
+      .then((res) => {
+        clearTimeout(timer);
+        resolve(res);
+      })
+      .catch((err) => {
+        clearTimeout(timer);
+        reject(err);
+      });
+  });
+};
+
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    public message: string
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
