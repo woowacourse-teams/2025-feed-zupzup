@@ -8,7 +8,7 @@ import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBo
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import IconButton from '@/components/IconButton/IconButton';
-import TrashCan from '@/components/icons/TrashCan';
+import TrashCanIcon from '@/components/icons/TrashCanIcon';
 
 interface AdminFeedbackBox {
   type: FeedbackStatusType;
@@ -24,7 +24,7 @@ export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
         </div>
         <div css={iconWrap}>
           {type === 'incomplete' && <IconButton icon={<CheckIcon />} />}
-          <IconButton icon={<TrashCan />} />
+          <IconButton icon={<TrashCanIcon />} />
         </div>
       </div>
       <FeedbackText

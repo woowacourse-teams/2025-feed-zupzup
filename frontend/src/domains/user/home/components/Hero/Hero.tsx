@@ -14,7 +14,7 @@ import feedzupzupLogo from '@/assets/images/feedzupzup-logo.png';
 import catImage from '@/assets/images/cat.png';
 
 import GhostButton from '@/components/GhostButton/GhostButton';
-import Profile from '@/components/icons/Profile';
+import ProfileIcon from '@/components/icons/ProfileIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
 export interface HeroProps extends React.ComponentProps<'div'> {
   onLoginClick: () => void;
@@ -32,7 +32,11 @@ export default function Hero({
   return (
     <div css={hero(theme)}>
       <div css={heroHeader(theme)}>
-        <GhostButton icon={<Profile />} text='로그인' onClick={onLoginClick} />
+        <GhostButton
+          icon={<ProfileIcon />}
+          text='로그인'
+          onClick={onLoginClick}
+        />
       </div>
       <div css={heroContent}>
         <hr css={heroHr(theme)} />

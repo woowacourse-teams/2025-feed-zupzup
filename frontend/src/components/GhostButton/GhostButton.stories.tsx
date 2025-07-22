@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import GhostButton from './GhostButton';
-import Profile from '@/components/icons/Profile';
+import ProfileIcon from '@/components/icons/ProfileIcon';
 
 const meta: Meta<typeof GhostButton> = {
   title: 'components/GhostButton',
@@ -24,7 +24,7 @@ type Story = StoryObj<typeof GhostButton>;
 
 export const Default: Story = {
   args: {
-    icon: <Profile />,
+    icon: <ProfileIcon />,
     text: '고스트 버튼',
   },
 };
