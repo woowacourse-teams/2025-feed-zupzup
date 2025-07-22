@@ -1,7 +1,7 @@
 name: Build and Deploy
 
 on:
-  push:
+  pull_request:
     branches: [ "release" ]
 
 jobs:
@@ -79,7 +79,7 @@ jobs:
 
       - name: Docker Compose 파일 복사
         run: |
-          sudo cp ./backend/backend-submodule/docker/docker-compose.dev.yml /home/ubuntu/docker/docker-compose.yml
+          sudo cp ./backend/backend-submodule/docker/docker-compose.prod.yml /home/ubuntu/docker/docker-compose.yml
 
       - name: EC2 배포
         run: |
