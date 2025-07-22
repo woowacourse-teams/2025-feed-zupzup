@@ -20,12 +20,14 @@ export interface HeroProps extends React.ComponentProps<'div'> {
   onLoginClick: () => void;
   onSuggestClick: () => void;
   title: string;
+  showSuggestButton?: boolean;
 }
 
 export default function Hero({
   title,
   onLoginClick,
   onSuggestClick,
+  showSuggestButton = true,
 }: HeroProps) {
   const theme = useAppTheme();
 
@@ -44,15 +46,21 @@ export default function Hero({
           여러분의 목소리가 필요합니다
         </p>
         <div style={{ position: 'relative', width: '100%' }}>
-          <img src={catImage} alt='움직이는 고양이' css={catAnimation} />
-          <BasicButton
-            width='100%'
-            icon={<PlusIcon />}
-            variant='primary'
-            onClick={onSuggestClick}
-          >
-            건의하기
-          </BasicButton>
+          <img
+            src={catImage}
+            alt='움직이는 고양이'
+            css={catAnimation(showSuggestButton)}
+          />
+          {showSuggestButton && (
+            <BasicButton
+              width='100%'
+              icon={<PlusIcon />}
+              variant='primary'
+              onClick={onSuggestClick}
+            >
+              건의하기
+            </BasicButton>
+          )}
         </div>
       </div>
     </div>

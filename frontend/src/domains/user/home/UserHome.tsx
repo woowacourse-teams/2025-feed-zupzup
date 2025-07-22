@@ -1,14 +1,17 @@
 import Hero from './components/Hero/Hero';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import UserFeedbackBox from './components/UserFeedbackBox/UserFeedbackBox';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserHome() {
+  const navigate = useNavigate();
   return (
     <section>
       <Hero
-        onLoginClick={() => console.log('로그인 클릭!')}
-        onSuggestClick={() => console.log('건의사항 페이지 이동')}
+        onLoginClick={() => navigate('/admin')}
+        onSuggestClick={() => navigate('/suggestion')}
         title='환영합니다!'
+        showSuggestButton={true}
       />
       <FeedbackBoxList>
         <UserFeedbackBox type='incomplete' />
