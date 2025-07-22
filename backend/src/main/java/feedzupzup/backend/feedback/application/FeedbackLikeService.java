@@ -17,8 +17,4 @@ public class FeedbackLikeService {
     public void unLike(final Long feedbackId) {
         feedbackLikeInMemoryRepository.decrease(feedbackId);
     }
-
-    public void clear() {
-        feedbackLikeInMemoryRepository.clear();
-    }
 }

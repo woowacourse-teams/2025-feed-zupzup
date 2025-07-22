@@ -36,6 +36,7 @@ public class Feedback extends BaseTimeEntity {
 
     @Builder
     public Feedback(
+            final Long id,
             final String content,
             final boolean isSecret,
             final ProcessStatus status,
@@ -43,6 +44,7 @@ public class Feedback extends BaseTimeEntity {
             final String imageUrl,
             final int likeCount
     ) {
+        this.id = id;
         this.content = content;
         this.isSecret = isSecret;
         this.status = status;
@@ -53,6 +55,7 @@ public class Feedback extends BaseTimeEntity {
 
     public Feedback copyOfLikeCount(final int likeCount) {
         return Feedback.builder()
+                .id(id)
                 .likeCount(likeCount)
                 .isSecret(isSecret)
                 .status(status)

@@ -20,14 +20,14 @@ public class FeedbackLikeInMemoryRepository {
     public int decrease(final long feedbackId) {
         final AtomicInteger likeCount = feedbackLikes.get(feedbackId);
         if (likeCount == null) {
-            throw new ResourceNotFoundException("피드백을 찾을 수 없습니다.");
+            throw new ResourceNotFoundException("좋아요 횟수는 음수가 될 수 없습니다.");
         }
         return likeCount.decrementAndGet();
     }
 
     public int get(final long feedbackId) {
         final AtomicInteger likeCount = feedbackLikes.get(feedbackId);
-        return likeCount.get();
+        return likeCount != null ? likeCount.get() : 0;
     }
 
     public void clear() {

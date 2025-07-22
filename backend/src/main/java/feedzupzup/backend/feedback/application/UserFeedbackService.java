@@ -2,7 +2,6 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
@@ -34,9 +33,17 @@ public class UserFeedbackService {
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(placeId, cursorId, pageable);
+        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(
+                placeId,
+                cursorId,
+                pageable
+        );
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        final List<Feedback> increasedLikeFeedbacks = feedbackLikeCounter.getIncreasedLikeFeedbacks(feedbackPage);
-        return UserFeedbackListResponse.from(FeedbackPage.createCursorPage(increasedLikeFeedbacks, size));
+        feedbackLikeCounter.increaseFeedbackLikeCount(feedbackPage);
+        return UserFeedbackListResponse.of(
+                feedbackPage.getFeedbacks(),
+                feedbackPage.isHasNext(),
+                feedbackPage.calculateNextCursorId()
+        );
     }
 }

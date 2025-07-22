@@ -1,14 +1,12 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.feedback.application;
 
-import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
-
-import java.util.List;
+import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackLikeInMemoryRepository;
+import feedzupzup.backend.feedback.domain.FeedbackPage;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,20 +17,15 @@ public class FeedbackLikeCounter {
     private final FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
     private final FeedBackRepository feedBackRepository;
 
-    public List<Feedback> getIncreasedLikeFeedbacks(@NonNull final FeedbackPage feedbackPage) {
-        return feedbackPage.getFeedbacks().stream()
-                .map(this::copyOfLikeCount)
-                .toList();
+    public void increaseFeedbackLikeCount(final FeedbackPage feedbackPage) {
+        feedbackPage.getFeedbacks().forEach(this::increaseLikeCount);
     }
 
-    private Feedback copyOfLikeCount(final Feedback feedback) {
-        final int likeCount = feedback.getLikeCount() + feedbackLikeInMemoryRepository.get(feedback.getId());
-        return feedback.copyOfLikeCount(likeCount);
+    private void increaseLikeCount(final Feedback feedback) {
+        feedback.updateLikeCount(feedback.getLikeCount() + feedbackLikeInMemoryRepository.get(feedback.getId()));
     }
 
-    @Async
-    @Transactional(propagation = REQUIRES_NEW)
-    @Scheduled(cron = "0 0 * * * *")
+    @Transactional
     public void syncLikesToDatabase() {
         final ConcurrentHashMap<Long, AtomicInteger> feedbackLikes = feedbackLikeInMemoryRepository.getFeedbackLikes();
         feedbackLikes.forEach((feedbackId, likeCount) -> feedBackRepository.findById(feedbackId)
