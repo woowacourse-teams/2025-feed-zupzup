@@ -10,12 +10,18 @@ interface BasicInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
+  maxLength?: number;
+  minLength?: number;
+  showCharCount?: boolean;
 }
 
 export default function BasicInput({
   value,
   onChange,
   placeholder,
+  maxLength = 10,
+  minLength = 1,
+  showCharCount = true,
 }: BasicInputProps) {
   const theme = useAppTheme();
 
@@ -26,10 +32,14 @@ export default function BasicInput({
         onChange={onChange}
         placeholder={placeholder}
         customCSS={basicInput(theme)}
-        maxLength={10}
-        minLength={1}
+        maxLength={maxLength}
+        minLength={minLength}
       />
-      <p css={caption(theme)}>{value.length}/ 10</p>
+      {showCharCount && (
+        <p css={caption(theme)}>
+          {value.length}/ {maxLength}
+        </p>
+      )}
     </div>
   );
 }

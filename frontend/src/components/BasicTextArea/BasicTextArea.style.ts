@@ -1,6 +1,10 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
+export const basicTextAreaContainer = css`
+  position: relative;
+`;
+
 export const textArea = (theme: Theme) => css`
   width: 100%;
   height: 96px;
@@ -16,4 +20,13 @@ export const textArea = (theme: Theme) => css`
 
     color : ${theme.colors.gray[500]};
   }
+`;
+
+export const caption = (theme: Theme) => css`
+  position: absolute;
+  right: 20px;
+  bottom: 20%;
+  color: ${theme.colors.gray[500]};
+
+  ${theme.typography.inter.small}
 `;
