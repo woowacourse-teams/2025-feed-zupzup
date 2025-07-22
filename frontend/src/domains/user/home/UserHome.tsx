@@ -2,7 +2,7 @@ import Hero from './components/Hero/Hero';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import UserFeedbackBox from './components/UserFeedbackBox/UserFeedbackBox';
 import { useNavigate } from 'react-router-dom';
-import { Feedback, FeedbackResponse } from '@/types/feedback.types';
+import { UserFeedback, FeedbackResponse } from '@/types/feedback.types';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 
@@ -14,7 +14,11 @@ export default function UserHome() {
     fetchMore,
     hasNext,
     loading,
-  } = useInfinityScroll<Feedback, 'feedbacks', FeedbackResponse>({
+  } = useInfinityScroll<
+    UserFeedback,
+    'feedbacks',
+    FeedbackResponse<UserFeedback>
+  >({
     url: '/api/places/1/feedbacks',
     key: 'feedbacks',
   });
@@ -30,7 +34,7 @@ export default function UserHome() {
         showSuggestButton={true}
       />
       <FeedbackBoxList>
-        {feedbacks.map((feedback: Feedback) => (
+        {feedbacks.map((feedback: UserFeedback) => (
           <UserFeedbackBox
             key={feedback.feedbackId}
             type={feedback.status}
