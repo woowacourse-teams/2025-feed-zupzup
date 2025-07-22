@@ -10,7 +10,6 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +24,6 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
-
-    @BeforeEach
-    void setUp() {
-        feedbackLikeInMemoryRepository.clear();
-    }
 
     @Test
     @DisplayName("인메모리 좋아요를 DB에 성공적으로 동기화한다")
