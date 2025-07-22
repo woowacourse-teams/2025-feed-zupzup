@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ThemeProvider } from '@emotion/react';
-import { theme } from '@/theme';
 import CategorySelector from './CategorySelector';
 
 const options = [
@@ -24,9 +22,7 @@ const meta: Meta<typeof CategorySelector> = {
   decorators: [
     (Story) => (
       <div style={{ padding: '40px', minHeight: '40vh' }}>
-        <ThemeProvider theme={theme}>
-          <Story />
-        </ThemeProvider>
+        <Story />
       </div>
     ),
   ],

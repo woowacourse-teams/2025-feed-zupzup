@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ThemeProvider } from '@emotion/react';
-import { theme } from '@/theme';
 import Hero from './Hero';
 
 const meta: Meta<typeof Hero> = {
