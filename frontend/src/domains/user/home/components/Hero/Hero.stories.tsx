@@ -15,9 +15,7 @@ const meta: Meta<typeof Hero> = {
   decorators: [
     (Story) => (
       <div style={{ minHeight: '80vh', padding: '32px' }}>
-        <ThemeProvider theme={theme}>
-          <Story />
-        </ThemeProvider>
+        <Story />
       </div>
     ),
   ],

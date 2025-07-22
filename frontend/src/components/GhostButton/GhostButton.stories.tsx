@@ -14,9 +14,7 @@ const meta: Meta<typeof GhostButton> = {
   decorators: [
     (Story) => (
       <div style={{ background: '#222', padding: '40px' }}>
-        <ThemeProvider theme={theme}>
-          <Story />
-        </ThemeProvider>
+        <Story />
       </div>
     ),
   ],
