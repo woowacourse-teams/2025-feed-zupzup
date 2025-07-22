@@ -41,13 +41,13 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<LikeResponse> like(final Long feedbackId) {
-        feedbackLikeService.like(feedbackId);
-        return SuccessResponse.success(HttpStatus.OK, new LikeResponse(true));
+        final LikeResponse response = feedbackLikeService.like(feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
     public SuccessResponse<LikeResponse> unlike(final Long feedbackId) {
-        feedbackLikeService.unLike(feedbackId);
-        return SuccessResponse.success(HttpStatus.OK, new LikeResponse(false));
+        final LikeResponse response = feedbackLikeService.unLike(feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

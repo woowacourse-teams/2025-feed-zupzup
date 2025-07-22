@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.FeedbackLikeInMemoryRepository;
+import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +11,11 @@ public class FeedbackLikeService {
 
     private final FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
 
-    public void like(final Long feedbackId) {
-        feedbackLikeInMemoryRepository.increase(feedbackId);
+    public LikeResponse like(final Long feedbackId) {
+        return new LikeResponse(feedbackLikeInMemoryRepository.increase(feedbackId));
     }
 
-    public void unLike(final Long feedbackId) {
-        feedbackLikeInMemoryRepository.decrease(feedbackId);
+    public LikeResponse unLike(final Long feedbackId) {
+        return new LikeResponse(feedbackLikeInMemoryRepository.decrease(feedbackId));
     }
 }
