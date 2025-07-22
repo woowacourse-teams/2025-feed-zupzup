@@ -64,7 +64,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [self-hosted, linux, ARM64]
+    runs-on: [self-hosted, linux, ARM64, prod]
     environment: prod
     steps:
       - name: 체크아웃
