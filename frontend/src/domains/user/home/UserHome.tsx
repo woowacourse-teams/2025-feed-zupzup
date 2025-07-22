@@ -11,6 +11,7 @@ export default function UserHome() {
         onLoginClick={() => navigate('/admin')}
         onSuggestClick={() => navigate('/suggestion')}
         title='환영합니다!'
+        showSuggestButton={true}
       />
       <FeedbackBoxList>
         <UserFeedbackBox type='incomplete' />
