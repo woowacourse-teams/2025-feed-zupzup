@@ -11,6 +11,8 @@ import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.place.domain.Place;
+import feedzupzup.backend.place.domain.PlaceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,34 +30,36 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
 
     @Autowired
+    private PlaceRepository placeRepository;
+
+    @Autowired
     private FeedbackLikeService feedbackLikeService;
 
     @BeforeEach
-    @Override
-    void setUp() {
-        super.setUp();
+    void clear() {
         feedbackLikeInMemoryRepository.clear();
     }
 
     @Test
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_success() {
-        //given
-        final Long placeId = 1L;
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", "https://example.com/image.jpg", false);
+            //given
+            final Place place = new Place("테스트장소", "테스트Url");
+            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", "https://example.com/image.jpg", false, "윌슨");
 
-        //when
-        final CreateFeedbackResponse response = userFeedbackService.create(request, placeId);
+            //when
+            final Place savedPlace = placeRepository.save(place);
+            final CreateFeedbackResponse response = userFeedbackService.create(request, savedPlace.getId());
 
-        //then
-        assertAll(
-                () -> assertThat(response.feedbackId()).isNotNull(),
-                () -> assertThat(response.content()).isEqualTo(request.content()),
-                () -> assertThat(response.imageUrl()).isEqualTo(request.imageUrl()),
-                () -> assertThat(response.isSecret()).isEqualTo(request.isSecret()),
-                () -> assertThat(response.createdAt()).isNotNull()
-        );
-    }
+            //then
+            assertAll(
+                    () -> assertThat(response.feedbackId()).isNotNull(),
+                    () -> assertThat(response.content()).isEqualTo(request.content()),
+                    () -> assertThat(response.imageUrl()).isEqualTo(request.imageUrl()),
+                    () -> assertThat(response.isSecret()).isEqualTo(request.isSecret()),
+                    () -> assertThat(response.createdAt()).isNotNull()
+            );
+        }
 
     @Test
     @DisplayName("커서 기반 페이징으로 피드백 목록을 성공적으로 조회한다")
@@ -66,7 +70,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
         final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        
+
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
         feedBackRepository.save(feedback3);
@@ -92,7 +96,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Long placeId = 1L;
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        
+
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
 
@@ -135,7 +139,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
         final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        
+
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
         final Feedback saved3 = feedBackRepository.save(feedback3);
@@ -183,11 +187,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // given
         final Long targetPlaceId = 1L;
         final Long otherPlaceId = 2L;
-        
+
         final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
         final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
         final Feedback otherFeedback = FeedbackFixture.createFeedbackWithPlaceId(otherPlaceId);
-        
+
         feedBackRepository.save(targetFeedback1);
         feedBackRepository.save(targetFeedback2);
         feedBackRepository.save(otherFeedback);
@@ -215,11 +219,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(placeId, 5); // DB에 5개 좋아요
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(placeId, 3); // DB에 3개 좋아요
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(placeId, 0); // DB에 0개 좋아요
-        
+
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
         final Feedback saved3 = feedBackRepository.save(feedback3);
-        
+
         // 인메모리에 좋아요 추가
         feedbackLikeService.like(saved1.getId()); // 인메모리에 1개 추가 -> 총 6개
         feedbackLikeService.like(saved1.getId()); // 인메모리에 1개 더 추가 -> 총 7개
@@ -247,7 +251,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     final var feedback3Item = feedbackItems.stream()
                             .filter(item -> item.feedbackId().equals(saved3.getId()))
                             .findFirst().orElseThrow();
-                    
+
                     assertThat(feedback1Item.likeCount()).isEqualTo(7); // 5(DB) + 2(인메모리) = 7
                     assertThat(feedback2Item.likeCount()).isEqualTo(4); // 3(DB) + 1(인메모리) = 4
                     assertThat(feedback3Item.likeCount()).isEqualTo(3); // 0(DB) + 3(인메모리) = 3
@@ -262,7 +266,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Long placeId = 1L;
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(placeId, 10); // DB에 10개 좋아요
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(placeId, 0);  // DB에 0개 좋아요
-        
+
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -282,7 +286,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     final var feedback2Item = feedbackItems.stream()
                             .filter(item -> item.feedbackId().equals(saved2.getId()))
                             .findFirst().orElseThrow();
-                    
+
                     assertThat(feedback1Item.likeCount()).isEqualTo(10); // DB 좋아요 수만
                     assertThat(feedback2Item.likeCount()).isZero(); // DB 좋아요 수만
                 }
@@ -295,9 +299,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // given
         final Long placeId = 1L;
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(placeId, 0); // DB에 0개 좋아요
-        
+
         final Feedback saved = feedBackRepository.save(feedback);
-        
+
         // 인메모리에만 좋아요 추가
         for (int i = 0; i < 5; i++) {
             feedbackLikeService.like(saved.getId()); // 인메모리에 총 5개 추가
@@ -322,9 +326,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // given
         final Long placeId = 1L;
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(placeId, 8); // DB에 8개 좋아요
-        
+
         final Feedback saved = feedBackRepository.save(feedback);
-        
+
         // 인메모리에 좋아요 추가 후 일부 취소
         feedbackLikeService.like(saved.getId());    // +1 -> 총 9개
         feedbackLikeService.like(saved.getId());    // +1 -> 총 10개

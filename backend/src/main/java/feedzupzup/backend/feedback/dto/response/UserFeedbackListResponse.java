@@ -46,6 +46,9 @@ public record UserFeedbackListResponse(
             @Schema(description = "좋아요 수", example = "5")
             int likeCount,
 
+            @Schema(description = "작성자 이름", example = "댕댕이")
+            String userName,
+
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
             LocalDateTime createdAt
     ) {
@@ -57,6 +60,7 @@ public record UserFeedbackListResponse(
                     feedback.getStatus(),
                     feedback.isSecret(),
                     feedback.getLikeCount(),
+                    feedback.getUserName(),
                     feedback.getCreatedAt()
             );
         }

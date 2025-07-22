@@ -6,6 +6,9 @@ import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.place.domain.Place;
+import feedzupzup.backend.place.domain.PlaceRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -19,10 +22,13 @@ public class UserFeedbackService {
 
     private final FeedBackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
+    private final PlaceRepository placeRepository;
 
     @Transactional
     public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long placeId) {
-        final Feedback newFeedback = request.toFeedback(placeId);
+        final Place place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
+        final Feedback newFeedback = request.toFeedback(place.getId());
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }

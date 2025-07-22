@@ -36,7 +36,7 @@ public interface AdminFeedbackApi {
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
             @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") Long placeId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
-            @Parameter(description = "커서 ID", example = "1") @RequestParam(required = false) final Long cursorId
+            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
     );
 
     @Operation(summary = "피드백 비밀 상태 변경", description = "피드백의 비밀 상태를 변경합니다. (관리자 전용)")

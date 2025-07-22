@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.global.BaseTimeEntity;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -34,6 +35,9 @@ public class Feedback extends BaseTimeEntity {
 
     private int likeCount;
 
+    @Embedded
+    private UserName userName;
+
     @Builder
     public Feedback(
             final Long id,
@@ -42,7 +46,8 @@ public class Feedback extends BaseTimeEntity {
             final ProcessStatus status,
             final Long placeId,
             final String imageUrl,
-            final int likeCount
+            final int likeCount,
+            final UserName userName
     ) {
         this.id = id;
         this.content = content;
@@ -51,6 +56,7 @@ public class Feedback extends BaseTimeEntity {
         this.placeId = placeId;
         this.imageUrl = imageUrl;
         this.likeCount = likeCount;
+        this.userName = userName;
     }
 
     public Feedback copyOfLikeCount(final int likeCount) {
@@ -67,6 +73,10 @@ public class Feedback extends BaseTimeEntity {
 
     public void updateStatus(final ProcessStatus status) {
         this.status = status;
+    }
+
+    public String getUserName() {
+        return userName.getValue();
     }
 
     public void updateSecret(final boolean isSecret) {

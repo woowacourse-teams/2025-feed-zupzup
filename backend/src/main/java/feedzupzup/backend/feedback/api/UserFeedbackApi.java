@@ -35,7 +35,7 @@ public interface UserFeedbackApi {
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
             @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
-            @Parameter(description = "커서 ID", example = "1") @RequestParam(required = false) final Long cursorId
+            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
     );
 
     @Operation(summary = "피드백 생성", description = "새로운 피드백을 생성합니다.")

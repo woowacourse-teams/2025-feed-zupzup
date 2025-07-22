@@ -1,15 +1,18 @@
-name: Java CI with Gradle
+name: Deploy to Release on PR
 
 on:
   pull_request:
-    branches: [ "be/develop" ]
+    branches: [ "release" ]
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
+    if: |
+      github.event.pull_request.base.ref == 'release' &&
+      github.event.pull_request.head.ref == 'be/develop'
     steps:
       - name: 레포지토리 체크아웃
         uses: actions/checkout@v4
