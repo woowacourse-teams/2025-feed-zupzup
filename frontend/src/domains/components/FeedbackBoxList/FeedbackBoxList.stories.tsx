@@ -47,9 +47,24 @@ export const Admin: Story = {
   args: {
     children: (
       <>
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='complete' />
+        <AdminFeedbackBox
+          type='incomplete'
+          feedbackId='1'
+          onConfirm={() => {}}
+          onDelete={() => {}}
+        />
+        <AdminFeedbackBox
+          type='incomplete'
+          feedbackId='2'
+          onConfirm={() => {}}
+          onDelete={() => {}}
+        />
+        <AdminFeedbackBox
+          type='complete'
+          feedbackId='3'
+          onConfirm={() => {}}
+          onDelete={() => {}}
+        />
       </>
     ),
   },
