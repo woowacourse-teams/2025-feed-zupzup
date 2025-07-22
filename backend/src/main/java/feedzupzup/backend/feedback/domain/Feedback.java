@@ -51,6 +51,17 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
     }
 
+    public Feedback copyOfLikeCount(final int likeCount) {
+        return Feedback.builder()
+                .likeCount(likeCount)
+                .isSecret(isSecret)
+                .status(status)
+                .placeId(placeId)
+                .imageUrl(imageUrl)
+                .content(content)
+                .build();
+    }
+
     public void updateStatus(final ProcessStatus status) {
         this.status = status;
     }
