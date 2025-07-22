@@ -1,4 +1,5 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
+import BasicInput from '@/components/BasicInput/BasicInput';
 import BasicTextArea from '@/components/BasicTextArea/BasicTextArea';
 import Header from '@/components/Header/Header';
 import CategorySelector from '@/domains/components/CategorySelector/CategorySelector';
@@ -21,10 +22,16 @@ const selectorOptions = [
 export default function Suggestions() {
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
+
   const handleSuggestionsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setSuggestions(e.target.value);
+  };
+
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
   };
 
   const [selectedCategory, setSelectedCategory] = useState<string>('');
@@ -44,6 +51,14 @@ export default function Suggestions() {
             placeholder='카테고리를 선택하세요'
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
+          />
+        </SuggestionsFormField>
+
+        <SuggestionsFormField label='작성자 이름'>
+          <BasicInput
+            onChange={handleUserNameChange}
+            value={userName}
+            placeholder='작성자 이름은 익명으로 표시됩니다.'
           />
         </SuggestionsFormField>
 
