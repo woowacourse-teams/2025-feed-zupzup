@@ -36,7 +36,7 @@ export default function BasicTextArea({
       />
       {showCharCount && (
         <p css={caption(theme)}>
-          {value.length}/ {maxLength}
+          {value.length} / {maxLength}
         </p>
       )}
     </div>

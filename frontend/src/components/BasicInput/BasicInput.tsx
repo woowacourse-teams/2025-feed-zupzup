@@ -37,7 +37,7 @@ export default function BasicInput({
       />
       {showCharCount && (
         <p css={caption(theme)}>
-          {value.length}/ {maxLength}
+          {value.length} / {maxLength}
         </p>
       )}
     </div>
