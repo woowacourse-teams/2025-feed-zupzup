@@ -3,7 +3,7 @@ import { apiClient } from '@/apis/apiClient';
 
 const DEFAULT_SIZE = 10;
 
-interface UseInfinityScrollProps<ResponseData> {
+interface UseInfinityScrollParams<ResponseData> {
   url: string;
   key: keyof ResponseData;
   initialCursorId?: number | null;
@@ -22,7 +22,7 @@ export default function useInfinityScroll<
   key,
   initialCursorId = null,
   initialHasNext = true,
-}: UseInfinityScrollProps<ResponseData>) {
+}: UseInfinityScrollParams<ResponseData>) {
   const [items, setItems] = useState<T[]>([]);
   const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
   const [hasNext, setHasNext] = useState(initialHasNext);
