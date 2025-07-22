@@ -12,9 +12,17 @@ import TrashCanIcon from '@/components/icons/TrashCanIcon';
 
 interface AdminFeedbackBox {
   type: FeedbackStatusType;
+  feedbackId: string;
+  onConfirm: (feedbackId: string) => void;
+  onDelete: (feedbackId: string) => void;
 }
 
-export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
+export default function AdminFeedbackBox({
+  type,
+  feedbackId,
+  onConfirm,
+  onDelete,
+}: AdminFeedbackBox) {
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -23,8 +31,16 @@ export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
           <StatusTag type={type} />
         </div>
         <div css={iconWrap}>
-          {type === 'incomplete' && <IconButton icon={<CheckIcon />} />}
-          <IconButton icon={<TrashCanIcon />} />
+          {type === 'incomplete' && (
+            <IconButton
+              icon={<CheckIcon />}
+              onClick={() => onConfirm(feedbackId)}
+            />
+          )}
+          <IconButton
+            icon={<TrashCanIcon />}
+            onClick={() => onDelete(feedbackId)}
+          />
         </div>
       </div>
       <FeedbackText
