@@ -11,7 +11,7 @@ const meta: Meta<typeof FeedbackBoxBackGround> = {
   argTypes: {
     type: {
       control: 'select',
-      options: ['incomplete', 'complete'],
+      options: ['WAITING', 'CONFIRMED'],
       description: '상태에 따라 배경 스타일이 달라집니다.',
     },
     children: {
@@ -33,14 +33,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Incomplete: Story = {
   args: {
-    type: 'incomplete',
+    type: 'WAITING',
     children: <div>미완료 상태의 배경입니다.</div>,
   },
 };
 
 export const Complete: Story = {
   args: {
-    type: 'complete',
+    type: 'CONFIRMED',
     children: <div>완료 상태의 배경입니다.</div>,
   },
 };

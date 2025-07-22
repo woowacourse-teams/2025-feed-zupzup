@@ -10,7 +10,7 @@ export interface CategoryTagProps {
 
 export default function CategoryTag({
   text,
-  type = 'incomplete',
+  type = 'WAITING',
 }: CategoryTagProps) {
   const theme = useAppTheme();
 

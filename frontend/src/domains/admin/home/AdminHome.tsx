@@ -14,11 +14,11 @@ export default function AdminHome() {
         showSuggestButton={false}
       />
       <FeedbackBoxList>
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='complete' />
-        <AdminFeedbackBox type='complete' />
+        <AdminFeedbackBox type='WAITING' />
+        <AdminFeedbackBox type='WAITING' />
+        <AdminFeedbackBox type='WAITING' />
+        <AdminFeedbackBox type='CONFIRMED' />
+        <AdminFeedbackBox type='CONFIRMED' />
       </FeedbackBoxList>
     </section>
   );

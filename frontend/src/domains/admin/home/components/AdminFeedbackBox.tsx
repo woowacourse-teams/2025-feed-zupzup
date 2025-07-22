@@ -23,7 +23,7 @@ export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
           <StatusTag type={type} />
         </div>
         <div css={iconWrap}>
-          {type === 'incomplete' && <IconButton icon={<CheckIcon />} />}
+          {type === 'WAITING' && <IconButton icon={<CheckIcon />} />}
           <IconButton icon={<TrashCanIcon />} />
         </div>
       </div>

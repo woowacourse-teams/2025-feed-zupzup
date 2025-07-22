@@ -35,9 +35,9 @@ export const Default: Story = {
   args: {
     children: (
       <>
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='complete' />
+        <UserFeedbackBox type='WAITING' />
+        <UserFeedbackBox type='WAITING' />
+        <UserFeedbackBox type='CONFIRMED' />
       </>
     ),
   },
@@ -47,9 +47,9 @@ export const Admin: Story = {
   args: {
     children: (
       <>
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='complete' />
+        <AdminFeedbackBox type='WAITING' />
+        <AdminFeedbackBox type='WAITING' />
+        <AdminFeedbackBox type='CONFIRMED' />
       </>
     ),
   },

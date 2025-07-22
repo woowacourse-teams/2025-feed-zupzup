@@ -8,12 +8,12 @@ export interface StatusTagProps {
   type: FeedbackStatusType;
 }
 
-export default function StatusTag({ type = 'incomplete' }: StatusTagProps) {
+export default function StatusTag({ type = 'WAITING' }: StatusTagProps) {
   const theme = useAppTheme();
 
   return (
     <Tag customCSS={container(theme, type)}>
-      {type === 'incomplete' ? (
+      {type === 'WAITING' ? (
         '접수'
       ) : (
         <span css={content}>

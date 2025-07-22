@@ -4,10 +4,10 @@ import UserFeedbackBox from './domains/user/home/components/UserFeedbackBox/User
 export default function App() {
   return (
     <p>
-      <AdminFeedbackBox type='complete' />
-      <AdminFeedbackBox type='incomplete' />
-      <UserFeedbackBox type='complete' />
-      <UserFeedbackBox type='incomplete' />
+      <AdminFeedbackBox type='CONFIRMED' />
+      <AdminFeedbackBox type='WAITING' />
+      <UserFeedbackBox type='CONFIRMED' />
+      <UserFeedbackBox type='WAITING' />
     </p>
   );
 }

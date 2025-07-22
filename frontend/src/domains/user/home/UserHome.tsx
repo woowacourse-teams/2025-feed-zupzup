@@ -3,8 +3,28 @@ import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxLis
 import UserFeedbackBox from './components/UserFeedbackBox/UserFeedbackBox';
 import { useNavigate } from 'react-router-dom';
 
+// interface Feedback {
+//   feedbackId: number;
+//   content: string;
+//   status: 'WAITING' | 'CONFIRMED';
+//   isSecret: boolean;
+//   isLiked: boolean;
+//   createdAt: string; // ISO 형식 날짜 문자열
+// }
+
 export default function UserHome() {
   const navigate = useNavigate();
+
+  // const {
+  //   items: feedbacks,
+  //   fetchMore,
+  //   hasNext,
+  //   loading,
+  // } = useInfinityScroll<Feedback, 'feedbacks', FeedbackResponse>({
+  //   url: '/api/places/1/feedbacks',
+  //   key: 'feedbacks',
+  // });
+
   return (
     <section>
       <Hero
@@ -14,11 +34,11 @@ export default function UserHome() {
         showSuggestButton={true}
       />
       <FeedbackBoxList>
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='complete' />
-        <UserFeedbackBox type='complete' />
+        <UserFeedbackBox type='WAITING' />
+        <UserFeedbackBox type='WAITING' />
+        <UserFeedbackBox type='WAITING' />
+        <UserFeedbackBox type='CONFIRMED' />
+        <UserFeedbackBox type='CONFIRMED' />
       </FeedbackBoxList>
     </section>
   );
