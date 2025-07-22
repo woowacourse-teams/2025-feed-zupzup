@@ -1,17 +1,17 @@
-import { HEADER_HEIGHT_PX } from '@/constants';
+import { PAGE_PADDING_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
 export const header = css`
-  position: absolute;
-  top: 0;
+  position: sticky;
+  top: -${PAGE_PADDING_PX}px;
   left: 0;
   z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  height: ${HEADER_HEIGHT_PX}px;
+  width: calc(100% + 2 * ${PAGE_PADDING_PX}px);
+  margin: -${PAGE_PADDING_PX}px;
   padding: 20px;
   background-color: white;
 `;
