@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
-import java.util.Objects;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.stereotype.Component;
@@ -16,15 +16,16 @@ public class FeedbackLikeInMemoryRepository {
     }
 
     public int decrease(final long feedbackId) {
-        return Objects.requireNonNull(feedbackLikes.computeIfPresent(feedbackId, (id, count) -> {
-            count.decrementAndGet();
-            return count;
-        })).get();
+        final AtomicInteger likeCount = feedbackLikes.get(feedbackId);
+        if (likeCount == null) {
+            throw new ResourceNotFoundException("피드백을 찾을 수 없습니다.");
+        }
+        return likeCount.decrementAndGet();
     }
 
     public int get(final long feedbackId) {
-        final AtomicInteger atomicInteger = feedbackLikes.get(feedbackId);
-        return atomicInteger.get();
+        final AtomicInteger likeCount = feedbackLikes.get(feedbackId);
+        return likeCount.get();
     }
 
     public void clear() {
