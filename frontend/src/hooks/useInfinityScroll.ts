@@ -24,7 +24,7 @@ export default function useInfinityScroll<
   initialHasNext = true,
 }: UseInfinityScrollProps<ResponseData>) {
   const [items, setItems] = useState<T[]>([]);
-  const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
+  const [cursorId, setCursorId] = useState<number>(initialCursorId);
   const [hasNext, setHasNext] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
 
