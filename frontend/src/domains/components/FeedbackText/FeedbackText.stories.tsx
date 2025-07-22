@@ -31,7 +31,7 @@ export const Default: Story = {
   },
 };
 
-export const Complete: Story = {
+export const CompleteIcon: Story = {
   args: {
     text: '완료된 피드백입니다.',
     type: 'complete',
