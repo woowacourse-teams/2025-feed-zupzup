@@ -22,6 +22,9 @@ public record CreateFeedbackResponse(
         @Schema(description = "비밀 피드백 여부", example = "false")
         boolean isSecret,
 
+        @Schema(description = "작성자 이름", example = "댕댕이")
+        String userName,
+
         @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
         LocalDateTime createdAt
 ) {
@@ -33,6 +36,7 @@ public record CreateFeedbackResponse(
                         feedback.getStatus(),
                         feedback.getImageUrl(),
                         feedback.isSecret(),
+                        feedback.getUserName(),
                         feedback.getCreatedAt()
                 );
         }

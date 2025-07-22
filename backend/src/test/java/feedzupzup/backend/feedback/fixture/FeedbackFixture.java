@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.fixture;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.domain.UserName;
 
 public class FeedbackFixture {
 
@@ -13,6 +14,7 @@ public class FeedbackFixture {
                 .status(status)
                 .placeId(1L)
                 .imageUrl("https://example.com/image.jpg")
+                .userName(new UserName("테스트유저"))
                 .build();
     }
 
@@ -23,6 +25,7 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .placeId(placeId)
                 .imageUrl("https://example.com/image.jpg")
+                .userName(new UserName("테스트유저"))
                 .build();
     }
 
@@ -33,6 +36,7 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .placeId(1L)
                 .imageUrl("https://example.com/image.jpg")
+                .userName(new UserName("테스트유저"))
                 .build();
     }
 
@@ -43,6 +47,18 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .placeId(1L)
                 .imageUrl("https://example.com/image.jpg")
+                .userName(new UserName("테스트유저"))
+                .build();
+    }
+
+    public static Feedback createFeedbackWithLikes(final Long placeId, final int likeCount) {
+        return Feedback.builder()
+                .content("좋아요 테스트용 피드백")
+                .isSecret(false)
+                .status(ProcessStatus.WAITING)
+                .placeId(placeId)
+                .imageUrl("https://example.com/image.jpg")
+                .userName(new UserName("테스트유저"))
                 .build();
     }
 }

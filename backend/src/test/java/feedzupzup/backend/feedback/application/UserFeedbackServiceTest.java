@@ -9,6 +9,8 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.place.domain.Place;
+import feedzupzup.backend.place.domain.PlaceRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedBackRepository feedBackRepository;
 
+    @Autowired
+    private PlaceRepository placeRepository;
 
     @Nested
     @DisplayName("피드백 생성 테스트")
@@ -31,11 +35,12 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("피드백을 성공적으로 생성한다")
         void create_success() {
             //given
-            final Long placeId = 1L;
-            final CreateFeedbackRequest request = new CreateFeedbackRequest("윌슨", "맛있어요", false);
+            final Place place = new Place("테스트장소", "테스트Url");
+            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", "https://example.com/image.jpg", false, "윌슨");
 
             //when
-            final CreateFeedbackResponse response = userFeedbackService.create(request, placeId);
+            final Place savedPlace = placeRepository.save(place);
+            final CreateFeedbackResponse response = userFeedbackService.create(request, savedPlace.getId());
 
             //then
             assertAll(
