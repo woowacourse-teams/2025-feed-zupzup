@@ -1,4 +1,4 @@
-export default function Lock() {
+export default function LockIcon() {
   return (
     <svg
       width='15'

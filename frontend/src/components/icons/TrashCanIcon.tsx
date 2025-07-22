@@ -1,4 +1,4 @@
-export default function TrashCan() {
+export default function TrashCanIcon() {
   return (
     <svg
       width='15'

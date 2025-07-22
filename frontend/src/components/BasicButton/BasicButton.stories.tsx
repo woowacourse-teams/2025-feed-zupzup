@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import BasicButton from './BasicButton';
-import Plus from '@/components/icons/Plus';
+import PlusIcon from '@/components/icons/PlusIcon';
 
 const meta: Meta<typeof BasicButton> = {
   title: 'Components/BasicButton',
@@ -47,7 +47,7 @@ export const Secondary: Story = {
 export const WithIcon: Story = {
   args: {
     children: '아이콘 버튼',
-    icon: <Plus />,
+    icon: <PlusIcon />,
     variant: 'primary',
   },
 };

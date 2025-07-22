@@ -5,7 +5,7 @@ import {
   secretOption,
   secretText,
 } from '@/domains/user/suggestions/components/SecretPostOption/SecretPostOption.style';
-import Lock from '@/components/icons/lock';
+import LockIcon from '@/components/icons/LockIcon';
 
 export default function SecretPostOption() {
   const theme = useAppTheme();
@@ -18,7 +18,7 @@ export default function SecretPostOption() {
   return (
     <div css={secretOption(theme)}>
       <BasicToggleButton isOn={isOn} onClick={toggleHandler} />
-      <Lock />
+      <LockIcon />
       <p css={secretText(theme)}>비밀글로 작성</p>
     </div>
   );

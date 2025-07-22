@@ -1,4 +1,4 @@
-export default function Complete() {
+export default function CompleteIcon() {
   return (
     <svg
       width='11'
