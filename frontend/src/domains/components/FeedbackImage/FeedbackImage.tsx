@@ -1,6 +1,6 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { header, imageStyle, wrapper } from './FeedbackImage.styles';
-import Image from '@/components/icons/Image';
+import ImageIcon from '@/components/icons/ImageIcon';
 
 interface FeedbackImageProps {
   src: string;
@@ -16,7 +16,7 @@ export default function FeedbackImage({
   return (
     <div css={wrapper}>
       <div css={header(theme)}>
-        <Image />
+        <ImageIcon />
         <span>첨부 이미지</span>
       </div>
       <img src={src} alt={alt} css={imageStyle} />

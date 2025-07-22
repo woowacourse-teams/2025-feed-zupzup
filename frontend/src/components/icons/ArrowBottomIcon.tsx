@@ -1,4 +1,4 @@
-export default function ArrowBottom() {
+export default function ArrowBottomIcon() {
   return (
     <svg
       width='14'

@@ -1,4 +1,4 @@
-export default function FillHeart() {
+export default function FillHeartIcon() {
   return (
     <svg
       width='14'

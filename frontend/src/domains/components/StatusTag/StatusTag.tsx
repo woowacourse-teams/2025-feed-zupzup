@@ -1,7 +1,7 @@
 import Tag from '@/components/Tag/Tag';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { container, content } from './StatusTag.styles';
-import Complete from '@/components/icons/Complete';
+import CompleteIcon from '@/components/icons/CompleteIcon';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 export interface StatusTagProps {
@@ -17,7 +17,7 @@ export default function StatusTag({ type = 'incomplete' }: StatusTagProps) {
         '접수'
       ) : (
         <span css={content}>
-          <Complete /> 완료
+          <CompleteIcon /> 완료
         </span>
       )}
     </Tag>

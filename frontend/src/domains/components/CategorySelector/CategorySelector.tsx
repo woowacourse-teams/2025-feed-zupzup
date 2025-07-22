@@ -7,7 +7,7 @@ import {
   dropdownItem,
   dropdownText,
 } from './CategorySelector.styles';
-import ArrowBottom from '@/components/icons/ArrowBottom';
+import ArrowBottomIcon from '@/components/icons/ArrowBottomIcon';
 
 interface SelectorOption {
   value: string;
@@ -100,7 +100,7 @@ export default function CategorySelector({
         aria-label={placeholder}
       >
         <span css={dropdownText(theme, !!selectedOption)}>{displayText}</span>
-        <ArrowBottom />
+        <ArrowBottomIcon />
       </button>
 
       {isOpen && (
