@@ -65,7 +65,7 @@ export default function Suggestions() {
           <BasicButton variant='secondary' onClick={() => navigate(-1)}>
             취소
           </BasicButton>
-          <BasicButton>등록하기</BasicButton>
+          <BasicButton onClick={() => navigate('/')}>등록하기</BasicButton>
         </div>
       </div>
     </>
