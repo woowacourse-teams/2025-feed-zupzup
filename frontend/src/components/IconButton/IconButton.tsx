@@ -1,10 +1,11 @@
 import React from 'react';
 import Button from '../@commons/Button/Button';
 
-interface IconButtonProps extends React.ComponentProps<typeof Button> {
+interface IconButtonProps {
   icon: React.ReactNode;
+  onClick?: () => void;
 }
 
-export default function IconButton({ icon, ...props }: IconButtonProps) {
-  return <Button {...props}>{icon}</Button>;
+export default function IconButton({ icon, onClick }: IconButtonProps) {
+  return <Button onClick={onClick}>{icon}</Button>;
 }

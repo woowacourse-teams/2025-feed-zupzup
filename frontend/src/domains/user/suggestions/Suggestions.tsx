@@ -11,6 +11,7 @@ import {
   suggestionLayout,
 } from '@/domains/user/suggestions/Suggestions.style';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const selectorOptions = [
   { value: 'general', label: '일반' },
@@ -18,6 +19,7 @@ const selectorOptions = [
 ];
 
 export default function Suggestions() {
+  const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState<string>('');
   const handleSuggestionsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -60,7 +62,9 @@ export default function Suggestions() {
         <SecretPostOption />
 
         <div css={buttonContainer}>
-          <BasicButton variant='secondary'>취소</BasicButton>
+          <BasicButton variant='secondary' onClick={() => navigate(-1)}>
+            취소
+          </BasicButton>
           <BasicButton>등록하기</BasicButton>
         </div>
       </div>

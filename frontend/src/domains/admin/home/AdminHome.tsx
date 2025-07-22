@@ -1,13 +1,15 @@
 import Hero from '@/domains/user/home/components/Hero/Hero';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import AdminFeedbackBox from './components/AdminFeedbackBox';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminHome() {
+  const navigate = useNavigate();
   return (
     <section>
       <Hero
-        onLoginClick={() => console.log('로그인 클릭!')}
-        onSuggestClick={() => console.log('건의사항 페이지 이동')}
+        onLoginClick={() => navigate('/')}
+        onSuggestClick={() => navigate('/suggestion')}
         title='환영합니다!'
       />
       <FeedbackBoxList>
