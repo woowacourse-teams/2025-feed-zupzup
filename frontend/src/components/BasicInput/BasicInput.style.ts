@@ -1,17 +1,15 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const basicTextAreaContainer = css`
+export const basicInputContainer = css`
   position: relative;
 `;
 
-export const textArea = (theme: Theme) => css`
+export const basicInput = (theme: Theme) => css`
   width: 100%;
-  height: 96px;
   padding: 12px;
   background-color: white;
   border: 1px solid ${theme.colors.gray[200]};
-  resize: none;
   border-radius: 16px;
   ${theme.typography.inter.small}
 
@@ -24,8 +22,8 @@ export const textArea = (theme: Theme) => css`
 
 export const caption = (theme: Theme) => css`
   position: absolute;
+  top: 40%;
   right: 20px;
-  bottom: 20%;
   color: ${theme.colors.gray[500]};
 
   ${theme.typography.inter.small}

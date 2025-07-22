@@ -1,36 +1,37 @@
-import { useAppTheme } from '@/hooks/useAppTheme';
-import TextArea from '../@commons/TextArea/TextArea';
+import Input from '@/components/@commons/Input/Input';
 import {
-  basicTextAreaContainer,
+  basicInput,
+  basicInputContainer,
   caption,
-  textArea,
-} from './BasicTextArea.style';
+} from '@/components/BasicInput/BasicInput.style';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
-export interface BasicTextAreaProps {
+interface BasicInputProps {
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
   maxLength?: number;
   minLength?: number;
   showCharCount?: boolean;
 }
 
-export default function BasicTextArea({
+export default function BasicInput({
   value,
   onChange,
   placeholder,
-  maxLength = 500,
-  minLength = 10,
+  maxLength = 10,
+  minLength = 1,
   showCharCount = true,
-}: BasicTextAreaProps) {
+}: BasicInputProps) {
   const theme = useAppTheme();
+
   return (
-    <div css={basicTextAreaContainer}>
-      <TextArea
-        customCSS={textArea(theme)}
+    <div css={basicInputContainer}>
+      <Input
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        customCSS={basicInput(theme)}
         maxLength={maxLength}
         minLength={minLength}
       />
