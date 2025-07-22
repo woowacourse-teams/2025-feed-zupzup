@@ -1,5 +1,5 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
-import PlusIcon from '@/components/icons/Plus';
+import PlusIcon from '@/components/icons/PlusIcon';
 import {
   hero,
   heroContent,

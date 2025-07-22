@@ -1,4 +1,4 @@
-import Photo from '@/components/icons/photo';
+import PhotoIcon from '@/components/icons/PhotoIcon';
 import {
   previewImage,
   uploadBox,
@@ -31,7 +31,7 @@ export default function UploadBox() {
         <img src={preview} alt='미리보기' css={previewImage} />
       ) : (
         <>
-          <Photo />
+          <PhotoIcon />
           <p css={uploadText(theme)}>사진을 업로드 하세요</p>
         </>
       )}
