@@ -1,3 +1,4 @@
+import { postUserFeedback } from '@/apis/userFeedback.api';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import BasicInput from '@/components/BasicInput/BasicInput';
 import BasicTextArea from '@/components/BasicTextArea/BasicTextArea';
@@ -11,7 +12,7 @@ import {
   buttonContainer,
   suggestionLayout,
 } from '@/domains/user/suggestions/Suggestions.style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const selectorOptions = [
@@ -23,6 +24,9 @@ export default function Suggestions() {
   const navigate = useNavigate();
   const [suggestions, setSuggestions] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [isOn, setisOn] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>('');
 
   const handleSuggestionsChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -34,7 +38,25 @@ export default function Suggestions() {
     setUserName(e.target.value);
   };
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const handleToggleButton = () => {
+    setisOn(!isOn);
+  };
+
+  const handleImageUpload = (url: string) => {
+    setImgSrc(url);
+  };
+
+  const handleSubmitSuggestions = () => {
+    postUserFeedback({
+      placeId: 1,
+      content: suggestions,
+      imageUrl: imgSrc,
+      isSecret: isOn,
+      userName,
+    });
+    alert('건의사항이 제출되었습니다!');
+    navigate('/');
+  };
 
   return (
     <>
@@ -71,16 +93,16 @@ export default function Suggestions() {
         </SuggestionsFormField>
 
         <SuggestionsFormField label='이미지 첨부 (선택사항)'>
-          <UploadBox />
+          <UploadBox imgSrc={imgSrc} handleImageUpload={handleImageUpload} />
         </SuggestionsFormField>
 
-        <SecretPostOption />
+        <SecretPostOption isOn={isOn} handleToggleButton={handleToggleButton} />
 
         <div css={buttonContainer}>
           <BasicButton variant='secondary' onClick={() => navigate(-1)}>
             취소
           </BasicButton>
-          <BasicButton onClick={() => navigate('/')}>등록하기</BasicButton>
+          <BasicButton onClick={handleSubmitSuggestions}>등록하기</BasicButton>
         </div>
       </div>
     </>
