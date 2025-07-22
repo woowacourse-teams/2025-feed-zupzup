@@ -1,7 +1,7 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import GlitterIcon from '../icons/GlitterIcon';
+import { useNavigate } from 'react-router-dom';
 import IconButton from '../IconButton/IconButton';
-import ArrowLeftIcon from '../icons/ArrowLeftIcon';
+import GlitterIcon from '../icons/GlitterIcon';
 import {
   captionSection,
   header,
@@ -9,7 +9,7 @@ import {
   headerSubtitle,
   headerTitle,
 } from './Header.style';
-import { useNavigate } from 'react-router-dom';
+import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 
 export interface HeaderProps {
   title: string;
@@ -23,7 +23,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   return (
     <header css={header}>
       <div css={headerSection}>
-        <IconButton icon={<ArrowLeft />} onClick={() => navigate(-1)} />
+        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(-1)} />
         <div css={captionSection}>
           <p css={[headerTitle(theme), theme.typography.inter.bodyBold]}>
             {title}
