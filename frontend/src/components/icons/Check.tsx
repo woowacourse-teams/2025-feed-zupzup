@@ -12,7 +12,7 @@ export default function Check() {
         stroke='#006045'
         strokeWidth='1.16667'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

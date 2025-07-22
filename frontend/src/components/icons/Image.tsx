@@ -12,21 +12,21 @@ export default function Image() {
         stroke='#7C7C7C'
         strokeWidth='0.875'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
       <path
         d='M4.4375 4.87256C4.92075 4.87256 5.3125 4.48081 5.3125 3.99756C5.3125 3.51431 4.92075 3.12256 4.4375 3.12256C3.95425 3.12256 3.5625 3.51431 3.5625 3.99756C3.5625 4.48081 3.95425 4.87256 4.4375 4.87256Z'
         stroke='#7C7C7C'
         strokeWidth='0.875'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
       <path
         d='M9.6875 6.62243L8.33737 5.2723C8.17329 5.10826 7.95077 5.01611 7.71875 5.01611C7.48673 5.01611 7.26421 5.10826 7.10013 5.2723L3.125 9.24743'
         stroke='#7C7C7C'
         strokeWidth='0.875'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

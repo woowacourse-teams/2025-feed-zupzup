@@ -12,14 +12,14 @@ export default function Complete() {
         stroke='white'
         strokeWidth='0.875'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
       <path
         d='M4.4375 4.94238L5.75 6.25488L10.125 1.87988'
         stroke='white'
         strokeWidth='0.875'
         strokeLinecap='round'
-        stroke-linejoin='round'
+        strokeLinejoin='round'
       />
     </svg>
   );
