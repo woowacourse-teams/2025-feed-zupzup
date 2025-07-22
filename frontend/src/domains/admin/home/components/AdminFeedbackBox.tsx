@@ -9,12 +9,22 @@ import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/Fe
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import IconButton from '@/components/IconButton/IconButton';
 import TrashCanIcon from '@/components/icons/TrashCanIcon';
+import { AdminFeedback } from '@/types/feedback.types';
 
-interface AdminFeedbackBox {
+interface AdminFeedbackBox
+  extends Omit<AdminFeedback, 'feedbackId' | 'status'> {
   type: FeedbackStatusType;
 }
 
-export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
+export default function AdminFeedbackBox({
+  type,
+  content,
+  isSecret,
+  imgUrl,
+  likeCount,
+  userName,
+  createdAt,
+}: AdminFeedbackBox) {
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -27,13 +37,13 @@ export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
           <IconButton icon={<TrashCanIcon />} />
         </div>
       </div>
-      <FeedbackText
-        text='평소에 나트륨을 적게 먹으려고 노력하는데, 오늘
-         먹은 음식이 너무 짰어요. 조금 더 담백하게 해주시면 좋겠습니다.'
-        type={type}
+      {isSecret ? '비밀글입니다.' : <FeedbackText type={type} text={content} />}
+      {imgUrl && <FeedbackImage src={imgUrl} />}
+      <FeedbackBoxFooter
+        likeCount={likeCount}
+        createdAt={createdAt}
+        userName={userName}
       />
-      <FeedbackImage src='https://i.pinimg.com/236x/44/f9/83/44f9831be884e4c65f167b96e16fa94e.jpg' />
-      <FeedbackBoxFooter likeCount={6} />
     </FeedbackBoxBackGround>
   );
 }
