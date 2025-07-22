@@ -24,7 +24,11 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final int size,
             final Long cursorId
     ) {
-        return SuccessResponse.success(HttpStatus.OK,adminFeedbackService.getFeedbackPage(size, cursorId));
+        return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
+                placeId,
+                size,
+                cursorId
+        ));
     }
 
     @Override

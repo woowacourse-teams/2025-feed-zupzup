@@ -49,9 +49,13 @@ public class AdminFeedbackService {
         return UpdateFeedbackSecretResponse.from(feedBack);
     }
 
-    public AdminFeedbackListResponse getFeedbackPage(final int size, final Long cursorId) {
+    public AdminFeedbackListResponse getFeedbackPage(
+            final Long placeId,
+            final int size,
+            final Long cursorId
+    ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByCursorIdOrderByDesc(cursorId, pageable);
+        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(placeId, cursorId, pageable);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         return AdminFeedbackListResponse.from(feedbackPage);
     }
