@@ -13,8 +13,8 @@ export interface AdminFeedback extends Omit<UserFeedback, 'isLiked'> {
   likeCount: number;
 }
 
-export interface FeedbackResponse {
-  feedbacks: UserFeedback[];
+export interface FeedbackResponse<T> {
+  feedbacks: T[];
   hasNext: boolean;
   nextCursorId: number;
 }
