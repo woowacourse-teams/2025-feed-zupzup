@@ -1,6 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ThemeProvider } from '@emotion/react';
-import { theme } from '@/theme';
 import BasicButton from './BasicButton';
 import Plus from '@/components/icons/Plus';
 
@@ -26,13 +24,7 @@ const meta: Meta<typeof BasicButton> = {
       action: 'clicked',
     },
   },
-  decorators: [
-    (Story) => (
-      <ThemeProvider theme={theme}>
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
+  decorators: [(Story) => <Story />],
 };
 
 export default meta;
