@@ -1,4 +1,4 @@
-export default function Glitter() {
+export default function GlitterIcon() {
   return (
     <svg
       width='18'

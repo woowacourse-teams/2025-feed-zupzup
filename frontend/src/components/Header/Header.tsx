@@ -1,6 +1,5 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import Glitter from '../icons/Glitter';
-
+import GlitterIcon from '../icons/GlitterIcon';
 import IconButton from '../IconButton/IconButton';
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
 import {
@@ -32,7 +31,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
           </p>
         </div>
       </div>
-      <Glitter />
+      <GlitterIcon />
     </header>
   );
 }
