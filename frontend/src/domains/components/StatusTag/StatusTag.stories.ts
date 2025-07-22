@@ -26,7 +26,7 @@ export const Default: Story = {
   },
 };
 
-export const CompleteIcon: Story = {
+export const Complete: Story = {
   args: {
     type: 'complete',
   },

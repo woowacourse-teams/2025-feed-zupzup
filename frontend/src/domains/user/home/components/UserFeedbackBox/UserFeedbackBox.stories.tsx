@@ -33,7 +33,7 @@ export const Incomplete: Story = {
   },
 };
 
-export const CompleteIcon: Story = {
+export const Complete: Story = {
   args: {
     type: 'complete',
   },

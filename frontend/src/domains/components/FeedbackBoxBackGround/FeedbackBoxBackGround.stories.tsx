@@ -38,7 +38,7 @@ export const Incomplete: Story = {
   },
 };
 
-export const CompleteIcon: Story = {
+export const Complete: Story = {
   args: {
     type: 'complete',
     children: <div>완료 상태의 배경입니다.</div>,
