@@ -1,5 +1,5 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import Calendar from '@/components/icons/Calendar';
+import CalendarIcon from '@/components/icons/CalendarIcon';
 import LikeButton from '@/components/LikeButton/LikeButton';
 import { calendar, container, content, day } from './FeedbackBoxFooter.styles';
 
@@ -16,7 +16,7 @@ export default function FeedbackBoxFooter({
     <div css={container}>
       <div css={calendar(theme)}>
         <p>
-          <Calendar />
+          <CalendarIcon />
         </p>
         <p css={day}>2025-01-08</p>
       </div>

@@ -1,5 +1,5 @@
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import Check from '@/components/icons/Check';
+import CheckIcon from '@/components/icons/CheckIcon';
 import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
 import StatusTag from '@/domains/components/StatusTag/StatusTag';
 import { iconWrap, topContainer } from './AdminFeedbackBox.styles';
@@ -23,7 +23,7 @@ export default function AdminFeedbackBox({ type }: AdminFeedbackBox) {
           <StatusTag type={type} />
         </div>
         <div css={iconWrap}>
-          {type === 'incomplete' && <IconButton icon={<Check />} />}
+          {type === 'incomplete' && <IconButton icon={<CheckIcon />} />}
           <IconButton icon={<TrashCan />} />
         </div>
       </div>
