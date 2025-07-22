@@ -38,14 +38,14 @@ public record UserFeedbackListResponse(
             @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
             String content,
 
-            @Schema(description = "처리 상태", example = "WATING")
+            @Schema(description = "처리 상태", example = "WAITING")
             ProcessStatus status,
 
             @Schema(description = "비밀 피드백 여부", example = "false")
             boolean isSecret,
 
-            @Schema(description = "사용자가 좋아요했는지 여부", example = "true")
-            boolean isLiked,
+            @Schema(description = "좋아요 수", example = "5")
+            int likeCount,
 
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
             LocalDateTime createdAt
@@ -57,7 +57,7 @@ public record UserFeedbackListResponse(
                     feedback.getContent(),
                     feedback.getStatus(),
                     feedback.isSecret(),
-                    false,
+                    feedback.getLikeCount(),
                     feedback.getCreatedAt()
             );
         }
