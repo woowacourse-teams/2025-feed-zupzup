@@ -1,4 +1,4 @@
-export default function EmptyHeart() {
+export default function EmptyHeartIcon() {
   return (
     <svg
       width='14'

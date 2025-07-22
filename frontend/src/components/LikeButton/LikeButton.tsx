@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import EmptyHeart from '../icons/EmptyHeart';
+import EmptyHeartIcon from '../icons/EmptyHeartIcon';
 import FillHeart from '../icons/FillHeart';
 
 interface LikeButtonProps {
@@ -13,7 +13,7 @@ export default function LikeButton({ like = false }: LikeButtonProps) {
 
   return (
     <button onClick={handleLikeButton}>
-      {isLiked ? <FillHeart /> : <EmptyHeart />}
+      {isLiked ? <FillHeart /> : <EmptyHeartIcon />}
     </button>
   );
 }
