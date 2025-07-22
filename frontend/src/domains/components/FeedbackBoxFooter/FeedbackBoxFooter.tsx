@@ -5,10 +5,14 @@ import { calendar, container, content, day } from './FeedbackBoxFooter.styles';
 
 interface FeedbackBoxFooterProps {
   likeCount?: number;
+  isLiked: boolean;
+  createdAt: string;
 }
 
 export default function FeedbackBoxFooter({
   likeCount,
+  isLiked,
+  createdAt,
 }: FeedbackBoxFooterProps) {
   const theme = useAppTheme();
 
@@ -18,10 +22,10 @@ export default function FeedbackBoxFooter({
         <p>
           <CalendarIcon />
         </p>
-        <p css={day}>2025-01-08</p>
+        <p css={day}>{createdAt}</p>
       </div>
       <div css={content(theme)}>
-        <LikeButton like={false} /> {likeCount}
+        <LikeButton like={isLiked} /> {likeCount}
       </div>
     </div>
   );
