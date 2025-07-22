@@ -9,6 +9,7 @@ import {
   headerSubtitle,
   headerTitle,
 } from './Header.style';
+import { useNavigate } from 'react-router-dom';
 
 export interface HeaderProps {
   title: string;
@@ -17,11 +18,12 @@ export interface HeaderProps {
 
 export default function Header({ title, subtitle }: HeaderProps) {
   const theme = useAppTheme();
+  const navigate = useNavigate();
 
   return (
     <header css={header}>
       <div css={headerSection}>
-        <IconButton icon={<ArrowLeftIcon />} />
+        <IconButton icon={<ArrowLeft />} onClick={() => navigate(-1)} />
         <div css={captionSection}>
           <p css={[headerTitle(theme), theme.typography.inter.bodyBold]}>
             {title}
