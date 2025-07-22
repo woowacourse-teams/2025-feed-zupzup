@@ -69,4 +69,8 @@ public class Feedback extends BaseTimeEntity {
     public void updateSecret(final boolean isSecret) {
         this.isSecret = isSecret;
     }
+
+    public void updateLikeCount(final int likeCount) {
+        this.likeCount = likeCount;
+    }
 }

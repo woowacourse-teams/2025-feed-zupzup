@@ -8,6 +8,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -199,6 +200,152 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                             .extracting(UserFeedbackListResponse.UserFeedbackItem::feedbackId)
                             .doesNotContain(otherFeedback.getId()),
                     () -> assertThat(response.hasNext()).isFalse()
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("인메모리 좋아요 반영 테스트")
+    class InMemoryLikeReflectionTest {
+
+        @Autowired
+        private FeedbackLikeService feedbackLikeService;
+
+        @Test
+        @DisplayName("DB 좋아요 수와 인메모리 좋아요 수가 합산되어 응답에 반영된다")
+        void getFeedbackPage_reflects_memory_likes() {
+            // given
+            final Long placeId = 1L;
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, 5); // DB에 5개 좋아요
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(2L, 3); // DB에 3개 좋아요
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(3L, 0); // DB에 0개 좋아요
+            
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+            
+            // 인메모리에 좋아요 추가
+            feedbackLikeService.like(saved1.getId()); // 인메모리에 1개 추가 -> 총 6개
+            feedbackLikeService.like(saved1.getId()); // 인메모리에 1개 더 추가 -> 총 7개
+            feedbackLikeService.like(saved2.getId()); // 인메모리에 1개 추가 -> 총 4개
+            feedbackLikeService.like(saved3.getId()); // 인메모리에 1개 추가 -> 총 1개
+            feedbackLikeService.like(saved3.getId()); // 인메모리에 1개 더 추가 -> 총 2개
+            feedbackLikeService.like(saved3.getId()); // 인메모리에 1개 더 추가 -> 총 3개
+
+            final int size = 10;
+
+            // when
+            final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+
+            // then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> {
+                        final var feedbackItems = response.feedbacks();
+                        final var feedback1Item = feedbackItems.stream()
+                                .filter(item -> item.feedbackId().equals(saved1.getId()))
+                                .findFirst().orElseThrow();
+                        final var feedback2Item = feedbackItems.stream()
+                                .filter(item -> item.feedbackId().equals(saved2.getId()))
+                                .findFirst().orElseThrow();
+                        final var feedback3Item = feedbackItems.stream()
+                                .filter(item -> item.feedbackId().equals(saved3.getId()))
+                                .findFirst().orElseThrow();
+                        
+                        assertThat(feedback1Item.likeCount()).isEqualTo(7); // 5(DB) + 2(인메모리) = 7
+                        assertThat(feedback2Item.likeCount()).isEqualTo(4); // 3(DB) + 1(인메모리) = 4
+                        assertThat(feedback3Item.likeCount()).isEqualTo(3); // 0(DB) + 3(인메모리) = 3
+                    }
+            );
+        }
+
+        @Test
+        @DisplayName("인메모리 좋아요가 없는 피드백은 DB 좋아요 수만 반영된다")
+        void getFeedbackPage_reflects_only_db_likes_when_no_memory_likes() {
+            // given
+            final Long placeId = 1L;
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, 10); // DB에 10개 좋아요
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(2L, 0);  // DB에 0개 좋아요
+            
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+
+            final int size = 10;
+
+            // when - 인메모리 좋아요 추가 없이 조회
+            final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+
+            // then - DB 좋아요 수만 반영되는지 확인
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(2),
+                    () -> {
+                        final var feedbackItems = response.feedbacks();
+                        final var feedback1Item = feedbackItems.stream()
+                                .filter(item -> item.feedbackId().equals(saved1.getId()))
+                                .findFirst().orElseThrow();
+                        final var feedback2Item = feedbackItems.stream()
+                                .filter(item -> item.feedbackId().equals(saved2.getId()))
+                                .findFirst().orElseThrow();
+                        
+                        assertThat(feedback1Item.likeCount()).isEqualTo(10); // DB 좋아요 수만
+                        assertThat(feedback2Item.likeCount()).isZero(); // DB 좋아요 수만
+                    }
+            );
+        }
+
+        @Test
+        @DisplayName("인메모리에만 좋아요가 있는 피드백도 정상적으로 반영된다")
+        void getFeedbackPage_reflects_only_memory_likes() {
+            // given
+            final Long placeId = 1L;
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 0); // DB에 0개 좋아요
+            
+            final Feedback saved = feedBackRepository.save(feedback);
+            
+            // 인메모리에만 좋아요 추가
+            for (int i = 0; i < 5; i++) {
+                feedbackLikeService.like(saved.getId()); // 인메모리에 총 5개 추가
+            }
+
+            final int size = 10;
+
+            // when
+            final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+            final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
+
+            // then - 인메모리 좋아요 수만 반영되는지 확인
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(1),
+                    () -> assertThat(userFeedbackItem.likeCount()).isEqualTo(5)
+            );
+        }
+
+        @Test
+        @DisplayName("인메모리 좋아요 취소가 반영되어 총 좋아요 수가 감소한다")
+        void getFeedbackPage_reflects_unlike_operations() {
+            // given
+            final Long placeId = 1L;
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 8); // DB에 8개 좋아요
+            
+            final Feedback saved = feedBackRepository.save(feedback);
+            
+            // 인메모리에 좋아요 추가 후 일부 취소
+            feedbackLikeService.like(saved.getId());    // +1 -> 총 9개
+            feedbackLikeService.like(saved.getId());    // +1 -> 총 10개
+            feedbackLikeService.like(saved.getId());    // +1 -> 총 11개
+            feedbackLikeService.unLike(saved.getId());  // -1 -> 총 10개
+            feedbackLikeService.unLike(saved.getId());  // -1 -> 총 9개
+
+            final int size = 10;
+
+            // when
+            final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+            final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
+
+            // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(1),
+                    () -> assertThat(userFeedbackItem.likeCount()).isEqualTo(9)
             );
         }
     }

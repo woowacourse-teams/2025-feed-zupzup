@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.config.TestcontainersTest;
 import feedzupzup.backend.feedback.domain.FeedbackLikeInMemoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.concurrent.CountDownLatch;
@@ -20,8 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-@TestcontainersTest
-class FeedbackLikeServiceTest {
+class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
 
     @Autowired
     private FeedbackLikeService feedbackLikeService;

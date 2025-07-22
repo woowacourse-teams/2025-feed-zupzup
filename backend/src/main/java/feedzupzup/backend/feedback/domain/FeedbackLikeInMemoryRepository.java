@@ -3,9 +3,11 @@ package feedzupzup.backend.feedback.domain;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 @Component
+@Getter
 public class FeedbackLikeInMemoryRepository {
 
     private final ConcurrentHashMap<Long, AtomicInteger> feedbackLikes = new ConcurrentHashMap<>();
