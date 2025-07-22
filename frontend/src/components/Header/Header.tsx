@@ -2,7 +2,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import Glitter from '../icons/Glitter';
 
 import IconButton from '../IconButton/IconButton';
-import ArrowLeft from '../icons/ArrowLeft';
+import ArrowLeftIcon from '../icons/ArrowLeftIcon';
 import {
   captionSection,
   header,
@@ -22,7 +22,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   return (
     <header css={header}>
       <div css={headerSection}>
-        <IconButton icon={<ArrowLeft />} />
+        <IconButton icon={<ArrowLeftIcon />} />
         <div css={captionSection}>
           <p css={[headerTitle(theme), theme.typography.inter.bodyBold]}>
             {title}
