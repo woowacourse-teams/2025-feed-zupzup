@@ -1,5 +1,5 @@
+import { PAGE_PADDING_PX } from '@/constants';
 import { css } from '@emotion/react';
-import { HEADER_HEIGHT_PX, PAGE_PADDING_PX } from '@/constants';
 
 export const suggestionLayout = css`
   position: relative;
@@ -8,7 +8,7 @@ export const suggestionLayout = css`
   align-items: center;
   gap: 20px;
   width: 100%;
-  height: calc(100vh - ${HEADER_HEIGHT_PX});
+  height: calc(100vh);
   margin-top: calc(${PAGE_PADDING_PX}px + ${PAGE_PADDING_PX}px);
 `;
 
