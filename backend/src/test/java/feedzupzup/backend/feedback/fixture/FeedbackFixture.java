@@ -45,4 +45,15 @@ public class FeedbackFixture {
                 .imageUrl("https://example.com/image.jpg")
                 .build();
     }
+
+    public static Feedback createFeedbackWithLikes(final Long placeId, final int likeCount) {
+        return Feedback.builder()
+                .content("좋아요 테스트용 피드백")
+                .isSecret(false)
+                .status(ProcessStatus.WAITING)
+                .placeId(placeId)
+                .imageUrl("https://example.com/image.jpg")
+                .likeCount(likeCount)
+                .build();
+    }
 }
