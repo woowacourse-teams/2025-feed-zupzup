@@ -1,23 +1,25 @@
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { useState } from 'react';
+import LockIcon from '@/components/icons/LockIcon';
 import {
   secretOption,
   secretText,
 } from '@/domains/user/suggestions/components/SecretPostOption/SecretPostOption.style';
-import LockIcon from '@/components/icons/LockIcon';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
-export default function SecretPostOption() {
+interface SecretPostOptionProps {
+  isOn: boolean;
+  handleToggleButton: () => void;
+}
+
+export default function SecretPostOption({
+  isOn,
+  handleToggleButton,
+}: SecretPostOptionProps) {
   const theme = useAppTheme();
-  const [isOn, setisOn] = useState(false);
-
-  const toggleHandler = () => {
-    setisOn(!isOn);
-  };
 
   return (
     <div css={secretOption(theme)}>
-      <BasicToggleButton isOn={isOn} onClick={toggleHandler} />
+      <BasicToggleButton isOn={isOn} onClick={handleToggleButton} />
       <LockIcon />
       <p css={secretText(theme)}>비밀글로 작성</p>
     </div>

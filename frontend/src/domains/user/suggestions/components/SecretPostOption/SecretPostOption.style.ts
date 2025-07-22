@@ -2,12 +2,12 @@ import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
 export const secretOption = (theme: Theme) => css`
-  background-color: ${theme.colors.gray[100]};
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 16px;
   width: 100%;
+  padding: 16px;
+  background-color: ${theme.colors.gray[100]};
   border-radius: 16px;
 `;
 
