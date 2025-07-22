@@ -6,7 +6,7 @@ const DEFAULT_SIZE = 10;
 interface UseInfinityScrollProps<ResponseData> {
   url: string;
   key: keyof ResponseData;
-  initialCursorId?: number;
+  initialCursorId?: number | null;
   initialHasNext?: boolean;
 }
 
@@ -15,16 +15,16 @@ export default function useInfinityScroll<
   Key extends string,
   ResponseData extends Record<Key, T[]> & {
     hasNext: boolean;
-    cursorId: number;
+    nextCursorId: number;
   },
 >({
   url,
   key,
-  initialCursorId = 1,
+  initialCursorId = null,
   initialHasNext = true,
 }: UseInfinityScrollProps<ResponseData>) {
   const [items, setItems] = useState<T[]>([]);
-  const [cursorId, setCursorId] = useState<number>(initialCursorId);
+  const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
   const [hasNext, setHasNext] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +48,7 @@ export default function useInfinityScroll<
 
       setItems((prev) => [...prev, ...responseData[key]]);
       setHasNext(responseData.hasNext);
-      setCursorId(responseData.cursorId);
+      setCursorId(responseData.nextCursorId);
     } catch (error) {
       console.error('무한 스크롤 에러:', error);
     } finally {
