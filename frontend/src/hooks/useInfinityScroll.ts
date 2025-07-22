@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { apiClient } from '@/apis/apiClient';
 
+const DEFAULT_SIZE = 10;
+
 interface UseInfinityScrollProps<ResponseData> {
   url: string;
   key: keyof ResponseData;
@@ -26,7 +28,7 @@ export default function useInfinityScroll<
   const [hasNext, setHasNext] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
 
-  const fetchMore = async (size: number = 10) => {
+  const fetchMore = async (size: number = DEFAULT_SIZE) => {
     if (!hasNext || loading) return;
     setLoading(true);
 
