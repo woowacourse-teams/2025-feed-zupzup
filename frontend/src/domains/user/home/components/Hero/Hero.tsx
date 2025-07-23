@@ -20,14 +20,14 @@ export interface HeroProps extends React.ComponentProps<'div'> {
   onLoginClick: () => void;
   onSuggestClick: () => void;
   title: string;
-  showSuggestButton?: boolean;
+  isUserPage?: boolean;
 }
 
 export default function Hero({
   title,
   onLoginClick,
   onSuggestClick,
-  showSuggestButton = true,
+  isUserPage = true,
 }: HeroProps) {
   const theme = useAppTheme();
 
@@ -36,7 +36,7 @@ export default function Hero({
       <div css={heroHeader(theme)}>
         <GhostButton
           icon={<ProfileIcon />}
-          text='로그인'
+          text={isUserPage ? '로그인' : '로그아웃'}
           onClick={onLoginClick}
         />
       </div>
@@ -53,9 +53,9 @@ export default function Hero({
           <img
             src={catImage}
             alt='움직이는 고양이'
-            css={catAnimation(showSuggestButton)}
+            css={catAnimation(isUserPage)}
           />
-          {showSuggestButton && (
+          {isUserPage && (
             <BasicButton
               width='100%'
               icon={<PlusIcon />}

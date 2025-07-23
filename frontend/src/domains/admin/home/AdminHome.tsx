@@ -11,7 +11,7 @@ export default function AdminHome() {
         onLoginClick={() => navigate('/')}
         onSuggestClick={() => navigate('/suggestion')}
         title='환영합니다!'
-        showSuggestButton={false}
+        isUserPage={false}
       />
       <FeedbackBoxList>
         <AdminFeedbackBox type='incomplete' />
