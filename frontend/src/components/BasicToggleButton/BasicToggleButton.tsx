@@ -6,20 +6,20 @@ import {
 } from './BasicToggleButton.style';
 
 interface ToggleButtonProps {
-  isOn: boolean;
+  isToggled: boolean;
   onClick: () => void;
 }
 
 export default function BasicToggleButton({
-  isOn,
+  isToggled,
   onClick,
 }: ToggleButtonProps) {
   const theme = useAppTheme();
   return (
     <>
       <div css={toggleWrapper} onClick={onClick}>
-        <div css={trackStyle(theme, isOn)} />
-        <div css={circleStyle(isOn)} />
+        <div css={trackStyle(theme, isToggled)} />
+        <div css={circleStyle(isToggled)} />
       </div>
     </>
   );

@@ -25,7 +25,7 @@ export default function Suggestions() {
   const [suggestions, setSuggestions] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [isOn, setisOn] = useState(false);
+  const [isSecret, setIsSecret] = useState(false);
   const [imgSrc, setImgSrc] = useState<string>('');
 
   const handleSuggestionsChange = (
@@ -39,7 +39,7 @@ export default function Suggestions() {
   };
 
   const handleToggleButton = () => {
-    setisOn(!isOn);
+    setIsSecret(!isSecret);
   };
 
   const handleImageUpload = (url: string) => {
@@ -51,7 +51,7 @@ export default function Suggestions() {
       placeId: 1,
       content: suggestions,
       imageUrl: imgSrc,
-      isSecret: isOn,
+      isSecret: isSecret,
       userName,
     });
     alert('건의사항이 제출되었습니다!');
@@ -96,7 +96,10 @@ export default function Suggestions() {
           <UploadBox imgSrc={imgSrc} handleImageUpload={handleImageUpload} />
         </SuggestionsFormField>
 
-        <SecretPostOption isOn={isOn} handleToggleButton={handleToggleButton} />
+        <SecretPostOption
+          isSecret={isSecret}
+          handleToggleButton={handleToggleButton}
+        />
 
         <div css={buttonContainer}>
           <BasicButton variant='secondary' onClick={() => navigate(-1)}>

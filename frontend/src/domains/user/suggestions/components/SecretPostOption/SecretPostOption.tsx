@@ -7,19 +7,19 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface SecretPostOptionProps {
-  isOn: boolean;
+  isSecret: boolean;
   handleToggleButton: () => void;
 }
 
 export default function SecretPostOption({
-  isOn,
+  isSecret,
   handleToggleButton,
 }: SecretPostOptionProps) {
   const theme = useAppTheme();
 
   return (
     <div css={secretOption(theme)}>
-      <BasicToggleButton isOn={isOn} onClick={handleToggleButton} />
+      <BasicToggleButton isToggled={isSecret} onClick={handleToggleButton} />
       <LockIcon />
       <p css={secretText(theme)}>비밀글로 작성</p>
     </div>
