@@ -33,7 +33,7 @@ public class S3Service {
         final String presignedUrl = s3Presigner.presignPutObject(objectPresignRequest)
                 .url()
                 .toExternalForm();
-        return new PresignedUrlResponse(presignedUrl, S3ObjectType.valueOf(extension).getContentType());
+        return new PresignedUrlResponse(presignedUrl, S3ObjectType.fromExtension(extension).getContentType());
     }
 
     private PutObjectPresignRequest build(
@@ -46,7 +46,7 @@ public class S3Service {
         final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)
-                .contentType(S3ObjectType.valueOf(extension).getContentType())
+                .contentType(S3ObjectType.fromExtension(extension).getContentType())
                 .build();
 
         return PutObjectPresignRequest.builder()
@@ -66,7 +66,7 @@ public class S3Service {
                 objectDir,
                 objectId,
                 UUID.randomUUID(),
-                S3ObjectType.valueOf(extension).getExtension()
+                extension
         );
     }
 }
