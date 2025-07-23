@@ -28,3 +28,29 @@ export const modalBox = (
   border-radius: 8px;
   box-shadow: 0 10px 25px rgb(0 0 0 / 10%);
 `;
+
+export const content = css`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+`;
+
+export const title = (theme: Theme) => css`
+  ${theme.typography.inter.h4};
+
+  color: ${theme.colors.black[100]};
+`;
+
+export const message = (theme: Theme) => css`
+  ${theme.typography.inter.bodyRegular};
+
+  color: ${theme.colors.gray[600]};
+`;
+
+export const buttonContainer = css`
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+`;

@@ -1,7 +1,12 @@
 import Modal from '@/components/Modal/Modal';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { content, title, message, buttonContainer } from './AlertModal.styles';
+import {
+  content,
+  title,
+  message,
+  buttonContainer,
+} from '@/components/Modal/Modal.styles';
 
 export interface AlertModalProps {
   isOpen: boolean;

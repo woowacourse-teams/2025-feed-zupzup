@@ -6,7 +6,7 @@ import {
   title,
   message,
   buttonContainer,
-} from './ConfirmModal.styles';
+} from '@/components/Modal/Modal.styles';
 
 export interface ConfirmModalProps {
   isOpen: boolean;
