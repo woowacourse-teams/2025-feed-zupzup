@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackLikeService {
 
     private final FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
+    private final FeedBackRepository feedBackRepository;
 
     public LikeResponse like(final Long feedbackId) {
         final int beforeLikeCount = feedbackLikeInMemoryRepository.getLikeCount(feedbackId);
@@ -26,5 +27,16 @@ public class FeedbackLikeService {
         final int beforeLikeCount = feedbackLikeInMemoryRepository.getLikeCount(feedbackId);
         final int afterLikeCount = feedbackLikeInMemoryRepository.decreaseAndGet(feedbackId);
         return new LikeResponse(beforeLikeCount, afterLikeCount);
+    }
+
+    @Transactional
+    public void flushLikeCountBuffer() {
+        final Map<Long, Integer> likeCounts = feedbackLikeInMemoryRepository.getLikeCounts();
+        final List<Long> feedbackIds = likeCounts.keySet().stream().toList();
+        final List<Feedback> feedbacks = feedBackRepository.findByIdIn(feedbackIds);
+        for (Feedback feedback : feedbacks) {
+            feedback.updateLikeCount(feedback.getLikeCount() + likeCounts.get(feedback.getId()));
+        }
+        feedbackLikeInMemoryRepository.clear();
     }
 }
