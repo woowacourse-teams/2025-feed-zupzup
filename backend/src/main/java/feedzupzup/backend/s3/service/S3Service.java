@@ -1,27 +1,21 @@
 package feedzupzup.backend.s3.service;
 
-import static feedzupzup.backend.s3.service.S3Constants.ROOT_DIR_NAME;
-import static feedzupzup.backend.s3.service.S3Constants.SIGNATURE_DURATION;
-
+import feedzupzup.backend.s3.config.S3Properties;
 import feedzupzup.backend.s3.dto.response.PresignedUrlResponse;
+import java.time.Duration;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class S3Service {
 
     private final S3Presigner s3Presigner;
-
-    @Value("${s3.bucket-name}")
-    private String bucketName;
-    @Value("${s3.environment}")
-    public String environment;
+    private final S3Properties s3Properties;
 
     public PresignedUrlResponse requestPresignedUrl(
             final Long objectId,
@@ -44,13 +38,13 @@ public class S3Service {
         final String objectKey = getObjectKey(objectId, extension, objectDir);
 
         final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
+                .bucket(s3Properties.bucketName())
                 .key(objectKey)
                 .contentType(S3ObjectType.fromExtension(extension).getContentType())
                 .build();
 
         return PutObjectPresignRequest.builder()
-                .signatureDuration(SIGNATURE_DURATION)
+                .signatureDuration(Duration.ofMinutes(s3Properties.signatureDuration()))
                 .putObjectRequest(putObjectRequest)
                 .build();
     }
@@ -61,8 +55,8 @@ public class S3Service {
             final String objectDir
     ) {
         return String.format("%s/%s/%s/%d/%s.%s",
-                ROOT_DIR_NAME,
-                environment,
+                s3Properties.rootDirName(),
+                s3Properties.environment(),
                 objectDir,
                 objectId,
                 UUID.randomUUID(),
