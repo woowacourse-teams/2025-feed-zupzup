@@ -11,7 +11,11 @@ export const overlay = css`
   background-color: rgb(0 0 0 / 50%);
 `;
 
-export const modal = (theme: Theme, width: number, height?: number) => css`
+export const modal = (
+  theme: Theme,
+  width: number = 300,
+  height?: number
+) => css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -32,13 +36,13 @@ export const content = css`
   gap: 16px;
 `;
 
-export const titleText = (theme: Theme) => css`
+export const title = (theme: Theme) => css`
   ${theme.typography.inter.h4};
 
   color: ${theme.colors.black[100]};
 `;
 
-export const messageText = (theme: Theme) => css`
+export const message = (theme: Theme) => css`
   ${theme.typography.inter.bodyRegular};
 
   color: ${theme.colors.gray[600]};
