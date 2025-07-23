@@ -1,9 +1,7 @@
-import Modal from '@/components/@commons/Modal/Modal';
+import Modal from '@/components/Modal/Modal';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
-  overlay,
-  modal,
   content,
   title,
   message,
@@ -41,28 +39,26 @@ export default function ConfirmModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} customCSS={overlay}>
-      <div css={modal(theme, width, height)}>
-        <div css={content}>
-          <p css={title(theme)}>{confirmTitle}</p>
-          {confirmMessage && <p css={message(theme)}>{confirmMessage}</p>}
-        </div>
-        <div css={buttonContainer}>
-          <BasicButton
-            variant='secondary'
-            width='calc(50% - 12px)'
-            onClick={onClose}
-          >
-            {cancelText}
-          </BasicButton>
-          <BasicButton
-            variant='primary'
-            width='calc(50% - 12px)'
-            onClick={handleConfirm}
-          >
-            {confirmText}
-          </BasicButton>
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose} width={width} height={height}>
+      <div css={content}>
+        <p css={title(theme)}>{confirmTitle}</p>
+        {confirmMessage && <p css={message(theme)}>{confirmMessage}</p>}
+      </div>
+      <div css={buttonContainer}>
+        <BasicButton
+          variant='secondary'
+          width='calc(50% - 12px)'
+          onClick={onClose}
+        >
+          {cancelText}
+        </BasicButton>
+        <BasicButton
+          variant='primary'
+          width='calc(50% - 12px)'
+          onClick={handleConfirm}
+        >
+          {confirmText}
+        </BasicButton>
       </div>
     </Modal>
   );

@@ -1,14 +1,7 @@
-import Modal from '@/components/@commons/Modal/Modal';
+import Modal from '@/components/Modal/Modal';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import {
-  overlay,
-  modal,
-  content,
-  title,
-  message,
-  buttonContainer,
-} from './AlertModal.styles';
+import { content, title, message, buttonContainer } from './AlertModal.styles';
 
 export interface AlertModalProps {
   isOpen: boolean;
@@ -35,17 +28,15 @@ export default function AlertModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} customCSS={overlay}>
-      <div css={modal(theme)}>
-        <div css={content}>
-          <p css={title(theme)}>{alertTitle}</p>
-          {alertMessage && <p css={message(theme)}>{alertMessage}</p>}
-        </div>
-        <div css={buttonContainer}>
-          <BasicButton variant='primary' width='100%' onClick={handleConfirm}>
-            {confirmText}
-          </BasicButton>
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div css={content}>
+        <p css={title(theme)}>{alertTitle}</p>
+        {alertMessage && <p css={message(theme)}>{alertMessage}</p>}
+      </div>
+      <div css={buttonContainer}>
+        <BasicButton variant='primary' width='100%' onClick={handleConfirm}>
+          {confirmText}
+        </BasicButton>
       </div>
     </Modal>
   );

@@ -4,14 +4,15 @@
 
 ```
 frontend/src/components/
-├── @commons/Modal/
-│   └── Modal.tsx                 # 공통 Modal 컴포넌트
+├── Modal/
+│   ├── Modal.tsx                # 공통 Modal 컴포넌트
+│   └── Modal.styles.ts          # 공통 Modal 스타일 (overlay, modalBox)
 ├── AlertModal/
 │   ├── AlertModal.tsx           # Alert 모달 컴포넌트
-│   └── AlertModal.styles.ts     # Alert 모달 스타일
+│   └── AlertModal.styles.ts     # Alert 모달 스타일 (간소화됨)
 └── ConfirmModal/
     ├── ConfirmModal.tsx         # Confirm 모달 컴포넌트
-    └── ConfirmModal.styles.ts   # Confirm 모달 스타일
+    └── ConfirmModal.styles.ts   # Confirm 모달 스타일 (간소화됨)
 
 frontend/src/hooks/
 └── useModal.ts                  # 모달 공통 로직 훅
@@ -19,22 +20,30 @@ frontend/src/hooks/
 
 ## 🎯 컴포넌트별 역할
 
-### 1. Modal (공통 컴포넌트)
+### 1. Modal (공통 컴포넌트) - **개선됨** ✨
 
-- **역할**: 모달의 기본 껍데기만 제공
-- **특징**: 스타일 없음, children으로 내용 구성
-- **위치**: `@commons/Modal/Modal.tsx`
+- **역할**: 모달의 overlay와 기본 박스까지 제공
+- **특징**: 기본 overlay + 흰색 모달 박스 자동 제공, children으로 내용만 구성
 
 ```typescript
-// 기본 사용법
-<Modal isOpen={isOpen} onClose={onClose} customCSS={overlayStyles}>
-  {/* 원하는 내용 */}
+// 기본 사용법 - overlay와 모달 박스는 자동 제공!
+<Modal isOpen={isOpen} onClose={onClose}>
+  {/* 모달 내용만 작성하면 됨 */}
+  <h2>제목</h2>
+  <p>내용</p>
+  <button>버튼</button>
+</Modal>
+
+// 크기 조절
+<Modal isOpen={isOpen} onClose={onClose} width={400} height={300}>
+  {/* 내용 */}
 </Modal>
 ```
 
-### 2. AlertModal
+### 2. AlertModal - **단순화됨** ✨
 
 - **역할**: 단순 알림용 모달 (확인 버튼 1개)
+- **변경점**: overlay, modal 박스 스타일 제거 → 내용 스타일만 관리
 - **사용 시기**: 정보 전달, 성공/실패 알림 등
 
 ```typescript
@@ -48,9 +57,10 @@ frontend/src/hooks/
 />
 ```
 
-### 3. ConfirmModal
+### 3. ConfirmModal - **단순화됨** ✨
 
 - **역할**: 사용자 확인이 필요한 모달 (취소/확인 버튼 2개)
+- **변경점**: overlay, modal 박스 스타일 제거 → 내용 스타일만 관리
 - **사용 시기**: 삭제, 수정 등 중요한 액션 전 확인
 
 ```typescript
@@ -72,15 +82,14 @@ frontend/src/hooks/
 ### 현재 제공 기능
 
 ```typescript
-const { handleOverlayClick, handleConfirm } = useModal({
+const { handleOverlayClick } = useModal({
   isOpen,
   onClose,
-  onConfirm,
 });
 ```
 
-- **handleOverlayClick**: 오버레이 클릭 시 모달 닫기
-- **handleConfirm**: 확인 버튼 클릭 시 onConfirm 실행 후 모달 닫기
+- **handleOverlayClick**: 오버레이 클릭 시 모달 닫기 (모달 박스 클릭 시는 닫히지
+  않음)
 - **ESC 키 처리**: 자동으로 ESC 키로 모달 닫기
 
 ## 🚀 권장 사용 패턴
@@ -145,35 +154,11 @@ function MyComponent() {
 }
 ```
 
-## 🎨 커스텀 모달 만들기
-
-기본 Modal 컴포넌트를 사용해서 완전히 새로운 모달을 만들 수 있습니다:
-
-```typescript
-function CustomModal({ isOpen, onClose }) {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} customCSS={myCustomStyles}>
-      <div css={myModalContentStyles}>
-        {/* 완전히 자유로운 커스텀 내용 */}
-        <h1>커스텀 모달</h1>
-        <form>
-          {/* 폼 내용 */}
-        </form>
-        <div>
-          <button onClick={onClose}>닫기</button>
-        </div>
-      </div>
-    </Modal>
-  );
-}
-```
-
 ## 🔮 향후 개선 예정 사항
 
 ### 커스텀 훅으로 모달 관리
 
 ```typescript
-// 향후 구현 예정
 const useAdminModal = () => {
   const [modalState, setModalState] = useState({ type: null, data: null });
 
@@ -245,14 +230,16 @@ function AdminPage() {
 
 ## 📋 Props 참고
 
-### Modal Props
+### Modal Props - **업데이트됨** ✨
 
 ```typescript
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  customCSS?: SerializedStyles | SerializedStyles[];
+  width?: number; // 기본값: 300
+  height?: number; // 선택적
+  customCSS?: SerializedStyles | SerializedStyles[]; // 모달 박스 추가 스타일링
 }
 ```
 
@@ -265,7 +252,7 @@ interface AlertModalProps {
   title: string;
   message?: string;
   onConfirm?: () => void;
-  confirmText?: string;
+  confirmText?: string; // 기본값: '확인'
 }
 ```
 
@@ -278,9 +265,9 @@ interface ConfirmModalProps {
   title: string;
   message?: string;
   onConfirm?: () => void;
-  confirmText?: string;
-  cancelText?: string;
-  width?: number;
-  height?: number;
+  confirmText?: string; // 기본값: '확인'
+  cancelText?: string; // 기본값: '취소'
+  width?: number; // 기본값: 300
+  height?: number; // 선택적
 }
 ```
