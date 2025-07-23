@@ -10,6 +10,7 @@ export interface TextAreaProps extends React.ComponentProps<'textarea'> {
 }
 
 export default function TextArea({
+  name,
   value,
   onChange,
   placeholder,
@@ -19,6 +20,7 @@ export default function TextArea({
 }: TextAreaProps) {
   return (
     <textarea
+      name={name}
       css={customCSS}
       minLength={minLength}
       maxLength={maxLength}

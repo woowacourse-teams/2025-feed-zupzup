@@ -6,16 +6,15 @@ import {
 } from '@/components/BasicInput/BasicInput.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-interface BasicInputProps {
+interface BasicInputProps extends React.ComponentProps<'input'> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;
-  maxLength?: number;
-  minLength?: number;
   showCharCount?: boolean;
 }
 
 export default function BasicInput({
+  name,
   value,
   onChange,
   placeholder,
@@ -28,6 +27,7 @@ export default function BasicInput({
   return (
     <div css={basicInputContainer}>
       <Input
+        name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
