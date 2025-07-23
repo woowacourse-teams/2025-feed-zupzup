@@ -2,42 +2,19 @@ import Hero from '@/domains/user/home/components/Hero/Hero';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import AdminFeedbackBox from './components/AdminFeedbackBox';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@/components/Modal/Modal';
-import { useState } from 'react';
-
-interface ModalState {
-  type: 'confirm' | 'delete' | null;
-  feedbackId?: string;
-}
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import AlertModal from '@/components/AlertModal/AlertModal';
+import { useAdminModal } from '@/domains/hooks/useAdminModal';
 
 export default function AdminHome() {
   const navigate = useNavigate();
-
-  const [modalState, setModalState] = useState<ModalState>({ type: null });
-
-  const openFeedbackCompleteModal = (feedbackId: string) => {
-    setModalState({ type: 'confirm', feedbackId });
-  };
-
-  const openFeedbackDeleteModal = (feedbackId: string) => {
-    setModalState({ type: 'delete', feedbackId });
-  };
-
-  const closeModal = () => {
-    setModalState({ type: null });
-  };
-
-  const handleModalAction = () => {
-    const { type, feedbackId } = modalState;
-
-    if (type === 'confirm') {
-      console.log('피드백 완료 처리:', feedbackId);
-    } else if (type === 'delete') {
-      console.log('피드백 삭제 처리:', feedbackId);
-    }
-
-    closeModal();
-  };
+  const {
+    modalState,
+    openFeedbackCompleteModal,
+    openFeedbackDeleteModal,
+    closeModal,
+    handleModalAction,
+  } = useAdminModal();
 
   return (
     <section>
@@ -80,21 +57,20 @@ export default function AdminHome() {
         />
       </FeedbackBoxList>
 
-      {modalState.type && (
-        <Modal
-          title={
-            modalState.type === 'delete'
-              ? '삭제하시겠습니까?'
-              : '확인하시겠습니까?'
-          }
-          message={
-            modalState.type === 'delete'
-              ? '삭제한 건의는 되돌릴 수 없습니다.'
-              : null
-          }
+      {modalState.type === 'delete' && (
+        <ConfirmModal
+          title='삭제하시겠습니까?'
+          message='삭제한 건의는 되돌릴 수 없습니다.'
           isOpen={true}
           onClose={closeModal}
-          type={modalState.type}
+          onConfirm={handleModalAction}
+        />
+      )}
+      {modalState.type === 'confirm' && (
+        <AlertModal
+          title='확인하시겠습니까?'
+          isOpen={true}
+          onClose={closeModal}
           onConfirm={handleModalAction}
         />
       )}
