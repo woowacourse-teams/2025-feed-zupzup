@@ -24,3 +24,9 @@ export const iconWrap = css`
   display: flex;
   gap: 14px;
 `;
+
+export const textWrap = css`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
