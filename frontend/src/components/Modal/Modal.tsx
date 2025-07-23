@@ -1,5 +1,6 @@
 import { SerializedStyles } from '@emotion/react';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useModal } from '@/hooks/useModal';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import {
   overlay,
@@ -9,7 +10,6 @@ import {
   message,
   buttonContainer,
 } from './Modal.styles';
-import { useEffect } from 'react';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -36,29 +36,13 @@ export default function Modal({
 }: ModalProps) {
   const theme = useAppTheme();
 
+  const { handleOverlayClick, handleConfirm } = useModal({
+    isOpen,
+    onClose,
+    onConfirm,
+  });
+
   if (!isOpen) return null;
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
-
-  const handleConfirm = () => {
-    onConfirm?.();
-    onClose();
-  };
 
   const defaultTitle =
     type === 'delete' ? '건의를 삭제하시겠습니까?' : '건의를 확인하시겠습니까?';
