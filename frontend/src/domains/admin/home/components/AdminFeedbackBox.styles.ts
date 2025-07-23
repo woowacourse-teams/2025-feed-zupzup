@@ -12,7 +12,7 @@ export const container = (theme: Theme, type: FeedbackStatusType) => css`
   border-radius: 14px;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 
-  ${type === 'complete' && `background-color: ${theme.colors.gray[100]};`}
+  ${type === 'CONFIRMED' && `background-color: ${theme.colors.gray[100]};`}
 `;
 
 export const topContainer = css`
@@ -23,4 +23,10 @@ export const topContainer = css`
 export const iconWrap = css`
   display: flex;
   gap: 14px;
+`;
+
+export const textWrap = css`
+  display: flex;
+  align-items: center;
+  gap: 4px;
 `;

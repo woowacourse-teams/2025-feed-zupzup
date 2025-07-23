@@ -9,9 +9,9 @@ export const content = css`
 `;
 
 export const container = (theme: Theme, type: FeedbackStatusType) => css`
-  color: ${type === 'complete' && theme.colors.white[100]};
-  background-color: ${type === 'incomplete'
+  color: ${type === 'CONFIRMED' && theme.colors.white[100]};
+  background-color: ${type === 'WAITING'
     ? theme.colors.yellow[100]
     : theme.colors.green[100]};
-  ${type === 'incomplete' && `border: 1px solid ${theme.colors.yellow[200]};`}
+  ${type === 'WAITING' && `border: 1px solid ${theme.colors.yellow[200]};`}
 `;

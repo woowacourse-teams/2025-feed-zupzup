@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
+import useInfinityScroll from '@/hooks/useInfinityScroll';
+import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
+import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 
 export default function AdminHome() {
   const navigate = useNavigate();
@@ -16,6 +19,22 @@ export default function AdminHome() {
     handleModalAction,
   } = useAdminModal();
 
+  const {
+    items: feedbacks,
+    fetchMore,
+    hasNext,
+    loading,
+  } = useInfinityScroll<
+    AdminFeedback,
+    'feedbacks',
+    FeedbackResponse<AdminFeedback>
+  >({
+    url: '/api/admin/places/1/feedbacks',
+    key: 'feedbacks',
+  });
+
+  useGetFeedback({ fetchMore, hasNext });
+
   return (
     <section>
       <Hero
@@ -25,38 +44,24 @@ export default function AdminHome() {
         showSuggestButton={false}
       />
       <FeedbackBoxList>
-        <AdminFeedbackBox
-          type='incomplete'
-          feedbackId='1'
-          onConfirm={openFeedbackCompleteModal}
-          onDelete={openFeedbackDeleteModal}
-        />
-        <AdminFeedbackBox
-          type='incomplete'
-          feedbackId='2'
-          onConfirm={openFeedbackCompleteModal}
-          onDelete={openFeedbackDeleteModal}
-        />
-        <AdminFeedbackBox
-          type='incomplete'
-          feedbackId='3'
-          onConfirm={openFeedbackCompleteModal}
-          onDelete={openFeedbackDeleteModal}
-        />
-        <AdminFeedbackBox
-          type='complete'
-          feedbackId='4'
-          onConfirm={openFeedbackCompleteModal}
-          onDelete={openFeedbackDeleteModal}
-        />
-        <AdminFeedbackBox
-          type='complete'
-          feedbackId='5'
-          onConfirm={openFeedbackCompleteModal}
-          onDelete={openFeedbackDeleteModal}
-        />
+        {feedbacks.map((feedback: AdminFeedback) => (
+          <AdminFeedbackBox
+            key={feedback.feedbackId}
+            feedbackId={feedback.feedbackId}
+            onConfirm={openFeedbackCompleteModal}
+            onDelete={openFeedbackDeleteModal}
+            type={feedback.status}
+            content={feedback.content}
+            createdAt={feedback.createdAt}
+            isSecret={feedback.isSecret}
+            imgUrl={feedback.imgUrl}
+            likeCount={feedback.likeCount}
+            userName={feedback.userName}
+          />
+        ))}
+        {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
-
+      {hasNext && <div id='scroll-observer'></div>}
       {modalState.type === 'delete' && (
         <ConfirmModal
           title='삭제하시겠습니까?'

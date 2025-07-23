@@ -2,17 +2,17 @@ import { useState } from 'react';
 
 interface ModalState {
   type: 'confirm' | 'delete' | null;
-  feedbackId?: string;
+  feedbackId?: number;
 }
 
 export const useAdminModal = () => {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
 
-  const openFeedbackCompleteModal = (feedbackId: string) => {
+  const openFeedbackCompleteModal = (feedbackId: number) => {
     setModalState({ type: 'confirm', feedbackId });
   };
 
-  const openFeedbackDeleteModal = (feedbackId: string) => {
+  const openFeedbackDeleteModal = (feedbackId: number) => {
     setModalState({ type: 'delete', feedbackId });
   };
 

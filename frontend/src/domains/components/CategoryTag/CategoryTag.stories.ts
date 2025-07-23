@@ -15,7 +15,7 @@ const meta: Meta<typeof CategoryTag> = {
     },
     type: {
       control: 'select',
-      options: ['incomplete', 'complete'],
+      options: ['WAITING', 'CONFIRMED'],
       description: '상태에 따라 태그 스타일이 달라집니다.',
     },
   },
@@ -27,20 +27,20 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     text: '기본 값',
-    type: 'incomplete',
+    type: 'WAITING',
   },
 };
 
 export const IncompleteCategoryTag: Story = {
   args: {
     text: '미완료 태그',
-    type: 'incomplete',
+    type: 'WAITING',
   },
 };
 
 export const CompleteCategoryTag: Story = {
   args: {
     text: '완료 태그',
-    type: 'complete',
+    type: 'CONFIRMED',
   },
 };
