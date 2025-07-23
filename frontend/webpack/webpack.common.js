@@ -4,6 +4,7 @@ import webpack from 'webpack';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -52,6 +53,9 @@ export default {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: 'public/favicon.ico', to: '.' }],
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env),
