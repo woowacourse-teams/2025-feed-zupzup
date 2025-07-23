@@ -25,28 +25,28 @@ public class S3Service {
 
     public PresignedUrlResponse requestPresignedUrl(
             final Long objectId,
-            final String objectType,
+            final String extension,
             final String objectDir
     ) {
-        final PutObjectPresignRequest objectPresignRequest = build(objectId, objectType, objectDir);
+        final PutObjectPresignRequest objectPresignRequest = build(objectId, extension, objectDir);
 
         final String presignedUrl = s3Presigner.presignPutObject(objectPresignRequest)
                 .url()
                 .toExternalForm();
-        return new PresignedUrlResponse(presignedUrl);
+        return new PresignedUrlResponse(presignedUrl, S3ObjectType.valueOf(extension).getContentType());
     }
 
     private PutObjectPresignRequest build(
             final Long objectId,
-            final String objectType,
+            final String extension,
             final String objectDir
     ) {
-        final String objectKey = getObjectKey(objectId, objectType, objectDir);
+        final String objectKey = getObjectKey(objectId, extension, objectDir);
 
         final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)
-                .contentType(S3ObjectType.valueOf(objectType).getContentType())
+                .contentType(S3ObjectType.valueOf(extension).getContentType())
                 .build();
 
         return PutObjectPresignRequest.builder()
@@ -57,7 +57,7 @@ public class S3Service {
 
     private String getObjectKey(
             final Long objectId,
-            final String objectType,
+            final String extension,
             final String objectDir
     ) {
         return String.format("%s/%s/%s/%d/%s.%s",
@@ -66,7 +66,7 @@ public class S3Service {
                 objectDir,
                 objectId,
                 UUID.randomUUID(),
-                S3ObjectType.valueOf(objectType).getExtension()
+                S3ObjectType.valueOf(extension).getExtension()
         );
     }
 }

@@ -18,7 +18,7 @@ public class S3Controller implements S3Api {
 
     public SuccessResponse<PresignedUrlResponse> generatePresignedUrl(final PresignedUrlRequest request) {
         final PresignedUrlResponse response = s3Service.requestPresignedUrl(
-                request.feedbackId(), request.objectType(), S3Constants.FEEDBACK_OBJECT_DIR);
+                request.feedbackId(), request.extension(), S3Constants.FEEDBACK_OBJECT_DIR);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }
