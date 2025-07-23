@@ -41,7 +41,11 @@ export default function UserFeedbackBox({
       ) : (
         <FeedbackText type={type} text={content} />
       )}
-      <FeedbackBoxFooter isLiked={isLiked} createdAt={createdAt} />
+      <FeedbackBoxFooter
+        isLiked={isLiked}
+        createdAt={createdAt}
+        isSecret={isSecret}
+      />
     </FeedbackBoxBackGround>
   );
 }

@@ -9,6 +9,7 @@ interface FeedbackBoxFooterProps {
   isLiked?: boolean;
   createdAt: string;
   userName?: string;
+  isSecret?: boolean;
 }
 
 export default function FeedbackBoxFooter({
@@ -16,6 +17,7 @@ export default function FeedbackBoxFooter({
   isLiked,
   createdAt,
   userName,
+  isSecret,
 }: FeedbackBoxFooterProps) {
   const theme = useAppTheme();
 
@@ -28,9 +30,11 @@ export default function FeedbackBoxFooter({
         </p>
         <p css={day}>{formatDate(createdAt)}</p>
       </div>
-      <div css={content(theme)}>
-        <LikeButton like={isLiked} /> {likeCount}
-      </div>
+      {!isSecret && (
+        <div css={content(theme)}>
+          <LikeButton like={isLiked} /> {likeCount}
+        </div>
+      )}
     </div>
   );
 }
