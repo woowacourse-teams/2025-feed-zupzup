@@ -1,7 +1,9 @@
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+
 export interface UserFeedback {
   feedbackId: number;
   content: string;
-  status: 'WAITING' | 'CONFIRMED';
+  status: FeedbackStatusType;
   isSecret: boolean;
   isLiked: boolean;
   createdAt: string; // ISO 형식 날짜 문자열
