@@ -10,7 +10,7 @@ export default function AdminHome() {
       <Hero
         onLoginClick={() => navigate('/')}
         onSuggestClick={() => navigate('/suggestion')}
-        title='환영합니다!'
+        title='우테코'
         isUserPage={false}
       />
       <FeedbackBoxList>
