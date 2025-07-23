@@ -10,6 +10,7 @@ export interface InputProps extends React.ComponentProps<'input'> {
 }
 
 export default function Input({
+  name,
   value,
   onChange,
   placeholder,
@@ -19,6 +20,7 @@ export default function Input({
 }: InputProps) {
   return (
     <input
+      name={name}
       css={customCSS}
       maxLength={maxLength}
       minLength={minLength}

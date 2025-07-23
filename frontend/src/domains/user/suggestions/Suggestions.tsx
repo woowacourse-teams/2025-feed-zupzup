@@ -7,11 +7,11 @@ import Banner from '@/domains/user/suggestions/components/Banner/Banner';
 import SecretPostOption from '@/domains/user/suggestions/components/SecretPostOption/SecretPostOption';
 import SuggestionsFormField from '@/domains/user/suggestions/components/SuggestionsFormField/SuggestionsFormField';
 import UploadBox from '@/domains/user/suggestions/components/UploadBox/UploadBox';
+import useSuggestionForm from '@/domains/user/suggestions/hooks/useSuggestionForm';
 import {
   buttonContainer,
   suggestionLayout,
 } from '@/domains/user/suggestions/Suggestions.style';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const selectorOptions = [
@@ -21,20 +21,17 @@ const selectorOptions = [
 
 export default function Suggestions() {
   const navigate = useNavigate();
-  const [suggestions, setSuggestions] = useState<string>('');
-  const [userName, setUserName] = useState<string>('');
 
-  const handleSuggestionsChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setSuggestions(e.target.value);
-  };
-
-  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(e.target.value);
-  };
-
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const { values, handleSuggestionForm, handleSubmitSuggestions } =
+    useSuggestionForm({
+      initialValues: {
+        suggestions: '',
+        userName: '',
+        selectedCategory: '',
+        isSecret: false,
+        imgSrc: '',
+      },
+    });
 
   return (
     <>
@@ -45,43 +42,65 @@ export default function Suggestions() {
           description='여러분의 소중한 의견이 더 좋은 카페를 만들어
 갑니다'
         />
-        <SuggestionsFormField label='카테고리 선택'>
-          <CategorySelector
-            options={selectorOptions}
-            placeholder='카테고리를 선택하세요'
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+        <form css={suggestionLayout}>
+          <SuggestionsFormField label='카테고리 선택'>
+            <CategorySelector
+              name='selectedCategory'
+              options={selectorOptions}
+              placeholder='카테고리를 선택하세요'
+              value={values.selectedCategory}
+              onChange={handleSuggestionForm}
+            />
+          </SuggestionsFormField>
+
+          <SuggestionsFormField label='작성자 이름'>
+            <BasicInput
+              name='userName'
+              value={values.userName}
+              onChange={handleSuggestionForm}
+              placeholder='작성자 이름은 익명으로 표시됩니다.'
+            />
+          </SuggestionsFormField>
+
+          <SuggestionsFormField label='내용'>
+            <BasicTextArea
+              name='suggestions'
+              value={values.suggestions}
+              onChange={handleSuggestionForm}
+              placeholder='건의하고 싶은 내용을 자세히 입력해주세요'
+            />
+          </SuggestionsFormField>
+
+          <SuggestionsFormField label='이미지 첨부 (선택사항)'>
+            <UploadBox
+              name='imgSrc'
+              imgSrc={values.imgSrc}
+              handleImageUpload={(url) =>
+                handleSuggestionForm({ name: 'imgSrc', value: url })
+              }
+            />
+          </SuggestionsFormField>
+
+          <SecretPostOption
+            name='isSecret'
+            isSecret={values.isSecret}
+            handleToggleButton={() =>
+              handleSuggestionForm({
+                name: 'isSecret',
+                value: !values.isSecret,
+              })
+            }
           />
-        </SuggestionsFormField>
 
-        <SuggestionsFormField label='작성자 이름'>
-          <BasicInput
-            onChange={handleUserNameChange}
-            value={userName}
-            placeholder='작성자 이름은 익명으로 표시됩니다.'
-          />
-        </SuggestionsFormField>
-
-        <SuggestionsFormField label='내용'>
-          <BasicTextArea
-            onChange={handleSuggestionsChange}
-            value={suggestions}
-            placeholder='건의하고 싶은 내용을 자세히 입력해주세요'
-          />
-        </SuggestionsFormField>
-
-        <SuggestionsFormField label='이미지 첨부 (선택사항)'>
-          <UploadBox />
-        </SuggestionsFormField>
-
-        <SecretPostOption />
-
-        <div css={buttonContainer}>
-          <BasicButton variant='secondary' onClick={() => navigate(-1)}>
-            취소
-          </BasicButton>
-          <BasicButton onClick={() => navigate('/')}>등록하기</BasicButton>
-        </div>
+          <div css={buttonContainer}>
+            <BasicButton variant='secondary' onClick={() => navigate(-1)}>
+              취소
+            </BasicButton>
+            <BasicButton onClick={handleSubmitSuggestions}>
+              등록하기
+            </BasicButton>
+          </div>
+        </form>
       </div>
     </>
   );
