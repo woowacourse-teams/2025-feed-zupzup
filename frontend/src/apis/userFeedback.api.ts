@@ -23,10 +23,6 @@ export async function postUserFeedback({
         imageUrl,
         isSecret,
         userName,
-      },
-      {
-        onSuccess: (res) => console.log('피드백 전송 성공:', res),
-        onError: () => console.error('피드백 전송 실패:'),
       }
     );
     if (!response) return;
