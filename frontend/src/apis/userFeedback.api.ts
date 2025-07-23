@@ -16,15 +16,12 @@ export async function postUserFeedback({
   userName,
 }: UserFeedbackParams) {
   try {
-    const response = await apiClient.post(
-      `${process.env.BASE_URL}/api/places/${placeId}/feedbacks`,
-      {
-        content,
-        imageUrl,
-        isSecret,
-        userName,
-      }
-    );
+    const response = await apiClient.post(`/api/places/${placeId}/feedbacks`, {
+      content,
+      imageUrl,
+      isSecret,
+      userName,
+    });
     if (!response) return;
   } catch (error) {
     console.error('피드백 전송 에러:', error);
