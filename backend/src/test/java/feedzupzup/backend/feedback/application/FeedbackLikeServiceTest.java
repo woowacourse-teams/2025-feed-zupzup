@@ -3,7 +3,7 @@ package feedzupzup.backend.feedback.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.feedback.domain.FeedbackLikeInMemoryRepository;
+import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,16 +23,16 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
     private FeedbackLikeService feedbackLikeService;
 
     @Autowired
-    private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
+    private FeedbackLikeRepository feedbackLikeRepository;
 
     @BeforeEach
     void clear() {
-        feedbackLikeInMemoryRepository.clear();
+        feedbackLikeRepository.clear();
     }
 
     @AfterEach
     void tearDown() {
-        feedbackLikeInMemoryRepository.clear();
+        feedbackLikeRepository.clear();
     }
 
     @Nested
@@ -49,7 +49,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.like(feedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(1);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(1);
         }
 
         @Test
@@ -64,7 +64,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.like(feedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(3);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(3);
         }
 
         @Test
@@ -80,7 +80,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             }
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(likeCount);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(likeCount);
         }
 
         @Test
@@ -97,8 +97,8 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
 
             // then
             assertAll(
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId1)).isEqualTo(2),
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId2)).isEqualTo(1)
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId1)).isEqualTo(2),
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId2)).isEqualTo(1)
             );
         }
     }
@@ -120,7 +120,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.unLike(feedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(2);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(2);
         }
 
         @Test
@@ -134,7 +134,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.unLike(feedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isZero();
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isZero();
         }
 
         @Test
@@ -149,7 +149,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.unLike(feedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(-1);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(-1);
         }
     }
 
@@ -172,7 +172,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.unLike(feedbackId);        // 2
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(2);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(2);
         }
 
         @Test
@@ -195,9 +195,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
 
             // then
             assertAll(
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId1)).isEqualTo(1),
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId2)).isEqualTo(1),
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId3)).isEqualTo(2)
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId1)).isEqualTo(1),
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId2)).isEqualTo(1),
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId3)).isEqualTo(2)
             );
         }
     }
@@ -216,7 +216,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.like(largeFeedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(largeFeedbackId)).isEqualTo(1);
+            assertThat(feedbackLikeRepository.getLikeCount(largeFeedbackId)).isEqualTo(1);
         }
 
         @Test
@@ -229,7 +229,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             feedbackLikeService.like(minFeedbackId);
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(minFeedbackId)).isEqualTo(1);
+            assertThat(feedbackLikeRepository.getLikeCount(minFeedbackId)).isEqualTo(1);
         }
 
         @Test
@@ -245,7 +245,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             }
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(largeCount);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(largeCount);
         }
     }
 
@@ -277,7 +277,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             executorService.shutdown();
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(100);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(100);
         }
 
         @Test
@@ -309,7 +309,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             executorService.shutdown();
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isZero();
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isZero();
         }
 
         @Test
@@ -358,7 +358,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             // then
             // 초기 50 + 새로운 좋아요 60 - 성공한 좋아요 취소
             final int expectedCount = 50 + likeCount - successfulUnlikes.get();
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(expectedCount);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(expectedCount);
         }
 
         @Test
@@ -404,9 +404,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
 
             // then
             assertAll(
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId1)).isEqualTo(50),
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId2)).isEqualTo(50),
-                    () -> assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId3)).isEqualTo(50)
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId1)).isEqualTo(50),
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId2)).isEqualTo(50),
+                    () -> assertThat(feedbackLikeRepository.getLikeCount(feedbackId3)).isEqualTo(50)
             );
         }
 
@@ -434,7 +434,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
             executorService.shutdown();
 
             // then
-            assertThat(feedbackLikeInMemoryRepository.getLikeCount(feedbackId)).isEqualTo(1000);
+            assertThat(feedbackLikeRepository.getLikeCount(feedbackId)).isEqualTo(1000);
         }
 
         @Test
@@ -477,7 +477,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper{
 
             // then
             // 최종 결과는 초기값(1) 근처의 값이어야 함 (정확한 값은 실행 순서에 따라 달라질 수 있음)
-            final int finalCount = feedbackLikeInMemoryRepository.getLikeCount(feedbackId);
+            final int finalCount = feedbackLikeRepository.getLikeCount(feedbackId);
             assertThat(finalCount).isNotNegative();
         }
     }

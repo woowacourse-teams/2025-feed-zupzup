@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeInMemoryRepository;
+import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -23,7 +23,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
+    private FeedbackLikeRepository feedbackLikeRepository;
 
     @Test
     @DisplayName("인메모리 좋아요를 DB에 성공적으로 동기화한다")
@@ -35,9 +35,9 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
         // 인메모리에 좋아요 추가
-        feedbackLikeInMemoryRepository.increaseAndGet(saved1.getId());
-        feedbackLikeInMemoryRepository.increaseAndGet(saved1.getId());
-        feedbackLikeInMemoryRepository.increaseAndGet(saved2.getId());
+        feedbackLikeRepository.increaseAndGet(saved1.getId());
+        feedbackLikeRepository.increaseAndGet(saved1.getId());
+        feedbackLikeRepository.increaseAndGet(saved2.getId());
 
         // when
         feedbackLikeService.flushLikeCountBuffer();
@@ -49,7 +49,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(updatedFeedback1.getLikeCount()).isEqualTo(7), // 5 + 2
                 () -> assertThat(updatedFeedback2.getLikeCount()).isEqualTo(4), // 3 + 1
-                () -> assertThat(feedbackLikeInMemoryRepository.getLikeCounts()).isEmpty()
+                () -> assertThat(feedbackLikeRepository.getLikeCounts()).isEmpty()
         );
     }
 
@@ -73,11 +73,11 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     void syncLikesToDatabase_ignores_non_existent_feedback() {
         // given
         final Long nonExistentId = 999L;
-        feedbackLikeInMemoryRepository.increaseAndGet(nonExistentId);
+        feedbackLikeRepository.increaseAndGet(nonExistentId);
 
         // when & then - 예외가 발생하지 않고 정상 처리됨
         feedbackLikeService.flushLikeCountBuffer();
-        assertThat(feedbackLikeInMemoryRepository.getLikeCounts()).isEmpty();
+        assertThat(feedbackLikeRepository.getLikeCounts()).isEmpty();
     }
 
     @Test
@@ -88,11 +88,11 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Feedback saved = feedBackRepository.save(feedback);
 
         // 좋아요 증가 후 감소
-        feedbackLikeInMemoryRepository.increaseAndGet(saved.getId());
-        feedbackLikeInMemoryRepository.increaseAndGet(saved.getId());
-        feedbackLikeInMemoryRepository.decreaseAndGet(saved.getId());
-        feedbackLikeInMemoryRepository.decreaseAndGet(saved.getId());
-        feedbackLikeInMemoryRepository.decreaseAndGet(saved.getId());
+        feedbackLikeRepository.increaseAndGet(saved.getId());
+        feedbackLikeRepository.increaseAndGet(saved.getId());
+        feedbackLikeRepository.decreaseAndGet(saved.getId());
+        feedbackLikeRepository.decreaseAndGet(saved.getId());
+        feedbackLikeRepository.decreaseAndGet(saved.getId());
 
         // when
         feedbackLikeService.flushLikeCountBuffer();
@@ -111,14 +111,14 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
-        feedbackLikeInMemoryRepository.increaseAndGet(saved1.getId());
-        feedbackLikeInMemoryRepository.increaseAndGet(saved2.getId());
+        feedbackLikeRepository.increaseAndGet(saved1.getId());
+        feedbackLikeRepository.increaseAndGet(saved2.getId());
 
         // when
         feedbackLikeService.flushLikeCountBuffer();
 
         // then
-        assertThat(feedbackLikeInMemoryRepository.getLikeCounts()).isEmpty();
+        assertThat(feedbackLikeRepository.getLikeCounts()).isEmpty();
     }
 
     @Test
@@ -133,7 +133,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
             final Feedback saved = feedBackRepository.save(feedback);
 
             for (int j = 0; j < likesPerFeedback; j++) {
-                feedbackLikeInMemoryRepository.increaseAndGet(saved.getId());
+                feedbackLikeRepository.increaseAndGet(saved.getId());
             }
         }
 
@@ -143,7 +143,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         // then
         final long totalFeedbacks = feedBackRepository.count();
         assertThat(totalFeedbacks).isGreaterThanOrEqualTo(feedbackCount);
-        assertThat(feedbackLikeInMemoryRepository.getLikeCounts()).isEmpty();
+        assertThat(feedbackLikeRepository.getLikeCounts()).isEmpty();
     }
 
     @Test
@@ -163,7 +163,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
             executorService.submit(() -> {
                 try {
                     for (int j = 0; j < likesPerThread; j++) {
-                        feedbackLikeInMemoryRepository.increaseAndGet(saved.getId());
+                        feedbackLikeRepository.increaseAndGet(saved.getId());
                     }
                 } finally {
                     latch.countDown();
@@ -181,7 +181,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Feedback updatedFeedback = feedBackRepository.findById(saved.getId()).orElseThrow();
         assertAll(
                 () -> assertThat(updatedFeedback.getLikeCount()).isEqualTo(threadCount * likesPerThread),
-                () -> assertThat(feedbackLikeInMemoryRepository.getLikeCounts()).isEmpty()
+                () -> assertThat(feedbackLikeRepository.getLikeCounts()).isEmpty()
         );
     }
 }

@@ -1,5 +1,6 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.feedback.infrastructure;
 
+import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,7 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class FeedbackLikeInMemoryRepository {
+public class FeedbackLikeInMemoryRepository implements FeedbackLikeRepository {
 
     private static final ConcurrentHashMap<Long, AtomicInteger> feedbackLikes = new ConcurrentHashMap<>();
 

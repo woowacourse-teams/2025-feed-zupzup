@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class FeedbackLikeCounter {
 
-    private final FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
+    private final FeedbackLikeRepository feedbackLikeRepository;
 
     public void applyBufferedLikeCount(final FeedbackPage feedbackPage) {
         final List<Feedback> feedbacks = feedbackPage.getFeedbacks();
@@ -18,6 +19,6 @@ public class FeedbackLikeCounter {
     }
 
     private void applyBufferedLike(final Feedback feedback) {
-        feedback.updateLikeCount(feedback.getLikeCount() + feedbackLikeInMemoryRepository.getLikeCount(feedback.getId()));
+        feedback.updateLikeCount(feedback.getLikeCount() + feedbackLikeRepository.getLikeCount(feedback.getId()));
     }
 }

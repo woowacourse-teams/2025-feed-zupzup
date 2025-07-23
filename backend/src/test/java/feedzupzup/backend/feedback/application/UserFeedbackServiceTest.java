@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeInMemoryRepository;
+import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
@@ -27,7 +27,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
+    private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
     private PlaceRepository placeRepository;
@@ -37,7 +37,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @BeforeEach
     void clear() {
-        feedbackLikeInMemoryRepository.clear();
+        feedbackLikeRepository.clear();
     }
 
     @Test
