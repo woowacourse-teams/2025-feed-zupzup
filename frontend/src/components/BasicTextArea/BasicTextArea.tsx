@@ -6,16 +6,15 @@ import {
   textArea,
 } from './BasicTextArea.style';
 
-export interface BasicTextAreaProps {
+export interface BasicTextAreaProps extends React.ComponentProps<'textarea'> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   placeholder: string;
-  maxLength?: number;
-  minLength?: number;
   showCharCount?: boolean;
 }
 
 export default function BasicTextArea({
+  name,
   value,
   onChange,
   placeholder,
@@ -27,6 +26,7 @@ export default function BasicTextArea({
   return (
     <div css={basicTextAreaContainer}>
       <TextArea
+        name={name}
         customCSS={textArea(theme)}
         value={value}
         onChange={onChange}

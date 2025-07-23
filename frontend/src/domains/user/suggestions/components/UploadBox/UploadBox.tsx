@@ -6,12 +6,21 @@ import {
   uploadText,
 } from '@/domains/user/suggestions/components/UploadBox/UploadBox.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-export default function UploadBox() {
+interface UploadBoxProps {
+  name: string;
+  imgSrc: string | null;
+  handleImageUpload: (url: string) => void;
+}
+
+export default function UploadBox({
+  name,
+  imgSrc,
+  handleImageUpload,
+}: UploadBoxProps) {
   const theme = useAppTheme();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string | null>(null);
 
   const handleClick = () => {
     fileInputRef.current?.click();
@@ -21,14 +30,14 @@ export default function UploadBox() {
     const file = e.target.files?.[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      setPreview(url);
+      handleImageUpload(url);
     }
   };
 
   return (
     <div css={uploadBox(theme)} onClick={handleClick}>
-      {preview ? (
-        <img src={preview} alt='미리보기' css={previewImage} />
+      {imgSrc ? (
+        <img src={imgSrc} alt='미리보기' css={previewImage} />
       ) : (
         <>
           <PhotoIcon />
@@ -42,6 +51,7 @@ export default function UploadBox() {
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleChange}
+        name={name}
       />
     </div>
   );

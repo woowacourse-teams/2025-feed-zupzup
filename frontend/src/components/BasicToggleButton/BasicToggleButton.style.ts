@@ -8,18 +8,20 @@ export const toggleWrapper = css`
   cursor: pointer;
 `;
 
-export const trackStyle = (theme: Theme, isOn: boolean) => css`
+export const trackStyle = (theme: Theme, isToggled: boolean) => css`
   width: 100%;
   height: 100%;
-  background-color: ${isOn ? theme.colors.yellow[200] : 'rgb(224, 224, 224)'};
+  background-color: ${isToggled
+    ? theme.colors.yellow[200]
+    : 'rgb(224, 224, 224)'};
   border-radius: 30px;
   transition: background-color 0.3s;
 `;
 
-export const circleStyle = (isOn: boolean) => css`
+export const circleStyle = (isToggled: boolean) => css`
   position: absolute;
   top: 2px;
-  left: ${isOn ? '27px' : '1px'};
+  left: ${isToggled ? '27px' : '1px'};
   width: 20px;
   height: 20px;
   background-color: #fffefe;
