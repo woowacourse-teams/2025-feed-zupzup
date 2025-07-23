@@ -1,4 +1,3 @@
-import { postUserFeedback } from '@/apis/userFeedback.api';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import BasicInput from '@/components/BasicInput/BasicInput';
 import BasicTextArea from '@/components/BasicTextArea/BasicTextArea';
@@ -23,27 +22,16 @@ const selectorOptions = [
 export default function Suggestions() {
   const navigate = useNavigate();
 
-  const { values, handleSuggestionForm } = useSuggestionForm({
-    initialValues: {
-      suggestions: '',
-      userName: '',
-      selectedCategory: '',
-      isSecret: false,
-      imgSrc: '',
-    },
-  });
-
-  const handleSubmitSuggestions = () => {
-    postUserFeedback({
-      placeId: 1,
-      content: values.suggestions,
-      imageUrl: values.imgSrc,
-      isSecret: values.isSecret,
-      userName: values.userName,
+  const { values, handleSuggestionForm, handleSubmitSuggestions } =
+    useSuggestionForm({
+      initialValues: {
+        suggestions: '',
+        userName: '',
+        selectedCategory: '',
+        isSecret: false,
+        imgSrc: '',
+      },
     });
-    alert('건의사항이 제출되었습니다!');
-    navigate('/');
-  };
 
   return (
     <>
