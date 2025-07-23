@@ -77,6 +77,10 @@ jobs:
           token: ${{ secrets.SUBMODULE_TOKEN }}
           submodules: true
 
+      - name: 서브모듈 최신화
+        run: |
+          git submodule update --remote  
+
       - name: Docker Compose 파일 복사
         run: |
           sudo cp ./backend/backend-submodule/docker/docker-compose.prod.yml /home/ubuntu/docker/docker-compose.yml
