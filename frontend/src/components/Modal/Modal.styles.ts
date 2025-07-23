@@ -32,13 +32,13 @@ export const content = css`
   gap: 16px;
 `;
 
-export const title = (theme: Theme) => css`
+export const titleText = (theme: Theme) => css`
   ${theme.typography.inter.h4};
 
   color: ${theme.colors.black[100]};
 `;
 
-export const message = (theme: Theme) => css`
+export const messageText = (theme: Theme) => css`
   ${theme.typography.inter.bodyRegular};
 
   color: ${theme.colors.gray[600]};

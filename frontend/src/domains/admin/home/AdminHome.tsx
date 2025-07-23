@@ -82,6 +82,16 @@ export default function AdminHome() {
 
       {modalState.type && (
         <Modal
+          title={
+            modalState.type === 'delete'
+              ? '삭제하시겠습니까?'
+              : '확인하시겠습니까?'
+          }
+          message={
+            modalState.type === 'delete'
+              ? '삭제한 건의는 되돌릴 수 없습니다.'
+              : null
+          }
           isOpen={true}
           onClose={closeModal}
           type={modalState.type}

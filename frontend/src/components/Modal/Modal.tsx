@@ -1,3 +1,4 @@
+// components/Modal/Modal.tsx
 import { SerializedStyles } from '@emotion/react';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useModal } from '@/hooks/useModal';
@@ -6,8 +7,8 @@ import {
   overlay,
   modal,
   content,
-  title,
-  message,
+  titleText,
+  messageText,
   buttonContainer,
 } from './Modal.styles';
 
@@ -15,8 +16,8 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   type: 'delete' | 'confirm';
-  title?: string;
-  message?: string;
+  title: string;
+  message?: string | null;
   onConfirm?: () => void;
   width?: number;
   height?: number;
@@ -27,8 +28,8 @@ export default function Modal({
   isOpen,
   onClose,
   type,
-  title: customTitle,
-  message: customMessage,
+  title,
+  message,
   onConfirm,
   width = 300,
   height,
@@ -44,19 +45,12 @@ export default function Modal({
 
   if (!isOpen) return null;
 
-  const defaultTitle =
-    type === 'delete' ? '건의를 삭제하시겠습니까?' : '건의를 확인하시겠습니까?';
-  const defaultMessage =
-    type === 'delete' ? '삭제한 건의는 되돌릴 수 없습니다.' : null;
-
   return (
     <div css={[overlay, customCss]} onClick={handleOverlayClick}>
       <div css={modal(theme, width, height)}>
         <div css={content}>
-          <p css={title(theme)}>{customTitle || defaultTitle}</p>
-          {defaultMessage && (
-            <p css={message(theme)}>{customMessage || defaultMessage}</p>
-          )}
+          <p css={titleText(theme)}>{title}</p>
+          {message && <p css={messageText(theme)}>{message}</p>}
         </div>
         <div css={buttonContainer}>
           {type === 'delete' ? (
