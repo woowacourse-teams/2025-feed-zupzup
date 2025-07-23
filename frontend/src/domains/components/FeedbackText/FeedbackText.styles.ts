@@ -3,10 +3,10 @@ import { css } from '@emotion/react';
 
 export const feedbackText = (
   theme: Theme,
-  type: 'complete' | 'incomplete'
+  type: 'CONFIRMED' | 'WAITING'
 ) => css`
   ${theme.typography.inter.small}
 
   line-height: 20px;
-  ${type === 'complete' && `color : ${theme.colors.gray[500]}`}
+  ${type === 'CONFIRMED' && `color : ${theme.colors.gray[500]}`}
 `;

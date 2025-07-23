@@ -3,13 +3,16 @@ import EmptyHeartIcon from '../icons/EmptyHeartIcon';
 import FillHeartIcon from '../icons/FillHeartIcon';
 
 interface LikeButtonProps {
-  like: boolean;
+  like: boolean | undefined;
 }
 
-export default function LikeButton({ like = false }: LikeButtonProps) {
+export default function LikeButton({ like }: LikeButtonProps) {
   const [isLiked, setIsLiked] = useState(like);
 
-  const handleLikeButton = () => setIsLiked((prev) => !prev);
+  const handleLikeButton = () => {
+    if (like === null || like === undefined) return;
+    setIsLiked((prev) => !prev);
+  };
 
   return (
     <button onClick={handleLikeButton}>

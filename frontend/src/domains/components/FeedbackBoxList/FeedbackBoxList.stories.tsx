@@ -1,6 +1,6 @@
 //@ts-expect-error: react error
-
 import React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import FeedbackBoxList from './FeedbackBoxList';
 import UserFeedbackBox from '@/domains/user/home/components/UserFeedbackBox/UserFeedbackBox';
@@ -31,13 +31,50 @@ const meta: Meta<typeof FeedbackBoxList> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const userFeedbackWaiting = {
+  type: 'WAITING',
+  content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
+  isLiked: false,
+  isSecret: false,
+  createdAt: '2024-05-20',
+} as const;
+
+const userFeedbackConfirmed = {
+  type: 'CONFIRMED',
+  content: '이 피드백은 확인 완료되었습니다. 감사합니다.',
+  isLiked: true,
+  isSecret: false,
+  createdAt: '2024-05-19',
+} as const;
+
+const adminFeedbackWaiting = {
+  type: 'WAITING',
+  content: '관리자가 확인해야 할 피드백입니다. 이미지가 첨부되었습니다.',
+  isSecret: false,
+  imgUrl:
+    'https://i.pinimg.com/236x/44/f9/83/44f9831be884e4c65f167b96e16fa94e.jpg',
+  likeCount: 5,
+  userName: '익명의 사용자',
+  createdAt: '2024-05-21',
+} as const;
+
+const adminFeedbackConfirmed = {
+  type: 'CONFIRMED',
+  content: '관리자가 확인 완료한 피드백입니다. 비밀글입니다.',
+  isSecret: true,
+  imgUrl: null,
+  likeCount: 12,
+  userName: '김개발',
+  createdAt: '2024-05-18',
+} as const;
+
 export const Default: Story = {
   args: {
     children: (
       <>
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='incomplete' />
-        <UserFeedbackBox type='complete' />
+        <UserFeedbackBox {...userFeedbackWaiting} />
+        <UserFeedbackBox {...userFeedbackConfirmed} />
+        <UserFeedbackBox {...userFeedbackWaiting} isSecret />
       </>
     ),
   },
@@ -47,9 +84,8 @@ export const Admin: Story = {
   args: {
     children: (
       <>
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='incomplete' />
-        <AdminFeedbackBox type='complete' />
+        <AdminFeedbackBox {...adminFeedbackWaiting} />
+        <AdminFeedbackBox {...adminFeedbackConfirmed} />
       </>
     ),
   },

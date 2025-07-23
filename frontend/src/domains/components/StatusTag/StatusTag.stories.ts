@@ -11,7 +11,7 @@ const meta: Meta<typeof StatusTag> = {
   argTypes: {
     type: {
       control: 'select',
-      options: ['incomplete', 'complete'],
+      options: ['WAITING', 'CONFIRMED'],
       description: '상태에 따라 태그 스타일이 달라집니다.',
     },
   },
@@ -22,12 +22,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    type: 'incomplete',
+    type: 'WAITING',
   },
 };
 
 export const Complete: Story = {
   args: {
-    type: 'complete',
+    type: 'CONFIRMED',
   },
 };
