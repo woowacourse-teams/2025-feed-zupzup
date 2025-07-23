@@ -38,7 +38,11 @@ export default function useSuggestionForm({
     }
   };
 
-  const handleSubmitSuggestions = () => {
+  const handleSubmitSuggestions = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+
     postUserFeedback({
       placeId: 1,
       content: values.suggestions,

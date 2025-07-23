@@ -6,13 +6,12 @@ import {
 } from '@/domains/user/suggestions/components/SecretPostOption/SecretPostOption.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-interface SecretPostOptionProps extends React.ComponentProps<'button'> {
+interface SecretPostOptionProps {
   isSecret: boolean;
   handleToggleButton: () => void;
 }
 
 export default function SecretPostOption({
-  name,
   isSecret,
   handleToggleButton,
 }: SecretPostOptionProps) {
@@ -20,11 +19,7 @@ export default function SecretPostOption({
 
   return (
     <div css={secretOption(theme)}>
-      <BasicToggleButton
-        name={name}
-        isToggled={isSecret}
-        onClick={handleToggleButton}
-      />
+      <BasicToggleButton isToggled={isSecret} onClick={handleToggleButton} />
       <LockIcon />
       <p css={secretText(theme)}>비밀글로 작성</p>
     </div>
