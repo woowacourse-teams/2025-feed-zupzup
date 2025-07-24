@@ -1,21 +1,24 @@
-import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import CheckIcon from '@/components/icons/CheckIcon';
-import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
-import StatusTag from '@/domains/components/StatusTag/StatusTag';
-import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
-import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
-import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
-import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import IconButton from '@/components/IconButton/IconButton';
-import TrashCanIcon from '@/components/icons/TrashCanIcon';
-import { AdminFeedback } from '@/types/feedback.types';
+import CheckIcon from '@/components/icons/CheckIcon';
 import LockIcon from '@/components/icons/LockIcon';
+import TrashCanIcon from '@/components/icons/TrashCanIcon';
+import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
+import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
+import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
+import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
+import StatusTag from '@/domains/components/StatusTag/StatusTag';
+import { AdminFeedback } from '@/types/feedback.types';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
 
 interface AdminFeedbackBox
   extends Omit<AdminFeedback, 'feedbackId' | 'status'> {
   type: FeedbackStatusType;
 }
+
+const FEEDBACK_ID = 23; // TODO : 삭제 필요. 임시 feedbackId
 
 export default function AdminFeedbackBox({
   type,
@@ -26,6 +29,19 @@ export default function AdminFeedbackBox({
   userName,
   createdAt,
 }: AdminFeedbackBox) {
+  const handleDelete = (feedbackId: number) => {
+    deleteFeedback({ feedbackId });
+    alert('피드백이 삭제되었습니다.');
+  };
+
+  const handleStatusChange = (feedbackId: number, status: string) => {
+    patchFeedbackStatus({
+      feedbackId,
+      status,
+    });
+    alert('피드백 상태가 변경되었습니다.');
+  };
+
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -34,8 +50,16 @@ export default function AdminFeedbackBox({
           <StatusTag type={type} />
         </div>
         <div css={iconWrap}>
-          {type === 'WAITING' && <IconButton icon={<CheckIcon />} />}
-          <IconButton icon={<TrashCanIcon />} />
+          {type === 'WAITING' && (
+            <IconButton
+              icon={<CheckIcon />}
+              onClick={() => handleStatusChange(FEEDBACK_ID, 'CONFIRMED')}
+            />
+          )}
+          <IconButton
+            icon={<TrashCanIcon />}
+            onClick={() => handleDelete(FEEDBACK_ID)}
+          />
         </div>
       </div>
       <div css={textWrap}>
