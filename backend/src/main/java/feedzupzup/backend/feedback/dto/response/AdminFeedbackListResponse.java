@@ -64,7 +64,7 @@ public record AdminFeedbackListResponse(
                     feedback.getStatus(),
                     feedback.getImageUrl(),
                     feedback.isSecret(),
-                    0,
+                    feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getCreatedAt()
             );
