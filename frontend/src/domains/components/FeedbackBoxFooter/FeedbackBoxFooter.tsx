@@ -1,11 +1,11 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import CalendarIcon from '@/components/icons/CalendarIcon';
-import LikeButton from '@/components/LikeButton/LikeButton';
+import LikeButton from '@/domains/components/LikeButton/LikeButton';
 import { calendar, container, content, day } from './FeedbackBoxFooter.styles';
 import formatDate from '@/utils/formatDate';
 
 interface FeedbackBoxFooterProps {
-  likeCount?: number;
+  likeCount: number;
   isLiked?: boolean;
   createdAt: string;
   userName?: string;
@@ -34,7 +34,11 @@ export default function FeedbackBoxFooter({
       </div>
       {!isSecret && (
         <div css={content(theme)}>
-          <LikeButton like={isLiked} feedbackId={feedbackId} /> {likeCount}
+          <LikeButton
+            like={isLiked}
+            feedbackId={feedbackId}
+            likeCount={likeCount}
+          />
         </div>
       )}
     </div>
