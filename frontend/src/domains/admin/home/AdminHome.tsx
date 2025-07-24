@@ -31,11 +31,11 @@ export default function AdminHome() {
     'feedbacks',
     FeedbackResponse<AdminFeedback>
   >({
-    url: '/api/admin/places/1/feedbacks',
+    url: '/admin/places/1/feedbacks',
     key: 'feedbacks',
   });
 
-  useGetFeedback({ fetchMore, hasNext });
+  useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
     <section>

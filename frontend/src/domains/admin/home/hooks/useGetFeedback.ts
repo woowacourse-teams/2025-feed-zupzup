@@ -4,19 +4,18 @@ import useIntersectionObserve from '@/hooks/useIntersectionObserve';
 interface UseIntersectionObserveProps {
   fetchMore: () => void;
   hasNext: boolean;
+  loading: boolean;
 }
 
 export default function useGetFeedback({
   fetchMore,
   hasNext,
+  loading,
 }: UseIntersectionObserveProps) {
-  useEffect(() => {
-    fetchMore();
-  }, []);
-
   const { observe, unobserve } = useIntersectionObserve();
 
   useEffect(() => {
+    if (!hasNext || loading) return;
     const observerElement = document.getElementById('scroll-observer');
     if (!hasNext && observerElement) {
       unobserve(observerElement);

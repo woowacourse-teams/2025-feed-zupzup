@@ -19,11 +19,11 @@ export default function UserHome() {
     'feedbacks',
     FeedbackResponse<UserFeedback>
   >({
-    url: '/api/places/1/feedbacks',
+    url: '/places/1/feedbacks',
     key: 'feedbacks',
   });
 
-  useGetFeedback({ fetchMore, hasNext });
+  useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
     <section>
@@ -46,7 +46,7 @@ export default function UserHome() {
         ))}
         {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
-      {hasNext && <div id='scroll-observer'></div>}
+      {hasNext && !loading && <div id='scroll-observer'></div>}
     </section>
   );
 }
