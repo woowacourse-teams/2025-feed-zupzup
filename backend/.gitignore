@@ -38,6 +38,7 @@ out/
 
 ### application ###
 src/main/resources/*.yml
+src/test/resources/*.yml
 
 ### mysql volume ###
 /mysql/
