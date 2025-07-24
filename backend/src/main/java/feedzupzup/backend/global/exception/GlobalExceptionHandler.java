@@ -31,4 +31,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus)
                 .body(ErrorResponse.error(e.getErrorCode()));
     }
+
+    @ExceptionHandler(BusinessViolationException.class)
+    public ResponseEntity<ErrorResponse<Void>> handleBusinessViolationException(final BusinessViolationException e) {
+        log.warn(e.getMessage(), e);
+        final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
 }
