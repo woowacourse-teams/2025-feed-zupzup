@@ -1,5 +1,6 @@
 package feedzupzup.backend.s3.service;
 
+import feedzupzup.backend.global.exception.BusinessViolationException.NotSupportedException;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Getter;
@@ -38,6 +39,6 @@ public enum S3ObjectType {
         return Arrays.stream(values())
                 .filter(type -> type.extensions.contains(extension.toLowerCase()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 확장자입니다. " + extension));
+                .orElseThrow(() -> new NotSupportedException("지원하지 않는 확장자입니다. " + extension));
     }
 }
