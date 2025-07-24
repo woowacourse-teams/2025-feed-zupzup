@@ -9,13 +9,11 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useRef } from 'react';
 
 interface UploadBoxProps {
-  name: string;
   imgSrc: string | null;
   handleImageUpload: (url: string) => void;
 }
 
 export default function UploadBox({
-  name,
   imgSrc,
   handleImageUpload,
 }: UploadBoxProps) {
@@ -53,7 +51,6 @@ export default function UploadBox({
         ref={fileInputRef}
         style={{ display: 'none' }}
         onChange={handleChange}
-        name={name}
       />
     </div>
   );
