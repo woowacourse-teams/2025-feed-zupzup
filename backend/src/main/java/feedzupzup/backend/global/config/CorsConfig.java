@@ -12,9 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
-                        "http://feedzupzup.com",
                         "https://feedzupzup.com",
-                        "http://api.feedzupzup.com",
                         "https://api.feedzupzup.com"
                 )
                 .allowedOriginPatterns("https://*.feedzupzup.com")
