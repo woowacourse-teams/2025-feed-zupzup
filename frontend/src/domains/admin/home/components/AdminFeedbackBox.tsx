@@ -18,7 +18,7 @@ interface AdminFeedbackBox
   type: FeedbackStatusType;
 }
 
-const FEEDBACK_ID = 23; // TODO : 삭제 필요. 임시 feedbackId
+const FEEDBACK_ID = 28; // TODO : 삭제 필요. 임시 feedbackId
 
 export default function AdminFeedbackBox({
   type,

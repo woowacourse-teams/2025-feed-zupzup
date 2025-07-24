@@ -19,7 +19,7 @@ export default function BasicToggleButton({
 }: ToggleButtonProps) {
   const theme = useAppTheme();
   return (
-    <Button css={toggleWrapper} onClick={onClick} name={name}>
+    <Button css={toggleWrapper} onClick={onClick} name={name} type='button'>
       <div css={trackStyle(theme, isToggled)} />
       <div css={circleStyle(isToggled)} />
     </Button>

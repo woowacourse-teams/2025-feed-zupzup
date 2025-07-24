@@ -12,7 +12,7 @@ interface PatchFeedbackStatusParams {
 export async function deleteFeedback({ feedbackId }: DeleteFeedbackParams) {
   try {
     const response = await apiClient.delete(
-      `${process.env.BASE_URL}/api/admin/feedbacks/${feedbackId}`
+      `/api/admin/feedbacks/${feedbackId}`
     );
     if (!response) return;
   } catch (error) {
@@ -26,7 +26,7 @@ export async function patchFeedbackStatus({
 }: PatchFeedbackStatusParams) {
   try {
     const response = await apiClient.patch(
-      `${process.env.BASE_URL}/api/admin/feedbacks/${feedbackId}/status`,
+      `/api/admin/feedbacks/${feedbackId}/status`,
       { status }
     );
     if (!response) return;
