@@ -38,6 +38,6 @@ public enum S3ObjectType {
         return Arrays.stream(values())
                 .filter(type -> type.extensions.contains(extension.toLowerCase()))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("지원하지 않는 확장자입니다. " + extension));
     }
 }
