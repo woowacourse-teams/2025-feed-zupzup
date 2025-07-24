@@ -4,6 +4,7 @@ import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +19,14 @@ public class FeedbackLikeService {
     private final FeedBackRepository feedBackRepository;
 
     public LikeResponse like(final Long feedbackId) {
+        validateExistFeedback(feedbackId);
         final int beforeLikeCount = feedbackLikeRepository.getLikeCount(feedbackId);
         final int afterLikeCount = feedbackLikeRepository.increaseAndGet(feedbackId);
         return new LikeResponse(beforeLikeCount, afterLikeCount);
     }
 
     public LikeResponse unLike(final Long feedbackId) {
+        validateExistFeedback(feedbackId);
         final int beforeLikeCount = feedbackLikeRepository.getLikeCount(feedbackId);
         final int afterLikeCount = feedbackLikeRepository.decreaseAndGet(feedbackId);
         return new LikeResponse(beforeLikeCount, afterLikeCount);
@@ -38,5 +41,11 @@ public class FeedbackLikeService {
             feedback.updateLikeCount(feedback.getLikeCount() + likeCounts.get(feedback.getId()));
         }
         feedbackLikeRepository.clear();
+    }
+
+    private void validateExistFeedback(Long feedbackId) {
+        if (!feedBackRepository.existsById(feedbackId)) {
+            throw new ResourceNotFoundException("피드백을 찾을 수 없습니다.");
+        }
     }
 }

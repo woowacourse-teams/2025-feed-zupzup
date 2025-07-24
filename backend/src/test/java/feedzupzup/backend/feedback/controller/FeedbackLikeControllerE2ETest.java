@@ -74,23 +74,18 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요를 시도하면 404 에러가 발생하지 않는다")
-    void like_non_existent_feedback_success() {
+    @DisplayName("존재하지 않는 피드백에 좋아요를 시도하면 404 에러가 발생한다")
+    void like_non_existent_feedback_not_found() {
         // given
         final Long nonExistentFeedbackId = 999L;
 
-        // when & then - 존재하지 않는 피드백도 인메모리에는 저장됨
+        // when & then
         given()
                 .log().all()
                 .when()
                 .post("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.beforeLikeCount", equalTo(0))
-                .body("data.afterLikeCount", equalTo(1));
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -179,8 +174,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요 취소를 시도해도 성공한다")
-    void unlike_non_existent_feedback_success() {
+    @DisplayName("존재하지 않는 피드백에 좋아요 취소를 시도하면 404 에러가 발생한다")
+    void unlike_non_existent_feedback_not_found() {
         // given
         final Long nonExistentFeedbackId = 999L;
 
@@ -190,12 +185,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 .when()
                 .delete("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.beforeLikeCount", equalTo(0))
-                .body("data.afterLikeCount", equalTo(-1));
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -275,16 +265,17 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("대용량 피드백 ID에도 정상적으로 좋아요가 동작한다")
-    void like_large_feedback_id_success() {
+    @DisplayName("유효한 피드백 ID에 정상적으로 좋아요가 동작한다")
+    void like_valid_feedback_id_success() {
         // given
-        final Long largeFeedbackId = Long.MAX_VALUE;
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+        final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", largeFeedbackId)
+                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
