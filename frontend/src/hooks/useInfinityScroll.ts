@@ -39,7 +39,7 @@ export default function useInfinityScroll<
 
     try {
       const response = await apiClient.get<{ data: ResponseData }>(
-        `${process.env.BASE_URL}${url}?${query.toString()}`
+        `${url}?${query.toString()}`
       );
 
       if (!response) return;
