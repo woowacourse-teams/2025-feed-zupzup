@@ -1,4 +1,6 @@
 import { postUserFeedback } from '@/apis/userFeedback.api';
+import { SuggestionFeedback } from '@/types/feedback.types';
+import { setLocalStorage } from '@/utils/localStorage';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,15 +44,19 @@ export default function useSuggestionForm({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+
     postUserFeedback({
       placeId: 1,
       content: values.suggestions,
       imageUrl: values.imgSrc,
       isSecret: values.isSecret,
       userName: values.userName,
+      onSuccess: (response: SuggestionFeedback) => {
+        setLocalStorage('highlightedId', response.data.feedbackId);
+        navigate('/');
+      },
+      onError: () => {},
     });
-    alert('건의사항이 제출되었습니다!');
-    navigate('/');
   };
 
   return { values, handleSuggestionForm, handleSubmitSuggestions };

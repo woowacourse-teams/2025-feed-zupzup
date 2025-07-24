@@ -7,6 +7,7 @@ import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/Fe
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import LockIcon from '@/components/icons/LockIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { SerializedStyles } from '@emotion/react';
 
 interface UserFeedbackBox {
   type: FeedbackStatusType;
@@ -16,6 +17,7 @@ interface UserFeedbackBox {
   createdAt: string;
   feedbackId: number;
   likeCount: number;
+  customCSS: SerializedStyles | null;
 }
 
 export default function UserFeedbackBox({
@@ -26,11 +28,12 @@ export default function UserFeedbackBox({
   createdAt,
   feedbackId,
   likeCount,
+  customCSS,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
   return (
-    <FeedbackBoxBackGround type={type}>
+    <FeedbackBoxBackGround type={type} customCSS={customCSS}>
       <div css={tagContainer}>
         <CategoryTag text='맛' type={type} />
         <StatusTag type={type} />
