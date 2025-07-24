@@ -15,6 +15,10 @@ jobs:
           token: ${{ secrets.SUBMODULE_TOKEN }}
           submodules: true
 
+      - name: 서브모듈 최신화
+        run: |
+          git submodule update --remote          
+
       - name: Docker Hub 로그인
         uses: docker/login-action@v3
         with:
@@ -60,7 +64,7 @@ jobs:
 
       - name: 서브모듈 최신화
         run: |
-          git submodule update --remote
+          git submodule update --remote  
 
       - name: Docker Compose 파일 복사
         run: |
