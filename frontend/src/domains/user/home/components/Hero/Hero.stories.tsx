@@ -6,7 +6,6 @@ const meta: Meta<typeof Hero> = {
   component: Hero,
   tags: ['autodocs'],
   argTypes: {
-    onLoginClick: { action: '로그인 클릭' },
     onSuggestClick: { action: '건의하기 클릭' },
     title: { control: 'text' },
   },

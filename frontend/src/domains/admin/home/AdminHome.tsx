@@ -8,20 +8,13 @@ import AdminFeedbackBox from './components/AdminFeedbackBox';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
+import useFeedbackManagement from './hooks/useFeedbackManagement';
 
 export default function AdminHome() {
   const navigate = useNavigate();
 
   const {
-    modalState,
-    openFeedbackCompleteModal,
-    openFeedbackDeleteModal,
-    closeModal,
-    handleModalAction,
-  } = useAdminModal();
-
-  const {
-    items: feedbacks,
+    items: originalFeedbacks,
     fetchMore,
     hasNext,
     loading,
@@ -34,12 +27,26 @@ export default function AdminHome() {
     key: 'feedbacks',
   });
 
+  const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
+    originalFeedbacks,
+  });
+
+  const {
+    modalState,
+    openFeedbackCompleteModal,
+    openFeedbackDeleteModal,
+    closeModal,
+    handleModalAction,
+  } = useAdminModal({
+    onConfirmFeedback: confirmFeedback,
+    onDeleteFeedback: deleteFeedback,
+  });
+
   useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
     <section>
       <Hero
-        onLoginClick={() => navigate('/')}
         onSuggestClick={() => navigate('/suggestion')}
         title='우테코'
         isUserPage={false}

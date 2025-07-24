@@ -31,7 +31,6 @@ export default function UserHome() {
   return (
     <section>
       <Hero
-        onLoginClick={() => navigate('/admin')}
         onSuggestClick={() => navigate('/suggestion')}
         title='우테코'
         isUserPage={true}
