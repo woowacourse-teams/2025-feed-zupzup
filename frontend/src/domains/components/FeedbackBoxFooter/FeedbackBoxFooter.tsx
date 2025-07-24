@@ -10,6 +10,7 @@ interface FeedbackBoxFooterProps {
   createdAt: string;
   userName?: string;
   isSecret?: boolean;
+  feedbackId: number;
 }
 
 export default function FeedbackBoxFooter({
@@ -18,6 +19,7 @@ export default function FeedbackBoxFooter({
   createdAt,
   userName,
   isSecret,
+  feedbackId,
 }: FeedbackBoxFooterProps) {
   const theme = useAppTheme();
 
@@ -32,7 +34,7 @@ export default function FeedbackBoxFooter({
       </div>
       {!isSecret && (
         <div css={content(theme)}>
-          <LikeButton like={isLiked} /> {likeCount}
+          <LikeButton like={isLiked} feedbackId={feedbackId} /> {likeCount}
         </div>
       )}
     </div>

@@ -42,6 +42,7 @@ export default function UserHome() {
             createdAt={feedback.createdAt}
             isLiked={feedback.isLiked}
             isSecret={feedback.isSecret}
+            feedbackId={feedback.feedbackId}
           />
         ))}
         {loading && <div>로딩중...</div>}

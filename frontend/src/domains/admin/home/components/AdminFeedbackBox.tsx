@@ -31,7 +31,6 @@ export default function AdminFeedbackBox({
   userName,
   createdAt,
 }: AdminFeedbackBox) {
-  console.log(imageUrl);
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -65,6 +64,7 @@ export default function AdminFeedbackBox({
         likeCount={likeCount}
         createdAt={createdAt}
         userName={userName}
+        feedbackId={feedbackId}
       />
     </FeedbackBoxBackGround>
   );
