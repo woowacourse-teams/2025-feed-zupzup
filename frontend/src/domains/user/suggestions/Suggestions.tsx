@@ -73,7 +73,6 @@ export default function Suggestions() {
 
           <SuggestionsFormField label='이미지 첨부 (선택사항)'>
             <UploadBox
-              name='imgSrc'
               imgSrc={values.imgSrc}
               handleImageUpload={(url) =>
                 handleSuggestionForm({ name: 'imgSrc', value: url })
@@ -82,7 +81,6 @@ export default function Suggestions() {
           </SuggestionsFormField>
 
           <SecretPostOption
-            name='isSecret'
             isSecret={values.isSecret}
             handleToggleButton={() =>
               handleSuggestionForm({

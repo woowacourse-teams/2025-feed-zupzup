@@ -1,14 +1,13 @@
-import Hero from '@/domains/user/home/components/Hero/Hero';
-import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import AdminFeedbackBox from './components/AdminFeedbackBox';
-import { useNavigate } from 'react-router-dom';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
-
+import Hero from '@/domains/user/home/components/Hero/Hero';
+import { useNavigate } from 'react-router-dom';
+import AdminFeedbackBox from './components/AdminFeedbackBox';
+import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
-import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 
 export default function AdminHome() {
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ export default function AdminHome() {
     'feedbacks',
     FeedbackResponse<AdminFeedback>
   >({
-    url: '/api/admin/places/1/feedbacks',
+    url: '/admin/places/1/feedbacks',
     key: 'feedbacks',
   });
 

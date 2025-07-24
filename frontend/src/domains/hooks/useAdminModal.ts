@@ -1,3 +1,4 @@
+import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import { useState } from 'react';
 
 interface ModalState {
@@ -23,12 +24,14 @@ export const useAdminModal = () => {
   const handleModalAction = () => {
     const { type, feedbackId } = modalState;
 
-    if (type === 'confirm') {
-      console.log('피드백 완료 처리:', feedbackId);
-      // TODO: 실제 피드백 완료 API 호출
-    } else if (type === 'delete') {
-      console.log('피드백 삭제 처리:', feedbackId);
-      // TODO: 실제 피드백 삭제 API 호출
+    if (type === 'confirm' && feedbackId) {
+      console.log('피드백 완료:', feedbackId);
+      patchFeedbackStatus({
+        feedbackId,
+        status: 'CONFIRMED',
+      });
+    } else if (type === 'delete' && feedbackId) {
+      deleteFeedback({ feedbackId });
     }
 
     closeModal();
