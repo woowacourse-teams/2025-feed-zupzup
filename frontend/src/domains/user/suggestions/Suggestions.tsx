@@ -93,7 +93,7 @@ export default function Suggestions() {
           />
 
           <div css={buttonContainer}>
-            <BasicButton variant='secondary' onClick={() => navigate(-1)}>
+            <BasicButton variant='secondary' onClick={() => navigate('/')}>
               취소
             </BasicButton>
             <BasicButton onClick={handleSubmitSuggestions}>
