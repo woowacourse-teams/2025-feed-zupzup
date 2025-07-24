@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.dto.request;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.ImageUrl;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.domain.UserName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +23,7 @@ public record CreateFeedbackRequest(
         String userName
 ) {
 
-    public Feedback toFeedback(final Long placeId) {
+    public Feedback toFeedback(final Long placeId, final ImageUrl imageUrl) {
         return Feedback.builder()
                 .content(content)
                 .imageUrl(imageUrl)

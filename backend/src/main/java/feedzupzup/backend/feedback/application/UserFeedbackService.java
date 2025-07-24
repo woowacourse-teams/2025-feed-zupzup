@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.application;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
+import feedzupzup.backend.feedback.domain.ImageUrl;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
@@ -27,7 +28,7 @@ public class UserFeedbackService {
     public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long placeId) {
         final Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
-        final Feedback newFeedback = request.toFeedback(place.getId());
+        final Feedback newFeedback = request.toFeedback(place.getId(), ImageUrl.createS3Url(request.imageUrl()));
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }
@@ -38,7 +39,8 @@ public class UserFeedbackService {
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(placeId, cursorId, pageable);
+        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(placeId, cursorId,
+                pageable);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         return UserFeedbackListResponse.from(feedbackPage);
     }

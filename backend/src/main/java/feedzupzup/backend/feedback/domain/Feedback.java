@@ -31,7 +31,8 @@ public class Feedback extends BaseTimeEntity {
 
     private Long placeId;
 
-    private String imageUrl;
+    @Embedded
+    private ImageUrl imageUrl;
 
     @Embedded
     private UserName userName;
@@ -42,7 +43,7 @@ public class Feedback extends BaseTimeEntity {
             final boolean isSecret,
             final ProcessStatus status,
             final Long placeId,
-            final String imageUrl,
+            final ImageUrl imageUrl,
             final UserName userName
     ) {
         this.content = content;
