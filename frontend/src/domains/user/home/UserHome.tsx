@@ -30,8 +30,8 @@ export default function UserHome() {
       <Hero
         onLoginClick={() => navigate('/admin')}
         onSuggestClick={() => navigate('/suggestion')}
-        title='환영합니다!'
-        showSuggestButton={true}
+        title='우테코'
+        isUserPage={true}
       />
       <FeedbackBoxList>
         {feedbacks.map((feedback: UserFeedback) => (

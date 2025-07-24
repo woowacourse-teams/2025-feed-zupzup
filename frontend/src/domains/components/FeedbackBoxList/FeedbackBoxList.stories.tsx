@@ -32,9 +32,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const userFeedbackWaiting = {
+
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
+
   type: 'WAITING',
   content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
   isLiked: false,
@@ -43,9 +45,11 @@ const userFeedbackWaiting = {
 } as const;
 
 const userFeedbackConfirmed = {
+
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},
+
   type: 'CONFIRMED',
   content: '이 피드백은 확인 완료되었습니다. 감사합니다.',
   isLiked: true,
@@ -54,9 +58,11 @@ const userFeedbackConfirmed = {
 } as const;
 
 const adminFeedbackWaiting = {
+
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
+
   type: 'WAITING',
   content: '관리자가 확인해야 할 피드백입니다. 이미지가 첨부되었습니다.',
   isSecret: false,
@@ -68,9 +74,11 @@ const adminFeedbackWaiting = {
 } as const;
 
 const adminFeedbackConfirmed = {
+
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},
+
   type: 'CONFIRMED',
   content: '관리자가 확인 완료한 피드백입니다. 비밀글입니다.',
   isSecret: true,

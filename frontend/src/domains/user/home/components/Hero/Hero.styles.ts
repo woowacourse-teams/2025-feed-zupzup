@@ -70,14 +70,14 @@ export const heroDescription = (theme: Theme) => css`
   color: ${theme.colors.white[100]};
 `;
 
-export const catAnimation = (showSuggestButton: boolean) => css`
+export const catAnimation = (isUserPage: boolean) => css`
   position: absolute;
   right: 24px;
-  bottom: ${showSuggestButton ? '32px' : '-28px'};
+  bottom: ${isUserPage ? '32px' : '-28px'};
   z-index: 1;
   width: 60px;
   height: auto;
-  animation: cat-move ${showSuggestButton ? '3s' : '9s'} ease-in-out infinite;
+  animation: cat-move ${isUserPage ? '3s' : '9s'} ease-in-out infinite;
 
   @keyframes cat-move {
     0% {
@@ -85,7 +85,7 @@ export const catAnimation = (showSuggestButton: boolean) => css`
     }
 
     50% {
-      transform: translateX(-${showSuggestButton ? 100 : 300}px);
+      transform: translateX(-${isUserPage ? 100 : 300}px);
     }
 
     100% {

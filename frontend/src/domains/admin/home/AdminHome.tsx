@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
+
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 
 export default function AdminHome() {
   const navigate = useNavigate();
+
   const {
     modalState,
     openFeedbackCompleteModal,
@@ -40,8 +42,8 @@ export default function AdminHome() {
       <Hero
         onLoginClick={() => navigate('/')}
         onSuggestClick={() => navigate('/suggestion')}
-        title='환영합니다!'
-        showSuggestButton={false}
+        title='우테코'
+        isUserPage={false}
       />
       <FeedbackBoxList>
         {feedbacks.map((feedback: AdminFeedback) => (
@@ -62,6 +64,7 @@ export default function AdminHome() {
         {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
       {hasNext && <div id='scroll-observer'></div>}
+
       {modalState.type === 'delete' && (
         <ConfirmModal
           title='삭제하시겠습니까?'
@@ -79,6 +82,7 @@ export default function AdminHome() {
           onConfirm={handleModalAction}
         />
       )}
+
     </section>
   );
 }
