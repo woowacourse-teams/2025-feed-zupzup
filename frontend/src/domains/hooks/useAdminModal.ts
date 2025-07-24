@@ -6,7 +6,15 @@ interface ModalState {
   feedbackId?: number;
 }
 
-export const useAdminModal = () => {
+interface UseAdminModalProps {
+  onConfirmFeedback?: (feedbackId: number) => void;
+  onDeleteFeedback?: (feedbackId: number) => void;
+}
+
+export const useAdminModal = ({
+  onConfirmFeedback,
+  onDeleteFeedback,
+}: UseAdminModalProps = {}) => {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
 
   const openFeedbackCompleteModal = (feedbackId: number) => {
@@ -21,17 +29,25 @@ export const useAdminModal = () => {
     setModalState({ type: null });
   };
 
-  const handleModalAction = () => {
+  const handleModalAction = async () => {
     const { type, feedbackId } = modalState;
 
-    if (type === 'confirm' && feedbackId) {
-      console.log('피드백 완료:', feedbackId);
-      patchFeedbackStatus({
-        feedbackId,
-        status: 'CONFIRMED',
-      });
-    } else if (type === 'delete' && feedbackId) {
-      deleteFeedback({ feedbackId });
+    if (!feedbackId) return;
+
+    try {
+      if (type === 'confirm') {
+        await patchFeedbackStatus({
+          feedbackId,
+          status: 'CONFIRMED',
+        });
+
+        onConfirmFeedback?.(feedbackId);
+      } else if (type === 'delete') {
+        await deleteFeedback({ feedbackId });
+        onDeleteFeedback?.(feedbackId);
+      }
+    } catch (error) {
+      console.error('Modal action failed:', error);
     }
 
     closeModal();
