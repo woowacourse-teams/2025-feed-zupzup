@@ -15,6 +15,7 @@ export async function deleteFeedback({ feedbackId }: DeleteFeedbackParams) {
       `/api/admin/feedbacks/${feedbackId}`,
       {
         onSuccess: () => alert('피드백이 삭제되었습니다.'),
+        onError: () => alert('피드백 삭제에 실패했습니다.'),
       }
     );
     if (!response) return;
@@ -33,6 +34,7 @@ export async function patchFeedbackStatus({
       { status },
       {
         onSuccess: () => alert('피드백 상태가 변경되었습니다.'),
+        onError: () => alert('피드백 상태 변경에 실패했습니다.'),
       }
     );
     if (!response) return;
