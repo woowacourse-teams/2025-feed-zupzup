@@ -91,8 +91,10 @@ async function baseClient<Response, RequestBody>({
     'Content-type': 'application/json',
   };
 
+  const fullURL = `${process.env.BASE_URL}${URI}`;
+
   try {
-    const response = await fetchWithTimeout(URI, {
+    const response = await fetchWithTimeout(fullURL, {
       method,
       headers,
       body: body ? JSON.stringify(body) : null,
