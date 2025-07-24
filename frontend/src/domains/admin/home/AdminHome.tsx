@@ -34,7 +34,7 @@ export default function AdminHome() {
     key: 'feedbacks',
   });
 
-  useGetFeedback({ fetchMore, hasNext });
+  useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
     <section>
