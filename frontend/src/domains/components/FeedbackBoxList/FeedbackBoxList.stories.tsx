@@ -35,7 +35,7 @@ const userFeedbackWaiting = {
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
-
+  likeCount: 5,
   type: 'WAITING',
   content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
   isLiked: false,
@@ -47,7 +47,7 @@ const userFeedbackConfirmed = {
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},
-
+  likeCount: 5,
   type: 'CONFIRMED',
   content: '이 피드백은 확인 완료되었습니다. 감사합니다.',
   isLiked: true,
