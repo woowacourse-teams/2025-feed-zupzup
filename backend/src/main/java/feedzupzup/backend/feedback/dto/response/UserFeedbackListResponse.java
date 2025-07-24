@@ -1,7 +1,6 @@
 package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -19,14 +18,14 @@ public record UserFeedbackListResponse(
         Long nextCursorId
 ) {
 
-    public static UserFeedbackListResponse from(final FeedbackPage feedbackPage) {
-        final List<UserFeedbackItem> userFeedbackItems = feedbackPage.getFeedbacks().stream()
+    public static UserFeedbackListResponse of(final List<Feedback> feedbacks, final boolean hasNext, final Long nextCursorId) {
+        final List<UserFeedbackItem> userFeedbackItems = feedbacks.stream()
                 .map(UserFeedbackItem::from)
                 .toList();
         return new UserFeedbackListResponse(
                 userFeedbackItems,
-                feedbackPage.isHasNext(),
-                feedbackPage.calculateNextCursorId()
+                hasNext,
+                nextCursorId
         );
     }
 
@@ -38,14 +37,14 @@ public record UserFeedbackListResponse(
             @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
             String content,
 
-            @Schema(description = "처리 상태", example = "WATING")
+            @Schema(description = "처리 상태", example = "WAITING")
             ProcessStatus status,
 
             @Schema(description = "비밀 피드백 여부", example = "false")
             boolean isSecret,
 
-            @Schema(description = "사용자가 좋아요했는지 여부", example = "true")
-            boolean isLiked,
+            @Schema(description = "좋아요 수", example = "5")
+            int likeCount,
 
             @Schema(description = "작성자 이름", example = "댕댕이")
             String userName,
@@ -60,7 +59,7 @@ public record UserFeedbackListResponse(
                     feedback.getContent(),
                     feedback.getStatus(),
                     feedback.isSecret(),
-                    false,
+                    feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getCreatedAt()
             );

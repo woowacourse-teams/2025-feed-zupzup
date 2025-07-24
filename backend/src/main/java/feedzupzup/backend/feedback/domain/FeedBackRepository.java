@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,6 @@ public interface FeedBackRepository extends JpaRepository<Feedback, Long> {
             final Long cursorId,
             final Pageable pageable
     );
+
+    List<Feedback> findByIdIn(Collection<Long> ids);
 }

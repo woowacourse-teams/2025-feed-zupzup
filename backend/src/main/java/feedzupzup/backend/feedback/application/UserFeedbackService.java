@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.ImageUrl;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserFeedbackService {
 
     private final FeedBackRepository feedBackRepository;
+    private final FeedbackLikeCounter feedbackLikeCounter;
     private final PlaceRepository placeRepository;
 
     @Transactional
@@ -39,9 +41,17 @@ public class UserFeedbackService {
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(placeId, cursorId,
-                pageable);
+        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(
+                placeId,
+                cursorId,
+                pageable
+        );
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        return UserFeedbackListResponse.from(feedbackPage);
+        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
+        return UserFeedbackListResponse.of(
+                feedbackPage.getFeedbacks(),
+                feedbackPage.isHasNext(),
+                feedbackPage.calculateNextCursorId()
+        );
     }
 }

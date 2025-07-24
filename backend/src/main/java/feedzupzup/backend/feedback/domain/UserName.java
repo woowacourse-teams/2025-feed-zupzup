@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +13,7 @@ public class UserName {
 
     private static final int MIN_LENGTH = 1;
     private static final int MAX_LENGTH = 10;
+    @Column(name = "user_name")
     private String value;
 
     public UserName(final String value) {
