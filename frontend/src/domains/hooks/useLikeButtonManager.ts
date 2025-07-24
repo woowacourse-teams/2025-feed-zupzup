@@ -42,7 +42,10 @@ export default function useLikeButtonManager({
       await postLike({
         feedbackId,
         onSuccess: () => addLikeFeedbackIds(feedbackId),
-        onError: () => setIsLiked(false),
+        onError: () => {
+          setIsLiked(false);
+          setTempLikeCount((prev) => prev - 1);
+        },
       });
     } else {
       setTempLikeCount((prev) => prev - 1);
@@ -50,7 +53,10 @@ export default function useLikeButtonManager({
       await deleteLike({
         feedbackId,
         onSuccess: () => removeLikeFeedbackIds(feedbackId),
-        onError: () => setIsLiked(true),
+        onError: () => {
+          setIsLiked(false);
+          setTempLikeCount((prev) => prev + 1);
+        },
       });
     }
   };
