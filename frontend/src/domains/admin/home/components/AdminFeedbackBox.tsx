@@ -1,4 +1,3 @@
-import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import IconButton from '@/components/IconButton/IconButton';
 import CheckIcon from '@/components/icons/CheckIcon';
 import LockIcon from '@/components/icons/LockIcon';
@@ -13,15 +12,18 @@ import { AdminFeedback } from '@/types/feedback.types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
 
-interface AdminFeedbackBox
-  extends Omit<AdminFeedback, 'feedbackId' | 'status'> {
+interface AdminFeedbackBox extends Omit<AdminFeedback, 'status'> {
   type: FeedbackStatusType;
+  feedbackId: number;
+  onConfirm: (feedbackId: number) => void;
+  onDelete: (feedbackId: number) => void;
 }
-
-const FEEDBACK_ID = 27; // TODO : 삭제 필요. 임시 feedbackId
 
 export default function AdminFeedbackBox({
   type,
+  feedbackId,
+  onConfirm,
+  onDelete,
   content,
   isSecret,
   imgUrl,
@@ -29,17 +31,6 @@ export default function AdminFeedbackBox({
   userName,
   createdAt,
 }: AdminFeedbackBox) {
-  const handleDelete = (feedbackId: number) => {
-    deleteFeedback({ feedbackId });
-  };
-
-  const handleStatusChange = (feedbackId: number, status: string) => {
-    patchFeedbackStatus({
-      feedbackId,
-      status,
-    });
-  };
-
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -51,12 +42,12 @@ export default function AdminFeedbackBox({
           {type === 'WAITING' && (
             <IconButton
               icon={<CheckIcon />}
-              onClick={() => handleStatusChange(FEEDBACK_ID, 'CONFIRMED')}
+              onClick={() => onConfirm(feedbackId)}
             />
           )}
           <IconButton
             icon={<TrashCanIcon />}
-            onClick={() => handleDelete(FEEDBACK_ID)}
+            onClick={() => onDelete(feedbackId)}
           />
         </div>
       </div>
