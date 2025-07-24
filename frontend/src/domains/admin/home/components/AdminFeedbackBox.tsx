@@ -12,13 +12,19 @@ import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { AdminFeedback } from '@/types/feedback.types';
 import LockIcon from '@/components/icons/LockIcon';
 
-interface AdminFeedbackBox
-  extends Omit<AdminFeedback, 'feedbackId' | 'status'> {
+interface AdminFeedbackBox extends Omit<AdminFeedback, 'status'> {
   type: FeedbackStatusType;
+  feedbackId: number;
+  onConfirm: (feedbackId: number) => void;
+  onDelete: (feedbackId: number) => void;
 }
 
 export default function AdminFeedbackBox({
   type,
+  feedbackId,
+  onConfirm,
+  onDelete,
+
   content,
   isSecret,
   imgUrl,
@@ -34,8 +40,16 @@ export default function AdminFeedbackBox({
           <StatusTag type={type} />
         </div>
         <div css={iconWrap}>
-          {type === 'WAITING' && <IconButton icon={<CheckIcon />} />}
-          <IconButton icon={<TrashCanIcon />} />
+          {type === 'WAITING' && (
+            <IconButton
+              icon={<CheckIcon />}
+              onClick={() => onConfirm(feedbackId)}
+            />
+          )}
+          <IconButton
+            icon={<TrashCanIcon />}
+            onClick={() => onDelete(feedbackId)}
+          />
         </div>
       </div>
       <div css={textWrap}>
