@@ -30,7 +30,7 @@ const {
   hasNext,
   loading,
 } = useInfinityScroll<Feedback, 'feedbacks', FeedbackResponse>({
-  url: '/api/places/1/feedbacks',
+  url: '/places/1/feedbacks',
   key: 'feedbacks',
 });
 ```

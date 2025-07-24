@@ -1,16 +1,16 @@
-import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import CheckIcon from '@/components/icons/CheckIcon';
-import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
-import StatusTag from '@/domains/components/StatusTag/StatusTag';
-import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
-import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
-import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
-import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import IconButton from '@/components/IconButton/IconButton';
-import TrashCanIcon from '@/components/icons/TrashCanIcon';
-import { AdminFeedback } from '@/types/feedback.types';
+import CheckIcon from '@/components/icons/CheckIcon';
 import LockIcon from '@/components/icons/LockIcon';
+import TrashCanIcon from '@/components/icons/TrashCanIcon';
+import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
+import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
+import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
+import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
+import StatusTag from '@/domains/components/StatusTag/StatusTag';
+import { AdminFeedback } from '@/types/feedback.types';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
 
 interface AdminFeedbackBox extends Omit<AdminFeedback, 'status'> {
   type: FeedbackStatusType;
@@ -24,7 +24,6 @@ export default function AdminFeedbackBox({
   feedbackId,
   onConfirm,
   onDelete,
-
   content,
   isSecret,
   imgUrl,

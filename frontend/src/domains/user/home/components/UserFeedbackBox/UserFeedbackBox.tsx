@@ -32,12 +32,12 @@ export default function UserFeedbackBox({
         <StatusTag type={type} />
       </div>
       {isSecret ? (
-        <p css={secretText(theme)}>
+        <div css={secretText(theme)}>
           <p>비밀글입니다.</p>
           <p>
             <LockIcon />
           </p>
-        </p>
+        </div>
       ) : (
         <FeedbackText type={type} text={content} />
       )}
