@@ -10,9 +10,11 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .allowedOrigins("https://feedzupzup.com")
-                .allowedOrigins("https://api.feedzupzup.com")
+                .allowedOrigins(
+                        "http://localhost:3000",
+                        "https://feedzupzup.com",
+                        "https://api.feedzupzup.com"
+                )
                 .allowedOriginPatterns("https://*.feedzupzup.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
