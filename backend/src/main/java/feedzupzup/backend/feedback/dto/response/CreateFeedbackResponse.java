@@ -29,16 +29,16 @@ public record CreateFeedbackResponse(
         LocalDateTime createdAt
 ) {
 
-        public static CreateFeedbackResponse from(final Feedback feedback) {
-                return new CreateFeedbackResponse(
-                        feedback.getId(),
-                        feedback.getContent(),
-                        feedback.getStatus(),
-                        feedback.getImageUrl(),
-                        feedback.isSecret(),
-                        feedback.getUserName(),
-                        feedback.getCreatedAt()
-                );
-        }
+    public static CreateFeedbackResponse from(final Feedback feedback) {
+        return new CreateFeedbackResponse(
+                feedback.getId(),
+                feedback.getContent(),
+                feedback.getStatus(),
+                feedback.getImageUrl(),
+                feedback.isSecret(),
+                feedback.getUserName(),
+                feedback.getCreatedAt()
+        );
+    }
 
 }

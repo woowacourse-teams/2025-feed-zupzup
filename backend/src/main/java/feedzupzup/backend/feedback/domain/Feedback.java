@@ -31,7 +31,8 @@ public class Feedback extends BaseTimeEntity {
 
     private Long placeId;
 
-    private String imageUrl;
+    @Embedded
+    private ImageUrl imageUrl;
 
     private int likeCount;
 
@@ -44,7 +45,7 @@ public class Feedback extends BaseTimeEntity {
             final boolean isSecret,
             final ProcessStatus status,
             final Long placeId,
-            final String imageUrl,
+            final ImageUrl imageUrl,
             final int likeCount,
             final UserName userName
     ) {
@@ -67,6 +68,10 @@ public class Feedback extends BaseTimeEntity {
 
     public void updateSecret(final boolean isSecret) {
         this.isSecret = isSecret;
+    }
+
+    public String getImageUrl() {
+        return imageUrl.imageUrl();
     }
 
     public void updateLikeCount(int likeCount) {

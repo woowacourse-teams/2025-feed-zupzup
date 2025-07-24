@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.fixture;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.ImageUrl;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.domain.UserName;
 
@@ -13,7 +14,7 @@ public class FeedbackFixture {
                 .isSecret(false)
                 .status(status)
                 .placeId(1L)
-                .imageUrl("https://example.com/image.jpg")
+                .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
     }
@@ -24,7 +25,7 @@ public class FeedbackFixture {
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
                 .placeId(placeId)
-                .imageUrl("https://example.com/image.jpg")
+                .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
     }
@@ -35,7 +36,7 @@ public class FeedbackFixture {
                 .isSecret(isSecret)
                 .status(ProcessStatus.WAITING)
                 .placeId(1L)
-                .imageUrl("https://example.com/image.jpg")
+                .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
     }
@@ -46,7 +47,7 @@ public class FeedbackFixture {
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
                 .placeId(1L)
-                .imageUrl("https://example.com/image.jpg")
+                .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
     }
@@ -57,7 +58,7 @@ public class FeedbackFixture {
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
                 .placeId(placeId)
-                .imageUrl("https://example.com/image.jpg")
+                .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
                 .build();
