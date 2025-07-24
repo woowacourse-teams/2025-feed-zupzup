@@ -5,14 +5,13 @@ export interface UserFeedback {
   content: string;
   status: FeedbackStatusType;
   isSecret: boolean;
-  isLiked: boolean;
   createdAt: string; // ISO 형식 날짜 문자열
   userName: string;
+  likeCount: number;
 }
 
-export interface AdminFeedback extends Omit<UserFeedback, 'isLiked'> {
+export interface AdminFeedback extends UserFeedback {
   imageUrl: string | null;
-  likeCount: number;
 }
 
 export interface FeedbackResponse<T> {

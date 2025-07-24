@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserFeedback, FeedbackResponse } from '@/types/feedback.types';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
+import { getLocalStorage } from '@/utils/localStorage';
 
 export default function UserHome() {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ export default function UserHome() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
+  const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
+
   return (
     <section>
       <Hero
@@ -40,9 +43,10 @@ export default function UserHome() {
             type={feedback.status}
             content={feedback.content}
             createdAt={feedback.createdAt}
-            isLiked={feedback.isLiked}
+            isLiked={getFeedbackIsLike(likedFeedbackIds, feedback.feedbackId)}
             isSecret={feedback.isSecret}
             feedbackId={feedback.feedbackId}
+            likeCount={feedback.likeCount}
           />
         ))}
         {loading && <div>로딩중...</div>}
@@ -50,4 +54,10 @@ export default function UserHome() {
       {hasNext && !loading && <div id='scroll-observer'></div>}
     </section>
   );
+}
+
+function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
+  const isLiked = likedFeedbackIds?.includes(feedbackId);
+
+  return !!isLiked;
 }
