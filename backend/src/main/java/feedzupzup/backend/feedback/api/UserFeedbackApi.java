@@ -3,7 +3,6 @@ package feedzupzup.backend.feedback.api;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.dto.response.UnLikeResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,12 +17,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "User Feedback", description = "피드백 API(사용자 권한)")
-@RequestMapping("/api")
 public interface UserFeedbackApi {
 
     @Operation(summary = "피드백 목록 조회", description = "특정 장소의 피드백 목록을 조회합니다.")
@@ -70,7 +67,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
     })
     @DeleteMapping("/feedbacks/{feedbackId}/like")
-    SuccessResponse<UnLikeResponse> unlike(
+    SuccessResponse<LikeResponse> unlike(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
     );
 }

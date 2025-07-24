@@ -34,6 +34,8 @@ public class Feedback extends BaseTimeEntity {
     @Embedded
     private ImageUrl imageUrl;
 
+    private int likeCount;
+
     @Embedded
     private UserName userName;
 
@@ -44,6 +46,7 @@ public class Feedback extends BaseTimeEntity {
             final ProcessStatus status,
             final Long placeId,
             final ImageUrl imageUrl,
+            final int likeCount,
             final UserName userName
     ) {
         this.content = content;
@@ -51,6 +54,7 @@ public class Feedback extends BaseTimeEntity {
         this.status = status;
         this.placeId = placeId;
         this.imageUrl = imageUrl;
+        this.likeCount = likeCount;
         this.userName = userName;
     }
 
@@ -68,5 +72,12 @@ public class Feedback extends BaseTimeEntity {
 
     public String getImageUrl() {
         return imageUrl.imageUrl();
+    }
+
+    public void updateLikeCount(int likeCount) {
+        if (likeCount < 0) {
+            likeCount = 0;
+        }
+        this.likeCount = likeCount;
     }
 }
