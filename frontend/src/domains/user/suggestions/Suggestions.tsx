@@ -9,10 +9,15 @@ import SuggestionsFormField from '@/domains/user/suggestions/components/Suggesti
 import UploadBox from '@/domains/user/suggestions/components/UploadBox/UploadBox';
 import useSuggestionForm from '@/domains/user/suggestions/hooks/useSuggestionForm';
 import {
+  bannerDescription,
+  bannerImage,
   buttonContainer,
+  formContainer,
   suggestionLayout,
 } from '@/domains/user/suggestions/Suggestions.style';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
+import speaker from '@/assets/images/speaker.png';
 
 const selectorOptions = [
   { value: 'general', label: '일반' },
@@ -21,6 +26,7 @@ const selectorOptions = [
 
 export default function Suggestions() {
   const navigate = useNavigate();
+  const theme = useAppTheme();
 
   const { values, handleSuggestionForm, handleSubmitSuggestions } =
     useSuggestionForm({
@@ -37,12 +43,14 @@ export default function Suggestions() {
     <>
       <Header title='건의사항 작성' subtitle='소중한 의견을 들려주세요' />
       <div css={suggestionLayout}>
-        <Banner
-          title='더 나은 서비스를 위해'
-          description='여러분의 소중한 의견이 더 좋은 카페를 만들어
-갑니다'
-        />
-        <form css={suggestionLayout}>
+        <Banner>
+          <img src={speaker} alt='배너 이미지' css={bannerImage} />
+          <p css={bannerDescription(theme)}>
+            여러분의 소중한 의견이 <br /> 더 좋은 서비스를 만들어 갑니다
+          </p>
+        </Banner>
+
+        <form css={formContainer}>
           <SuggestionsFormField label='카테고리 선택'>
             <CategorySelector
               name='selectedCategory'

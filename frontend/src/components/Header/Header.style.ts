@@ -25,10 +25,13 @@ export const headerSection = css`
 export const headerTitle = (theme: Theme) => css`
   font-size: 14px;
   color: ${theme.colors.darkGray[400]};
+
+  ${theme.typography.BMHANNAPro.bodyBold}
 `;
 
 export const headerSubtitle = (theme: Theme) => css`
   color: ${theme.colors.gray[600]};
+  ${theme.typography.BMHANNAAir.caption}
 `;
 
 export const captionSection = css`

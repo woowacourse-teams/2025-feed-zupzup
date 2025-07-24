@@ -6,12 +6,12 @@ export const secretOption = (theme: Theme) => css`
   align-items: center;
   gap: 12px;
   width: 100%;
-  padding: 16px;
+  padding: 24px;
   background-color: ${theme.colors.gray[100]};
   border-radius: 16px;
 `;
 
 export const secretText = (theme: Theme) => css`
   color: ${theme.colors.darkGray[200]};
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.caption}
 `;
