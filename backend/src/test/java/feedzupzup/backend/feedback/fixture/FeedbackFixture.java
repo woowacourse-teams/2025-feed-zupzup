@@ -58,6 +58,7 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .placeId(placeId)
                 .imageUrl("https://example.com/image.jpg")
+                .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
                 .build();
     }

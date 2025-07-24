@@ -1,11 +1,11 @@
 package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
+import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.dto.response.UnLikeResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserFeedbackController implements UserFeedbackApi {
 
     private final UserFeedbackService userFeedbackService;
+    private final FeedbackLikeService feedbackLikeService;
 
     @Override
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
@@ -40,11 +41,13 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<LikeResponse> like(final Long feedbackId) {
-        throw new UnsupportedOperationException();
+        final LikeResponse response = feedbackLikeService.like(feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
-    public SuccessResponse<UnLikeResponse> unlike(final Long feedbackId) {
-        throw new UnsupportedOperationException();
+    public SuccessResponse<LikeResponse> unlike(final Long feedbackId) {
+        final LikeResponse response = feedbackLikeService.unLike(feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 }
