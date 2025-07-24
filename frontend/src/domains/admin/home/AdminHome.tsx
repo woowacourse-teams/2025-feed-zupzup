@@ -8,6 +8,7 @@ import AdminFeedbackBox from './components/AdminFeedbackBox';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
+import useFeedbackManagement from './hooks/useFeedbackManagement';
 
 export default function AdminHome() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function AdminHome() {
   } = useAdminModal();
 
   const {
-    items: feedbacks,
+    items: originalFeedbacks,
     fetchMore,
     hasNext,
     loading,
@@ -34,7 +35,21 @@ export default function AdminHome() {
     key: 'feedbacks',
   });
 
+  const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
+    originalFeedbacks,
+  });
+
   useGetFeedback({ fetchMore, hasNext, loading });
+
+  const handleConfirm = (feedbackId: number) => {
+    confirmFeedback(feedbackId);
+    openFeedbackCompleteModal(feedbackId);
+  };
+
+  const handleDelete = (feedbackId: number) => {
+    deleteFeedback(feedbackId);
+    openFeedbackDeleteModal(feedbackId);
+  };
 
   return (
     <section>
@@ -49,8 +64,8 @@ export default function AdminHome() {
           <AdminFeedbackBox
             key={feedback.feedbackId}
             feedbackId={feedback.feedbackId}
-            onConfirm={openFeedbackCompleteModal}
-            onDelete={openFeedbackDeleteModal}
+            onConfirm={handleConfirm}
+            onDelete={handleDelete}
             type={feedback.status}
             content={feedback.content}
             createdAt={feedback.createdAt}
