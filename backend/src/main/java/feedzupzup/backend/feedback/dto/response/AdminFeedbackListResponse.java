@@ -62,7 +62,7 @@ public record AdminFeedbackListResponse(
                     feedback.getId(),
                     feedback.getContent(),
                     feedback.getStatus(),
-                    feedback.getImageUrl().imageUrl(),
+                    feedback.getImageUrl(),
                     feedback.isSecret(),
                     0,
                     feedback.getUserName(),

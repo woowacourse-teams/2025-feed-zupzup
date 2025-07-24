@@ -34,7 +34,7 @@ public record CreateFeedbackResponse(
                 feedback.getId(),
                 feedback.getContent(),
                 feedback.getStatus(),
-                feedback.getImageUrl().imageUrl(),
+                feedback.getImageUrl(),
                 feedback.isSecret(),
                 feedback.getUserName(),
                 feedback.getCreatedAt()

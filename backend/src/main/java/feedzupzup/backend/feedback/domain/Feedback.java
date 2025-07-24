@@ -65,4 +65,8 @@ public class Feedback extends BaseTimeEntity {
     public void updateSecret(final boolean isSecret) {
         this.isSecret = isSecret;
     }
+
+    public String getImageUrl() {
+        return imageUrl.imageUrl();
+    }
 }
