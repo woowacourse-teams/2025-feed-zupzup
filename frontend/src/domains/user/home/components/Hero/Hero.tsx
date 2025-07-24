@@ -13,11 +13,8 @@ import {
 import feedzupzupLogo from '@/assets/images/feedzupzup-logo.png';
 import catImage from '@/assets/images/cat.png';
 
-import GhostButton from '@/components/GhostButton/GhostButton';
-import ProfileIcon from '@/components/icons/ProfileIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
 export interface HeroProps extends React.ComponentProps<'div'> {
-  onLoginClick: () => void;
   onSuggestClick: () => void;
   title: string;
   isUserPage?: boolean;
@@ -25,7 +22,7 @@ export interface HeroProps extends React.ComponentProps<'div'> {
 
 export default function Hero({
   title,
-  onLoginClick,
+
   onSuggestClick,
   isUserPage = true,
 }: HeroProps) {
@@ -33,13 +30,7 @@ export default function Hero({
 
   return (
     <div css={hero(theme)}>
-      <div css={heroHeader(theme)}>
-        <GhostButton
-          icon={<ProfileIcon />}
-          text={isUserPage ? '로그인' : '로그아웃'}
-          onClick={onLoginClick}
-        />
-      </div>
+      <div css={heroHeader(theme)}></div>
       <div css={heroContent}>
         <hr css={heroHr(theme)} />
         <p css={heroTitle(theme)}>{title} 건의</p>
