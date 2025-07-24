@@ -32,7 +32,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const userFeedbackWaiting = {
-
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
@@ -45,7 +44,6 @@ const userFeedbackWaiting = {
 } as const;
 
 const userFeedbackConfirmed = {
-
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},
@@ -58,7 +56,6 @@ const userFeedbackConfirmed = {
 } as const;
 
 const adminFeedbackWaiting = {
-
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
@@ -74,7 +71,6 @@ const adminFeedbackWaiting = {
 } as const;
 
 const adminFeedbackConfirmed = {
-
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},

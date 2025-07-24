@@ -82,7 +82,6 @@ export default function AdminHome() {
           onConfirm={handleModalAction}
         />
       )}
-
     </section>
   );
 }

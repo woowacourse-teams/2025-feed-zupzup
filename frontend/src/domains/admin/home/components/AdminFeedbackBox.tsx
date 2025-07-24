@@ -12,10 +12,7 @@ import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { AdminFeedback } from '@/types/feedback.types';
 import LockIcon from '@/components/icons/LockIcon';
 
-interface AdminFeedbackBox
-
-  extends Omit<AdminFeedback, 'status'> {
-
+interface AdminFeedbackBox extends Omit<AdminFeedback, 'status'> {
   type: FeedbackStatusType;
   feedbackId: number;
   onConfirm: (feedbackId: number) => void;
@@ -53,7 +50,6 @@ export default function AdminFeedbackBox({
             icon={<TrashCanIcon />}
             onClick={() => onDelete(feedbackId)}
           />
-
         </div>
       </div>
       <div css={textWrap}>
