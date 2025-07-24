@@ -1,3 +1,4 @@
+import Button from '@/components/@commons/Button/Button';
 import PhotoIcon from '@/components/icons/PhotoIcon';
 import {
   previewImage,
@@ -42,9 +43,9 @@ export default function UploadBox({
           <p css={uploadText(theme)}>사진을 업로드 하세요</p>
         </>
       )}
-      <button css={uploadButton(theme)} type='button'>
+      <Button css={uploadButton(theme)} type='button'>
         사진 선택
-      </button>
+      </Button>
       <input
         type='file'
         accept='image/*'

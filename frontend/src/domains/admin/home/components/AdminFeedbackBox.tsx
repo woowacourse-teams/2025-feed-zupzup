@@ -18,7 +18,7 @@ interface AdminFeedbackBox
   type: FeedbackStatusType;
 }
 
-const FEEDBACK_ID = 28; // TODO : 삭제 필요. 임시 feedbackId
+const FEEDBACK_ID = 27; // TODO : 삭제 필요. 임시 feedbackId
 
 export default function AdminFeedbackBox({
   type,
@@ -31,7 +31,6 @@ export default function AdminFeedbackBox({
 }: AdminFeedbackBox) {
   const handleDelete = (feedbackId: number) => {
     deleteFeedback({ feedbackId });
-    alert('피드백이 삭제되었습니다.');
   };
 
   const handleStatusChange = (feedbackId: number, status: string) => {
@@ -39,7 +38,6 @@ export default function AdminFeedbackBox({
       feedbackId,
       status,
     });
-    alert('피드백 상태가 변경되었습니다.');
   };
 
   return (
