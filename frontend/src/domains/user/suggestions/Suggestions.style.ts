@@ -17,6 +17,7 @@ export const buttonContainer = css`
   display: flex;
   gap: 12px;
   width: 100%;
+  margin-bottom: 36px;
 `;
 
 export const formContainer = css`
