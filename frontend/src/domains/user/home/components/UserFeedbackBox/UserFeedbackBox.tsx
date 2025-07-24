@@ -14,6 +14,8 @@ interface UserFeedbackBox {
   isLiked: boolean;
   isSecret: boolean;
   createdAt: string;
+  feedbackId: number;
+  likeCount: number;
 }
 
 export default function UserFeedbackBox({
@@ -22,6 +24,8 @@ export default function UserFeedbackBox({
   isLiked,
   isSecret,
   createdAt,
+  feedbackId,
+  likeCount,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
@@ -45,6 +49,8 @@ export default function UserFeedbackBox({
         isLiked={isLiked}
         createdAt={createdAt}
         isSecret={isSecret}
+        feedbackId={feedbackId}
+        likeCount={likeCount}
       />
     </FeedbackBoxBackGround>
   );
