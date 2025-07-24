@@ -14,14 +14,6 @@ export default function AdminHome() {
   const navigate = useNavigate();
 
   const {
-    modalState,
-    openFeedbackCompleteModal,
-    openFeedbackDeleteModal,
-    closeModal,
-    handleModalAction,
-  } = useAdminModal();
-
-  const {
     items: originalFeedbacks,
     fetchMore,
     hasNext,
@@ -39,17 +31,18 @@ export default function AdminHome() {
     originalFeedbacks,
   });
 
+  const {
+    modalState,
+    openFeedbackCompleteModal,
+    openFeedbackDeleteModal,
+    closeModal,
+    handleModalAction,
+  } = useAdminModal({
+    onConfirmFeedback: confirmFeedback,
+    onDeleteFeedback: deleteFeedback,
+  });
+
   useGetFeedback({ fetchMore, hasNext, loading });
-
-  const handleConfirm = (feedbackId: number) => {
-    confirmFeedback(feedbackId);
-    openFeedbackCompleteModal(feedbackId);
-  };
-
-  const handleDelete = (feedbackId: number) => {
-    deleteFeedback(feedbackId);
-    openFeedbackDeleteModal(feedbackId);
-  };
 
   return (
     <section>
@@ -64,8 +57,8 @@ export default function AdminHome() {
           <AdminFeedbackBox
             key={feedback.feedbackId}
             feedbackId={feedback.feedbackId}
-            onConfirm={handleConfirm}
-            onDelete={handleDelete}
+            onConfirm={openFeedbackCompleteModal}
+            onDelete={openFeedbackDeleteModal}
             type={feedback.status}
             content={feedback.content}
             createdAt={feedback.createdAt}
