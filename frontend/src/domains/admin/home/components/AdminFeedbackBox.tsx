@@ -26,11 +26,12 @@ export default function AdminFeedbackBox({
   onDelete,
   content,
   isSecret,
-  imgUrl,
+  imageUrl,
   likeCount,
   userName,
   createdAt,
 }: AdminFeedbackBox) {
+  console.log(imageUrl);
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -59,7 +60,7 @@ export default function AdminFeedbackBox({
           </p>
         )}
       </div>
-      {imgUrl && <FeedbackImage src={imgUrl} />}
+      {imageUrl && <FeedbackImage src={imageUrl} />}
       <FeedbackBoxFooter
         likeCount={likeCount}
         createdAt={createdAt}

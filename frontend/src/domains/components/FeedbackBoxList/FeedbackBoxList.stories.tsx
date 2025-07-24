@@ -59,11 +59,10 @@ const adminFeedbackWaiting = {
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
-
   type: 'WAITING',
   content: '관리자가 확인해야 할 피드백입니다. 이미지가 첨부되었습니다.',
   isSecret: false,
-  imgUrl:
+  imageUrl:
     'https://i.pinimg.com/236x/44/f9/83/44f9831be884e4c65f167b96e16fa94e.jpg',
   likeCount: 5,
   userName: '익명의 사용자',
@@ -78,7 +77,7 @@ const adminFeedbackConfirmed = {
   type: 'CONFIRMED',
   content: '관리자가 확인 완료한 피드백입니다. 비밀글입니다.',
   isSecret: true,
-  imgUrl: null,
+  imageUrl: null,
   likeCount: 12,
   userName: '김개발',
   createdAt: '2024-05-18',

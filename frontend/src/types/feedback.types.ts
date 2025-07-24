@@ -11,7 +11,7 @@ export interface UserFeedback {
 }
 
 export interface AdminFeedback extends Omit<UserFeedback, 'isLiked'> {
-  imgUrl: string | null;
+  imageUrl: string | null;
   likeCount: number;
 }
 
