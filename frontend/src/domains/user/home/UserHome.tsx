@@ -19,7 +19,7 @@ export default function UserHome() {
     'feedbacks',
     FeedbackResponse<UserFeedback>
   >({
-    url: '/api/places/1/feedbacks',
+    url: '/places/1/feedbacks',
     key: 'feedbacks',
   });
 

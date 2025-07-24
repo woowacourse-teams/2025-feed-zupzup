@@ -16,7 +16,7 @@ export async function postUserFeedback({
   userName,
 }: UserFeedbackParams) {
   try {
-    const response = await apiClient.post(`/api/places/${placeId}/feedbacks`, {
+    const response = await apiClient.post(`/places/${placeId}/feedbacks`, {
       content,
       imageUrl,
       isSecret,

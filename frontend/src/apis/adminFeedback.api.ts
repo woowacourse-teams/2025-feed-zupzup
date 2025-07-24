@@ -11,13 +11,10 @@ interface PatchFeedbackStatusParams {
 
 export async function deleteFeedback({ feedbackId }: DeleteFeedbackParams) {
   try {
-    const response = await apiClient.delete(
-      `/api/admin/feedbacks/${feedbackId}`,
-      {
-        onSuccess: () => alert('피드백이 삭제되었습니다.'),
-        onError: () => alert('피드백 삭제에 실패했습니다.'),
-      }
-    );
+    const response = await apiClient.delete(`/admin/feedbacks/${feedbackId}`, {
+      onSuccess: () => alert('피드백이 삭제되었습니다.'),
+      onError: () => alert('피드백 삭제에 실패했습니다.'),
+    });
     if (!response) return;
   } catch (error) {
     console.error('피드백 제거 에러:', error);
@@ -30,7 +27,7 @@ export async function patchFeedbackStatus({
 }: PatchFeedbackStatusParams) {
   try {
     const response = await apiClient.patch(
-      `/api/admin/feedbacks/${feedbackId}/status`,
+      `/admin/feedbacks/${feedbackId}/status`,
       { status },
       {
         onSuccess: () => alert('피드백 상태가 변경되었습니다.'),
