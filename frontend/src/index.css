@@ -1,9 +1,19 @@
 #root {
+<<<<<<< HEAD
   max-width: 600px;
   width: 100%;
   height: 100vh;
   margin: 0 auto;
   background-color: white;
+=======
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  height: 100vh;
+  overflow: auto;
+  margin: 0 auto;
+  background-color: #f9fafb;
+>>>>>>> c5c385c885a759121f08d73b9163e6f04b54339b
   border-left: 1px solid lightgrey;
   border-right: 1px solid lightgrey;
   padding: 14px;

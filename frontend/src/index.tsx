@@ -1,7 +1,14 @@
-import './reset.css';
-import './index.css';
+import { ThemeProvider } from '@emotion/react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import { RouterProvider } from 'react-router-dom';
+import './index.css';
+import './reset.css';
+import { theme } from './theme';
+import { router } from './router';
 
 const root = createRoot(document.getElementById('root')!);
-root.render(<App />);
+root.render(
+  <ThemeProvider theme={theme}>
+    <RouterProvider router={router} />
+  </ThemeProvider>
+);
