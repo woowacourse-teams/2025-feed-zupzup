@@ -55,7 +55,7 @@ export default function AdminHome() {
             content={feedback.content}
             createdAt={feedback.createdAt}
             isSecret={feedback.isSecret}
-            imgUrl={feedback.imgUrl}
+            imageUrl={feedback.imageUrl}
             likeCount={feedback.likeCount}
             userName={feedback.userName}
           />
