@@ -7,14 +7,15 @@ export const basicInputContainer = css`
 
 export const basicInput = (theme: Theme) => css`
   width: 100%;
+  height: 60px;
   padding: 12px;
   background-color: white;
   border: 1px solid ${theme.colors.gray[200]};
   border-radius: 16px;
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.caption}
 
   ::placeholder {
-    ${theme.typography.inter.small}
+    ${theme.typography.inter.caption}
 
     color : ${theme.colors.gray[500]};
   }
@@ -26,5 +27,5 @@ export const caption = (theme: Theme) => css`
   right: 20px;
   color: ${theme.colors.gray[500]};
 
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.caption}
 `;

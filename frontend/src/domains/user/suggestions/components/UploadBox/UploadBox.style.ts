@@ -20,7 +20,7 @@ export const uploadBox = (theme: Theme) => css`
 
 export const uploadText = (theme: Theme) => css`
   color: ${theme.colors.gray[500]};
-  ${theme.typography.inter.bodyRegular}
+  ${theme.typography.inter.caption}
 `;
 
 export const uploadButton = (theme: Theme) => css`
@@ -31,7 +31,7 @@ export const uploadButton = (theme: Theme) => css`
   border: 1px solid ${theme.colors.yellow[200]};
   border-radius: 9999px;
 
-  ${theme.typography.inter.small};
+  ${theme.typography.inter.caption};
 `;
 
 export const previewImage = css`

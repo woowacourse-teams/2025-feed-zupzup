@@ -1,5 +1,5 @@
+import { Theme } from '@/theme';
 import { css } from '@emotion/react';
-import { theme } from '@/theme';
 
 export const formField = css`
   display: flex;
@@ -8,6 +8,8 @@ export const formField = css`
   width: 100%;
 `;
 
-export const fieldLabel = css`
-  color: ${theme.colors.darkGray[200]};
+export const fieldLabel = (theme: Theme) => css`
+  color: ${theme.colors.darkGray[100]};
+
+  ${theme.typography.BMHANNAAir.caption}
 `;

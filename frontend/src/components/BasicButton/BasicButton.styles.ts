@@ -11,7 +11,7 @@ export const basicButton = (
   align-items: center;
   gap: 14px;
   width: ${typeof width === 'number' ? `${width}px` : width || '100%'};
-  height: 42px;
+  height: 54px;
   padding: 12px 16px;
   background-color: ${variant === 'primary'
     ? theme.colors.yellow[200]
@@ -42,7 +42,7 @@ export const basicButtonText = (
   variant: 'primary' | 'secondary' = 'primary'
 ) => css`
   margin: 0;
-  ${theme.typography.inter.small};
+  ${theme.typography.inter.caption};
 
   color: ${variant === 'primary'
     ? theme.colors.black[100]
