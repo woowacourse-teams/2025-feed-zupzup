@@ -21,11 +21,11 @@ export default function LikeButton({
   });
 
   return (
-    <>
+    <div>
       <Button onClick={handleLikeButton}>
         {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       </Button>
       {tempLikeCount}
-    </>
+    </div>
   );
 }
