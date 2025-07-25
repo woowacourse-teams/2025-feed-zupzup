@@ -7,7 +7,7 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useEffect, useState } from 'react';
-import { css, keyframes } from '@emotion/react';
+import { highlightStyle } from '@/domains/user/home/UserHome.styles';
 
 export default function UserHome() {
   const navigate = useNavigate();
@@ -81,18 +81,3 @@ function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
 
   return !!isLiked;
 }
-
-export const highlightFade = keyframes`
-  0% {
-    background-color: #f0ede6;
-  }
-  100% {
-    background-color: white;
-
-  }
-`;
-
-export const highlightStyle = css`
-  border-radius: 12px;
-  animation: ${highlightFade} 2s linear;
-`;
