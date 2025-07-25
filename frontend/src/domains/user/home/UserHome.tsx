@@ -42,7 +42,7 @@ export default function UserHome() {
     const timeout = setTimeout(() => {
       setHighLightedId(null);
       localStorage.removeItem('highlightedId');
-    }, 1000);
+    }, 2000);
 
     return () => clearTimeout(timeout);
   }, []);
@@ -84,7 +84,7 @@ function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
 
 export const highlightFade = keyframes`
   0% {
-    background-color: #e2e2e2;
+    background-color: #f0ede6;
   }
   100% {
     background-color: white;
@@ -94,5 +94,5 @@ export const highlightFade = keyframes`
 
 export const highlightStyle = css`
   border-radius: 12px;
-  animation: ${highlightFade} 1s linear;
+  animation: ${highlightFade} 2s linear;
 `;
