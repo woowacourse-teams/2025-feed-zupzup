@@ -1,4 +1,5 @@
 import { apiClient } from '@/apis/apiClient';
+import { SuggestionFeedback } from '@/types/feedback.types';
 
 interface UserFeedbackParams {
   placeId: number;
@@ -6,11 +7,13 @@ interface UserFeedbackParams {
   userName: string;
   imageUrl: string;
   isSecret: boolean;
+  onSuccess: (data: SuggestionFeedback) => void;
+  onError: () => void;
 }
 
 interface LikeParams {
   feedbackId: number;
-  onSuccess: () => void;
+  onSuccess: (data: SuggestionFeedback) => void;
   onError: () => void;
 }
 
@@ -20,14 +23,23 @@ export async function postUserFeedback({
   imageUrl,
   isSecret,
   userName,
+  onSuccess,
+  onError,
 }: UserFeedbackParams) {
   try {
-    const response = await apiClient.post(`/places/${placeId}/feedbacks`, {
-      content,
-      imageUrl,
-      isSecret,
-      userName,
-    });
+    const response = await apiClient.post(
+      `/places/${placeId}/feedbacks`,
+      {
+        content,
+        imageUrl,
+        isSecret,
+        userName,
+      },
+      {
+        onSuccess,
+        onError,
+      }
+    );
     if (!response) return;
   } catch (error) {
     console.error('피드백 전송 에러:', error);
