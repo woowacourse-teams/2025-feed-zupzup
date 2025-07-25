@@ -7,6 +7,7 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 export default function AdminDashboard() {
   // const {
@@ -26,6 +27,7 @@ export default function AdminDashboard() {
   const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
     originalFeedbacks: FEEDBACK_MOCK,
   });
+  const { isAuthorized, isCheckingAuth } = useAdminAuth();
 
   const {
     modalState,
@@ -39,6 +41,14 @@ export default function AdminDashboard() {
   });
 
   // useGetFeedback({ fetchMore, hasNext, loading });
+
+  if (isCheckingAuth) {
+    return <div>로딩중...</div>;
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <section css={dashboardLayout}>
