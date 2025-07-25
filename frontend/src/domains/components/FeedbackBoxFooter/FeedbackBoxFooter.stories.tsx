@@ -49,11 +49,23 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    likeCount: 0,
+    feedbackId: 1,
+    isLiked: false,
+    isSecret: false,
+    createdAt: new Date().toISOString(), // 혹은 '2024-05-20'
+    userName: '익명',
+  },
 };
 
 export const WithLikes: Story = {
   args: {
     likeCount: 10,
+    feedbackId: 2,
+    isLiked: true,
+    isSecret: false,
+    createdAt: new Date().toISOString(),
+    userName: 'Yeongi',
   },
 };
