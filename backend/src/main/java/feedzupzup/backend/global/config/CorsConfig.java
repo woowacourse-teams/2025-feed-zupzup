@@ -13,7 +13,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "https://feedzupzup.com",
-                        "https://api.feedzupzup.com"
+                        "https://api.feedzupzup.com",
+                        "http://192.168.7.246:3000"
                 )
                 .allowedOriginPatterns("https://*.feedzupzup.com")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
