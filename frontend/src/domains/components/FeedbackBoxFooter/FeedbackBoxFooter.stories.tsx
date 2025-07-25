@@ -13,7 +13,29 @@ const meta: Meta<typeof FeedbackBoxFooter> = {
       control: 'number',
       description: '좋아요 개수',
     },
+    feedbackId: {
+      control: { type: 'number' },
+      description: '피드백 ID (고유값)',
+    },
+
+    isLiked: {
+      control: 'boolean',
+      description: '좋아요 여부',
+    },
+    isSecret: {
+      control: 'boolean',
+      description: '비밀 피드백 여부',
+    },
+    createdAt: {
+      control: 'date',
+      description: '작성일',
+    },
+    userName: {
+      control: 'text',
+      description: '닉네임',
+    },
   },
+
   decorators: [
     (Story) => (
       <div style={{ width: '500px' }}>
