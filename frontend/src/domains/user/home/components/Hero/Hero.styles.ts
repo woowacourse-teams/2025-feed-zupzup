@@ -73,7 +73,7 @@ export const heroDescription = (theme: Theme) => css`
 export const catAnimation = (isUserPage: boolean) => css`
   position: absolute;
   right: 24px;
-  bottom: ${isUserPage ? '32px' : '-28px'};
+  bottom: ${isUserPage ? '40px' : '-28px'};
   z-index: 1;
   width: 60px;
   height: auto;
