@@ -1,12 +1,18 @@
 // useAdminModal.test.ts
 import { renderHook, act } from '@testing-library/react';
 import { useAdminModal } from './useAdminModal';
+import * as adminFeedbackApi from '@/apis/adminFeedback.api';
 
 // Mock API functions
 jest.mock('@/apis/adminFeedback.api', () => ({
   deleteFeedback: jest.fn(),
   patchFeedbackStatus: jest.fn(),
 }));
+
+// 타입 캐스팅을 위한 mocked API
+const mockedAdminFeedbackApi = adminFeedbackApi as jest.Mocked<
+  typeof adminFeedbackApi
+>;
 
 describe('useAdminModal', () => {
   const mockOnConfirmFeedback = jest.fn();
@@ -89,8 +95,7 @@ describe('useAdminModal', () => {
 
   describe('모달 액션', () => {
     it('확인 모달 액션을 성공적으로 처리해야 한다', async () => {
-      const { patchFeedbackStatus } = require('@/apis/adminFeedback.api');
-      patchFeedbackStatus.mockResolvedValue({});
+      mockedAdminFeedbackApi.patchFeedbackStatus.mockResolvedValue(undefined);
 
       const { result } = renderHook(() =>
         useAdminModal({
@@ -107,7 +112,7 @@ describe('useAdminModal', () => {
         await result.current.handleModalAction();
       });
 
-      expect(patchFeedbackStatus).toHaveBeenCalledWith({
+      expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
         feedbackId: 1,
         status: 'CONFIRMED',
       });
@@ -116,8 +121,7 @@ describe('useAdminModal', () => {
     });
 
     it('삭제 모달 액션을 성공적으로 처리해야 한다', async () => {
-      const { deleteFeedback } = require('@/apis/adminFeedback.api');
-      deleteFeedback.mockResolvedValue({});
+      mockedAdminFeedbackApi.deleteFeedback.mockResolvedValue(undefined);
 
       const { result } = renderHook(() =>
         useAdminModal({
@@ -134,14 +138,14 @@ describe('useAdminModal', () => {
         await result.current.handleModalAction();
       });
 
-      expect(deleteFeedback).toHaveBeenCalledWith({ feedbackId: 1 });
+      expect(mockedAdminFeedbackApi.deleteFeedback).toHaveBeenCalledWith({
+        feedbackId: 1,
+      });
       expect(mockOnDeleteFeedback).toHaveBeenCalledWith(1);
       expect(result.current.modalState.type).toBeNull();
     });
 
     it('모달 상태에 feedbackId가 없으면 일찍 반환해야 한다', async () => {
-      const { patchFeedbackStatus } = require('@/apis/adminFeedback.api');
-
       const { result } = renderHook(() => useAdminModal());
 
       // feedbackId 없이 모달 상태를 직접 설정
@@ -153,12 +157,11 @@ describe('useAdminModal', () => {
         await result.current.handleModalAction();
       });
 
-      expect(patchFeedbackStatus).not.toHaveBeenCalled();
+      expect(mockedAdminFeedbackApi.patchFeedbackStatus).not.toHaveBeenCalled();
     });
 
     it('콜백 함수 없이도 동작해야 한다', async () => {
-      const { patchFeedbackStatus } = require('@/apis/adminFeedback.api');
-      patchFeedbackStatus.mockResolvedValue({});
+      mockedAdminFeedbackApi.patchFeedbackStatus.mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useAdminModal());
 
@@ -170,7 +173,7 @@ describe('useAdminModal', () => {
         await result.current.handleModalAction();
       });
 
-      expect(patchFeedbackStatus).toHaveBeenCalledWith({
+      expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
         feedbackId: 1,
         status: 'CONFIRMED',
       });
@@ -180,9 +183,10 @@ describe('useAdminModal', () => {
 
   describe('에러 처리', () => {
     it('확인 액션에서 API 에러를 우아하게 처리해야 한다', async () => {
-      const { patchFeedbackStatus } = require('@/apis/adminFeedback.api');
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      patchFeedbackStatus.mockRejectedValue(new Error('API Error'));
+      mockedAdminFeedbackApi.patchFeedbackStatus.mockRejectedValue(
+        new Error('API Error')
+      );
 
       const { result } = renderHook(() => useAdminModal());
 
@@ -204,9 +208,10 @@ describe('useAdminModal', () => {
     });
 
     it('삭제 액션에서 API 에러를 우아하게 처리해야 한다', async () => {
-      const { deleteFeedback } = require('@/apis/adminFeedback.api');
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      deleteFeedback.mockRejectedValue(new Error('Network Error'));
+      mockedAdminFeedbackApi.deleteFeedback.mockRejectedValue(
+        new Error('Network Error')
+      );
 
       const { result } = renderHook(() => useAdminModal());
 
@@ -228,9 +233,10 @@ describe('useAdminModal', () => {
     });
 
     it('API 호출이 실패해도 모달을 닫아야 한다', async () => {
-      const { patchFeedbackStatus } = require('@/apis/adminFeedback.api');
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      patchFeedbackStatus.mockRejectedValue(new Error('API Error'));
+      mockedAdminFeedbackApi.patchFeedbackStatus.mockRejectedValue(
+        new Error('API Error')
+      );
 
       const { result } = renderHook(() => useAdminModal());
 
