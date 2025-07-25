@@ -25,12 +25,8 @@ export default function Header({ title, subtitle }: HeaderProps) {
       <div css={headerSection}>
         <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(-1)} />
         <div css={captionSection}>
-          <p css={[headerTitle(theme), theme.typography.inter.bodyBold]}>
-            {title}
-          </p>
-          <p css={[headerSubtitle(theme), theme.typography.inter.caption]}>
-            {subtitle}
-          </p>
+          <p css={headerTitle(theme)}>{title}</p>
+          <p css={headerSubtitle(theme)}>{subtitle}</p>
         </div>
       </div>
       <GlitterIcon />

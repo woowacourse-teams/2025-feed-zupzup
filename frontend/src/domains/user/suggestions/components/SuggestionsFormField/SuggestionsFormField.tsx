@@ -2,7 +2,7 @@ import {
   fieldLabel,
   formField,
 } from '@/domains/user/suggestions/components/SuggestionsFormField/SuggestionsFormField.style';
-import { theme } from '@/theme';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface SuggestionsFormFieldProps {
   label: string;
@@ -13,9 +13,10 @@ export default function SuggestionsFormField({
   label,
   children,
 }: SuggestionsFormFieldProps) {
+  const theme = useAppTheme();
   return (
     <section css={formField}>
-      <div css={[fieldLabel, theme.typography.inter.small]}>{label}</div>
+      <div css={fieldLabel(theme)}>{label}</div>
       {children}
     </section>
   );

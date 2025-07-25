@@ -7,16 +7,16 @@ export const basicTextAreaContainer = css`
 
 export const textArea = (theme: Theme) => css`
   width: 100%;
-  height: 96px;
-  padding: 12px;
+  height: 120px;
+  padding: 20px 0 0 12px;
   background-color: white;
   border: 1px solid ${theme.colors.gray[200]};
   resize: none;
   border-radius: 16px;
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.caption}
 
   ::placeholder {
-    ${theme.typography.inter.small}
+    ${theme.typography.inter.caption}
 
     color : ${theme.colors.gray[500]};
   }
@@ -28,5 +28,5 @@ export const caption = (theme: Theme) => css`
   bottom: 20%;
   color: ${theme.colors.gray[500]};
 
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.caption}
 `;
