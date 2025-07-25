@@ -6,6 +6,8 @@ import { UserFeedback, FeedbackResponse } from '@/types/feedback.types';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import { getLocalStorage } from '@/utils/localStorage';
+import { useEffect, useState } from 'react';
+import { highlightStyle } from '@/domains/user/home/UserHome.styles';
 
 export default function UserHome() {
   const navigate = useNavigate();
@@ -28,6 +30,22 @@ export default function UserHome() {
 
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
 
+  const storageHighlightedId = localStorage.getItem('highlightedId');
+
+  const [highlightedId, setHighLightedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!storageHighlightedId) return;
+
+    setHighLightedId(Number(storageHighlightedId));
+
+    const timeout = setTimeout(() => {
+      setHighLightedId(null);
+      localStorage.removeItem('highlightedId');
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, []);
   return (
     <section>
       <Hero
@@ -46,6 +64,9 @@ export default function UserHome() {
             isSecret={feedback.isSecret}
             feedbackId={feedback.feedbackId}
             likeCount={feedback.likeCount}
+            customCSS={
+              feedback.feedbackId === highlightedId ? highlightStyle : null
+            }
           />
         ))}
         {loading && <div>로딩중...</div>}

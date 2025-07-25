@@ -41,6 +41,7 @@ const userFeedbackWaiting = {
   isLiked: false,
   isSecret: false,
   createdAt: '2024-05-20',
+  customCSS: null,
 } as const;
 
 const userFeedbackConfirmed = {
@@ -53,6 +54,7 @@ const userFeedbackConfirmed = {
   isLiked: true,
   isSecret: false,
   createdAt: '2024-05-19',
+  customCSS: null,
 } as const;
 
 const adminFeedbackWaiting = {
