@@ -34,10 +34,10 @@ public class AdminFeedbackService {
             final UpdateFeedbackStatusRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedBack = feedBackRepository.findById(feedbackId)
+        final Feedback feedback = feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
-        feedBack.updateStatus(request.status());
-        return UpdateFeedbackStatusResponse.from(feedBack);
+        feedback.updateStatus(request.status());
+        return UpdateFeedbackStatusResponse.from(feedback);
     }
 
     @Transactional
