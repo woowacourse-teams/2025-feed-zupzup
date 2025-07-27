@@ -8,6 +8,7 @@ import {
 import { http, HttpResponse } from 'msw';
 
 export const AdminFeedbackHandlers = [
+  // 피드백 조회
   http.get(`${BASE}/admin/places/1/feedbacks`, ({ request }) => {
     const url = new URL(request.url);
     const cursorId = url.searchParams.get('cursorId');
@@ -35,6 +36,7 @@ export const AdminFeedbackHandlers = [
     return notFoundResponse;
   }),
 
+  // 피드백 삭제
   http.delete(`${BASE}/admin/feedbacks/:feedbackId`, async ({ params }) => {
     const feedbackId = Number(params.feedbackId);
 
@@ -49,21 +51,7 @@ export const AdminFeedbackHandlers = [
     return successResponse(`feedbackId ${feedbackId} 삭제 완료`);
   }),
 
-  http.delete(`${BASE}/feedbacks/:feedbackId/like`, async ({ params }) => {
-    const feedbackId = Number(params.feedbackId);
-    const feedback = findFeedbackById(feedbackId);
-
-    if (!feedback) return notFoundResponse;
-
-    const beforeLikeCount = feedback.likeCount;
-    feedback.likeCount = Math.max(0, feedback.likeCount - 1);
-
-    return successResponse({
-      beforeLikeCount,
-      afterLikeCount: feedback.likeCount,
-    });
-  }),
-
+  // 피드백 상태 변경
   http.patch(
     `${process.env.BASE_URL}/admin/feedbacks/:feedbackId/status`,
     async ({ params, request }) => {

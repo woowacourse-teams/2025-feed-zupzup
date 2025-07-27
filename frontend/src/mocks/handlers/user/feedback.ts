@@ -8,6 +8,7 @@ import {
 import { http, HttpResponse } from 'msw';
 
 export const UserFeedbackHandlers = [
+  // 피드백 조회
   http.get(`${BASE}/places/1/feedbacks`, ({ request }) => {
     const url = new URL(request.url);
     const cursorId = url.searchParams.get('cursorId');
@@ -35,6 +36,7 @@ export const UserFeedbackHandlers = [
     return notFoundResponse;
   }),
 
+  // 피드백 좋아요
   http.post(`${BASE}/feedbacks/:feedbackId/like`, ({ params }) => {
     const feedback = findFeedbackById(Number(params.feedbackId));
     if (!feedback) return notFoundResponse;
@@ -48,6 +50,7 @@ export const UserFeedbackHandlers = [
     });
   }),
 
+  // 피드백 좋아요 취소
   http.delete(`${BASE}/feedbacks/:feedbackId/like`, ({ params }) => {
     const feedback = findFeedbackById(Number(params.feedbackId));
     if (!feedback) return notFoundResponse;
