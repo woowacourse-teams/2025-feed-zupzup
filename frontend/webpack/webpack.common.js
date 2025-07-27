@@ -19,6 +19,11 @@ export default {
       '@': path.resolve(__dirname, '../src'),
     },
   },
+  devServer: {
+    historyApiFallback: true,
+    static: './dist',
+    port: 3000,
+  },
   module: {
     rules: [
       {
@@ -55,7 +60,13 @@ export default {
       template: './public/index.html',
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'public/favicon.ico', to: '.' }],
+      patterns: [
+        { from: 'public/favicon.ico', to: '.' },
+        { from: 'public/manifest.json', to: '.' },
+        { from: 'public/512x512.png', to: '.' },
+        { from: 'public/192x192.png', to: '.' },
+        { from: 'public/service-worker.js', to: '.' },
+      ],
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env),
