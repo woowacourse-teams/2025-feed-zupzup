@@ -5,7 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -23,16 +25,30 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final ContentCachingRequestWrapper cacheRequest = new ContentCachingRequestWrapper(request);
         final ContentCachingResponseWrapper cacheResponse = new ContentCachingResponseWrapper(response);
+
+        String requestId = createRequestId();
+
+        writeRequestLog(cacheRequest);
         filterChain.doFilter(cacheRequest, cacheResponse);
-        generateLogging(cacheRequest, cacheResponse);
+        writeResponseLog(cacheResponse);
+
+        cacheResponse.copyBodyToResponse();
+        MDC.remove(requestId);
     }
 
-    private void generateLogging(
-            final ContentCachingRequestWrapper cacheRequest,
-            final ContentCachingResponseWrapper cacheResponse
-    ) throws IOException {
-        final HttpLogMessage logMessage = HttpLogMessage.createInstance(cacheRequest, cacheResponse);
-        log.info(logMessage.toString());
-        cacheResponse.copyBodyToResponse();
+    private String createRequestId() {
+        String requestId = UUID.randomUUID().toString().substring(0, 8);
+        MDC.put("request_id", requestId);
+        return requestId;
+    }
+
+    private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
+        final RequestLogMessage requestLog = RequestLogMessage.createInstance(cacheRequest);
+        log.info(requestLog.toString());
+    }
+
+    private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
+        final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
+        log.info(responseLog.toString());
     }
 }
