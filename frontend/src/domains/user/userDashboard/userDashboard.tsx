@@ -1,14 +1,9 @@
+import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import CheerButton from '@/domains/user/userDashboard/components/CheerButton/CheerButton';
-import DashboardPanel from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
-import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock';
-import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
+import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
 import {
-  cheerButtonLayout,
   dashboardLayout,
-  panelCaption,
-  panelLayout,
   titleText,
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -55,22 +50,8 @@ export default function UserDashboard() {
   return (
     <div css={dashboardLayout}>
       <p css={titleText(theme)}>{GROUP_NAME}</p>
+      <DashboardOverview />
       <div>
-        <p css={panelCaption(theme)}>일주일 간의 피드백</p>
-        <div css={panelLayout}>
-          {DASH_PANELS.map((panel, idx) => (
-            <DashboardPanel
-              key={idx}
-              title={panel.title}
-              content={panel.content}
-              caption={panel.caption}
-            />
-          ))}
-        </div>
-        <div css={cheerButtonLayout}>
-          <CheerButton />
-        </div>
-
         <FeedbackBoxList>
           {FEEDBACK_MOCK.map((feedback) => (
             <UserFeedbackBox
