@@ -29,7 +29,7 @@ public class Feedback extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ProcessStatus status;
 
-    private Long placeId;
+    private Long groupId;
 
     @Embedded
     private ImageUrl imageUrl;
@@ -44,7 +44,7 @@ public class Feedback extends BaseTimeEntity {
             final String content,
             final boolean isSecret,
             final ProcessStatus status,
-            final Long placeId,
+            final Long groupId,
             final ImageUrl imageUrl,
             final int likeCount,
             final UserName userName
@@ -52,7 +52,7 @@ public class Feedback extends BaseTimeEntity {
         this.content = content;
         this.isSecret = isSecret;
         this.status = status;
-        this.placeId = placeId;
+        this.groupId = groupId;
         this.imageUrl = imageUrl;
         this.likeCount = likeCount;
         this.userName = userName;

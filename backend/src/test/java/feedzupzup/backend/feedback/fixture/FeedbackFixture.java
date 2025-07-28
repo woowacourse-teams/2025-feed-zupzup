@@ -13,18 +13,18 @@ public class FeedbackFixture {
                 .content("상태별 피드백")
                 .isSecret(false)
                 .status(status)
-                .placeId(1L)
+                .groupId(1L)
                 .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
     }
 
-    public static Feedback createFeedbackWithPlaceId(final Long placeId) {
+    public static Feedback createFeedbackWithGroupId(final Long groupId) {
         return Feedback.builder()
                 .content("장소별 피드백")
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .placeId(placeId)
+                .groupId(groupId)
                 .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
@@ -35,7 +35,7 @@ public class FeedbackFixture {
                 .content("장소별 피드백")
                 .isSecret(isSecret)
                 .status(ProcessStatus.WAITING)
-                .placeId(1L)
+                .groupId(1L)
                 .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
@@ -46,18 +46,18 @@ public class FeedbackFixture {
                 .content(content)
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .placeId(1L)
+                .groupId(1L)
                 .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .userName(new UserName("테스트유저"))
                 .build();
     }
 
-    public static Feedback createFeedbackWithLikes(final Long placeId, final int likeCount) {
+    public static Feedback createFeedbackWithLikes(final Long groupId, final int likeCount) {
         return Feedback.builder()
                 .content("좋아요 테스트용 피드백")
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .placeId(placeId)
+                .groupId(groupId)
                 .imageUrl(ImageUrl.createS3Url("https://example.com/image.jpg"))
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))

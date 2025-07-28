@@ -136,7 +136,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자가 피드백 목록을 성공적으로 조회한다")
     void admin_get_feedbacks_success() {
         // given
-        final Long placeId = 1L;
+        final Long groupId = 1L;
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백");
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백");
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백");
@@ -150,7 +150,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -165,7 +165,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자가 커서 기반 페이징으로 피드백 목록을 조회한다")
     void admin_get_feedbacks_with_cursor_pagination() {
         // given
-        final Long placeId = 1L;
+        final Long groupId = 1L;
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백");
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백");
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백");
@@ -180,7 +180,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 2)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -198,7 +198,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 2)
                 .queryParam("cursorId", firstPageCursor)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -212,14 +212,14 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자가 빈 피드백 목록을 조회한다")
     void admin_get_empty_feedbacks() {
         // given
-        final Long placeId = 999L;
+        final Long groupId = 999L;
 
         // when & then
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -234,10 +234,10 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자 피드백 목록에서 DB 좋아요 수와 인메모리 좋아요 수가 합산되어 반영된다")
     void admin_get_feedbacks_reflects_memory_likes() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(placeId, 5); // DB에 5개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(placeId, 3); // DB에 3개 좋아요
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(placeId, 0); // DB에 0개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(groupId, 5); // DB에 5개 좋아요
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(groupId, 3); // DB에 3개 좋아요
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(groupId, 0); // DB에 0개 좋아요
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -256,7 +256,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -272,9 +272,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자 피드백 목록에서 인메모리 좋아요가 없는 피드백은 DB 좋아요 수만 반영된다")
     void admin_get_feedbacks_reflects_only_db_likes_when_no_memory_likes() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(placeId, 10); // DB에 10개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(placeId, 0);  // DB에 0개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(groupId, 10); // DB에 10개 좋아요
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(groupId, 0);  // DB에 0개 좋아요
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -284,7 +284,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -299,8 +299,8 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자 피드백 목록에서 인메모리에만 좋아요가 있는 피드백도 정상적으로 반영된다")
     void admin_get_feedbacks_reflects_only_memory_likes() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(placeId, 0); // DB에 0개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(groupId, 0); // DB에 0개 좋아요
         final Feedback saved = feedBackRepository.save(feedback);
 
         // 인메모리에만 좋아요 추가
@@ -313,7 +313,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/admin/places/{placeId}/feedbacks", placeId)
+                .get("/admin/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

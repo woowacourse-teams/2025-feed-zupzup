@@ -11,8 +11,8 @@ import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
-import feedzupzup.backend.place.domain.Place;
-import feedzupzup.backend.place.domain.PlaceRepository;
+import feedzupzup.backend.group.domain.Group;
+import feedzupzup.backend.group.domain.GroupRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
-    private PlaceRepository placeRepository;
+    private GroupRepository groupRepository;
 
     @Autowired
     private FeedbackLikeService feedbackLikeService;
@@ -44,12 +44,12 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_success() {
             //given
-            final Place place = new Place("테스트장소", "테스트Url");
+            final Group group = new Group("테스트장소");
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", "https://example.com/image.jpg", false, "윌슨");
 
             //when
-            final Place savedPlace = placeRepository.save(place);
-            final CreateFeedbackResponse response = userFeedbackService.create(request, savedPlace.getId());
+            final Group savedGroup = groupRepository.save(group);
+            final CreateFeedbackResponse response = userFeedbackService.create(request, savedGroup.getId());
 
             //then
             assertAll(
@@ -65,11 +65,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("커서 기반 페이징으로 피드백 목록을 성공적으로 조회한다")
     void getFeedbackPage_success() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithGroupId(groupId);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -79,7 +79,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 2;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
 
         // then
         assertAll(
@@ -93,9 +93,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("마지막 페이지에서 hasNext가 false를 반환한다")
     void getFeedbackPage_last_page() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -103,7 +103,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 5;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
 
         // then
         assertAll(
@@ -116,11 +116,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("빈 결과에 대해 적절히 처리한다")
     void getFeedbackPage_empty_result() {
         // given
-        final Long placeId = 1L;
+        final Long groupId = 1L;
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
 
         // then
         assertAll(
@@ -134,11 +134,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("특정 커서 ID로 다음 페이지를 조회한다")
     void getFeedbackPage_with_cursor() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithGroupId(groupId);
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -149,7 +149,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, cursorId);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, cursorId);
 
         // then
         assertAll(
@@ -164,14 +164,14 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("단일 페이지 결과에서 다음 페이지가 없음을 확인한다")
     void getFeedbackPage_single_page() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+        final Long groupId = 1L;
+        final Feedback feedback = FeedbackFixture.createFeedbackWithGroupId(groupId);
         feedBackRepository.save(feedback);
 
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
 
         // then
         assertAll(
@@ -183,14 +183,14 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Test
     @DisplayName("특정 장소의 피드백만 조회한다")
-    void getFeedbackPage_only_specific_place() {
+    void getFeedbackPage_only_specific_group() {
         // given
-        final Long targetPlaceId = 1L;
-        final Long otherPlaceId = 2L;
+        final Long targetGroupId = 1L;
+        final Long otherGroupId = 2L;
 
-        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
-        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
-        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithPlaceId(otherPlaceId);
+        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithGroupId(targetGroupId);
+        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithGroupId(targetGroupId);
+        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithGroupId(otherGroupId);
 
         feedBackRepository.save(targetFeedback1);
         feedBackRepository.save(targetFeedback2);
@@ -199,7 +199,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(targetPlaceId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(targetGroupId, size, null);
 
         // then
         assertAll(
@@ -215,10 +215,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("DB 좋아요 수와 인메모리 좋아요 수가 합산되어 응답에 반영된다")
     void getFeedbackPage_reflects_memory_likes() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(placeId, 5); // DB에 5개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(placeId, 3); // DB에 3개 좋아요
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(placeId, 0); // DB에 0개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(groupId, 5); // DB에 5개 좋아요
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(groupId, 3); // DB에 3개 좋아요
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(groupId, 0); // DB에 0개 좋아요
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -235,7 +235,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
 
         // then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
         assertAll(
@@ -263,9 +263,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("인메모리 좋아요가 없는 피드백은 DB 좋아요 수만 반영된다")
     void getFeedbackPage_reflects_only_db_likes_when_no_memory_likes() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(placeId, 10); // DB에 10개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(placeId, 0);  // DB에 0개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(groupId, 10); // DB에 10개 좋아요
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(groupId, 0);  // DB에 0개 좋아요
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -273,7 +273,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when - 인메모리 좋아요 추가 없이 조회
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
 
         // then - DB 좋아요 수만 반영되는지 확인
         assertAll(
@@ -297,8 +297,8 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("인메모리에만 좋아요가 있는 피드백도 정상적으로 반영된다")
     void getFeedbackPage_reflects_only_memory_likes() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(placeId, 0); // DB에 0개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(groupId, 0); // DB에 0개 좋아요
 
         final Feedback saved = feedBackRepository.save(feedback);
 
@@ -310,7 +310,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
         final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 인메모리 좋아요 수만 반영되는지 확인
@@ -324,8 +324,8 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("인메모리 좋아요 취소가 반영되어 총 좋아요 수가 감소한다")
     void getFeedbackPage_reflects_unlike_operations() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(placeId, 8); // DB에 8개 좋아요
+        final Long groupId = 1L;
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(groupId, 8); // DB에 8개 좋아요
 
         final Feedback saved = feedBackRepository.save(feedback);
 
@@ -339,7 +339,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(placeId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(groupId, size, null);
         final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인

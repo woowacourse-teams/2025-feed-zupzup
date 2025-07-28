@@ -23,11 +23,11 @@ public record CreateFeedbackRequest(
         String userName
 ) {
 
-    public Feedback toFeedback(final Long placeId, final ImageUrl imageUrl) {
+    public Feedback toFeedback(final Long groupId, final ImageUrl imageUrl) {
         return Feedback.builder()
                 .content(content)
                 .imageUrl(imageUrl)
-                .placeId(placeId)
+                .groupId(groupId)
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)
                 .userName(new UserName(userName))

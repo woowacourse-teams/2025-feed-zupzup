@@ -36,7 +36,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("피드백을 성공적으로 삭제한다")
         void delete_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithPlaceId(1L);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithGroupId(1L);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             // when
@@ -136,11 +136,11 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("커서 기반 페이징으로 피드백 목록을 성공적으로 조회한다")
         void getAllFeedbacks_success() {
             // given
-            final Long placeId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+            final Long groupId = 1L;
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithGroupId(groupId);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -150,7 +150,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(placeId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(groupId, size, null);
 
             // then
             assertAll(
@@ -164,9 +164,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("마지막 페이지에서 hasNext가 false를 반환한다")
         void getAllFeedbacks_last_page() {
             // given
-            final Long placeId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+            final Long groupId = 1L;
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -174,7 +174,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 5;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(placeId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(groupId, size, null);
 
             // then
             assertAll(
@@ -187,11 +187,11 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("빈 결과에 대해 적절히 처리한다")
         void getAllFeedbacks_empty_result() {
             // given
-            final Long placeId = 999L;
+            final Long groupId = 999L;
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(placeId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(groupId, size, null);
 
             // then
             assertAll(
@@ -204,18 +204,18 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Nested
     @DisplayName("특정 장소 피드백 조회 테스트")
-    class GetFeedbackPageByPlaceIdTest {
+    class GetFeedbackPageByGroupIdTest {
 
         @Test
         @DisplayName("특정 장소의 피드백만 조회한다")
-        void getFeedbackPageByPlaceId_success() {
+        void getFeedbackPageByGroupId_success() {
             // given
-            final Long targetPlaceId = 1L;
-            final Long otherPlaceId = 2L;
+            final Long targetGroupId = 1L;
+            final Long otherGroupId = 2L;
             
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithPlaceId(otherPlaceId);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithGroupId(targetGroupId);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithGroupId(targetGroupId);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithGroupId(otherGroupId);
             
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -224,7 +224,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetPlaceId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetGroupId, size, null);
 
             // then
             assertAll(
@@ -238,13 +238,13 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
         @Test
         @DisplayName("특정 장소의 피드백을 커서 기반 페이징으로 조회한다")
-        void getFeedbackPageByPlaceId_with_paging() {
+        void getFeedbackPageByGroupId_with_paging() {
             // given
-            final Long placeId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+            final Long groupId = 1L;
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithGroupId(groupId);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -254,7 +254,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(placeId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(groupId, size, null);
 
             // then
             assertAll(
@@ -266,13 +266,13 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
         @Test
         @DisplayName("특정 장소의 피드백이 없을 때 빈 결과를 반환한다")
-        void getFeedbackPageByPlaceId_empty_result() {
+        void getFeedbackPageByGroupId_empty_result() {
             // given
-            final Long emptyPlaceId = 999L;
+            final Long emptyGroupId = 999L;
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(emptyPlaceId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(emptyGroupId, size, null);
 
             // then
             assertAll(
@@ -284,13 +284,13 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
         @Test
         @DisplayName("특정 장소의 피드백을 커서 ID와 함께 조회한다")
-        void getFeedbackPageByPlaceId_with_cursor() {
+        void getFeedbackPageByGroupId_with_cursor() {
             // given
-            final Long placeId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+            final Long groupId = 1L;
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithGroupId(groupId);
             
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -301,7 +301,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(placeId, size, cursorId);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(groupId, size, cursorId);
 
             // then
             assertAll(

@@ -11,8 +11,8 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
-import feedzupzup.backend.place.domain.Place;
-import feedzupzup.backend.place.domain.PlaceRepository;
+import feedzupzup.backend.group.domain.Group;
+import feedzupzup.backend.group.domain.GroupRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,16 +25,16 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private PlaceRepository placeRepository;
+    private GroupRepository groupRepository;
 
     @Test
     @DisplayName("사용자가 특정 장소의 피드백 목록을 성공적으로 조회한다")
     void user_get_feedbacks_success() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -45,7 +45,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/places/{placeId}/feedbacks", placeId)
+                .get("/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -60,10 +60,10 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 커서 기반 페이징으로 피드백 목록을 조회한다")
     void user_get_feedbacks_with_cursor_pagination() {
         // given
-        final Long placeId = 1L;
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithPlaceId(placeId);
+        final Long groupId = 1L;
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithGroupId(groupId);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithGroupId(groupId);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -74,7 +74,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 2)
                 .when()
-                .get("/places/{placeId}/feedbacks", placeId)
+                .get("/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -92,7 +92,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 2)
                 .queryParam("cursorId", firstPageCursor)
                 .when()
-                .get("/places/{placeId}/feedbacks", placeId)
+                .get("/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -106,14 +106,14 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 빈 피드백 목록을 조회한다")
     void user_get_empty_feedbacks() {
         // given
-        final Long placeId = 999L; // 피드백이 없는 장소
+        final Long groupId = 999L; // 피드백이 없는 장소
 
         // when & then
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/places/{placeId}/feedbacks", placeId)
+                .get("/groups/{groupId}/feedbacks", groupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -126,14 +126,14 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
 
     @Test
     @DisplayName("사용자가 특정 장소의 피드백만 조회한다 (다른 장소 피드백 제외)")
-    void user_get_feedbacks_only_for_specific_place() {
+    void user_get_feedbacks_only_for_specific_group() {
         // given
-        final Long targetPlaceId = 1L;
-        final Long otherPlaceId = 2L;
+        final Long targetgroupId = 1L;
+        final Long othergroupId = 2L;
         
-        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
-        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithPlaceId(targetPlaceId);
-        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithPlaceId(otherPlaceId);
+        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithGroupId(targetgroupId);
+        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithGroupId(targetgroupId);
+        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithGroupId(othergroupId);
 
         feedBackRepository.save(targetFeedback1);
         feedBackRepository.save(targetFeedback2);
@@ -144,7 +144,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/places/{placeId}/feedbacks", targetPlaceId)
+                .get("/groups/{groupId}/feedbacks", targetgroupId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -158,8 +158,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_feedback_success() {
         // given
-        final Place place = new Place("테스트장소", "테스트Url");
-        final Place savedPlace = placeRepository.save(place);
+        final Group group = new Group("테스트장소");
+        final Group savedGroup = groupRepository.save(group);
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
         // when & then
@@ -168,7 +168,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/places/{placeId}/feedbacks", savedPlace.getId())
+                .post("/groups/{groupId}/feedbacks", savedGroup.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
@@ -184,8 +184,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 비밀 피드백을 성공적으로 생성한다")
     void user_create_secret_feedback_success() {
         // given
-        final Place place = new Place("테스트장소", "테스트Url");
-        final Place savedPlace = placeRepository.save(place);
+        final Group group = new Group("테스트장소");
+        final Group savedGroup = groupRepository.save(group);
         final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", "이미지URL", true, "테스트유저");
 
         // when & then
@@ -194,7 +194,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/places/{placeId}/feedbacks", savedPlace.getId())
+                .post("/groups/{groupId}/feedbacks", savedGroup.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
@@ -211,8 +211,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 새로 생성한 피드백이 목록에 나타난다")
     void user_create_feedback_appears_in_list() {
         // given
-        final Place place = new Place("테스트장소", "테스트Url");
-        final Place savedPlace = placeRepository.save(place);
+        final Group group = new Group("테스트장소");
+        final Group savedGroup = groupRepository.save(group);
         final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", "new.jpg", false, "테스트유저");
 
         // when - 피드백 생성
@@ -221,7 +221,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/places/{placeId}/feedbacks", savedPlace.getId())
+                .post("/groups/{groupId}/feedbacks", savedGroup.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -233,7 +233,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/places/{placeId}/feedbacks", savedPlace.getId())
+                .get("/groups/{groupId}/feedbacks", savedGroup.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

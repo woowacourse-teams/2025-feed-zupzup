@@ -9,8 +9,8 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.place.domain.Place;
-import feedzupzup.backend.place.domain.PlaceRepository;
+import feedzupzup.backend.group.domain.Group;
+import feedzupzup.backend.group.domain.GroupRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,25 +24,25 @@ public class UserFeedbackService {
 
     private final FeedBackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
-    private final PlaceRepository placeRepository;
+    private final GroupRepository groupRepository;
 
     @Transactional
-    public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long placeId) {
-        final Place place = placeRepository.findById(placeId)
+    public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long groupId) {
+        final Group group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
-        final Feedback newFeedback = request.toFeedback(place.getId(), ImageUrl.createS3Url(request.imageUrl()));
+        final Feedback newFeedback = request.toFeedback(group.getId(), ImageUrl.createS3Url(request.imageUrl()));
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }
 
     public UserFeedbackListResponse getFeedbackPage(
-            final Long placeId,
+            final Long groupId,
             final int size,
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByPlaceIdAndCursorIdOrderByDesc(
-                placeId,
+        final List<Feedback> feedbacks = feedBackRepository.findPageBygroupIdAndCursorIdOrderByDesc(
+                groupId,
                 cursorId,
                 pageable
         );
