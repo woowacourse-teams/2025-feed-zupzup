@@ -18,6 +18,8 @@ export const container = css`
 
 export const title = (theme: Theme) => css`
   ${theme.typography.inter.h4}
+
+  margin-top: 10%;
 `;
 
 export const place = (theme: Theme) => css`
