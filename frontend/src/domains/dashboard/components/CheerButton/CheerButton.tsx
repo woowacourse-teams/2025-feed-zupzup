@@ -13,7 +13,7 @@ export default function CheerButton() {
     setCount(count + 1);
     setClicked(true);
     setAnimate(true);
-    setTimeout(() => setAnimate(false), 300); // 애니메이션 클래스 제거
+    setTimeout(() => setAnimate(false), 300);
   };
 
   return (

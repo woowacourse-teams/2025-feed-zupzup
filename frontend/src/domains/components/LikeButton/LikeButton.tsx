@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 import EmptyHeartIcon from '../../../components/icons/EmptyHeartIcon';
 import FillHeartIcon from '../../../components/icons/FillHeartIcon';
 import Button from '@/components/@commons/Button/Button';
@@ -21,11 +22,15 @@ export default function LikeButton({
   });
 
   return (
-    <div>
-      <Button onClick={handleLikeButton}>
-        {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
-      </Button>
+    <Button onClick={handleLikeButton} css={buttonStyle}>
+      {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       {tempLikeCount}
-    </div>
+    </Button>
   );
 }
+
+const buttonStyle = css`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
