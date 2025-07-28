@@ -1,6 +1,6 @@
 import Hero from './components/Hero/Hero';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import UserFeedbackBox from './components/UserFeedbackBox/UserFeedbackBox';
+import UserFeedbackBox from '../../dashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { useNavigate } from 'react-router-dom';
 import { UserFeedback, FeedbackResponse } from '@/types/feedback.types';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
