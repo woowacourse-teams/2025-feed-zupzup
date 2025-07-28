@@ -12,9 +12,6 @@ public record CreateFeedbackRequest(
         @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
         String content,
 
-        @Schema(description = "이미지 URL", example = "https://bucket.s3.amazonaws.com/posts/uuid-image.jpg")
-        String imageUrl,
-
         @Schema(description = "비밀 피드백 여부", example = "false")
         boolean isSecret,
 
@@ -23,10 +20,9 @@ public record CreateFeedbackRequest(
         String userName
 ) {
 
-    public Feedback toFeedback(final Long placeId, final ImageUrl imageUrl) {
+    public Feedback toFeedback(final Long placeId) {
         return Feedback.builder()
                 .content(content)
-                .imageUrl(imageUrl)
                 .placeId(placeId)
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)

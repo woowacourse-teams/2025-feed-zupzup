@@ -41,9 +41,6 @@ public record AdminFeedbackListResponse(
             @Schema(description = "처리 상태", example = "WATING")
             ProcessStatus status,
 
-            @Schema(description = "이미지 URL", example = "https://bucket.s3.amazonaws.com/posts/uuid-image.jpg")
-            String imageUrl,
-
             @Schema(description = "비밀 피드백 여부", example = "false")
             boolean isSecret,
 
@@ -62,7 +59,6 @@ public record AdminFeedbackListResponse(
                     feedback.getId(),
                     feedback.getContent(),
                     feedback.getStatus(),
-                    feedback.getImageUrl(),
                     feedback.isSecret(),
                     feedback.getLikeCount(),
                     feedback.getUserName(),
