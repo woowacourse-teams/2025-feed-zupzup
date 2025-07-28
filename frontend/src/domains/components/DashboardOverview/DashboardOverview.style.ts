@@ -1,12 +1,6 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const dashboardLayout = css`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
 export const panelCaption = (theme: Theme) => css`
   margin-bottom: 8px;
   color: ${theme.colors.gray[600]};

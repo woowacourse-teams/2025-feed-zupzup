@@ -1,9 +1,8 @@
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
-
-import { useAppTheme } from '@/hooks/useAppTheme';
+import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
+import { dashboardLayout } from '@/domains/user/userDashboard/userDashboard.style';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
 
