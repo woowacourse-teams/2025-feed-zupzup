@@ -45,7 +45,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     void create_success() {
             //given
             final Place place = new Place("테스트장소", "테스트Url");
-            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", "https://example.com/image.jpg", false, "윌슨");
+            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
 
             //when
             final Place savedPlace = placeRepository.save(place);
@@ -55,7 +55,6 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             assertAll(
                     () -> assertThat(response.feedbackId()).isNotNull(),
                     () -> assertThat(response.content()).isEqualTo(request.content()),
-                    () -> assertThat(response.imageUrl()).isEqualTo(request.imageUrl()),
                     () -> assertThat(response.isSecret()).isEqualTo(request.isSecret()),
                     () -> assertThat(response.createdAt()).isNotNull()
             );
