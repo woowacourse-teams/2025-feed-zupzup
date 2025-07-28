@@ -1,12 +1,12 @@
 import Button from '@/components/@commons/Button/Button';
 import EmptyHeartIcon from '@/components/icons/EmptyHeartIcon';
-import FillHeartIcon from '@/components/icons/FillHeartIcon';
 import {
   buttonStyle,
   clickedStyle,
   iconWrapperStyle,
   textStyle,
-} from '@/domains/user/userDashboard/components/CheerButton/CheerButton.style';
+} from '@/domains/components/CheerButton/CheerButton.style';
+import FillHeartIcon from '@/components/icons/FillHeartIcon';
 import { useState } from 'react';
 
 export default function CheerButton() {
