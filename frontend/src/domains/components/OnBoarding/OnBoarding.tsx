@@ -12,7 +12,11 @@ import {
 } from '@/domains/components/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-export default function OnBoarding() {
+interface OnBoardingProps {
+  moveNextStep: () => void;
+}
+
+export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
 
   const placeName = '우아한테크코스 캠퍼스';
@@ -28,13 +32,13 @@ export default function OnBoarding() {
           <p css={question(theme)}>"오늘 캠퍼스 분위기 어떠세요?"</p>
         </div>
         <div css={buttonContainer}>
-          <BasicButton icon='😊' variant='secondary'>
+          <BasicButton icon='😊' variant='secondary' onClick={moveNextStep}>
             <p>좋아요</p>
           </BasicButton>
-          <BasicButton icon='😐' variant='secondary'>
+          <BasicButton icon='😐' variant='secondary' onClick={moveNextStep}>
             <p>보통이에요</p>
           </BasicButton>
-          <BasicButton icon='😔' variant='secondary'>
+          <BasicButton icon='😔' variant='secondary' onClick={moveNextStep}>
             <p>별로에요</p>
           </BasicButton>
         </div>
