@@ -2,6 +2,8 @@ import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxLis
 import CheerButton from '@/domains/user/userDashboard/components/CheerButton/CheerButton';
 import DashboardPanel from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
+import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock';
+import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
 import {
   cheerButtonLayout,
   customCSSexample,
@@ -10,15 +12,13 @@ import {
   panelLayout,
   titleText,
 } from '@/domains/user/userDashboard/userDashboard.style';
-import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock';
-import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
 
 const GROUP_NAME = '우아한테크코스';
 
-export default function Dashboard() {
+export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const theme = useAppTheme();
 

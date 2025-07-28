@@ -3,11 +3,11 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 // import Hero from '@/domains/user/home/components/Hero/Hero';
-import useGetFeedback from '@/domains/admin/dashboard/hooks/useGetFeedback';
+import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
 import AdminFeedbackBox from './components/AdminFeedbackBox';
-import useFeedbackManagement from '../dashboard/hooks/useFeedbackManagement';
+import useFeedbackManagement from '../adminDashboard/hooks/useFeedbackManagement';
 
 export default function AdminHome() {
   const {

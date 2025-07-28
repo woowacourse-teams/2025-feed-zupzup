@@ -1,7 +1,3 @@
-import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import CheerButton from '@/domains/user/userDashboard/components/CheerButton/CheerButton';
-import DashboardPanel from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel';
-import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import {
   cheerButtonLayout,
   customCSSexample,
@@ -9,7 +5,12 @@ import {
   panelCaption,
   panelLayout,
   titleText,
-} from '@/domains/user/userDashboard/userDashboard.style';
+} from '@/domains/admin/adminDashboard/adminDashboard.style';
+import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
+import CheerButton from '@/domains/user/userDashboard/components/CheerButton/CheerButton';
+import DashboardPanel from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel';
+import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
+
 import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock';
 import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -18,7 +19,7 @@ import { getLocalStorage } from '@/utils/localStorage';
 
 const GROUP_NAME = '우아한테크코스';
 
-export default function Dashboard() {
+export default function AdminDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const theme = useAppTheme();
 

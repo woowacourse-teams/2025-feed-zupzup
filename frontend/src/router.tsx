@@ -1,6 +1,7 @@
-import Dashboard from '@/domains/user/userDashboard/userDashboard';
+import AdminDashboard from '@/domains/admin/adminDashboard/adminDashboard';
 import { createBrowserRouter } from 'react-router-dom';
 import Suggestions from './domains/user/suggestions/Suggestions';
+import UserDashboard from '@/domains/user/userDashboard/userDashboard';
 
 export const router = createBrowserRouter([
   {
@@ -9,10 +10,10 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <Dashboard />,
+    element: <AdminDashboard />,
   },
   {
     path: '/dashboard',
-    element: <Dashboard />,
+    element: <UserDashboard />,
   },
 ]);
