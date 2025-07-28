@@ -1,5 +1,5 @@
 import IMG1 from '@/assets/images/user1.png';
-import { userImages } from '@/domains/user/userDashboard/utils/getUserImages';
+import { userImages } from '@/utils/getUserImages';
 import { useEffect, useState } from 'react';
 
 export default function useRandomAvatar() {
