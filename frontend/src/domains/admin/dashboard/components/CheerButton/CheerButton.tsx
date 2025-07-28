@@ -6,7 +6,7 @@ import {
   clickedStyle,
   iconWrapperStyle,
   textStyle,
-} from '@/domains/user/dashboard/components/CheerButton/CheerButton.style';
+} from '@/domains/user/userDashboard/components/CheerButton/CheerButton.style';
 import { useState } from 'react';
 
 export default function CheerButton() {

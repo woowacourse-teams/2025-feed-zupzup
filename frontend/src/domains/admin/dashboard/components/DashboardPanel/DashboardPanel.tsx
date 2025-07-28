@@ -5,7 +5,7 @@ import {
   dotLayout,
   panelContent,
   panelTitle,
-} from '@/domains/user/dashboard/components/DashboardPanel/DashboardPanel.style';
+} from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface DashboardPanelProps {

@@ -3,7 +3,7 @@ import LockIcon from '@/components/icons/LockIcon';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import { userImages } from '@/domains/user/dashboard/utils/getUserImages';
+import { userImages } from '@/domains/user/userDashboard/utils/getUserImages';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { SerializedStyles } from '@emotion/react';

@@ -1,7 +1,7 @@
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import CheerButton from '@/domains/user/dashboard/components/CheerButton/CheerButton';
-import DashboardPanel from '@/domains/user/dashboard/components/DashboardPanel/DashboardPanel';
-import UserFeedbackBox from '@/domains/user/dashboard/components/UserFeedbackBox/UserFeedbackBox';
+import CheerButton from '@/domains/user/userDashboard/components/CheerButton/CheerButton';
+import DashboardPanel from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel';
+import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import {
   cheerButtonLayout,
   customCSSexample,
@@ -9,9 +9,9 @@ import {
   panelCaption,
   panelLayout,
   titleText,
-} from '@/domains/user/dashboard/Dashboard.style';
-import { DASH_PANELS } from '@/domains/user/dashboard/mocks/dashPanels.mock';
-import { FEEDBACK_MOCK } from '@/domains/user/dashboard/mocks/feedback.mock';
+} from '@/domains/user/userDashboard/userDashboard.style';
+import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock';
+import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
