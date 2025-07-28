@@ -1,8 +1,8 @@
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import CheerButton from '@/domains/dashboard/components/CheerButton/CheerButton';
-import DashboardPanel from '@/domains/dashboard/components/DashboardPanel/DashboardPanel';
-import UserFeedbackBox from '@/domains/dashboard/components/UserFeedbackBox/UserFeedbackBox';
+import CheerButton from '@/domains/user/dashboard/components/CheerButton/CheerButton';
+import DashboardPanel from '@/domains/user/dashboard/components/DashboardPanel/DashboardPanel';
+import UserFeedbackBox from '@/domains/user/dashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { Theme } from '@/theme';
