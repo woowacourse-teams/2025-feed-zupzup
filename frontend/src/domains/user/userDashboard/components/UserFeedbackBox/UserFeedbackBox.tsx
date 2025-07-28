@@ -1,21 +1,14 @@
-import IMG1 from '@/assets/images/user1.png';
 import LockIcon from '@/components/icons/LockIcon';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader';
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import { userImages } from '@/domains/user/userDashboard/utils/getUserImages';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { useEffect, useState } from 'react';
-import {
-  imgContainer,
-  imgLayout,
-  secretText,
-  userNameStyle,
-} from './UserFeedbackBox.styles';
+import { secretText } from './UserFeedbackBox.styles';
 
 interface UserFeedbackBox {
-  userName?: string;
+  userName: string;
   type: FeedbackStatusType;
   content: string;
   isLiked: boolean;
@@ -36,19 +29,10 @@ export default function UserFeedbackBox({
   likeCount,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
-  const [userImage, setUserImage] = useState(IMG1);
-
-  useEffect(() => {
-    const random = Math.floor(Math.random() * userImages.length);
-    setUserImage(userImages[random]);
-  }, []);
 
   return (
     <FeedbackBoxBackGround type={type}>
-      <div css={imgContainer}>
-        <img src={userImage} alt='user icon' css={imgLayout} />
-        <p css={userNameStyle(theme, type)}>{userName}</p>
-      </div>
+      <FeedbackBoxHeader userName={userName} type={type} />
       {isSecret ? (
         <div css={secretText(theme)}>
           <p>비밀글입니다.</p>
