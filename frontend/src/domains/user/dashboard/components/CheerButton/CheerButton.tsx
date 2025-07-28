@@ -1,7 +1,12 @@
 import Button from '@/components/@commons/Button/Button';
 import EmptyHeartIcon from '@/components/icons/EmptyHeartIcon';
 import FillHeartIcon from '@/components/icons/FillHeartIcon';
-import { css } from '@emotion/react';
+import {
+  buttonStyle,
+  clickedStyle,
+  iconWrapperStyle,
+  textStyle,
+} from '@/domains/user/dashboard/components/CheerButton/CheerButton.style';
 import { useState } from 'react';
 
 export default function CheerButton() {
@@ -25,42 +30,3 @@ export default function CheerButton() {
     </Button>
   );
 }
-
-const buttonStyle = css`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 12px;
-  background-color: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 9999px;
-`;
-
-const textStyle = css`
-  font-size: 14px;
-  color: #4a4a4a;
-`;
-
-const iconWrapperStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const clickedStyle = css`
-  animation: pop 0.3s ease;
-
-  @keyframes pop {
-    0% {
-      transform: scale(1);
-    }
-
-    50% {
-      transform: scale(1.3);
-    }
-
-    100% {
-      transform: scale(1);
-    }
-  }
-`;
