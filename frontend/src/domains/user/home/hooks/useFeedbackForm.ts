@@ -13,6 +13,7 @@ export interface UseFeedbackFormReturn {
   resetForm: () => void;
 
   canSubmit: boolean;
+  handleSubmit: () => void;
 }
 
 export function useFeedbackForm(): UseFeedbackFormReturn {
@@ -64,6 +65,10 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
 
   const canSubmit = feedback.trim().length > 0;
 
+  const handleSubmit = useCallback(() => {
+    console.log('submit', feedback, username, isLocked, currentAvatar);
+  }, [feedback, username, isLocked, currentAvatar]);
+
   return {
     feedback,
     username,
@@ -76,5 +81,6 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
     resetForm,
 
     canSubmit,
+    handleSubmit,
   };
 }

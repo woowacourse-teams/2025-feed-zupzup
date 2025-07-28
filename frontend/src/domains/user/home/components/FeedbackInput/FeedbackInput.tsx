@@ -22,6 +22,7 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
     handleRandomChange,
     handleLockToggle,
     canSubmit,
+    handleSubmit,
   } = useFeedbackForm();
 
   return (
@@ -73,6 +74,7 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
             color={canSubmit ? theme.colors.white[100] : theme.colors.gray[500]}
           />
         }
+        onClick={handleSubmit}
       >
         피드백 제출
       </BasicButton>
