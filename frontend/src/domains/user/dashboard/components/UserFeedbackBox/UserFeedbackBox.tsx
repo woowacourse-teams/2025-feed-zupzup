@@ -5,11 +5,15 @@ import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBo
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { userImages } from '@/domains/user/dashboard/utils/getUserImages';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { Theme } from '@/theme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { css, SerializedStyles } from '@emotion/react';
+import { SerializedStyles } from '@emotion/react';
 import { useEffect, useState } from 'react';
-import { secretText } from './UserFeedbackBox.styles';
+import {
+  imgContainer,
+  imgLayout,
+  secretText,
+  userNameStyle,
+} from './UserFeedbackBox.styles';
 
 interface UserFeedbackBox {
   userName?: string;
@@ -68,21 +72,3 @@ export default function UserFeedbackBox({
     </FeedbackBoxBackGround>
   );
 }
-
-const imgContainer = css`
-  display: flex;
-  align-items: center;
-  gap: 14px;
-`;
-
-const imgLayout = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-`;
-
-const userNameStyle = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.caption}
-`;
