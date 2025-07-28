@@ -42,6 +42,7 @@ const userFeedbackWaiting = {
   isSecret: false,
   createdAt: '2024-05-20',
   customCSS: null,
+  userName: '익명의 사용자',
 } as const;
 
 const userFeedbackConfirmed = {
@@ -55,6 +56,7 @@ const userFeedbackConfirmed = {
   isSecret: false,
   createdAt: '2024-05-19',
   customCSS: null,
+  userName: '김개발',
 } as const;
 
 const adminFeedbackWaiting = {
