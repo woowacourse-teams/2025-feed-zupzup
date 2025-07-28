@@ -2,17 +2,14 @@ import AlertModal from '@/components/AlertModal/AlertModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
-import Hero from '@/domains/user/home/components/Hero/Hero';
-import { useNavigate } from 'react-router-dom';
-import AdminFeedbackBox from './components/AdminFeedbackBox';
+// import Hero from '@/domains/user/home/components/Hero/Hero';
 import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
+import AdminFeedbackBox from './components/AdminFeedbackBox';
 import useFeedbackManagement from './hooks/useFeedbackManagement';
 
 export default function AdminHome() {
-  const navigate = useNavigate();
-
   const {
     items: originalFeedbacks,
     fetchMore,
@@ -46,11 +43,6 @@ export default function AdminHome() {
 
   return (
     <section>
-      <Hero
-        onSuggestClick={() => navigate('/suggestion')}
-        title='우테코'
-        isUserPage={false}
-      />
       <FeedbackBoxList>
         {feedbacks.map((feedback: AdminFeedback) => (
           <AdminFeedbackBox

@@ -7,7 +7,6 @@ interface FeedbackBoxFooterProps {
   likeCount: number;
   isLiked?: boolean;
   createdAt?: string;
-  userName?: string;
   isSecret?: boolean;
   feedbackId: number;
 }
@@ -16,10 +15,10 @@ export default function FeedbackBoxFooter({
   likeCount,
   isLiked,
   createdAt,
-  userName,
   isSecret,
   feedbackId,
 }: FeedbackBoxFooterProps) {
+  console.log('props 오류 제거용', createdAt);
   const theme = useAppTheme();
 
   return (
