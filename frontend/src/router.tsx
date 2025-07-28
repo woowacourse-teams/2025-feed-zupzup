@@ -1,5 +1,5 @@
-import AdminDashboard from '@/domains/admin/adminDashboard/adminDashboard';
-import UserDashboard from '@/domains/user/userDashboard/userDashboard';
+import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
+import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
 import Suggestions from './domains/user/suggestions/Suggestions';
 
