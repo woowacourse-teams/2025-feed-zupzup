@@ -12,10 +12,10 @@ export const container = css`
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 10%);
 `;
 
-export const tagContainer = css`
-  display: flex;
-  gap: 14px;
-`;
+// export const tagContainer = css`
+//   display: flex;
+//   gap: 14px;
+// `;
 
 export const secretText = (theme: Theme) => css`
   display: flex;
