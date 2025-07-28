@@ -1,13 +1,12 @@
-import { useAppTheme } from '@/hooks/useAppTheme';
-import CalendarIcon from '@/components/icons/CalendarIcon';
+import ClockIcon from '@/components/icons/clockIcon';
 import LikeButton from '@/domains/components/LikeButton/LikeButton';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { calendar, container, content, day } from './FeedbackBoxFooter.styles';
-import formatDate from '@/utils/formatDate';
 
 interface FeedbackBoxFooterProps {
   likeCount: number;
   isLiked?: boolean;
-  createdAt: string;
+  createdAt?: string;
   userName?: string;
   isSecret?: boolean;
   feedbackId: number;
@@ -26,11 +25,9 @@ export default function FeedbackBoxFooter({
   return (
     <div css={container}>
       <div css={calendar(theme)}>
-        {userName}
-        <p>
-          <CalendarIcon />
-        </p>
-        <p css={day}>{formatDate(createdAt)}</p>
+        <ClockIcon />
+        <p css={day(theme)}>2분전</p>
+        {/* <p css={day}>{formatDate(createdAt)}</p> */}
       </div>
       {!isSecret && (
         <div css={content(theme)}>
