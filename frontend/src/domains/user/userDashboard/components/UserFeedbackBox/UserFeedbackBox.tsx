@@ -6,7 +6,6 @@ import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { userImages } from '@/domains/user/userDashboard/utils/getUserImages';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { SerializedStyles } from '@emotion/react';
 import { useEffect, useState } from 'react';
 import {
   imgContainer,
@@ -24,7 +23,6 @@ interface UserFeedbackBox {
   createdAt: string;
   feedbackId: number;
   likeCount: number;
-  customCSS: SerializedStyles | null;
 }
 
 export default function UserFeedbackBox({
@@ -36,7 +34,6 @@ export default function UserFeedbackBox({
   createdAt,
   feedbackId,
   likeCount,
-  customCSS,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
   const [userImage, setUserImage] = useState(IMG1);
@@ -47,10 +44,10 @@ export default function UserFeedbackBox({
   }, []);
 
   return (
-    <FeedbackBoxBackGround type={type} customCSS={customCSS}>
+    <FeedbackBoxBackGround type={type}>
       <div css={imgContainer}>
         <img src={userImage} alt='user icon' css={imgLayout} />
-        <p css={userNameStyle(theme)}>{userName}</p>
+        <p css={userNameStyle(theme, type)}>{userName}</p>
       </div>
       {isSecret ? (
         <div css={secretText(theme)}>
@@ -63,6 +60,7 @@ export default function UserFeedbackBox({
         <FeedbackText type={type} text={content} />
       )}
       <FeedbackBoxFooter
+        type={type}
         isLiked={isLiked}
         createdAt={createdAt}
         isSecret={isSecret}

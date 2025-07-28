@@ -1,4 +1,5 @@
 import { Theme } from '@/theme';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { css } from '@emotion/react';
 
 export const secretText = (theme: Theme) => css`
@@ -25,6 +26,12 @@ export const imgLayout = css`
   height: 30px;
 `;
 
-export const userNameStyle = (theme: Theme) => css`
+export const userNameStyle = (theme: Theme, type: FeedbackStatusType) => css`
   ${theme.typography.BMHANNAPro.caption}
+
+  line-height: 20px;
+
+  ${type === 'WAITING'
+    ? `color : ${theme.colors.black}`
+    : `color : ${theme.colors.gray[300]}`}
 `;

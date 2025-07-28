@@ -2,7 +2,7 @@ export const FEEDBACK_MOCK = [
   {
     userName: '김코딩',
     feedbackId: 1,
-    status: 'COMPLETED',
+    status: 'WAITING',
     content: '다음에는 점심 메뉴를 다양하게 해주세요.',
     createdAt: '2024-06-01T10:00:00Z',
     isSecret: false,

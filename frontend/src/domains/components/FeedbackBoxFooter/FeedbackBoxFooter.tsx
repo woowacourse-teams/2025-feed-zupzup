@@ -1,7 +1,15 @@
 import ClockIcon from '@/components/icons/clockIcon';
 import LikeButton from '@/domains/components/LikeButton/LikeButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { calendar, container, content, day } from './FeedbackBoxFooter.styles';
+import {
+  calendar,
+  confirmedText,
+  container,
+  content,
+  day,
+} from './FeedbackBoxFooter.styles';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+import Tag from '@/components/Tag/Tag';
 
 interface FeedbackBoxFooterProps {
   likeCount: number;
@@ -9,6 +17,7 @@ interface FeedbackBoxFooterProps {
   createdAt?: string;
   isSecret?: boolean;
   feedbackId: number;
+  type: FeedbackStatusType;
 }
 
 export default function FeedbackBoxFooter({
@@ -17,6 +26,7 @@ export default function FeedbackBoxFooter({
   createdAt,
   isSecret,
   feedbackId,
+  type,
 }: FeedbackBoxFooterProps) {
   console.log('props 오류 제거용', createdAt);
   const theme = useAppTheme();
@@ -30,6 +40,11 @@ export default function FeedbackBoxFooter({
       </div>
       {!isSecret && (
         <div css={content(theme)}>
+          {type === 'WAITING' ? (
+            <Tag>👀 검토중</Tag>
+          ) : (
+            <Tag customCSS={confirmedText(theme)}> ✓ 반영됨</Tag>
+          )}
           <LikeButton
             like={isLiked}
             feedbackId={feedbackId}

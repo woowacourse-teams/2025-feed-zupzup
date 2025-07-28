@@ -28,3 +28,8 @@ export const content = (theme: Theme) => css`
 
   ${theme.typography.inter.small}
 `;
+
+export const confirmedText = (theme: Theme) => css`
+  background-color: ${theme.colors.gray[200]}66;
+  border: 1px solid ${theme.colors.gray[300]};
+`;
