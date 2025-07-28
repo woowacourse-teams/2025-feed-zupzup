@@ -1,13 +1,23 @@
 import AlertModal from '@/components/AlertModal/AlertModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import {
+  dashboardLayout,
+  titleText,
+} from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 import useFeedbackManagement from '@/domains/admin/adminDashboard/hooks/useFeedbackManagement';
-import { FEEDBACK_MOCK } from '@/domains/admin/adminDashboard/mocks/adminFeedback.mock';
+import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
+import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
+const GROUP_NAME = '우아한테크코스';
+
 export default function AdminDashboard() {
+  const theme = useAppTheme();
+
   // const {
   //   items: originalFeedbacks,
   //   fetchMore,
@@ -40,7 +50,9 @@ export default function AdminDashboard() {
   // useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
-    <section>
+    <section css={dashboardLayout}>
+      <p css={titleText(theme)}>{GROUP_NAME}</p>
+      <DashboardOverview />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox
