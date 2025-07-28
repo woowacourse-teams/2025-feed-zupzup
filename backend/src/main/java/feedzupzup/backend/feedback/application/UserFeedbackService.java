@@ -4,12 +4,15 @@ import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
+import feedzupzup.backend.feedback.domain.Feedbacks;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -52,5 +55,13 @@ public class UserFeedbackService {
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
+    }
+
+    public StatisticResponse calculateStatistic(final Long placeId, final int daysAgo) {
+        final LocalDate targetDate = LocalDate.now().minusDays(daysAgo);
+        final Feedbacks feedbacks = new Feedbacks(
+                feedBackRepository.findByPlaceIdAndCreatedAt_DateAfter(placeId, targetDate)
+        );
+        return StatisticResponse.of(feedbacks);
     }
 }

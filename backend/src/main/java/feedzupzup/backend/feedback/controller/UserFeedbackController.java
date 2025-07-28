@@ -6,6 +6,7 @@ import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,17 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<LikeResponse> unlike(final Long feedbackId) {
         final LikeResponse response = feedbackLikeService.unLike(feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<StatisticResponse> getStatistic(
+            final Long placeId,
+            final int requestDate
+    ) {
+        final StatisticResponse response = userFeedbackService.calculateStatistic(
+                placeId, requestDate
+        );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

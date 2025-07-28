@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -21,4 +22,7 @@ public interface FeedBackRepository extends JpaRepository<Feedback, Long> {
     );
 
     List<Feedback> findByIdIn(Collection<Long> ids);
+
+    List<Feedback> findByPlaceIdAndCreatedAt_DateAfter(Long placeId, LocalDate targetDate);
+
 }

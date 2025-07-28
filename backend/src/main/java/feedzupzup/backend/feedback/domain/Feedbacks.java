@@ -11,6 +11,11 @@ public class Feedbacks {
         this.feedbacks = new ArrayList<>(feedbacks);
     }
 
+    public double calculateReflectionRate() {
+        final double value = (double) calculateConfirmedCount() / feedbacks.size() * 100.0;
+        return Math.round(value * 100.0) / 100.0;
+    }
+
     public int calculateConfirmedCount() {
         return (int) feedbacks.stream()
                 .filter(Feedback::isConfirmed)
@@ -23,7 +28,7 @@ public class Feedbacks {
                 .count();
     }
 
-    public int getFeedbacksSize() {
+    public int getSize() {
         return feedbacks.size();
     }
 }
