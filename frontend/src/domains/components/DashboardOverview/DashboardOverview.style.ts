@@ -26,3 +26,9 @@ export const cheerButtonLayout = css`
   width: 100%;
   margin: 32px 0;
 `;
+
+export const titleText = (theme: Theme) => css`
+  ${theme.typography.bmHannaPro.bodyRegular};
+
+  font-weight: 900;
+`;

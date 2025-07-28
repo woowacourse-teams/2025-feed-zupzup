@@ -2,54 +2,51 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
-import {
-  dashboardLayout,
-  titleText,
-} from '@/domains/user/userDashboard/UserDashboard.style';
+
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
 
-const GROUP_NAME = '우아한테크코스';
-
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
-  const theme = useAppTheme();
 
   // const {
-  //   items: originalFeedbacks,
+  //   items: feedbacks,
   //   fetchMore,
   //   hasNext,
   //   loading,
   // } = useInfinityScroll<
-  //   AdminFeedback,
+  //   UserFeedback,
   //   'feedbacks',
-  //   FeedbackResponse<AdminFeedback>
+  //   FeedbackResponse<UserFeedback>
   // >({
-  //   url: '/admin/places/1/feedbacks',
+  //   url: '/places/1/feedbacks',
   //   key: 'feedbacks',
-  // });
-
-  // const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-  //   originalFeedbacks,
-  // });
-
-  // const {
-  //   modalState,
-  //   openFeedbackCompleteModal,
-  //   openFeedbackDeleteModal,
-  //   closeModal,
-  //   handleModalAction,
-  // } = useAdminModal({
-  //   onConfirmFeedback: confirmFeedback,
-  //   onDeleteFeedback: deleteFeedback,
   // });
 
   // useGetFeedback({ fetchMore, hasNext, loading });
 
+  // const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
+
+  // const storageHighlightedId = localStorage.getItem('highlightedId');
+
+  // const [highlightedId, setHighLightedId] = useState<number | null>(null);
+
+  // useEffect(() => {
+  //   if (!storageHighlightedId) return;
+
+  //   setHighLightedId(Number(storageHighlightedId));
+
+  //   const timeout = setTimeout(() => {
+  //     setHighLightedId(null);
+  //     localStorage.removeItem('highlightedId');
+  //   }, 2000);
+
+  //   return () => clearTimeout(timeout);
+  // }, []);
+
   return (
     <div css={dashboardLayout}>
-      <p css={titleText(theme)}>{GROUP_NAME}</p>
       <DashboardOverview />
       <div>
         <FeedbackBoxList>
