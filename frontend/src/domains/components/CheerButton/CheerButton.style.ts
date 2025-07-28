@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export const buttonStyle = css`
+export const cheerButtonStyle = css`
   display: flex;
   align-items: center;
   gap: 12px;

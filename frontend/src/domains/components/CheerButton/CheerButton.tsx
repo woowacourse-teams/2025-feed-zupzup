@@ -1,12 +1,12 @@
 import Button from '@/components/@commons/Button/Button';
 import EmptyHeartIcon from '@/components/icons/EmptyHeartIcon';
+import FillHeartIcon from '@/components/icons/FillHeartIcon';
 import {
-  buttonStyle,
+  cheerButtonStyle,
   clickedStyle,
   iconWrapperStyle,
   textStyle,
 } from '@/domains/components/CheerButton/CheerButton.style';
-import FillHeartIcon from '@/components/icons/FillHeartIcon';
 import { useState } from 'react';
 
 export default function CheerButton() {
@@ -22,7 +22,7 @@ export default function CheerButton() {
   };
 
   return (
-    <Button onClick={handleClick} css={buttonStyle}>
+    <Button onClick={handleClick} css={cheerButtonStyle}>
       <span css={[iconWrapperStyle, animate && clickedStyle]}>
         {clicked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       </span>

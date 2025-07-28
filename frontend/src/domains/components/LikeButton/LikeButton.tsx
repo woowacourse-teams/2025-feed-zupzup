@@ -1,8 +1,8 @@
-import { css } from '@emotion/react';
-import EmptyHeartIcon from '../../../components/icons/EmptyHeartIcon';
-import FillHeartIcon from '../../../components/icons/FillHeartIcon';
 import Button from '@/components/@commons/Button/Button';
 import useLikeButtonManager from '@/domains/hooks/useLikeButtonManager';
+import EmptyHeartIcon from '../../../components/icons/EmptyHeartIcon';
+import FillHeartIcon from '../../../components/icons/FillHeartIcon';
+import { likeButton } from '@/domains/components/LikeButton/LikeButton.style';
 
 interface LikeButtonProps {
   like: boolean | undefined;
@@ -22,15 +22,9 @@ export default function LikeButton({
   });
 
   return (
-    <Button onClick={handleLikeButton} css={buttonStyle}>
+    <Button onClick={handleLikeButton} css={likeButton}>
       {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       {tempLikeCount}
     </Button>
   );
 }
-
-const buttonStyle = css`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
