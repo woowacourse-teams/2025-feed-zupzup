@@ -174,6 +174,13 @@ export const typography = {
     },
   },
   BMHANNAPro: {
+    caption: {
+      fontFamily: 'BMHANNAPro, sans-serif',
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
     small: {
       fontFamily: 'BMHANNAPro, sans-serif',
       fontWeight: 400,
