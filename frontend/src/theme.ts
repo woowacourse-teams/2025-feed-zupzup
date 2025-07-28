@@ -47,6 +47,10 @@ export const colors = {
   red: {
     100: '#FB2C36',
   },
+
+  purple: {
+    100: '#7356FF',
+  },
 };
 
 const fontStyle = 'Pretendard-Regular';
