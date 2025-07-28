@@ -7,6 +7,7 @@ export default function Home() {
   const { currentStep, moveNextStep, totalStep } = useProgressStep({
     totalStep: 2,
   });
+
   return (
     <section css={container}>
       <ProgressBar currentStep={currentStep} totalStep={totalStep} />
