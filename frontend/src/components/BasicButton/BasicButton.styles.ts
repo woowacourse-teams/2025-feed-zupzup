@@ -12,14 +12,14 @@ export const basicButton = (
   gap: 14px;
   width: ${typeof width === 'number' ? `${width}px` : width || '100%'};
   height: 54px;
-  padding: 12px 16px;
+  padding: 24px 28px;
   background-color: ${variant === 'primary'
-    ? theme.colors.yellow[200]
+    ? theme.colors.purple[100]
     : theme.colors.white[100]} !important;
   border: ${variant === 'secondary'
     ? `1px solid ${theme.colors.gray[200]}`
     : 'none'};
-  border-radius: 14px;
+  border-radius: 24px;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
@@ -42,11 +42,9 @@ export const basicButtonText = (
   variant: 'primary' | 'secondary' = 'primary'
 ) => css`
   margin: 0;
-  ${theme.typography.inter.caption};
+  color: ${variant === 'primary' ? theme.colors.white[100] : 'black'};
 
-  color: ${variant === 'primary'
-    ? theme.colors.black[100]
-    : theme.colors.darkGray[100]};
+  ${theme.typography.inter.small};
 `;
 
 export const basicButtonIcon = css`
