@@ -1,87 +1,82 @@
-import {
-  cheerButtonLayout,
-  customCSSexample,
-  dashboardLayout,
-  panelCaption,
-  panelLayout,
-  titleText,
-} from '@/domains/admin/adminDashboard/adminDashboard.style';
+import AlertModal from '@/components/AlertModal/AlertModal';
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
+import useFeedbackManagement from '@/domains/admin/adminDashboard/hooks/useFeedbackManagement';
+import { FEEDBACK_MOCK } from '@/domains/admin/adminDashboard/mocks/adminFeedback.mock';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import CheerButton from '@/domains/user/userDashboard/components/CheerButton/CheerButton';
-import DashboardPanel from '@/domains/user/userDashboard/components/DashboardPanel/DashboardPanel';
-import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
-
-import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock';
-import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
-import { useAppTheme } from '@/hooks/useAppTheme';
+import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { getLocalStorage } from '@/utils/localStorage';
-
-const GROUP_NAME = '우아한테크코스';
 
 export default function AdminDashboard() {
-  const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
-  const theme = useAppTheme();
-
   // const {
-  //   items: feedbacks,
+  //   items: originalFeedbacks,
   //   fetchMore,
   //   hasNext,
   //   loading,
   // } = useInfinityScroll<
-  //   UserFeedback,
+  //   AdminFeedback,
   //   'feedbacks',
-  //   FeedbackResponse<UserFeedback>
+  //   FeedbackResponse<AdminFeedback>
   // >({
-  //   url: '/places/1/feedbacks',
+  //   url: '/admin/places/1/feedbacks',
   //   key: 'feedbacks',
   // });
+
+  const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
+    originalFeedbacks: FEEDBACK_MOCK,
+  });
+
+  const {
+    modalState,
+    openFeedbackCompleteModal,
+    openFeedbackDeleteModal,
+    closeModal,
+    handleModalAction,
+  } = useAdminModal({
+    onConfirmFeedback: confirmFeedback,
+    onDeleteFeedback: deleteFeedback,
+  });
 
   // useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
-    <div css={dashboardLayout}>
-      <p css={titleText(theme)}>{GROUP_NAME}</p>
-      <div>
-        <p css={panelCaption(theme)}>일주일 간의 피드백</p>
-        <div css={panelLayout}>
-          {DASH_PANELS.map((panel, idx) => (
-            <DashboardPanel
-              key={idx}
-              title={panel.title}
-              content={panel.content}
-              caption={panel.caption}
-            />
-          ))}
-        </div>
-        <div css={cheerButtonLayout}>
-          <CheerButton />
-        </div>
+    <section>
+      <FeedbackBoxList>
+        {feedbacks.map((feedback) => (
+          <AdminFeedbackBox
+            key={feedback.feedbackId}
+            feedbackId={feedback.feedbackId}
+            onConfirm={openFeedbackCompleteModal}
+            onDelete={openFeedbackDeleteModal}
+            type={feedback.status as FeedbackStatusType}
+            content={feedback.content}
+            createdAt={feedback.createdAt}
+            isSecret={feedback.isSecret}
+            likeCount={feedback.likeCount}
+            userName={feedback.userName}
+          />
+        ))}
+        {/* {loading && <div>로딩중...</div>} */}
+      </FeedbackBoxList>
+      {/* {hasNext && <div id='scroll-observer'></div>} */}
 
-        <FeedbackBoxList>
-          {FEEDBACK_MOCK.map((feedback) => (
-            <UserFeedbackBox
-              userName={feedback.userName}
-              key={feedback.feedbackId}
-              type={feedback.status as FeedbackStatusType}
-              content={feedback.content}
-              createdAt={feedback.createdAt}
-              isLiked={getFeedbackIsLike(likedFeedbackIds, feedback.feedbackId)}
-              isSecret={feedback.isSecret}
-              feedbackId={feedback.feedbackId}
-              likeCount={feedback.likeCount}
-              customCSS={customCSSexample}
-            />
-          ))}
-          {/* {loading && <div>로딩중...</div>} */}
-        </FeedbackBoxList>
-      </div>
-    </div>
+      {modalState.type === 'delete' && (
+        <ConfirmModal
+          title='삭제하시겠습니까?'
+          message='삭제한 건의는 되돌릴 수 없습니다.'
+          isOpen={true}
+          onClose={closeModal}
+          onConfirm={handleModalAction}
+        />
+      )}
+      {modalState.type === 'confirm' && (
+        <AlertModal
+          title='확인하시겠습니까?'
+          isOpen={true}
+          onClose={closeModal}
+          onConfirm={handleModalAction}
+        />
+      )}
+    </section>
   );
-}
-
-function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
-  const isLiked = likedFeedbackIds?.includes(feedbackId);
-
-  return !!isLiked;
 }

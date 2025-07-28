@@ -32,7 +32,3 @@ export const cheerButtonLayout = css`
   width: 100%;
   margin: 32px 0;
 `;
-
-export const customCSSexample = css`
-  display: flex;
-`;

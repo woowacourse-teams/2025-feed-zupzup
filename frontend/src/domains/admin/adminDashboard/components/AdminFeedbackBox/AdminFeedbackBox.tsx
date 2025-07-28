@@ -2,17 +2,15 @@ import IconButton from '@/components/IconButton/IconButton';
 import CheckIcon from '@/components/icons/CheckIcon';
 import LockIcon from '@/components/icons/LockIcon';
 import TrashCanIcon from '@/components/icons/TrashCanIcon';
-import CategoryTag from '@/domains/components/CategoryTag/CategoryTag';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
-import FeedbackImage from '@/domains/components/FeedbackImage/FeedbackImage';
+import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader';
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import StatusTag from '@/domains/components/StatusTag/StatusTag';
-import { AdminFeedback } from '@/types/feedback.types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
+import { UserFeedback } from '@/types/feedback.types';
 
-interface AdminFeedbackBox extends Omit<AdminFeedback, 'status'> {
+interface AdminFeedbackBox extends Omit<UserFeedback, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
   feedbackId: number;
   onConfirm: (feedbackId: number) => void;
@@ -26,19 +24,16 @@ export default function AdminFeedbackBox({
   onDelete,
   content,
   isSecret,
-  imageUrl,
   likeCount,
   userName,
   createdAt,
 }: AdminFeedbackBox) {
   console.log(userName);
+
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
-        <div css={iconWrap}>
-          <CategoryTag text='맛' type={type} />
-          <StatusTag type={type} />
-        </div>
+        <FeedbackBoxHeader userName={userName} type={type} />
         <div css={iconWrap}>
           {type === 'WAITING' && (
             <IconButton
@@ -60,8 +55,8 @@ export default function AdminFeedbackBox({
           </p>
         )}
       </div>
-      {imageUrl && <FeedbackImage src={imageUrl} />}
       <FeedbackBoxFooter
+        type={type}
         likeCount={likeCount}
         createdAt={createdAt}
         feedbackId={feedbackId}

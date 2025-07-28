@@ -4,7 +4,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import FeedbackBoxList from './FeedbackBoxList';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
-import AdminFeedbackBox from '@/domains/admin/home/components/AdminFeedbackBox';
+import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 
 const meta: Meta<typeof FeedbackBoxList> = {
   title: 'Common/FeedbackBoxList',

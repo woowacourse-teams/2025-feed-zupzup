@@ -6,12 +6,11 @@ import { DASH_PANELS } from '@/domains/user/userDashboard/mocks/dashPanels.mock'
 import { FEEDBACK_MOCK } from '@/domains/user/userDashboard/mocks/userFeedback.mock';
 import {
   cheerButtonLayout,
-  customCSSexample,
   dashboardLayout,
   panelCaption,
   panelLayout,
   titleText,
-} from '@/domains/user/userDashboard/userDashboard.style';
+} from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
@@ -84,7 +83,6 @@ export default function UserDashboard() {
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
-              customCSS={customCSSexample}
             />
           ))}
           {/* {loading && <div>로딩중...</div>} */}

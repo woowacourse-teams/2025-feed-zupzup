@@ -6,7 +6,7 @@ import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
-import AdminFeedbackBox from './components/AdminFeedbackBox';
+import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 import useFeedbackManagement from '../adminDashboard/hooks/useFeedbackManagement';
 
 export default function AdminHome() {
