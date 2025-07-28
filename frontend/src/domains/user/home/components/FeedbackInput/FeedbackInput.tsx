@@ -4,6 +4,8 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
 import * as styles from './FeedbackInput.styles';
+import BasicButton from '@/components/BasicButton/BasicButton';
+import SendIcon from '@/components/icons/SendIcon';
 
 export interface FeedbackInputProps {
   className?: string;
@@ -62,6 +64,18 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
           />
         </div>
       </div>
+      <BasicButton
+        type='submit'
+        disabled={!canSubmit}
+        variant={canSubmit ? 'primary' : 'disabled'}
+        icon={
+          <SendIcon
+            color={canSubmit ? theme.colors.white[100] : theme.colors.gray[500]}
+          />
+        }
+      >
+        피드백 제출
+      </BasicButton>
     </div>
   );
 }
