@@ -4,7 +4,7 @@ import { Theme } from '@/theme';
 export const basicButton = (
   theme: Theme,
   width?: string | number,
-  variant: 'primary' | 'secondary' = 'primary'
+  variant: 'primary' | 'secondary' | 'disabled' = 'primary'
 ) => css`
   display: flex;
   justify-content: center;
@@ -15,7 +15,9 @@ export const basicButton = (
   padding: 24px 28px;
   background-color: ${variant === 'primary'
     ? theme.colors.purple[100]
-    : theme.colors.white[100]} !important;
+    : variant === 'disabled'
+      ? theme.colors.gray[100]
+      : theme.colors.white[100]} !important;
   border: ${variant === 'secondary'
     ? `1px solid ${theme.colors.gray[200]}`
     : 'none'};
@@ -39,10 +41,14 @@ export const basicButton = (
 
 export const basicButtonText = (
   theme: Theme,
-  variant: 'primary' | 'secondary' = 'primary'
+  variant: 'primary' | 'secondary' | 'disabled' = 'primary'
 ) => css`
   margin: 0;
-  color: ${variant === 'primary' ? theme.colors.white[100] : 'black'};
+  color: ${variant === 'primary'
+    ? theme.colors.white[100]
+    : variant === 'disabled'
+      ? theme.colors.gray[500]
+      : 'black'};
 
   ${theme.typography.inter.small};
 `;
