@@ -52,7 +52,7 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
   }, [username, isLocked]);
 
   const handleLockToggle = useCallback(() => {
-    setIsLocked(!isLocked as typeof isLocked);
+    setIsLocked((prev) => !prev as typeof isLocked);
   }, []);
 
   const resetForm = useCallback(() => {
