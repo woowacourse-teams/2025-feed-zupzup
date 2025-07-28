@@ -64,10 +64,18 @@ export const typography = {
     letterSpacing: 0,
   },
   bmHannaPro: {
-    fontFamily: 'BM HANNA Pro OTF, sans-serif',
-    fontSize: 90,
-    lineHeight: 'auto',
-    letterSpacing: 0,
+    h1: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 90,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyBold: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 26,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
   },
   inter: {
     h1: {
