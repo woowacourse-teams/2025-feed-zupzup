@@ -71,4 +71,12 @@ public class Feedback extends BaseTimeEntity {
         }
         this.likeCount = likeCount;
     }
+
+    public boolean isConfirmed() {
+        return this.status == ProcessStatus.CONFIRMED;
+    }
+
+    public boolean isWaiting() {
+        return this.status == ProcessStatus.WAITING;
+    }
 }
