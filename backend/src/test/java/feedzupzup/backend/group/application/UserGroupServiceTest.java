@@ -7,16 +7,16 @@ import feedzupzup.backend.feedback.application.ServiceIntegrationHelper;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.group.domain.Group;
 import feedzupzup.backend.group.domain.GroupRepository;
-import feedzupzup.backend.group.dto.GroupResponse;
+import feedzupzup.backend.group.dto.UserGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-class GroupServiceTest extends ServiceIntegrationHelper {
+class UserGroupServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
-    private GroupService groupService;
+    private UserGroupService userGroupService;
 
     @Autowired
     private GroupRepository groupRepository;
@@ -33,7 +33,7 @@ class GroupServiceTest extends ServiceIntegrationHelper {
             final Group savedGroup = groupRepository.save(group);
 
             // when
-            final GroupResponse response = groupService.getGroupById(savedGroup.getId());
+            final UserGroupResponse response = userGroupService.getGroupById(savedGroup.getId());
 
             // then
             assertThat(response.groupName()).isEqualTo("우아한테크코스");
@@ -46,7 +46,7 @@ class GroupServiceTest extends ServiceIntegrationHelper {
             final Long nonExistentGroupId = 999L;
 
             // when & then
-            assertThatThrownBy(() -> groupService.getGroupById(nonExistentGroupId))
+            assertThatThrownBy(() -> userGroupService.getGroupById(nonExistentGroupId))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessage("해당 ID(id = " + nonExistentGroupId + ")인 그룹을 찾을 수 없습니다.");
         }
