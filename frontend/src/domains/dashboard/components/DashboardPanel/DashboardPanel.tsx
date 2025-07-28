@@ -56,7 +56,7 @@ const panelTitle = (theme: Theme) => css`
 `;
 
 const panelContent = (theme: Theme) => css`
-  ${theme.typography.bmHannaPro.bodyBold};
+  ${theme.typography.bmHannaPro.bodyLarge};
 
   font-weight: 900;
   color: ${theme.colors.black};

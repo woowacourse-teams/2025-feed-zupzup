@@ -70,9 +70,15 @@ export const typography = {
       lineHeight: 'auto',
       letterSpacing: 0,
     },
-    bodyBold: {
+    bodyLarge: {
       fontFamily: 'BM HANNA Pro OTF, sans-serif',
       fontSize: 26,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyRegular: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 22,
       lineHeight: 'auto',
       letterSpacing: 0,
     },

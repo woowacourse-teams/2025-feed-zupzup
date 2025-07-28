@@ -1,4 +1,6 @@
 import DashboardPanel from '@/domains/dashboard/components/DashboardPanel/DashboardPanel';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
 const GROUP_NAME = '우아한테크코스';
@@ -11,12 +13,13 @@ const DASH_PANELS = [
 ];
 
 export default function Dashboard() {
+  const theme = useAppTheme();
   return (
-    <div>
-      <p>{GROUP_NAME}</p>
+    <div css={dashboardLayout}>
+      <p css={titleText(theme)}>{GROUP_NAME}</p>
       <div>
-        <p>일주일 간의 피드백</p>
-        <div css={dashboardLayout}>
+        <p css={panelCaption(theme)}>일주일 간의 피드백</p>
+        <div css={panelLayout}>
           {DASH_PANELS.map((panel, idx) => (
             <DashboardPanel
               key={idx}
@@ -32,7 +35,26 @@ export default function Dashboard() {
 }
 
 const dashboardLayout = css`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+
+const panelCaption = (theme: Theme) => css`
+  margin-bottom: 8px;
+  color: ${theme.colors.gray[600]};
+
+  ${theme.typography.inter.caption}
+`;
+
+const panelLayout = css`
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(2, 1fr);
+`;
+
+const titleText = (theme: Theme) => css`
+  ${theme.typography.bmHannaPro.bodyRegular};
+
+  font-weight: 900;
 `;
