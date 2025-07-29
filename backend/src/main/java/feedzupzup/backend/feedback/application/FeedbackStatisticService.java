@@ -8,6 +8,7 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,8 @@ public class FeedbackStatisticService {
     public StatisticResponse calculateStatistic(final Long organizationId, final int period) {
         final Organization organization = findOrganizationBy(organizationId);
         final int targetPeriod = period - 1;
-        final LocalDateTime targetDateTime = LocalDate.now().minusDays(targetPeriod).atStartOfDay();
+        final LocalDateTime targetDateTime = LocalDate.now(ZoneId.of("Asia/Seoul"))
+                .minusDays(targetPeriod).atStartOfDay();
         final Feedbacks feedbacks = new Feedbacks(
                 feedBackRepository.findByOrganizationIdAndPostedAtAfter(
                         organization.getId(),

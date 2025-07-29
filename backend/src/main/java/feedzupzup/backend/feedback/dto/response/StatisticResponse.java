@@ -3,7 +3,7 @@ package feedzupzup.backend.feedback.dto.response;
 import feedzupzup.backend.feedback.domain.Feedbacks;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "장소 통계 응답")
+@Schema(description = "피드백 통계 응답")
 public record StatisticResponse(
         @Schema(description = "반영률", example = "20")
         int reflectionRate,

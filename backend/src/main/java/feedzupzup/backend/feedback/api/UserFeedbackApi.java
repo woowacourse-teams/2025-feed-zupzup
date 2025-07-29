@@ -72,14 +72,14 @@ public interface UserFeedbackApi {
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
     );
 
-    @Operation(summary = "장소 통계 계산", description = "장소의 통계를 계산합니다.")
+    @Operation(summary = "피드백 통계 계산", description = "피드백의 통계를 계산합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @GetMapping("/organizations/{organizationId}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
+            @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "날짜의 기간", example = "7") @RequestParam(defaultValue = "7") final int requestDate
     );
 }

@@ -59,20 +59,6 @@ public class UserFeedbackService {
         );
     }
 
-    public StatisticResponse calculateStatistic(final Long organizationId, final int period) {
-        final Organization organization = findOrganizationBy(organizationId);
-        final int targetPeriod = period - 1;
-        final LocalDateTime targetDateTime = LocalDate.now(ZoneId.of("Asia/Seoul"))
-                .minusDays(targetPeriod).atStartOfDay();
-        final Feedbacks feedbacks = new Feedbacks(
-                feedBackRepository.findByOrganizationIdAndPostedAtAfter(
-                        organization.getId(),
-                        targetDateTime
-                )
-        );
-        return StatisticResponse.of(feedbacks);
-    }
-
     private Organization findOrganizationBy(final Long organizationId) {
         return organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
