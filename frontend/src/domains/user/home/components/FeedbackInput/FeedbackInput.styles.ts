@@ -20,7 +20,7 @@ export const userInfo = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100px;
+  width: 120px;
   height: 45px;
   color: ${theme.colors.gray[600]};
   transform: translateY(-50%);
