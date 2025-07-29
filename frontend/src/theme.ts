@@ -100,8 +100,8 @@ export const typography = {
     },
     h5: {
       fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 400,
-      fontSize: 32,
+      fontWeight: 600,
+      fontSize: 30,
       lineHeight: 'auto',
       letterSpacing: 0,
     },
@@ -140,6 +140,12 @@ export const typography = {
     small: {
       fontFamily: `${fontStyle}, sans-serif`,
       fontWeight: 400,
+      fontSize: 19,
+      letterSpacing: 0.6,
+    },
+    smallBold: {
+      fontFamily: `${fontStyle}, sans-serif`,
+      fontWeight: 600,
       fontSize: 19,
       letterSpacing: 0.6,
     },
