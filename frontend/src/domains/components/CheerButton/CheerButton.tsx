@@ -7,6 +7,7 @@ import {
   iconWrapperStyle,
   textStyle,
 } from '@/domains/components/CheerButton/CheerButton.style';
+import { theme } from '@/theme';
 import { useState } from 'react';
 
 export default function CheerButton() {
@@ -26,7 +27,7 @@ export default function CheerButton() {
       <span css={[iconWrapperStyle, animate && clickedStyle]}>
         {clicked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       </span>
-      <p css={textStyle}>응원 {count}</p>
+      <p css={textStyle(theme)}>응원 {count}</p>
     </Button>
   );
 }

@@ -1,3 +1,4 @@
+import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
 export const cheerButtonStyle = css`
@@ -7,12 +8,12 @@ export const cheerButtonStyle = css`
   padding: 6px 12px;
   background-color: white;
   border: 1px solid #e0e0e0;
-  border-radius: 50%;
+  border-radius: 20px;
 `;
 
-export const textStyle = css`
+export const textStyle = (theme: Theme) => css`
   font-size: 14px;
-  color: #4a4a4a;
+  color: ${theme.colors.darkGray[100]};
 `;
 
 export const iconWrapperStyle = css`
