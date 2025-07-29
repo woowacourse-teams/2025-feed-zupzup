@@ -57,7 +57,7 @@ public class AdminFeedbackService {
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageBygroupIdAndCursorIdOrderByDesc(groupId, cursorId, pageable);
+        final List<Feedback> feedbacks = feedBackRepository.findPageByGroupIdAndCursorIdOrderByDesc(groupId, cursorId, pageable);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
         return AdminFeedbackListResponse.from(feedbackPage);

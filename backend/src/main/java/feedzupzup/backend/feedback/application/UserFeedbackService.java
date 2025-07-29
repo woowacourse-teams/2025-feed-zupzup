@@ -41,7 +41,7 @@ public class UserFeedbackService {
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageBygroupIdAndCursorIdOrderByDesc(
+        final List<Feedback> feedbacks = feedBackRepository.findPageByGroupIdAndCursorIdOrderByDesc(
                 groupId,
                 cursorId,
                 pageable
