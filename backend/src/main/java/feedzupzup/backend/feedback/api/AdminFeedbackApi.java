@@ -30,9 +30,9 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
     })
-    @GetMapping("/admin/places/{placeId}/feedbacks")
+    @GetMapping("/admin/organizations/{organizationId}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") Long placeId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") Long organizationId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
     );

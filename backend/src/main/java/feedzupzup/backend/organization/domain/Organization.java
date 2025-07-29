@@ -1,4 +1,4 @@
-package feedzupzup.backend.place.domain;
+package feedzupzup.backend.organization.domain;
 
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Place extends BaseTimeEntity {
+public class Organization extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,10 +20,7 @@ public class Place extends BaseTimeEntity {
 
     private String name;
 
-    private String imageUrl;
-
-    public Place(String name, String imageUrl) {
+    public Organization(final String name) {
         this.name = name;
-        this.imageUrl = imageUrl;
     }
 }

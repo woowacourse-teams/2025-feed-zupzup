@@ -10,12 +10,12 @@ public interface FeedBackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
-            WHERE f.placeId = :placeId
+            WHERE f.organizationId = :organizationId
             AND (:cursorId IS NULL OR f.id < :cursorId)
             ORDER BY f.id DESC
             """)
-    List<Feedback> findPageByPlaceIdAndCursorIdOrderByDesc(
-            final Long placeId,
+    List<Feedback> findPageByOrganizationIdAndCursorIdOrderByDesc(
+            final Long organizationId,
             final Long cursorId,
             final Pageable pageable
     );
