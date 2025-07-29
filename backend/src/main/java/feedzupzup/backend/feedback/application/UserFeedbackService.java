@@ -8,8 +8,8 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.group.domain.Group;
-import feedzupzup.backend.group.domain.GroupRepository;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -23,25 +23,25 @@ public class UserFeedbackService {
 
     private final FeedBackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
-    private final GroupRepository groupRepository;
+    private final OrganizationRepository organizationRepository;
 
     @Transactional
-    public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long groupId) {
-        final Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
-        final Feedback newFeedback = request.toFeedback(group.getId());
+    public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long organizationId) {
+        final Organization organization = organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("단체를 찾을 수 없습니다."));
+        final Feedback newFeedback = request.toFeedback(organization.getId());
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }
 
     public UserFeedbackListResponse getFeedbackPage(
-            final Long groupId,
+            final Long organizationId,
             final int size,
             final Long cursorId
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByGroupIdAndCursorIdOrderByDesc(
-                groupId,
+        final List<Feedback> feedbacks = feedBackRepository.findPageByOrganizationIdAndCursorIdOrderByDesc(
+                organizationId,
                 cursorId,
                 pageable
         );

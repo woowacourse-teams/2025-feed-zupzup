@@ -1,13 +1,13 @@
-package feedzupzup.backend.group.application;
+package feedzupzup.backend.organization.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import feedzupzup.backend.feedback.application.ServiceIntegrationHelper;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.group.domain.Group;
-import feedzupzup.backend.group.domain.GroupRepository;
-import feedzupzup.backend.group.dto.UserGroupResponse;
+import feedzupzup.backend.organization.domain.Group;
+import feedzupzup.backend.organization.domain.GroupRepository;
+import feedzupzup.backend.organization.dto.UserGroupResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

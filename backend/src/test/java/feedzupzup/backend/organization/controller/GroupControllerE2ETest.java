@@ -1,11 +1,11 @@
-package feedzupzup.backend.group.controller;
+package feedzupzup.backend.organization.controller;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 import feedzupzup.backend.feedback.controller.E2EHelper;
-import feedzupzup.backend.group.domain.Group;
-import feedzupzup.backend.group.domain.GroupRepository;
+import feedzupzup.backend.organization.domain.Group;
+import feedzupzup.backend.organization.domain.GroupRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

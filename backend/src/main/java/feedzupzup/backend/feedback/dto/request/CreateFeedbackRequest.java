@@ -19,10 +19,10 @@ public record CreateFeedbackRequest(
         String userName
 ) {
 
-    public Feedback toFeedback(final Long groupId) {
+    public Feedback toFeedback(final Long organizationId) {
         return Feedback.builder()
                 .content(content)
-                .groupId(groupId)
+                .organizationId(organizationId)
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)
                 .userName(new UserName(userName))

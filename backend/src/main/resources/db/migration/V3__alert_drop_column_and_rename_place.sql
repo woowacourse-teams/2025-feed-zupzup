@@ -1,5 +1,5 @@
-ALTER TABLE place RENAME TO user_groups;
+ALTER TABLE place RENAME TO organization;
 
-ALTER TABLE user_groups DROP COLUMN image_url;
+ALTER TABLE organization DROP COLUMN image_url;
 
-ALTER TABLE feedback CHANGE COLUMN place_id group_id BIGINT;
+ALTER TABLE feedback CHANGE COLUMN place_id organization_id BIGINT;

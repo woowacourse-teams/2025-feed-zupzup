@@ -6,8 +6,8 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.config.TestcontainersTest;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
-import feedzupzup.backend.group.domain.Group;
-import feedzupzup.backend.group.domain.GroupRepository;
+import feedzupzup.backend.organization.domain.Group;
+import feedzupzup.backend.organization.domain.GroupRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
