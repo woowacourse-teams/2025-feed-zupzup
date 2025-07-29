@@ -70,6 +70,8 @@ export const FEEDBACK_INPUT_CONSTANTS = {
     AVATAR: avatar1,
     FEEDBACK: '',
     IS_LOCKED: false,
+    MAX_LENGTH: 500,
+    MIN_LENGTH: 1,
   } as const,
 
   PLACEHOLDER: '건의하고 싶은 내용을 자세히 입력해주세요',

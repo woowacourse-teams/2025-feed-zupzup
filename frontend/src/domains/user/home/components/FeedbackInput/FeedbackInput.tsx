@@ -7,6 +7,7 @@ import * as styles from './FeedbackInput.styles';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import SendIcon from '@/components/icons/SendIcon';
 import Button from '@/components/@commons/Button/Button';
+import TextArea from '@/components/@commons/TextArea/TextArea';
 
 export interface FeedbackInputProps {
   className?: string;
@@ -53,11 +54,13 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
         </Button>
 
         <div css={styles.textareaContainer(theme)}>
-          <textarea
+          <TextArea
             value={feedback}
             onChange={handleFeedbackChange}
             placeholder={FEEDBACK_INPUT_CONSTANTS.PLACEHOLDER}
-            css={styles.textarea(theme)}
+            customCSS={styles.textarea(theme)}
+            maxLength={FEEDBACK_INPUT_CONSTANTS.DEFAULTS.MAX_LENGTH}
+            minLength={FEEDBACK_INPUT_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
         </div>
       </div>
