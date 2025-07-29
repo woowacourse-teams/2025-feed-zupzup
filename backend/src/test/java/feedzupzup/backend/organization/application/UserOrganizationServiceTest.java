@@ -41,7 +41,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
                     savedOrganization.getId());
 
             // then
-            assertThat(response.organizationName()).isEqualTo("우아한테크코스");
+            assertThat(response.organizationName()).isEqualTo(organization.getName());
         }
 
         @Test

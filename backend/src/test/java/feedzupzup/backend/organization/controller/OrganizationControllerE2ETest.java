@@ -36,7 +36,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
-                .body("data.organizationName", equalTo("우아한테크코스"));
+                .body("data.organizationName", equalTo(organization.getName()));
     }
 
     @Test
@@ -75,6 +75,6 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
-                .body("cheeringTotalCount", equalTo(100));
+                .body("data.cheeringTotalCount", equalTo(100));
     }
 }
