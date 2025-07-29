@@ -4,8 +4,8 @@ import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedbacks;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.place.domain.Place;
-import feedzupzup.backend.place.domain.PlaceRepository;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackStatisticService {
 
     private final FeedBackRepository feedBackRepository;
-    private final PlaceRepository placeRepository;
+    private final OrganizationRepository organizationRepository;
 
-    public StatisticResponse calculateStatistic(final Long placeId, final int period) {
-        final Place place = findPlaceBy(placeId);
+    public StatisticResponse calculateStatistic(final Long organizationId, final int period) {
+        final Organization organization = findOrganizationBy(organizationId);
         final int targetPeriod = period - 1;
         final LocalDateTime targetDateTime = LocalDate.now().minusDays(targetPeriod).atStartOfDay();
         final Feedbacks feedbacks = new Feedbacks(
-                feedBackRepository.findByIdAndPostedAtAfter(place.getId(), targetDateTime)
+                feedBackRepository.findByOrganizationIdAndPostedAtAfter(
+                        organization.getId(),
+                        targetDateTime
+                )
         );
         return StatisticResponse.of(feedbacks);
     }
 
-    private Place findPlaceBy(final Long placeId) {
-        return placeRepository.findById(placeId)
+    private Organization findOrganizationBy(final Long organizationId) {
+        return organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 }

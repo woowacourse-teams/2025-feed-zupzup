@@ -27,8 +27,12 @@ public interface FeedBackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
-            WHERE f.placeId = :placeId
+            WHERE f.organizationId = :organizationId
             AND f.postedAt.postedAt >= :dateTime
             """)
-    List<Feedback> findByIdAndPostedAtAfter(Long placeId, LocalDateTime dateTime);
+    List<Feedback> findByOrganizationIdAndPostedAtAfter(
+            Long organizationId,
+            LocalDateTime dateTime
+    );
+
 }

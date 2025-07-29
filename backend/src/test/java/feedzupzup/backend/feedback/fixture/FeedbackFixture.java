@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.fixture;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.domain.UserName;
 

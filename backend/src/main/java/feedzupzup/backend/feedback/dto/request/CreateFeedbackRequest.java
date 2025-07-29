@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.dto.request;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.domain.UserName;
 import io.swagger.v3.oas.annotations.media.Schema;

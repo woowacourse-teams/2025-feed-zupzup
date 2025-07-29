@@ -30,7 +30,8 @@ public class UserFeedbackService {
     private final OrganizationRepository organizationRepository;
 
     @Transactional
-    public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long organizationId) {
+    public CreateFeedbackResponse create(final CreateFeedbackRequest request,
+            final Long organizationId) {
         final Organization organization = findOrganizationBy(organizationId);
         final Feedback newFeedback = request.toFeedback(organization.getId());
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
@@ -57,12 +58,15 @@ public class UserFeedbackService {
         );
     }
 
-    public StatisticResponse calculateStatistic(final Long placeId, final int period) {
-        final Organization organization = findOrganizationBy(placeId);
+    public StatisticResponse calculateStatistic(final Long organizationId, final int period) {
+        final Organization organization = findOrganizationBy(organizationId);
         final int targetPeriod = period - 1;
         final LocalDateTime targetDateTime = LocalDate.now().minusDays(targetPeriod).atStartOfDay();
         final Feedbacks feedbacks = new Feedbacks(
-                feedBackRepository.findByIdAndPostedAtAfter(organization.getId(), targetDateTime)
+                feedBackRepository.findByOrganizationIdAndPostedAtAfter(
+                        organization.getId(),
+                        targetDateTime
+                )
         );
         return StatisticResponse.of(feedbacks);
     }

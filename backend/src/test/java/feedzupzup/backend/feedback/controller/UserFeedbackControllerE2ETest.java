@@ -295,7 +295,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
-                .body("data.reflectionRate", equalTo(40.0F)) // 2/5 * 100 = 40%
+                .body("data.reflectionRate", equalTo(40))
                 .body("data.confirmedCount", equalTo(2))
                 .body("data.waitingCount", equalTo(3))
                 .body("data.totalCount", equalTo(5));

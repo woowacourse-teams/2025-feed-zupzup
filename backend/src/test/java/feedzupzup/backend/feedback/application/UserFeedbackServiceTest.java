@@ -379,7 +379,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int daysAgo = 7; // 7일 전 이후의 피드백만 조회
 
         // when
-        final StatisticResponse response = userFeedbackService.calculateStatistic(place.getId(),
+        final StatisticResponse response = userFeedbackService.calculateStatistic(organization.getId(),
                 daysAgo);
 
         // then
@@ -388,7 +388,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 () -> assertThat(response.totalCount()).isEqualTo(3), // 모든 피드백 포함
                 () -> assertThat(response.confirmedCount()).isEqualTo(2), // CONFIRMED 상태 피드백 2개
                 () -> assertThat(response.waitingCount()).isEqualTo(1), // WAITING 상태 피드백 1개
-                () -> assertThat(response.reflectionRate()).isEqualTo(66.67) // 2/3 * 100 = 66.67%
+                () -> assertThat(response.reflectionRate()).isEqualTo(67)
         );
     }
 

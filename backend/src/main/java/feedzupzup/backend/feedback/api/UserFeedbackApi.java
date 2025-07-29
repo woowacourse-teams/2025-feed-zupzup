@@ -77,9 +77,9 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
-    @GetMapping("/places/{placeId}/statistic")
+    @GetMapping("/organizations/{organizationId}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "날짜의 기간", example = "7") @RequestParam(defaultValue = "7") final int requestDate
     );
 }
