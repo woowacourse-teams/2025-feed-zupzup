@@ -31,7 +31,6 @@ class FeedbackControllerE2ETest extends E2EHelper {
         final Place savedPlace = placeRepository.save(place);
         final CreateFeedbackRequest request = new CreateFeedbackRequest(
                 "개선이 필요해요",
-                "https://example.com/image.jpg",
                 true,
                 "테스트유저"
         );

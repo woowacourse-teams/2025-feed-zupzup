@@ -186,7 +186,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Place place = new Place("테스트장소", "테스트Url");
         final Place savedPlace = placeRepository.save(place);
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", "이미지URL", true, "테스트유저");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저");
 
         // when & then
         given()
@@ -202,7 +202,6 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("message", equalTo("CREATED"))
                 .body("data.feedbackId", notNullValue())
                 .body("data.content", equalTo("비밀 피드백입니다"))
-                .body("data.imageUrl", equalTo("이미지URL"))
                 .body("data.isSecret", equalTo(true))
                 .body("data.createdAt", notNullValue());
     }
@@ -213,7 +212,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Place place = new Place("테스트장소", "테스트Url");
         final Place savedPlace = placeRepository.save(place);
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", "new.jpg", false, "테스트유저");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백",  false, "테스트유저");
 
         // when - 피드백 생성
         final Long createdFeedbackId = given()

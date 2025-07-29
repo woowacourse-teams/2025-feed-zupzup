@@ -30,7 +30,7 @@ public class UserFeedbackService {
     public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long placeId) {
         final Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
-        final Feedback newFeedback = request.toFeedback(place.getId(), ImageUrl.createS3Url(request.imageUrl()));
+        final Feedback newFeedback = request.toFeedback(place.getId());
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }
