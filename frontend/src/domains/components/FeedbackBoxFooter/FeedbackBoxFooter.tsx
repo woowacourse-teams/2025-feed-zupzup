@@ -1,4 +1,4 @@
-import ClockIcon from '@/components/icons/clockIcon';
+import ClockIcon from '@/components/icons/CClockIcon';
 import LikeButton from '@/domains/components/LikeButton/LikeButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
