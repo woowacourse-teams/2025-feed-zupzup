@@ -1,5 +1,7 @@
-import { useState, useCallback } from 'react';
-import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import { useCallback } from 'react';
+import { useFeedbackInput } from './useFeedbackInput';
+import { useUsernameAvatar } from './useUsernameAvatar';
+import { useLockState } from './useLockState';
 
 export interface UseFeedbackFormReturn {
   feedback: string;
@@ -14,57 +16,35 @@ export interface UseFeedbackFormReturn {
 
   canSubmit: boolean;
   handleSubmit: () => void;
+  handleFormSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export function useFeedbackForm(): UseFeedbackFormReturn {
-  const [feedback, setFeedback] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.FEEDBACK
-  );
-  const [username, setUsername] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.USERNAME
-  );
-  const [isLocked, setIsLocked] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.IS_LOCKED
-  );
-  const [currentAvatar, setCurrentAvatar] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.AVATAR
-  );
-
-  const handleFeedbackChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setFeedback(event.target.value as typeof feedback);
-    },
-    []
-  );
-
-  const handleRandomChange = useCallback(() => {
-    if (isLocked) return;
-
-    const newUsername = FEEDBACK_INPUT_CONSTANTS.generateRandomUsername();
-    setUsername(newUsername as typeof username);
-
-    const randomAvatarIndex = Math.floor(
-      Math.random() * FEEDBACK_INPUT_CONSTANTS.AVATARS.length
-    );
-    setCurrentAvatar(FEEDBACK_INPUT_CONSTANTS.AVATARS[randomAvatarIndex]);
-  }, [isLocked]);
-
-  const handleLockToggle = useCallback(() => {
-    setIsLocked((prev) => !prev as typeof isLocked);
-  }, []);
-
-  const resetForm = useCallback(() => {
-    setFeedback(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.FEEDBACK);
-    setUsername(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.USERNAME);
-    setIsLocked(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.IS_LOCKED);
-    setCurrentAvatar(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.AVATAR);
-  }, []);
+  const { isLocked, handleLockToggle, resetLockState } = useLockState();
+  const { feedback, handleFeedbackChange, resetFeedback } = useFeedbackInput();
+  const { username, currentAvatar, handleRandomChange, resetUsernameAvatar } =
+    useUsernameAvatar(isLocked);
 
   const canSubmit = feedback.trim().length > 0;
 
   const handleSubmit = useCallback(() => {
+    if (!canSubmit) return;
     console.log('submit', feedback, username, isLocked, currentAvatar);
-  }, [feedback, username, isLocked, currentAvatar]);
+  }, [feedback, username, isLocked, currentAvatar, canSubmit]);
+
+  const handleFormSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      handleSubmit();
+    },
+    [handleSubmit]
+  );
+
+  const resetForm = useCallback(() => {
+    resetFeedback();
+    resetUsernameAvatar();
+    resetLockState();
+  }, [resetFeedback, resetUsernameAvatar, resetLockState]);
 
   return {
     feedback,
@@ -79,5 +59,6 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
 
     canSubmit,
     handleSubmit,
+    handleFormSubmit,
   };
 }
