@@ -63,12 +63,13 @@ export const randomButton = (theme: Theme) => css`
   }
 `;
 
-export const avatar = css`
+export const avatar = (avatarUrl: string) => css`
   position: absolute;
   top: 0;
   left: 10px;
   width: 45px;
   height: 45px;
+  background-image: url('${avatarUrl}');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

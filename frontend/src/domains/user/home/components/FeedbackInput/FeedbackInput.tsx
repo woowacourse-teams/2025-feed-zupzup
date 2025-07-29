@@ -42,10 +42,7 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
           랜덤변경
         </Button>
 
-        <div
-          css={styles.avatar}
-          style={{ backgroundImage: `url('${currentAvatar}')` }}
-        />
+        <div css={styles.avatar(currentAvatar)} />
 
         <div css={styles.topInputBorder(theme)} />
 
