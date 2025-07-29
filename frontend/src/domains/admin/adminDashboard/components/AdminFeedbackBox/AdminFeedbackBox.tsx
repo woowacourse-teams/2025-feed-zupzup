@@ -8,9 +8,9 @@ import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBo
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
-import { UserFeedback } from '@/types/feedback.types';
+import { FeedbackType } from '@/types/feedback.types';
 
-interface AdminFeedbackBox extends Omit<UserFeedback, 'status' | 'imageUrl'> {
+interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
   feedbackId: number;
   onConfirm: (feedbackId: number) => void;

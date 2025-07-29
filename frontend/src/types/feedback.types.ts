@@ -1,6 +1,6 @@
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
-export interface UserFeedback {
+export interface FeedbackType {
   feedbackId: number;
   content: string;
   status: FeedbackStatusType;

@@ -16,9 +16,9 @@ export default function UserDashboard() {
   //   hasNext,
   //   loading,
   // } = useInfinityScroll<
-  //   UserFeedback,
+  //   FeedbackType,
   //   'feedbacks',
-  //   FeedbackResponse<UserFeedback>
+  //   FeedbackResponse<FeedbackType>
   // >({
   //   url: '/places/1/feedbacks',
   //   key: 'feedbacks',

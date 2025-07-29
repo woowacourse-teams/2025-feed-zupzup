@@ -4,7 +4,7 @@
 // import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 // import UserFeedbackBox from './components/UserFeedbackBox/UserFeedbackBox';
 // import { useNavigate } from 'react-router-dom';
-// import { UserFeedback, FeedbackResponse } from '@/types/feedback.types';
+// import { FeedbackType, FeedbackResponse } from '@/types/feedback.types';
 // import useInfinityScroll from '@/hooks/useInfinityScroll';
 // import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 // import { getLocalStorage } from '@/utils/localStorage';
@@ -20,9 +20,9 @@
 //     hasNext,
 //     loading,
 //   } = useInfinityScroll<
-//     UserFeedback,
+//     FeedbackType,
 //     'feedbacks',
-//     FeedbackResponse<UserFeedback>
+//     FeedbackResponse<FeedbackType>
 //   >({
 //     url: '/places/1/feedbacks',
 //     key: 'feedbacks',
@@ -56,7 +56,7 @@
 //         isUserPage={true}
 //       />
 //       <FeedbackBoxList>
-//         {feedbacks.map((feedback: UserFeedback) => (
+//         {feedbacks.map((feedback: FeedbackType) => (
 //           <UserFeedbackBox
 //             key={feedback.feedbackId}
 //             type={feedback.status}
