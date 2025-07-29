@@ -5,9 +5,13 @@ import {
   questionContainer,
   questionTitle,
   title,
+  skipText,
+  skipButtonContainer,
 } from '@/domains/components/FeedbackPage/FeedbackPage.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackInput';
+import BasicButton from '@/components/BasicButton/BasicButton';
+import SkipIcon from '@/components/icons/SkipIcon';
 
 export default function FeedbackPage() {
   const theme = useAppTheme();
@@ -28,6 +32,11 @@ export default function FeedbackPage() {
           </p>
         </div>
         <FeedbackInput />
+        <div css={skipButtonContainer}>
+          <BasicButton icon={<SkipIcon />} variant='secondary'>
+            <p css={skipText(theme)}>건너뛰기</p>
+          </BasicButton>
+        </div>
       </div>
     </section>
   );

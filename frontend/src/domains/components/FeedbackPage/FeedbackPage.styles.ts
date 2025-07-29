@@ -1,6 +1,19 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
+export const skipText = (theme: Theme) => css`
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: ${theme.colors.darkGray[100]};
+`;
+
+export const skipButtonContainer = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
 export const container = css`
   display: flex;
   flex-direction: column;
@@ -33,7 +46,7 @@ export const place = (theme: Theme) => css`
 export const questionTitle = (theme: Theme) => css`
   ${theme.typography.inter.smallBold}
 
-  margin-top: 80px;
+  margin-top: 50px;
   margin-left: 10px;
   text-align: left;
 `;
@@ -47,7 +60,7 @@ export const question = (theme: Theme) => css`
 export const questionContainer = (theme: Theme) => css`
   position: relative;
   margin-top: 10px;
-  margin-bottom: 80px;
+  margin-bottom: 50px;
   padding: 24px 0;
   text-align: center;
   background-color: ${theme.colors.white[300]};
