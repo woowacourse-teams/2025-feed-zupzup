@@ -13,7 +13,7 @@ export default function Home() {
     <section css={container}>
       <ProgressBar currentStep={currentStep} totalStep={totalStep} />
       {currentStep === 1 && <OnBoarding moveNextStep={moveNextStep} />}
-      {currentStep === 2 && <FeedbackPage moveNextStep={moveNextStep} />}
+      {currentStep === 2 && <FeedbackPage />}
     </section>
   );
 }
