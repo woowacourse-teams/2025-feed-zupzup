@@ -69,6 +69,6 @@ public class UserFeedbackService {
 
     private Organization findOrganizationBy(final Long organizationId) {
         return organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new ResourceNotFoundException("조직을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 }
