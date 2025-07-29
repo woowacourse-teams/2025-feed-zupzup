@@ -40,17 +40,14 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
   const handleRandomChange = useCallback(() => {
     if (isLocked) return;
 
-    let newUsername;
-    do {
-      newUsername = FEEDBACK_INPUT_CONSTANTS.generateRandomUsername();
-    } while (newUsername === username);
+    const newUsername = FEEDBACK_INPUT_CONSTANTS.generateRandomUsername();
     setUsername(newUsername as typeof username);
 
     const randomAvatarIndex = Math.floor(
       Math.random() * FEEDBACK_INPUT_CONSTANTS.AVATARS.length
     );
     setCurrentAvatar(FEEDBACK_INPUT_CONSTANTS.AVATARS[randomAvatarIndex]);
-  }, [username, isLocked]);
+  }, [isLocked]);
 
   const handleLockToggle = useCallback(() => {
     setIsLocked((prev) => !prev as typeof isLocked);
