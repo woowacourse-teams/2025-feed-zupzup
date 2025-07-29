@@ -13,6 +13,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +31,7 @@ public class UserFeedbackService {
 
     @Transactional
     public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long organizationId) {
-        final Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new ResourceNotFoundException("단체를 찾을 수 없습니다."));
+        final Organization organization = findOrganizationBy(organizationId);
         final Feedback newFeedback = request.toFeedback(organization.getId());
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
@@ -57,11 +57,18 @@ public class UserFeedbackService {
         );
     }
 
-    public StatisticResponse calculateStatistic(final Long placeId, final int daysAgo) {
-        final LocalDate targetDate = LocalDate.now().minusDays(daysAgo);
+    public StatisticResponse calculateStatistic(final Long placeId, final int period) {
+        final Organization organization = findOrganizationBy(placeId);
+        final int targetPeriod = period - 1;
+        final LocalDateTime targetDateTime = LocalDate.now().minusDays(targetPeriod).atStartOfDay();
         final Feedbacks feedbacks = new Feedbacks(
-                feedBackRepository.findByPlaceIdAndCreatedAt_DateAfter(placeId, targetDate)
+                feedBackRepository.findByIdAndPostedAtAfter(organization.getId(), targetDateTime)
         );
         return StatisticResponse.of(feedbacks);
+    }
+
+    private Organization findOrganizationBy(final Long organizationId) {
+        return organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("조직을 찾을 수 없습니다."));
     }
 }

@@ -23,6 +23,13 @@ public class PostedAt {
         return new PostedAt(LocalDateTime.now(ZoneId.of(TIME_ZONE_AREA)));
     }
 
+    /**
+     * 테스트 코드를 위한 생성자 입니다.
+     */
+    public static PostedAt from(LocalDateTime postedAt) {
+        return new PostedAt(postedAt);
+    }
+
     public LocalDate getPostedDate() {
         return postedAt.toLocalDate();
     }
