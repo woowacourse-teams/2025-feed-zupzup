@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.global.BaseTimeEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,10 +24,13 @@ public class Feedback extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private boolean isSecret;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProcessStatus status;
 
@@ -37,7 +41,9 @@ public class Feedback extends BaseTimeEntity {
     @Embedded
     private UserName userName;
 
-    private PostedAt postedAt = PostedAt.createTimeInSeoul();
+    @Column(nullable = false)
+    @Embedded
+    private PostedAt postedAt;
 
     @Builder
     public Feedback(

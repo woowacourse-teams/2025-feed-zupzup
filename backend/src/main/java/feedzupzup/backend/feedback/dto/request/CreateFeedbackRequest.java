@@ -26,6 +26,7 @@ public record CreateFeedbackRequest(
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)
                 .userName(new UserName(userName))
+                .postedAt(PostedAt.createTimeInSeoul())
                 .build();
     }
 }

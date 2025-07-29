@@ -6,7 +6,6 @@ import feedzupzup.backend.feedback.domain.UserName;
 
 public class FeedbackFixture {
 
-
     public static Feedback createFeedbackWithStatus(final ProcessStatus status) {
         return Feedback.builder()
                 .content("상태별 피드백")
@@ -14,6 +13,7 @@ public class FeedbackFixture {
                 .status(status)
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
+                .postedAt(PostedAt.createTimeInSeoul())
                 .build();
     }
 
@@ -24,6 +24,7 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .organizationId(organizationId)
                 .userName(new UserName("테스트유저"))
+                .postedAt(PostedAt.createTimeInSeoul())
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
+                .postedAt(PostedAt.createTimeInSeoul())
                 .build();
     }
 
@@ -44,6 +46,7 @@ public class FeedbackFixture {
                 .status(ProcessStatus.WAITING)
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
+                .postedAt(PostedAt.createTimeInSeoul())
                 .build();
     }
 
@@ -55,6 +58,21 @@ public class FeedbackFixture {
                 .organizationId(organizationId)
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
+                .postedAt(PostedAt.createTimeInSeoul())
+                .build();
+    }
+
+    public static Feedback createFeedbackWithPostedAtAndStatus(
+            PostedAt postedAt,
+            ProcessStatus status
+    ) {
+        return Feedback.builder()
+                .content("통계 테스트용 피드백")
+                .isSecret(false)
+                .status(status)
+                .organizationId(1L)
+                .userName(new UserName("테스트유저"))
+                .postedAt(postedAt)
                 .build();
     }
 }
