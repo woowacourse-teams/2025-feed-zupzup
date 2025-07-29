@@ -24,7 +24,7 @@ export const userInfo = (theme: Theme) => css`
   height: 45px;
   color: ${theme.colors.gray[600]};
   transform: translateY(-50%);
-  ${theme.typography.inter.captionSmallBold}
+  ${theme.typography.inter.caption}
 
   p {
     line-height: 26px;
@@ -42,7 +42,7 @@ export const randomButton = (theme: Theme) => css`
   width: 82px;
   height: 34px;
 
-  ${theme.typography.inter.captionSmallBold}
+  ${theme.typography.inter.caption}
 
   color: ${theme.colors.gray[600]};
   background-color: ${theme.colors.gray[100]};
@@ -134,7 +134,7 @@ export const textarea = (theme: Theme) => css`
   background: transparent;
   resize: none;
   outline: none;
-  ${theme.typography.inter.captionSmall}
+  ${theme.typography.inter.caption}
 
   border: none;
 

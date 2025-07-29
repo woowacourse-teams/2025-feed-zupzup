@@ -9,11 +9,7 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackInput';
 
-interface FeedbackPageProps {
-  moveNextStep: () => void;
-}
-
-export default function FeedbackPage({ moveNextStep }: FeedbackPageProps) {
+export default function FeedbackPage() {
   const theme = useAppTheme();
 
   return (

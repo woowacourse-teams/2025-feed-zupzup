@@ -5,7 +5,7 @@ export const container = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  max-height: 100vh;
   text-align: center;
 `;
 
@@ -33,7 +33,7 @@ export const place = (theme: Theme) => css`
 export const questionTitle = (theme: Theme) => css`
   ${theme.typography.inter.smallBold}
 
-  margin-top: 100px;
+  margin-top: 80px;
   margin-left: 10px;
   text-align: left;
 `;
@@ -46,6 +46,7 @@ export const question = (theme: Theme) => css`
 
 export const questionContainer = (theme: Theme) => css`
   position: relative;
+  margin-top: 10px;
   margin-bottom: 80px;
   padding: 24px 0;
   text-align: center;
