@@ -7,7 +7,6 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 export default function AdminDashboard() {
   // const {
@@ -51,7 +50,7 @@ export default function AdminDashboard() {
             feedbackId={feedback.feedbackId}
             onConfirm={openFeedbackCompleteModal}
             onDelete={openFeedbackDeleteModal}
-            type={feedback.status as FeedbackStatusType}
+            type={feedback.status}
             content={feedback.content}
             createdAt={feedback.createdAt}
             isSecret={feedback.isSecret}

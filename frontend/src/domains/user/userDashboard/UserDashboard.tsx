@@ -4,7 +4,6 @@ import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
 
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
 
 export default function UserDashboard() {
@@ -54,7 +53,7 @@ export default function UserDashboard() {
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
-              type={feedback.status as FeedbackStatusType}
+              type={feedback.status}
               content={feedback.content}
               createdAt={feedback.createdAt}
               isLiked={getFeedbackIsLike(likedFeedbackIds, feedback.feedbackId)}
