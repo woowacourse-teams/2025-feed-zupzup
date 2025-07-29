@@ -1,7 +1,7 @@
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
-import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
 import Suggestions from './domains/user/suggestions/Suggestions';
+import UserDashboard from '@/domains/user/userDashboard/userDashboard';
 
 export const router = createBrowserRouter([
   {

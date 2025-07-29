@@ -3,6 +3,7 @@ import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxLis
 import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { dashboardLayout } from '@/domains/user/userDashboard/userDashboard.style';
+
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { getLocalStorage } from '@/utils/localStorage';
 
