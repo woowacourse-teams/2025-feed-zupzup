@@ -83,4 +83,10 @@ export const FEEDBACK_INPUT_CONSTANTS = {
       this.ANIMALS[Math.floor(Math.random() * this.ANIMALS.length)];
     return `${randomAdjective} ${randomAnimal}`;
   },
+
+  generateRandomAvatar(): string {
+    return this.AVATARS[
+      Math.floor(Math.random() * this.AVATARS.length)
+    ] as (typeof this.AVATARS)[number];
+  },
 } as const;

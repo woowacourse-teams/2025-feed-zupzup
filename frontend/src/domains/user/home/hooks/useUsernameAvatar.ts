@@ -22,10 +22,8 @@ export function useUsernameAvatar(isLocked: boolean): UseUsernameAvatarReturn {
     const newUsername = FEEDBACK_INPUT_CONSTANTS.generateRandomUsername();
     setUsername(newUsername as typeof username);
 
-    const randomAvatarIndex = Math.floor(
-      Math.random() * FEEDBACK_INPUT_CONSTANTS.AVATARS.length
-    );
-    setCurrentAvatar(FEEDBACK_INPUT_CONSTANTS.AVATARS[randomAvatarIndex]);
+    const newAvatar = FEEDBACK_INPUT_CONSTANTS.generateRandomAvatar();
+    setCurrentAvatar(newAvatar);
   }, [isLocked]);
 
   const resetUsernameAvatar = useCallback(() => {
