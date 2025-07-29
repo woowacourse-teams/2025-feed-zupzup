@@ -8,11 +8,17 @@ export const skipText = (theme: Theme) => css`
   color: ${theme.colors.darkGray[100]};
 `;
 
+export const skipButtonContainer = css`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
 export const container = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  max-height: 100vh;
   text-align: center;
 `;
 
@@ -20,6 +26,14 @@ export const title = (theme: Theme) => css`
   ${theme.typography.inter.h5}
 
   margin-top: 10%;
+  margin-bottom: 20px;
+`;
+
+export const subTitle = (theme: Theme) => css`
+  ${theme.typography.inter.small}
+
+  line-height: 1.5;
+  color: ${theme.colors.darkGray[100]};
 `;
 
 export const place = (theme: Theme) => css`
@@ -30,7 +44,11 @@ export const place = (theme: Theme) => css`
 `;
 
 export const questionTitle = (theme: Theme) => css`
-  ${theme.typography.inter.bodyBold}
+  ${theme.typography.inter.smallBold}
+
+  margin-top: 50px;
+  margin-left: 10px;
+  text-align: left;
 `;
 
 export const question = (theme: Theme) => css`
@@ -40,19 +58,11 @@ export const question = (theme: Theme) => css`
 `;
 
 export const questionContainer = (theme: Theme) => css`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 64px;
-  padding: 22px 0;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  padding: 24px 0;
   text-align: center;
   background-color: ${theme.colors.white[300]};
   border-radius: 16px;
-`;
-
-export const buttonContainer = css`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 32px;
 `;

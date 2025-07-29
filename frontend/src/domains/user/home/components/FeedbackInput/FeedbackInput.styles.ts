@@ -4,10 +4,7 @@ import { Theme } from '@/theme';
 export const container = css`
   position: relative;
   width: 100%;
-  max-width: 384px;
-  height: 100%;
   margin: 0 auto;
-  padding: 16px;
 `;
 
 export const formContainer = css`
@@ -19,15 +16,15 @@ export const formContainer = css`
 export const userInfo = (theme: Theme) => css`
   position: absolute;
   top: 24px;
-  left: 79px;
+  left: 66px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100px;
+  width: 120px;
   height: 45px;
   color: ${theme.colors.gray[600]};
   transform: translateY(-50%);
-  ${theme.typography.inter.captionSmallBold}
+  ${theme.typography.inter.caption}
 
   p {
     line-height: 26px;
@@ -45,7 +42,7 @@ export const randomButton = (theme: Theme) => css`
   width: 82px;
   height: 34px;
 
-  ${theme.typography.inter.captionSmallBold}
+  ${theme.typography.inter.caption}
 
   color: ${theme.colors.gray[600]};
   background-color: ${theme.colors.gray[100]};
@@ -132,12 +129,14 @@ export const textareaContainer = (theme: Theme) => css`
 
 export const textarea = (theme: Theme) => css`
   position: absolute;
+  padding: 10px 16px;
   inset: 8px;
   color: ${theme.colors.brown[300]};
   background: transparent;
   resize: none;
   outline: none;
-  ${theme.typography.inter.captionSmall}
+
+  ${theme.typography.inter.caption}
 
   border: none;
 

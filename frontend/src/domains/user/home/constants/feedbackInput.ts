@@ -75,18 +75,4 @@ export const FEEDBACK_INPUT_CONSTANTS = {
   } as const,
 
   PLACEHOLDER: '건의하고 싶은 내용을 자세히 입력해주세요',
-
-  generateRandomUsername(): string {
-    const randomAdjective =
-      this.ADJECTIVES[Math.floor(Math.random() * this.ADJECTIVES.length)];
-    const randomAnimal =
-      this.ANIMALS[Math.floor(Math.random() * this.ANIMALS.length)];
-    return `${randomAdjective} ${randomAnimal}`;
-  },
-
-  generateRandomAvatar(): string {
-    return this.AVATARS[
-      Math.floor(Math.random() * this.AVATARS.length)
-    ] as (typeof this.AVATARS)[number];
-  },
 } as const;
