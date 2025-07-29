@@ -61,7 +61,7 @@ class FeedbacksTest {
 
         // when & then
         assertAll(
-                () -> assertThat(feedbacks.calculateReflectionRate()).isEqualTo(100.0),
+                () -> assertThat(feedbacks.calculateReflectionRate()).isEqualTo(100),
                 () -> assertThat(feedbacks.calculateConfirmedCount()).isEqualTo(4),
                 () -> assertThat(feedbacks.calculateWaitingCount()).isZero(),
                 () -> assertThat(feedbacks.getSize()).isEqualTo(4)
@@ -83,7 +83,7 @@ class FeedbacksTest {
 
         // when & then
         assertAll(
-                () -> assertThat(feedbacks.calculateReflectionRate()).isEqualTo(60.0),
+                () -> assertThat(feedbacks.calculateReflectionRate()).isEqualTo(60),
                 () -> assertThat(feedbacks.calculateConfirmedCount()).isEqualTo(3),
                 () -> assertThat(feedbacks.calculateWaitingCount()).isEqualTo(2),
                 () -> assertThat(feedbacks.getSize()).isEqualTo(5)
@@ -91,7 +91,7 @@ class FeedbacksTest {
     }
 
     @Test
-    @DisplayName("반영률이 소수점 두 자리까지 반올림되는지 확인한다")
+    @DisplayName("반영률이 소수점 한 자리에서 반올림 해 정수로 반환되는지 확인한다.")
     void calculateReflectionRate_roundsToTwoDecimalPlaces() {
         // given
         final List<Feedback> feedbackList = List.of(
@@ -105,6 +105,6 @@ class FeedbacksTest {
         final double reflectionRate = feedbacks.calculateReflectionRate();
 
         // then
-        assertThat(reflectionRate).isEqualTo(33.33);
+        assertThat(reflectionRate).isEqualTo(33);
     }
 }

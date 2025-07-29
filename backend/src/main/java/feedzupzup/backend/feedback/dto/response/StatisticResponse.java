@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "장소 통계 응답")
 public record StatisticResponse(
-        @Schema(description = "반영률", example = "20.0")
-        double reflectionRate,
+        @Schema(description = "반영률", example = "20")
+        int reflectionRate,
 
         @Schema(description = "완료된 피드백 수", example = "1")
         int confirmedCount,

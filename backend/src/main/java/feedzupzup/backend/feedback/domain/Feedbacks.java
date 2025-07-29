@@ -11,9 +11,9 @@ public class Feedbacks {
         this.feedbacks = new ArrayList<>(feedbacks);
     }
 
-    public double calculateReflectionRate() {
+    public int calculateReflectionRate() {
         final double value = (double) calculateConfirmedCount() / feedbacks.size() * 100.0;
-        return Math.round(value * 100.0) / 100.0;
+        return (int) Math.round(value);
     }
 
     public int calculateConfirmedCount() {
