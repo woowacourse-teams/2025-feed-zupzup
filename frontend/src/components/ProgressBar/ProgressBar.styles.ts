@@ -14,6 +14,6 @@ export const totalBar = css`
 export const currentBar = (percent: number, theme: Theme) => css`
   width: ${percent}%;
   height: 100%;
-  background-color: ${theme.colors.yellow[200]};
+  background-color: ${theme.colors.purple[100]};
   transition: width 0.3s ease;
 `;

@@ -15,20 +15,30 @@ export const basicButton = (
   padding: 24px 28px;
   background-color: ${variant === 'primary'
     ? theme.colors.purple[100]
-    : theme.colors.white[100]} !important;
+    : theme.colors.white[100]};
   border: ${variant === 'secondary'
-    ? `1px solid ${theme.colors.gray[200]}`
+    ? `1px solid ${theme.colors.gray[300]}`
     : 'none'};
   border-radius: 24px;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
   &:hover {
-    opacity: 0.9;
+    ${variant === 'primary'
+      ? 'opacity: 0.9;'
+      : `
+        background-color: ${theme.colors.white[300]};
+        border-color: ${theme.colors.gray[200]};
+      `}
   }
 
   &:active {
-    opacity: 0.8;
+    ${variant === 'primary'
+      ? 'opacity: 0.8;'
+      : `
+        background-color: ${theme.colors.white[200]};
+        border-color: ${theme.colors.gray[200]};
+      `}
   }
 
   &:disabled {
@@ -43,8 +53,6 @@ export const basicButtonText = (
 ) => css`
   margin: 0;
   color: ${variant === 'primary' ? theme.colors.white[100] : 'black'};
-
-  ${theme.typography.inter.small};
 `;
 
 export const basicButtonIcon = css`
