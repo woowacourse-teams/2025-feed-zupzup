@@ -1,5 +1,4 @@
-import { RouterProvider } from 'react-router-dom';
-import { router } from './router';
+import { Outlet } from 'react-router-dom';
 import { usePageTracking } from './hooks/usePageTracking';
 
 const gaId = process.env.GA_ID;
@@ -22,5 +21,6 @@ if (gaId) {
 
 export default function App() {
   usePageTracking();
-  return <RouterProvider router={router} />;
+
+  return <Outlet />;
 }
