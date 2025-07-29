@@ -14,7 +14,7 @@ export const basicButton = (
   height: 54px;
   padding: 24px 28px;
   background-color: ${variant === 'primary'
-    ? theme.colors.yellow[200]
+    ? theme.colors.purple[100]
     : theme.colors.white[100]};
   border: ${variant === 'secondary'
     ? `1px solid ${theme.colors.gray[300]}`
