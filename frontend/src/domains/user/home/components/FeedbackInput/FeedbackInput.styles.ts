@@ -135,6 +135,7 @@ export const textarea = (theme: Theme) => css`
   background: transparent;
   resize: none;
   outline: none;
+
   ${theme.typography.inter.caption}
 
   border: none;
