@@ -1,5 +1,9 @@
 import { useState, useCallback } from 'react';
 import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import {
+  generateRandomAvatar,
+  generateRandomUsername,
+} from '../utils/feedbackUtils';
 
 export interface UseUsernameAvatarReturn {
   username: string;
@@ -19,10 +23,10 @@ export function useUsernameAvatar(isLocked: boolean): UseUsernameAvatarReturn {
   const handleRandomChange = useCallback(() => {
     if (isLocked) return;
 
-    const newUsername = FEEDBACK_INPUT_CONSTANTS.generateRandomUsername();
+    const newUsername = generateRandomUsername();
     setUsername(newUsername as typeof username);
 
-    const newAvatar = FEEDBACK_INPUT_CONSTANTS.generateRandomAvatar();
+    const newAvatar = generateRandomAvatar();
     setCurrentAvatar(newAvatar);
   }, [isLocked]);
 
