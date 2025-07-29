@@ -6,6 +6,7 @@ import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedback
 import * as styles from './FeedbackInput.styles';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import SendIcon from '@/components/icons/SendIcon';
+import Button from '@/components/@commons/Button/Button';
 
 export interface FeedbackInputProps {
   className?: string;
@@ -32,14 +33,13 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
           <p>{username}</p>
         </div>
 
-        <button
-          type='button'
+        <Button
           onClick={handleRandomChange}
           disabled={isLocked}
           css={styles.randomButton(theme)}
         >
           랜덤변경
-        </button>
+        </Button>
 
         <div
           css={styles.avatar}
@@ -48,13 +48,9 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
 
         <div css={styles.topInputBorder(theme)} />
 
-        <button
-          type='button'
-          onClick={handleLockToggle}
-          css={styles.lockButton(theme)}
-        >
+        <Button onClick={handleLockToggle} css={styles.lockButton(theme)}>
           {isLocked ? <LockIcon /> : <UnlockIcon />}
-        </button>
+        </Button>
 
         <div css={styles.textareaContainer(theme)}>
           <textarea
