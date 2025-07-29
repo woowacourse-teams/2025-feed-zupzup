@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +37,8 @@ public class Feedback extends BaseTimeEntity {
     @Embedded
     private UserName userName;
 
+    private PostedAt postedAt = PostedAt.createTimeInSeoul();
+
     @Builder
     public Feedback(
             final String content,
@@ -43,7 +46,8 @@ public class Feedback extends BaseTimeEntity {
             final ProcessStatus status,
             final Long organizationId,
             final int likeCount,
-            final UserName userName
+            final UserName userName,
+            final PostedAt postedAt
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -51,6 +55,7 @@ public class Feedback extends BaseTimeEntity {
         this.organizationId = organizationId;
         this.likeCount = likeCount;
         this.userName = userName;
+        this.postedAt = postedAt;
     }
 
     public void updateStatus(final ProcessStatus status) {
@@ -78,5 +83,9 @@ public class Feedback extends BaseTimeEntity {
 
     public boolean isWaiting() {
         return this.status == ProcessStatus.WAITING;
+    }
+
+    public LocalDate getPostedDate() {
+        return postedAt.getPostedDate();
     }
 }
