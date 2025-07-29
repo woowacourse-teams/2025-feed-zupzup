@@ -29,7 +29,6 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
 
   const handleSubmit = useCallback(() => {
     if (!canSubmit) return;
-    console.log('submit', feedback, username, isLocked, currentAvatar);
   }, [feedback, username, isLocked, currentAvatar, canSubmit]);
 
   const handleFormSubmit = useCallback(
