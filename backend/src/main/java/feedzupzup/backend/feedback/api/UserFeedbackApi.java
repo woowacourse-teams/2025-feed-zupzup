@@ -29,9 +29,9 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/groups/{groupId}/feedbacks")
+    @GetMapping("/organizations/{organizationId}/feedbacks")
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("groupId") final Long groupId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
     );
@@ -43,9 +43,9 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/groups/{groupId}/feedbacks")
+    @PostMapping("/organizations/{organizationId}/feedbacks")
     SuccessResponse<CreateFeedbackResponse> create(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("groupId") final Long groupId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @RequestBody @Valid final CreateFeedbackRequest request
     );
 

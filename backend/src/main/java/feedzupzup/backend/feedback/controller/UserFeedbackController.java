@@ -21,12 +21,12 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
-            final Long groupId,
+            final Long organizationId,
             final int size,
             final Long cursorId
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                groupId,
+                organizationId,
                 size,
                 cursorId
         );
@@ -34,8 +34,8 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<CreateFeedbackResponse> create(final Long groupId, final CreateFeedbackRequest request) {
-        final CreateFeedbackResponse response = userFeedbackService.create(request, groupId);
+    public SuccessResponse<CreateFeedbackResponse> create(final Long organizationId, final CreateFeedbackRequest request) {
+        final CreateFeedbackResponse response = userFeedbackService.create(request, organizationId);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 

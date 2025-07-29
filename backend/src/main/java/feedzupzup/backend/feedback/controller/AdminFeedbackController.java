@@ -20,12 +20,12 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            final Long groupId,
+            final Long organizationId,
             final int size,
             final Long cursorId
     ) {
         return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
-                groupId,
+                organizationId,
                 size,
                 cursorId
         ));

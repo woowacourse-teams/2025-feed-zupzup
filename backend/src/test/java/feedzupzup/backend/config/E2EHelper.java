@@ -1,7 +1,5 @@
-package feedzupzup.backend.feedback.controller;
+package feedzupzup.backend.config;
 
-import feedzupzup.backend.config.DataInitializer;
-import feedzupzup.backend.config.TestcontainersTest;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

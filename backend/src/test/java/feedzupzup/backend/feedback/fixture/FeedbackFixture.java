@@ -12,17 +12,17 @@ public class FeedbackFixture {
                 .content("상태별 피드백")
                 .isSecret(false)
                 .status(status)
-                .groupId(1L)
+                .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .build();
     }
 
-    public static Feedback createFeedbackWithGroupId(final Long groupId) {
+    public static Feedback createFeedbackWithOrganizationId(final Long organizationId) {
         return Feedback.builder()
                 .content("장소별 피드백")
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .groupId(groupId)
+                .organizationId(organizationId)
                 .userName(new UserName("테스트유저"))
                 .build();
     }
@@ -32,7 +32,7 @@ public class FeedbackFixture {
                 .content("장소별 피드백")
                 .isSecret(isSecret)
                 .status(ProcessStatus.WAITING)
-                .groupId(1L)
+                .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .build();
     }
@@ -42,17 +42,17 @@ public class FeedbackFixture {
                 .content(content)
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .groupId(1L)
+                .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .build();
     }
 
-    public static Feedback createFeedbackWithLikes(final Long groupId, final int likeCount) {
+    public static Feedback createFeedbackWithLikes(final Long organizationId, final int likeCount) {
         return Feedback.builder()
                 .content("좋아요 테스트용 피드백")
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .groupId(groupId)
+                .organizationId(organizationId)
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
                 .build();
