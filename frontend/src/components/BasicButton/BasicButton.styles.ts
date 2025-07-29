@@ -19,18 +19,28 @@ export const basicButton = (
       ? theme.colors.gray[100]
       : theme.colors.white[100]} !important;
   border: ${variant === 'secondary'
-    ? `1px solid ${theme.colors.gray[200]}`
+    ? `1px solid ${theme.colors.gray[300]}`
     : 'none'};
   border-radius: 24px;
   cursor: pointer;
   transition: opacity 0.2s ease;
 
   &:hover {
-    opacity: 0.9;
+    ${variant === 'primary'
+      ? 'opacity: 0.9;'
+      : `
+        background-color: ${theme.colors.white[300]};
+        border-color: ${theme.colors.gray[200]};
+      `}
   }
 
   &:active {
-    opacity: 0.8;
+    ${variant === 'primary'
+      ? 'opacity: 0.8;'
+      : `
+        background-color: ${theme.colors.white[200]};
+        border-color: ${theme.colors.gray[200]};
+      `}
   }
 
   &:disabled {
