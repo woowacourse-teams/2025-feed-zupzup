@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface UserProgressStep {
   totalStep: number;
 }
 
 export default function useProgressStep({ totalStep }: UserProgressStep) {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
+
+  useEffect(() => {
+    setCurrentStep(1);
+  }, []);
 
   const moveNextStep = () => {
     setCurrentStep((prev) => (prev < totalStep ? prev + 1 : prev));
