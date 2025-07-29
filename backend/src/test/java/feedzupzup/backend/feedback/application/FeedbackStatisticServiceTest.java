@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
+public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private PlaceRepository placeRepository;
@@ -29,7 +29,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private OrganizationStatisticService organizationStatisticService;
+    private FeedbackStatisticService feedbackStatisticService;
 
     @Test
     @DisplayName("특정 날짜 이후의 피드백에 대한 통계를 계산한다")
@@ -55,7 +55,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
         final int daysAgo = 7; // 7일 전 이후의 피드백만 조회
 
         // when
-        final StatisticResponse response = organizationStatisticService.calculateStatistic(
+        final StatisticResponse response = feedbackStatisticService.calculateStatistic(
                 place.getId(),
                 daysAgo
         );
@@ -78,7 +78,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
         final int daysAgo = 7;
 
         // when & then
-        assertThatThrownBy(() -> organizationStatisticService.calculateStatistic(placeId, daysAgo))
+        assertThatThrownBy(() -> feedbackStatisticService.calculateStatistic(placeId, daysAgo))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -107,7 +107,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback3);
 
             // when
-            final StatisticResponse response = organizationStatisticService.calculateStatistic(1L, 1);
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, 1);
 
             // then
             assertThat(response.totalCount()).isEqualTo(1);
@@ -142,7 +142,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback3);
 
             // when
-            final StatisticResponse response = organizationStatisticService.calculateStatistic(1L, 1);
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, 1);
 
             // then
             assertThat(response.totalCount()).isEqualTo(2); //targetDate2, targetDate3
@@ -164,7 +164,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback2);
 
             // when
-            final StatisticResponse response = organizationStatisticService.calculateStatistic(1L, 7);
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, 7);
 
             // then
             assertThat(response.totalCount()).isEqualTo(1);
