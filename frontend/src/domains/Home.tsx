@@ -1,6 +1,7 @@
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
 import OnBoarding from '@/domains/components/OnBoarding/OnBoarding';
 import useProgressStep from '@/hooks/useProgressStep';
+import FeedbackPage from '@/domains/components/FeedbackPage/FeedbackPage';
 import { css } from '@emotion/react';
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
     <section css={container}>
       <ProgressBar currentStep={currentStep} totalStep={totalStep} />
       {currentStep === 1 && <OnBoarding moveNextStep={moveNextStep} />}
+      {currentStep === 2 && <FeedbackPage />}
     </section>
   );
 }
