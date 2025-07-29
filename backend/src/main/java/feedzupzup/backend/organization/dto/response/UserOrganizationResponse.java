@@ -1,4 +1,4 @@
-package feedzupzup.backend.organization.dto;
+package feedzupzup.backend.organization.dto.response;
 
 import feedzupzup.backend.organization.domain.Organization;
 import io.swagger.v3.oas.annotations.media.Schema;
