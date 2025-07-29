@@ -155,6 +155,18 @@ export const typography = {
       fontSize: 16,
       letterSpacing: 0,
     },
+    captionSmall: {
+      fontFamily: `${fontStyle}, sans-serif`,
+      fontWeight: 400,
+      fontSize: 14,
+      letterSpacing: 0,
+    },
+    captionSmallBold: {
+      fontFamily: `${fontStyle}, sans-serif`,
+      fontWeight: 600,
+      fontSize: 14,
+      letterSpacing: 0,
+    },
   },
   BMHANNAAir: {
     caption: {
