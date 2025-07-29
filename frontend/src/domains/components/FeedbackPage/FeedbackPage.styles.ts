@@ -1,13 +1,6 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const skipText = (theme: Theme) => css`
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-  color: ${theme.colors.darkGray[100]};
-`;
-
 export const container = css`
   display: flex;
   flex-direction: column;
@@ -26,6 +19,7 @@ export const title = (theme: Theme) => css`
 export const subTitle = (theme: Theme) => css`
   ${theme.typography.inter.small}
 
+  line-height: 1.5;
   color: ${theme.colors.darkGray[100]};
 `;
 
@@ -52,16 +46,9 @@ export const question = (theme: Theme) => css`
 
 export const questionContainer = (theme: Theme) => css`
   position: relative;
-  margin-top: 10px;
+  margin-bottom: 80px;
   padding: 24px 0;
   text-align: center;
   background-color: ${theme.colors.white[300]};
   border-radius: 16px;
-`;
-
-export const buttonContainer = css`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 32px;
 `;

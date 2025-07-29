@@ -4,10 +4,7 @@ import { Theme } from '@/theme';
 export const container = css`
   position: relative;
   width: 100%;
-  max-width: 384px;
-  height: 100%;
   margin: 0 auto;
-  padding: 16px;
 `;
 
 export const formContainer = css`
