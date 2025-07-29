@@ -16,7 +16,7 @@ export const formContainer = css`
 export const userInfo = (theme: Theme) => css`
   position: absolute;
   top: 24px;
-  left: 79px;
+  left: 66px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -129,6 +129,7 @@ export const textareaContainer = (theme: Theme) => css`
 
 export const textarea = (theme: Theme) => css`
   position: absolute;
+  padding: 10px 16px;
   inset: 8px;
   color: ${theme.colors.brown[300]};
   background: transparent;
