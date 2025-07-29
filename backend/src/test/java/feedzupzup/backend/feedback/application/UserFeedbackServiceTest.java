@@ -14,6 +14,7 @@ import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFee
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,8 +46,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_success() {
             //given
-            final Organization organization = new Organization("테스트장소");
-            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
+        final Organization organization = OrganizationFixture.createAllRandom();
+
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
 
             //when
             final Organization savedOrganization = organizationRepository.save(organization);

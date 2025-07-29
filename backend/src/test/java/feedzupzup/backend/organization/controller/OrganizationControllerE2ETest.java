@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.equalTo;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.dto.request.CheeringRequest;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("단체 ID로 단체 이름을 성공적으로 조회한다")
     void get_organization_name_success() {
         // given
-        final Organization organization = new Organization("우아한테크코스");
+        final Organization organization = OrganizationFixture.createAllRandom();
         final Organization savedOrganization = organizationRepository.save(organization);
 
         // when & then
@@ -51,5 +53,28 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .contentType(ContentType.JSON);
+    }
+
+    @Test
+    @DisplayName("요청한 응원수만큼 해당 단체 id로 조회된 단체의 총 응원수가 증가한다.")
+    void cheer_organization_by_id() {
+        // given
+        final Organization organization = OrganizationFixture.createAllRandom();
+
+        final Organization savedOrganization = organizationRepository.save(organization);
+
+        CheeringRequest request = new CheeringRequest(100);
+
+        // when & then
+        given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when()
+                .post("/organizations/{organizationId}/cheering", savedOrganization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("cheeringTotalCount", equalTo(100));
     }
 }
