@@ -1,5 +1,5 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
+
 import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
 import {
   container,
@@ -10,32 +10,35 @@ import {
   textareaContainer,
   textarea,
   toggleButtonContainer,
-  submitButtonContainer,
   toggleButtonText,
 } from './FeedbackInput.styles';
 
-import BasicButton from '@/components/BasicButton/BasicButton';
-import SendIcon from '@/components/icons/SendIcon';
 import Button from '@/components/@commons/Button/Button';
 import TextArea from '@/components/@commons/TextArea/TextArea';
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 
 export interface FeedbackInputProps {
   className?: string;
+  feedback: string;
+  username: string;
+  isLocked: boolean;
+  canSubmit: boolean;
+  onFeedbackChange: (value: string) => void;
+  onRandomChange: () => void;
+  onLockToggle: () => void;
+  onSubmit: () => void;
 }
 
-export default function FeedbackInput({ className }: FeedbackInputProps) {
+export default function FeedbackInput({
+  className,
+  feedback,
+  username,
+  isLocked,
+  onFeedbackChange,
+  onRandomChange,
+  onLockToggle,
+}: FeedbackInputProps) {
   const theme = useAppTheme();
-  const {
-    feedback,
-    username,
-    isLocked,
-    handleFeedbackChange,
-    handleRandomChange,
-    handleLockToggle,
-    canSubmit,
-    handleSubmit,
-  } = useFeedbackForm();
 
   return (
     <div css={container} className={className}>
@@ -45,7 +48,7 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
         </div>
 
         <Button
-          onClick={handleRandomChange}
+          onClick={onRandomChange}
           disabled={isLocked}
           css={randomButton(theme)}
         >
@@ -57,7 +60,7 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
         <div css={textareaContainer(theme)}>
           <TextArea
             value={feedback}
-            onChange={handleFeedbackChange}
+            onChange={(e) => onFeedbackChange(e.target.value)}
             placeholder={FEEDBACK_INPUT_CONSTANTS.PLACEHOLDER}
             customCSS={textarea(theme)}
             maxLength={FEEDBACK_INPUT_CONSTANTS.DEFAULTS.MAX_LENGTH}
@@ -68,27 +71,10 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
       <div css={toggleButtonContainer}>
         <BasicToggleButton
           isToggled={isLocked}
-          onClick={handleLockToggle}
+          onClick={onLockToggle}
           name='lock'
         />
         <p css={toggleButtonText(theme)}>비밀글로 작성</p>
-      </div>
-      <div css={submitButtonContainer}>
-        <BasicButton
-          type='submit'
-          disabled={!canSubmit}
-          variant={canSubmit ? 'primary' : 'disabled'}
-          icon={
-            <SendIcon
-              color={
-                canSubmit ? theme.colors.white[100] : theme.colors.gray[500]
-              }
-            />
-          }
-          onClick={handleSubmit}
-        >
-          피드백 제출
-        </BasicButton>
       </div>
     </div>
   );

@@ -8,11 +8,19 @@ export const skipText = (theme: Theme) => css`
   color: ${theme.colors.darkGray[100]};
 `;
 
+export const buttonGroupContainer = css`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: auto;
+  padding-bottom: 70px;
+`;
+export const submitButtonContainer = css`
+  display: flex;
+  justify-content: center;
+`;
+
 export const skipButtonContainer = css`
-  position: absolute;
-  top: 590px;
-  right: 0;
-  left: 0;
   display: flex;
   justify-content: center;
 `;
@@ -24,11 +32,24 @@ export const contentContainer = css`
 
 export const container = css`
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 100%;
-  min-height: 500px; /* 최소 높이 설정 */
+  height: 100vh;
+  min-height: 500px;
   text-align: center;
-  overflow: hidden; /* 스크롤 방지 */
+`;
+
+export const mainContent = css`
+  display: flex;
+  flex: 1; /* 남은 공간 모두 차지 */
+  flex-direction: column;
+`;
+
+export const arrowLeftIconContainer = css`
+  position: absolute;
+  top: 0;
+  left: 0;
 `;
 
 export const titleContainer = css`
@@ -36,7 +57,7 @@ export const titleContainer = css`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 70px;
 `;
 
 export const title = (theme: Theme) => css`

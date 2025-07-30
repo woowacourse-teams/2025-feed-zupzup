@@ -130,10 +130,3 @@ export const toggleButtonText = (theme: Theme) => css`
   margin-left: 10px;
   color: ${theme.colors.gray[600]};
 `;
-
-export const submitButtonContainer = css`
-  position: absolute;
-  top: 350px;
-  left: 0;
-  width: 100%;
-`;
