@@ -53,7 +53,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         feedBackRepository.save(waitingFeedback);
         feedBackRepository.save(confirmedFeedback2);
 
-        final int daysAgo = 7; // 7일 전 이후의 피드백만 조회
+        final String daysAgo = "WEEK"; // 7일 전 이후의 피드백만 조회
 
         // when
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
@@ -76,7 +76,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     void calculateStatistic_withNoFeedbacks() {
         // given
         final Long organizationId = 999L; // 존재하지 않는 장소 ID
-        final int daysAgo = 7;
+        final String daysAgo = "WEEK";
 
         // when & then
         assertThatThrownBy(() -> feedbackStatisticService.calculateStatistic(organizationId, daysAgo))
@@ -108,7 +108,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback3);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, 1);
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, "TODAY");
 
             // then
             assertThat(response.totalCount()).isEqualTo(1);
@@ -143,7 +143,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback3);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, 1);
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, "TODAY");
 
             // then
             assertThat(response.totalCount()).isEqualTo(2); //targetDate2, targetDate3
@@ -165,7 +165,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback2);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, 7);
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, "WEEK");
 
             // then
             assertThat(response.totalCount()).isEqualTo(1);

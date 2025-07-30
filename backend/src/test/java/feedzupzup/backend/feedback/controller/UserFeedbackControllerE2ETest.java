@@ -287,7 +287,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
-                .queryParam("requestDate", 7) // 7일 기간으로 통계 요청
+                .queryParam("period", "WEEK") // 7일 기간으로 통계 요청
                 .when()
                 .get("/organizations/{organizationId}/statistic", organizationId)
                 .then().log().all()

@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedbacks;
+import feedzupzup.backend.feedback.domain.StatisticTargetPeriod;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -21,11 +22,11 @@ public class FeedbackStatisticService {
     private final FeedBackRepository feedBackRepository;
     private final OrganizationRepository organizationRepository;
 
-    public StatisticResponse calculateStatistic(final Long organizationId, final int period) {
+    public StatisticResponse calculateStatistic(final Long organizationId, final String period) {
         final Organization organization = findOrganizationBy(organizationId);
-        final int targetPeriod = period - 1;
+        final StatisticTargetPeriod targetPeriod = StatisticTargetPeriod.from(period);
         final LocalDateTime targetDateTime = LocalDate.now(ZoneId.of("Asia/Seoul"))
-                .minusDays(targetPeriod).atStartOfDay();
+                .minusDays(targetPeriod.getValue()).atStartOfDay();
         final Feedbacks feedbacks = new Feedbacks(
                 feedBackRepository.findByOrganizationIdAndPostedAtAfter(
                         organization.getId(),
