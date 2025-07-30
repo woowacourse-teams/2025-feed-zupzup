@@ -9,7 +9,7 @@ export interface UseFeedbackFormReturn {
   isLocked: boolean;
   currentAvatar: string;
 
-  handleFeedbackChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleFeedbackChange: (value: string) => void;
   handleRandomChange: () => void;
   handleLockToggle: () => void;
   resetForm: () => void;
