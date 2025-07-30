@@ -72,8 +72,8 @@ tasks.register('copySecretAlloy', Copy) {
     into '.'
 }
 
-compileJava.dependsOn copySecret, copySecretTest
-processResources.dependsOn copySecret
+compileJava.dependsOn copySecret, copySecretTest, copySecretAlloy
+processResources.dependsOn copySecret, copySecretAlloy
 processTestResources.dependsOn copySecretTest
 
 test {
