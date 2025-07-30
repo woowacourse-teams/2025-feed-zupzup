@@ -9,7 +9,7 @@ import {
   skipText,
   buttonContainer,
   title,
-} from '@/domains/components/OnBoarding/OnBoarding.styles';
+} from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface OnBoardingProps {
