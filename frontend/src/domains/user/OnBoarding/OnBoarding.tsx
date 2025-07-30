@@ -1,3 +1,4 @@
+import { getOrganizationName } from '@/apis/organization.api';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import SkipIcon from '@/components/icons/SkipIcon';
 import {
@@ -11,6 +12,7 @@ import {
   title,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useEffect, useState } from 'react';
 
 interface OnBoardingProps {
   moveNextStep: () => void;
@@ -19,7 +21,16 @@ interface OnBoardingProps {
 export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
 
-  const placeName = '우아한테크코스 캠퍼스';
+  const [placeName, setPlaceName] = useState('피드줍줍');
+
+  useEffect(() => {
+    async function getOrganization() {
+      const response = await getOrganizationName({ organizationId: 1 });
+      setPlaceName(response!.data.organizationName);
+    }
+    getOrganization();
+  }, []);
+
   return (
     <section css={container}>
       <div>
