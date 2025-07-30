@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 import { generateRandomUsername } from '../utils/feedbackUtils';
 
 export interface UseUsernameReturn {
@@ -12,7 +12,7 @@ export interface UseUsernameReturn {
 
 export function useUsername(isLocked: boolean): UseUsernameReturn {
   const [username, setUsername] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.USERNAME
+    FEEDBACK_FORM_CONSTANTS.DEFAULTS.USERNAME
   );
 
   const [isUsernameEdited, setIsUsernameEdited] = useState(false);
@@ -42,7 +42,7 @@ export function useUsername(isLocked: boolean): UseUsernameReturn {
   }, [isUsernameEdited]);
 
   const resetUsername = useCallback(() => {
-    setUsername(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.USERNAME);
+    setUsername(FEEDBACK_FORM_CONSTANTS.DEFAULTS.USERNAME);
     setIsUsernameEdited(false);
   }, []);
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 
 export interface UseFeedbackInputReturn {
   feedback: string;
@@ -9,7 +9,7 @@ export interface UseFeedbackInputReturn {
 
 export function useFeedbackInput(): UseFeedbackInputReturn {
   const [feedback, setFeedback] = useState<string>(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.FEEDBACK
+    FEEDBACK_FORM_CONSTANTS.DEFAULTS.FEEDBACK
   );
 
   const handleFeedbackChange = useCallback((value: string) => {
@@ -17,7 +17,7 @@ export function useFeedbackInput(): UseFeedbackInputReturn {
   }, []);
 
   const resetFeedback = useCallback(() => {
-    setFeedback(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.FEEDBACK);
+    setFeedback(FEEDBACK_FORM_CONSTANTS.DEFAULTS.FEEDBACK);
   }, []);
 
   return {

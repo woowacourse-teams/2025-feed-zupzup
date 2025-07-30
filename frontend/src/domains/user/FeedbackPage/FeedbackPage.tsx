@@ -10,7 +10,7 @@ import {
   mainContent,
 } from '@/domains/user/FeedbackPage/FeedbackPage.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackInput';
+import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import SkipIcon from '@/components/icons/SkipIcon';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';

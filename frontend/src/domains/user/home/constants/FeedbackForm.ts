@@ -7,7 +7,7 @@ import avatar6 from '@/assets/images/avatar6.png';
 import avatar7 from '@/assets/images/avatar7.png';
 import avatar8 from '@/assets/images/avatar8.png';
 
-export const FEEDBACK_INPUT_CONSTANTS = {
+export const FEEDBACK_FORM_CONSTANTS = {
   ADJECTIVES: [
     '다정한',
     '귀여운',

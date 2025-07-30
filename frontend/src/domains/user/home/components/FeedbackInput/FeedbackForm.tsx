@@ -1,6 +1,6 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 import {
   container,
   formContainer,
@@ -12,14 +12,14 @@ import {
   textarea,
   toggleButtonContainer,
   toggleButtonText,
-} from './FeedbackInput.styles';
+} from './FeedbackForm.styles';
 
 import Button from '@/components/@commons/Button/Button';
 import TextArea from '@/components/@commons/TextArea/TextArea';
 import Input from '@/components/@commons/Input/Input'; // 추가
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 
-export interface FeedbackInputProps {
+export interface FeedbackFormProps {
   className?: string;
   feedback: string;
   username: string;
@@ -33,7 +33,7 @@ export interface FeedbackInputProps {
   onSubmit: () => void;
 }
 
-export default function FeedbackInput({
+export default function FeedbackForm({
   className,
   feedback,
   username,
@@ -43,7 +43,7 @@ export default function FeedbackInput({
   onUsernameFocus,
   onRandomChange,
   onLockToggle,
-}: FeedbackInputProps) {
+}: FeedbackFormProps) {
   const theme = useAppTheme();
 
   return (
@@ -76,10 +76,10 @@ export default function FeedbackInput({
           <TextArea
             value={feedback}
             onChange={(e) => onFeedbackChange(e.target.value)}
-            placeholder={FEEDBACK_INPUT_CONSTANTS.PLACEHOLDER}
+            placeholder={FEEDBACK_FORM_CONSTANTS.PLACEHOLDER}
             customCSS={textarea(theme)}
-            maxLength={FEEDBACK_INPUT_CONSTANTS.DEFAULTS.MAX_LENGTH}
-            minLength={FEEDBACK_INPUT_CONSTANTS.DEFAULTS.MIN_LENGTH}
+            maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
+            minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
         </div>
       </div>
