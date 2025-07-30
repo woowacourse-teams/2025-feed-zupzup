@@ -1,29 +1,22 @@
 package feedzupzup.backend.feedback.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
-import feedzupzup.backend.feedback.domain.PostedAt;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
-import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,9 +37,6 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedbackLikeService feedbackLikeService;
 
-    @Autowired
-    private FeedbackStatisticService feedbackStatisticService;
-
     @BeforeEach
     void clear() {
         feedbackLikeRepository.clear();
@@ -56,8 +46,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_success() {
             //given
-            final Organization organization = new Organization("테스트장소");
-            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
 
             //when
             final Organization savedOrganization = organizationRepository.save(organization);

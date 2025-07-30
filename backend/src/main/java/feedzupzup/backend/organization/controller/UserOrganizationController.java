@@ -3,7 +3,9 @@ package feedzupzup.backend.organization.controller;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.api.UserOrganizationApi;
 import feedzupzup.backend.organization.application.UserOrganizationService;
-import feedzupzup.backend.organization.dto.UserOrganizationResponse;
+import feedzupzup.backend.organization.dto.request.CheeringRequest;
+import feedzupzup.backend.organization.dto.response.CheeringResponse;
+import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,4 +21,14 @@ public class UserOrganizationController implements UserOrganizationApi {
         final UserOrganizationResponse response = userOrganizationService.getOrganizationById(organizationId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
+
+    @Override
+    public SuccessResponse<CheeringResponse> cheerByOrganizationId(
+            final Long organizationId,
+            final CheeringRequest request
+    ) {
+        CheeringResponse response = userOrganizationService.cheer(request, organizationId);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
 }

@@ -15,6 +15,7 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -160,7 +161,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_feedback_success() {
         // given
-        final Organization organization = new Organization("테스트장소");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
@@ -186,7 +188,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 비밀 피드백을 성공적으로 생성한다")
     void user_create_secret_feedback_success() {
         // given
-        final Organization organization = new Organization("테스트장소");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저");
 
@@ -212,7 +215,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 새로 생성한 피드백이 목록에 나타난다")
     void user_create_feedback_appears_in_list() {
         // given
-        final Organization organization = new Organization("테스트장소");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", false, "테스트유저");
 
@@ -250,7 +254,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 특정 장소의 통계를 성공적으로 조회한다")
     void user_get_statistic_success() {
         // given
-        final Organization organization = new Organization("통계테스트장소");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
         final Organization savedOrganization = organizationRepository.save(organization);
         final Long organizationId = savedOrganization.getId();
 
