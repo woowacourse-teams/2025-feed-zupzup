@@ -3,7 +3,7 @@ import {
   imgLayout,
   userNameStyle,
 } from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader.style';
-import useRandomAvatar from '@/domains/hooks/useRandomAvata';
+import useAvatarSelector from '@/domains/hooks/useAvatarSelector';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
@@ -18,7 +18,7 @@ export default function FeedbackBoxHeader({
   userName,
   type,
 }: FeedbackBoxHeaderProps) {
-  const userImage = useRandomAvatar({ feedbackId });
+  const userImage = useAvatarSelector({ feedbackId });
   const theme = useAppTheme();
 
   return (

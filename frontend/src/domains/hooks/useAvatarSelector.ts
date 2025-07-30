@@ -2,16 +2,18 @@ import IMG1 from '@/assets/images/avatar1.png';
 import { userImages } from '@/utils/getUserImages';
 import { useEffect, useState } from 'react';
 
-interface UseRandomAvatarProps {
+interface UseAvatarSelectorProps {
   feedbackId: number;
 }
 
-export default function useRandomAvatar({ feedbackId }: UseRandomAvatarProps) {
+export default function useAvatarSelector({
+  feedbackId,
+}: UseAvatarSelectorProps) {
   const [userImage, setUserImage] = useState(IMG1);
 
   useEffect(() => {
-    const random = feedbackId % userImages.length;
-    setUserImage(userImages[random]);
+    const imgId = feedbackId % userImages.length;
+    setUserImage(userImages[imgId]);
   }, []);
 
   return userImage;
