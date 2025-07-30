@@ -31,7 +31,11 @@ export default function AdminFeedbackBox({
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
-        <FeedbackBoxHeader userName={userName} type={type} />
+        <FeedbackBoxHeader
+          userName={userName}
+          type={type}
+          feedbackId={feedbackId}
+        />
         <div css={iconWrap}>
           {type === 'WAITING' && (
             <IconButton
