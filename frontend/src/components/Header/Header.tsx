@@ -23,7 +23,10 @@ export default function Header({ title, subtitle }: HeaderProps) {
   return (
     <header css={header}>
       <div css={headerSection}>
-        <IconButton icon={<ArrowLeftIcon />} onClick={() => navigate(-1)} />
+        <IconButton
+          icon={<ArrowLeftIcon width={14} height={15} strokeWidth={1.16667} />}
+          onClick={() => navigate(-1)}
+        />
         <div css={captionSection}>
           <p css={headerTitle(theme)}>{title}</p>
           <p css={headerSubtitle(theme)}>{subtitle}</p>
