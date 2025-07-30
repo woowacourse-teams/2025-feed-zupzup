@@ -29,7 +29,7 @@ export const uploadButton = (theme: Theme) => css`
   color: ${theme.colors.yellow[200]};
   background-color: white;
   border: 1px solid ${theme.colors.yellow[200]};
-  border-radius: 9999px;
+  border-radius: 50%;
 
   ${theme.typography.inter.caption};
 `;

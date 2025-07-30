@@ -3,8 +3,8 @@ import React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import FeedbackBoxList from './FeedbackBoxList';
-import UserFeedbackBox from '@/domains/user/home/components/UserFeedbackBox/UserFeedbackBox';
-import AdminFeedbackBox from '@/domains/admin/home/components/AdminFeedbackBox';
+import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
+import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 
 const meta: Meta<typeof FeedbackBoxList> = {
   title: 'Common/FeedbackBoxList',
@@ -42,6 +42,7 @@ const userFeedbackWaiting = {
   isSecret: false,
   createdAt: '2024-05-20',
   customCSS: null,
+  userName: '익명의 사용자',
 } as const;
 
 const userFeedbackConfirmed = {
@@ -55,6 +56,7 @@ const userFeedbackConfirmed = {
   isSecret: false,
   createdAt: '2024-05-19',
   customCSS: null,
+  userName: '김개발',
 } as const;
 
 const adminFeedbackWaiting = {

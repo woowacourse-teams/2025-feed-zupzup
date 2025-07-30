@@ -41,10 +41,6 @@ const meta: Meta<typeof UserFeedbackBox> = {
       control: 'date',
       description: '작성일',
     },
-    customCSS: {
-      control: false,
-      description: '커스텀 스타일 (Emotion SerializedStyles)',
-    },
   },
   decorators: [
     (Story) => (
@@ -67,7 +63,6 @@ export const Incomplete: Story = {
     isLiked: false,
     isSecret: false,
     createdAt: '2024-05-20T123',
-    customCSS: null,
   },
 };
 
@@ -80,6 +75,5 @@ export const Complete: Story = {
     isLiked: false,
     isSecret: false,
     createdAt: '2024-05-20T123',
-    customCSS: null,
   },
 };

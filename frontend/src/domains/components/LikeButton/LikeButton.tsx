@@ -1,7 +1,8 @@
-import EmptyHeartIcon from '../../../components/icons/EmptyHeartIcon';
-import FillHeartIcon from '../../../components/icons/FillHeartIcon';
 import Button from '@/components/@commons/Button/Button';
 import useLikeButtonManager from '@/domains/hooks/useLikeButtonManager';
+import EmptyHeartIcon from '../../../components/icons/EmptyHeartIcon';
+import FillHeartIcon from '../../../components/icons/FillHeartIcon';
+import { likeButton } from '@/domains/components/LikeButton/LikeButton.style';
 
 interface LikeButtonProps {
   like: boolean | undefined;
@@ -21,11 +22,9 @@ export default function LikeButton({
   });
 
   return (
-    <div>
-      <Button onClick={handleLikeButton}>
-        {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
-      </Button>
+    <Button onClick={handleLikeButton} css={likeButton}>
+      {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       {tempLikeCount}
-    </div>
+    </Button>
   );
 }

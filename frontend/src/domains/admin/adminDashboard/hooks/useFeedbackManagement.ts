@@ -1,14 +1,14 @@
+import { FeedbackType } from '@/types/feedback.types';
 import { useState, useEffect } from 'react';
-import { AdminFeedback } from '@/types/feedback.types';
 
 interface UseFeedbackManagementProps {
-  originalFeedbacks: AdminFeedback[];
+  originalFeedbacks: FeedbackType[];
 }
 
 export default function useFeedbackManagement({
   originalFeedbacks,
 }: UseFeedbackManagementProps) {
-  const [feedbacks, setFeedbacks] = useState<AdminFeedback[]>([]);
+  const [feedbacks, setFeedbacks] = useState<FeedbackType[]>([]);
 
   useEffect(() => {
     setFeedbacks(originalFeedbacks);
@@ -20,7 +20,7 @@ export default function useFeedbackManagement({
         if (feedback.feedbackId === feedbackId) {
           return {
             ...feedback,
-            status: 'CONFIRMED' as AdminFeedback['status'],
+            status: 'CONFIRMED' as FeedbackType['status'],
           };
         }
         return feedback;
