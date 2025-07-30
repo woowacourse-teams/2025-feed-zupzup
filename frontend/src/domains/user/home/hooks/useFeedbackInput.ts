@@ -1,26 +1,23 @@
 import { useState, useCallback } from 'react';
-import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 
 export interface UseFeedbackInputReturn {
   feedback: string;
-  handleFeedbackChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  handleFeedbackChange: (value: string) => void;
   resetFeedback: () => void;
 }
 
 export function useFeedbackInput(): UseFeedbackInputReturn {
-  const [feedback, setFeedback] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.FEEDBACK
+  const [feedback, setFeedback] = useState<string>(
+    FEEDBACK_FORM_CONSTANTS.DEFAULTS.FEEDBACK
   );
 
-  const handleFeedbackChange = useCallback(
-    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setFeedback(event.target.value as typeof feedback);
-    },
-    []
-  );
+  const handleFeedbackChange = useCallback((value: string) => {
+    setFeedback(value as typeof feedback);
+  }, []);
 
   const resetFeedback = useCallback(() => {
-    setFeedback(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.FEEDBACK);
+    setFeedback(FEEDBACK_FORM_CONSTANTS.DEFAULTS.FEEDBACK);
   }, []);
 
   return {

@@ -16,11 +16,12 @@ export const formContainer = css`
 export const userInfo = (theme: Theme) => css`
   position: absolute;
   top: 24px;
-  left: 66px;
+  left: 34px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 120px;
+  align-items: flex-start;
+  width: calc(100% - 124px);
   height: 45px;
   color: ${theme.colors.gray[600]};
   transform: translateY(-50%);
@@ -34,7 +35,7 @@ export const userInfo = (theme: Theme) => css`
 export const randomButton = (theme: Theme) => css`
   position: absolute;
   top: 8px;
-  right: 60px;
+  right: 16px;
   z-index: 10;
   display: flex;
   justify-content: center;
@@ -60,25 +61,14 @@ export const randomButton = (theme: Theme) => css`
   }
 `;
 
-export const avatar = (avatarUrl: string) => css`
-  position: absolute;
-  top: 0;
-  left: 10px;
-  width: 45px;
-  height: 45px;
-  background-image: url('${avatarUrl}');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-`;
-
 export const topInputBorder = (theme: Theme) => css`
   position: absolute;
   top: 0;
-  right: 50px;
-  left: 62px;
+  right: 10px;
+  left: 10px;
   height: 50px;
   border-radius: 10px;
+  pointer-events: none;
 
   &::after {
     content: '';
@@ -90,31 +80,12 @@ export const topInputBorder = (theme: Theme) => css`
   }
 `;
 
-export const lockButton = (theme: Theme) => css`
-  position: absolute;
-  top: 13px;
-  right: 20px;
-  z-index: 10;
-  width: 16px;
-  height: 16px;
-  padding: 0;
-  color: ${theme.colors.gray[500]};
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.7;
-  }
-`;
-
 export const textareaContainer = (theme: Theme) => css`
   position: absolute;
   top: 61px;
   right: 11px;
   left: 11px;
-  height: 224px;
+  height: 150px;
   border-radius: 10px;
 
   &::after {
@@ -142,5 +113,41 @@ export const textarea = (theme: Theme) => css`
 
   &::placeholder {
     color: ${theme.colors.gray[500]};
+  }
+`;
+
+export const toggleButtonContainer = css`
+  position: absolute;
+  top: 226px;
+  left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const toggleButtonText = (theme: Theme) => css`
+  ${theme.typography.inter.captionSmall}
+
+  margin-left: 10px;
+  color: ${theme.colors.gray[600]};
+`;
+
+export const usernameInput = (theme: Theme) => css`
+  width: 100%;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: center;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  &::placeholder {
+    color: ${theme.colors.gray[400]};
+  }
+
+  &:disabled {
+    color: ${theme.colors.gray[500]};
+    cursor: not-allowed;
   }
 `;
