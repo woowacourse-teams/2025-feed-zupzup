@@ -4,12 +4,17 @@ import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
+import feedzupzup.backend.feedback.domain.Feedbacks;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +31,9 @@ public class UserFeedbackService {
     private final OrganizationRepository organizationRepository;
 
     @Transactional
-    public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long organizationId) {
-        final Organization organization = organizationRepository.findById(organizationId)
-                .orElseThrow(() -> new ResourceNotFoundException("단체를 찾을 수 없습니다."));
+    public CreateFeedbackResponse create(final CreateFeedbackRequest request,
+            final Long organizationId) {
+        final Organization organization = findOrganizationBy(organizationId);
         final Feedback newFeedback = request.toFeedback(organization.getId());
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
@@ -52,5 +57,10 @@ public class UserFeedbackService {
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
+    }
+
+    private Organization findOrganizationBy(final Long organizationId) {
+        return organizationRepository.findById(organizationId)
+                .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 }

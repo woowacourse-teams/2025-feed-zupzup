@@ -2,10 +2,12 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
+import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     private final UserFeedbackService userFeedbackService;
     private final FeedbackLikeService feedbackLikeService;
+    private final FeedbackStatisticService feedbackStatisticService;
 
     @Override
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
@@ -48,6 +51,17 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<LikeResponse> unlike(final Long feedbackId) {
         final LikeResponse response = feedbackLikeService.unLike(feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<StatisticResponse> getStatistic(
+            final Long organizationId,
+            final String period
+    ) {
+        final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+                organizationId, period
+        );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }
