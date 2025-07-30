@@ -12,7 +12,7 @@ class CheeringCountTest {
     @Test
     void exception_create_negative_value_cheering_count() {
         // given
-        int negativeValue = -1;
+        final int negativeValue = -1;
 
         // when & then
         assertThatThrownBy(() -> new CheeringCount(negativeValue))
@@ -23,10 +23,10 @@ class CheeringCountTest {
     @Test
     void add_cheering_count() {
         // given
-        int originValue = 100;
-        int updateValue = 50;
-        CheeringCount origin = new CheeringCount(originValue);
-        CheeringCount update = new CheeringCount(updateValue);
+        final int originValue = 100;
+        final int updateValue = 50;
+        final CheeringCount origin = new CheeringCount(originValue);
+        final CheeringCount update = new CheeringCount(updateValue);
 
         // when
         origin.add(update);

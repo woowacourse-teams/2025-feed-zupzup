@@ -64,7 +64,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
-        CheeringRequest request = new CheeringRequest(100);
+        final CheeringRequest request = new CheeringRequest(100);
 
         // when
         final CheeringResponse response = userOrganizationService.cheer(request, savedOrganization.getId());

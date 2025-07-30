@@ -63,7 +63,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
 
         final Organization savedOrganization = organizationRepository.save(organization);
 
-        CheeringRequest request = new CheeringRequest(100);
+        final CheeringRequest request = new CheeringRequest(100);
 
         // when & then
         given()
