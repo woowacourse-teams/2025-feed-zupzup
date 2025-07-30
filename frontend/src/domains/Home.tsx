@@ -1,7 +1,8 @@
 import ProgressBar from '@/components/ProgressBar/ProgressBar';
-import OnBoarding from '@/domains/components/OnBoarding/OnBoarding';
+import FeedbackPage from '@/domains/user/FeedbackPage/FeedbackPage';
+import OnBoarding from '@/domains/user/OnBoarding/OnBoarding';
 import useProgressStep from '@/hooks/useProgressStep';
-import FeedbackPage from '@/domains/components/FeedbackPage/FeedbackPage';
+
 import { css } from '@emotion/react';
 
 export default function Home() {

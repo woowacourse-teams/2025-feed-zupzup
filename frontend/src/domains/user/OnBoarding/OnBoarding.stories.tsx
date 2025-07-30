@@ -1,5 +1,5 @@
+import OnBoarding from '@/domains/user/OnBoarding/OnBoarding';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import OnBoarding from '@/domains/components/OnBoarding/OnBoarding';
 
 const meta: Meta<typeof OnBoarding> = {
   title: 'component/OnBoarding',

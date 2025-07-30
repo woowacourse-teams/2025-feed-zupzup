@@ -3,7 +3,7 @@ import LockIcon from '@/components/icons/LockIcon';
 import {
   secretOption,
   secretText,
-} from '@/domains/user/suggestions/components/SecretPostOption/SecretPostOption.style';
+} from '@/domains/user/FeedbackPage/components/SecretPostOption/SecretPostOption.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface SecretPostOptionProps extends React.ComponentProps<'button'> {

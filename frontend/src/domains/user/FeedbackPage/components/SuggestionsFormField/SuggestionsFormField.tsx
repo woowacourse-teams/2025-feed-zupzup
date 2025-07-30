@@ -1,7 +1,7 @@
 import {
   fieldLabel,
   formField,
-} from '@/domains/user/suggestions/components/SuggestionsFormField/SuggestionsFormField.style';
+} from '@/domains/user/FeedbackPage/components/SuggestionsFormField/SuggestionsFormField.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 export interface SuggestionsFormFieldProps {
