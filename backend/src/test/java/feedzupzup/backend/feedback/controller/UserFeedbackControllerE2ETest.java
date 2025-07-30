@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
+import static feedzupzup.backend.feedback.domain.ProcessStatus.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -132,7 +133,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Long targetOrganizationId = 1L;
         final Long otherOrganizationId = 2L;
-        
+
         final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId);
         final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId);
         final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganizationId);
@@ -247,5 +248,60 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[0].feedbackId", equalTo(createdFeedbackId.intValue()))
                 .body("data.feedbacks[0].content", equalTo("새 피드백"))
                 .body("data.feedbacks[0].isSecret", equalTo(false));
+    }
+
+    @Test
+    @DisplayName("사용자가 특정 장소의 통계를 성공적으로 조회한다")
+    void user_get_statistic_success() {
+        // given
+        final Organization organization = new Organization("통계테스트장소");
+        final Organization savedOrganization = organizationRepository.save(organization);
+        final Long organizationId = savedOrganization.getId();
+
+        // 확인된 피드백 2개
+        final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+        confirmedFeedback1.updateStatus(CONFIRMED);
+        confirmedFeedback1.updateLikeCount(5); // 좋아요 5개
+
+        final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+        confirmedFeedback2.updateStatus(CONFIRMED);
+        confirmedFeedback2.updateLikeCount(3); // 좋아요 3개
+
+        // 대기 중인 피드백 3개
+        final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+        waitingFeedback1.updateStatus(WAITING);
+
+        final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+        waitingFeedback2.updateStatus(WAITING);
+
+        final Feedback waitingFeedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+        waitingFeedback3.updateStatus(WAITING);
+
+        // 다른 장소의 피드백 (통계에 포함되지 않음)
+        final Feedback otherPlaceFeedback = FeedbackFixture.createFeedbackWithOrganizationId(999L);
+
+        // 피드백 저장
+        feedBackRepository.save(confirmedFeedback1);
+        feedBackRepository.save(confirmedFeedback2);
+        feedBackRepository.save(waitingFeedback1);
+        feedBackRepository.save(waitingFeedback2);
+        feedBackRepository.save(waitingFeedback3);
+        feedBackRepository.save(otherPlaceFeedback);
+
+        // when & then
+        given()
+                .log().all()
+                .queryParam("period", "WEEK") // 7일 기간으로 통계 요청
+                .when()
+                .get("/organizations/{organizationId}/statistic", organizationId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.reflectionRate", equalTo(40))
+                .body("data.confirmedCount", equalTo(2))
+                .body("data.waitingCount", equalTo(3))
+                .body("data.totalCount", equalTo(5));
     }
 }
