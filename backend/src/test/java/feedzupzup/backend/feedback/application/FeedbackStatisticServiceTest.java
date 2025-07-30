@@ -14,6 +14,7 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     @DisplayName("특정 날짜 이후의 피드백에 대한 통계를 계산한다")
     void calculateStatistic_success() {
         // given
-        final Organization organization = new Organization("woowacourse");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(
@@ -90,7 +91,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         @Test
         @DisplayName("당일 조회 테스트 케이스")
         void one_day() {
-            final Organization organization = new Organization("woowacourse");
+            final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
             // given
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(2L));// 이틀 전
@@ -118,7 +119,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         @DisplayName("당일 조회 경곗값 케이스 테스트")
         void one_day_boundary_value() {
             // given
-            final Organization organization = new Organization("woowacourse");
+            final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
             // 당일 전날의 23:59시
@@ -153,7 +154,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         @DisplayName("일주일 간의 피드백에 대한 통계 테스트")
         void once_a_week() {
             // given
-            final Organization organization = new Organization("woowacourse");
+            final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(7L));
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(6L));
