@@ -17,7 +17,11 @@ import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import SendIcon from '@/components/icons/SendIcon';
 
-export default function FeedbackPage() {
+interface FeedbackPageProps {
+  movePrevStep: () => void;
+}
+
+export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
   const theme = useAppTheme();
   const {
     feedback,
@@ -32,7 +36,7 @@ export default function FeedbackPage() {
 
   return (
     <section css={container}>
-      <div css={arrowLeftIconContainer}>
+      <div css={arrowLeftIconContainer} onClick={movePrevStep}>
         <ArrowLeftIcon width={30} height={30} strokeWidth={0.5} />
       </div>
       <div css={mainContent}>
