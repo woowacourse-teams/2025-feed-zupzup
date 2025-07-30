@@ -1,5 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import SkipIcon from '@/components/icons/SkipIcon';
+import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import CategoryButton from '@/domains/components/CategoryButton/CategoryButton';
 import {
   container,
@@ -20,12 +21,13 @@ interface OnBoardingProps {
 export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
 
+  const { placeName } = useOrganizationName();
+    
   const handleCategoryButtonClick = () => {
     // api 통신
     moveNextStep();
   };
-
-  const placeName = '우아한테크코스 캠퍼스';
+    
   return (
     <section css={container}>
       <div>
