@@ -37,7 +37,7 @@ public interface UserOrganizationApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/organizations/{organizationId}/cheering")
+    @PostMapping("/organizations/{organizationId}/cheer")
     SuccessResponse<CheeringResponse> cheerByOrganizationId(
             @Parameter(description = "단체 ID", example = "1")
             @PathVariable("organizationId") final Long organizationId,
