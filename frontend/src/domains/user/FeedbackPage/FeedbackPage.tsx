@@ -16,6 +16,7 @@ import SkipIcon from '@/components/icons/SkipIcon';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import SendIcon from '@/components/icons/SendIcon';
+import { useNavigate } from 'react-router-dom';
 
 interface FeedbackPageProps {
   movePrevStep: () => void;
@@ -23,6 +24,7 @@ interface FeedbackPageProps {
 
 export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
   const theme = useAppTheme();
+  const navigate = useNavigate();
   const {
     feedback,
     username,
@@ -33,6 +35,15 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     canSubmit,
     handleSubmit,
   } = useFeedbackForm();
+
+  const handleSubmitAndNavigate = () => {
+    handleSubmit();
+    navigate('/dashboard');
+  };
+
+  const handleSkipAndNavigate = () => {
+    navigate('/dashboard');
+  };
 
   return (
     <section css={container}>
@@ -71,12 +82,16 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
               }
             />
           }
-          onClick={handleSubmit}
+          onClick={handleSubmitAndNavigate}
         >
           피드백 제출
         </BasicButton>
 
-        <BasicButton icon={<SkipIcon />} variant='secondary'>
+        <BasicButton
+          icon={<SkipIcon />}
+          variant='secondary'
+          onClick={handleSkipAndNavigate}
+        >
           <p css={skipText(theme)}>건너뛰기</p>
         </BasicButton>
       </div>
