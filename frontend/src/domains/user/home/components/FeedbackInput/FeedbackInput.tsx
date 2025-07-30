@@ -5,6 +5,7 @@ import {
   container,
   formContainer,
   userInfo,
+  usernameInput,
   randomButton,
   topInputBorder,
   textareaContainer,
@@ -15,6 +16,7 @@ import {
 
 import Button from '@/components/@commons/Button/Button';
 import TextArea from '@/components/@commons/TextArea/TextArea';
+import Input from '@/components/@commons/Input/Input'; // 추가
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 
 export interface FeedbackInputProps {
@@ -24,6 +26,8 @@ export interface FeedbackInputProps {
   isLocked: boolean;
   canSubmit: boolean;
   onFeedbackChange: (value: string) => void;
+  onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // 추가
+  onUsernameFocus: () => void;
   onRandomChange: () => void;
   onLockToggle: () => void;
   onSubmit: () => void;
@@ -35,6 +39,8 @@ export default function FeedbackInput({
   username,
   isLocked,
   onFeedbackChange,
+  onUsernameChange,
+  onUsernameFocus,
   onRandomChange,
   onLockToggle,
 }: FeedbackInputProps) {
@@ -44,7 +50,16 @@ export default function FeedbackInput({
     <div css={container} className={className}>
       <div css={formContainer}>
         <div css={userInfo(theme)}>
-          <p>{username}</p>
+          <Input
+            value={username}
+            onChange={onUsernameChange}
+            onFocus={onUsernameFocus}
+            placeholder='사용자 이름을 입력하세요'
+            customCSS={usernameInput(theme)}
+            maxLength={20}
+            minLength={1}
+            disabled={isLocked}
+          />
         </div>
 
         <Button

@@ -68,6 +68,7 @@ export const topInputBorder = (theme: Theme) => css`
   left: 10px;
   height: 50px;
   border-radius: 10px;
+  pointer-events: none;
 
   &::after {
     content: '';
@@ -129,4 +130,24 @@ export const toggleButtonText = (theme: Theme) => css`
 
   margin-left: 10px;
   color: ${theme.colors.gray[600]};
+`;
+
+export const usernameInput = (theme: Theme) => css`
+  width: 100%;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: center;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+
+  &::placeholder {
+    color: ${theme.colors.gray[400]};
+  }
+
+  &:disabled {
+    color: ${theme.colors.gray[500]};
+    cursor: not-allowed;
+  }
 `;

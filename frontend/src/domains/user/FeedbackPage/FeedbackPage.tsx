@@ -34,6 +34,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleLockToggle,
     canSubmit,
     handleSubmit,
+    handleUsernameChange,
+    handleUsernameFocus,
   } = useFeedbackForm();
 
   const handleSubmitAndNavigate = () => {
@@ -67,6 +69,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
           onRandomChange={handleRandomChange}
           onLockToggle={handleLockToggle}
           onSubmit={handleSubmit}
+          onUsernameChange={handleUsernameChange}
+          onUsernameFocus={handleUsernameFocus}
         />
       </div>
 
