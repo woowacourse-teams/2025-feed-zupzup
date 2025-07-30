@@ -33,18 +33,18 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleRandomChange,
     handleLockToggle,
     canSubmit,
-    handleSubmit,
     handleUsernameChange,
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const handleSubmitAndNavigate = () => {
-    handleSubmit();
+  const handleSkipAndNavigate = () => {
     navigate('/dashboard');
   };
 
-  const handleSkipAndNavigate = () => {
-    navigate('/dashboard');
+  const handleFormSubmitAndNavigate = () => {
+    if (canSubmit) {
+      navigate('/dashboard');
+    }
   };
 
   return (
@@ -52,7 +52,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
       <div css={arrowLeftIconContainer} onClick={movePrevStep}>
         <ArrowLeftIcon />
       </div>
-      <div css={mainContent}>
+
+      <form css={mainContent} onSubmit={handleFormSubmitAndNavigate}>
         <div css={contentContainer}>
           <div css={titleContainer}>
             <span css={mainTitle(theme)}>소중한 의견</span>
@@ -68,37 +69,36 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
           onFeedbackChange={handleFeedbackChange}
           onRandomChange={handleRandomChange}
           onLockToggle={handleLockToggle}
-          onSubmit={handleSubmit}
           onUsernameChange={handleUsernameChange}
           onUsernameFocus={handleUsernameFocus}
         />
-      </div>
 
-      <div css={buttonGroupContainer}>
-        <BasicButton
-          type='submit'
-          disabled={!canSubmit}
-          variant={canSubmit ? 'primary' : 'disabled'}
-          icon={
-            <SendIcon
-              color={
-                canSubmit ? theme.colors.white[100] : theme.colors.gray[500]
-              }
-            />
-          }
-          onClick={handleSubmitAndNavigate}
-        >
-          피드백 제출
-        </BasicButton>
+        <div css={buttonGroupContainer}>
+          <BasicButton
+            type='submit'
+            disabled={!canSubmit}
+            variant={canSubmit ? 'primary' : 'disabled'}
+            icon={
+              <SendIcon
+                color={
+                  canSubmit ? theme.colors.white[100] : theme.colors.gray[500]
+                }
+              />
+            }
+          >
+            피드백 제출
+          </BasicButton>
 
-        <BasicButton
-          icon={<SkipIcon />}
-          variant='secondary'
-          onClick={handleSkipAndNavigate}
-        >
-          <p css={skipText(theme)}>건너뛰기</p>
-        </BasicButton>
-      </div>
+          <BasicButton
+            type='button'
+            icon={<SkipIcon />}
+            variant='secondary'
+            onClick={handleSkipAndNavigate}
+          >
+            <p css={skipText(theme)}>건너뛰기</p>
+          </BasicButton>
+        </div>
+      </form>
     </section>
   );
 }

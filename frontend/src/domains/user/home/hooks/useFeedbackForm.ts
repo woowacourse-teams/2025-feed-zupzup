@@ -16,8 +16,6 @@ export interface UseFeedbackFormReturn {
   resetForm: () => void;
 
   canSubmit: boolean;
-  handleSubmit: () => void;
-  handleFormSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export function useFeedbackForm(): UseFeedbackFormReturn {
@@ -32,18 +30,6 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
   } = useUsername(isLocked);
 
   const canSubmit = feedback.trim().length > 0;
-
-  const handleSubmit = useCallback(() => {
-    if (!canSubmit) return;
-  }, [feedback, username, isLocked, canSubmit]);
-
-  const handleFormSubmit = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      handleSubmit();
-    },
-    [handleSubmit]
-  );
 
   const resetForm = useCallback(() => {
     resetFeedback();
@@ -64,7 +50,5 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
     resetForm,
 
     canSubmit,
-    handleSubmit,
-    handleFormSubmit,
   };
 }

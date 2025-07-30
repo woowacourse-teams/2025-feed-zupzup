@@ -26,11 +26,10 @@ export interface FeedbackFormProps {
   isLocked: boolean;
   canSubmit: boolean;
   onFeedbackChange: (value: string) => void;
-  onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // 추가
+  onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onUsernameFocus: () => void;
   onRandomChange: () => void;
   onLockToggle: () => void;
-  onSubmit: () => void;
 }
 
 export default function FeedbackForm({
