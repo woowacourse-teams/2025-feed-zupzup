@@ -50,7 +50,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
   return (
     <section css={container}>
       <div css={arrowLeftIconContainer} onClick={movePrevStep}>
-        <ArrowLeftIcon width={30} height={30} strokeWidth={0.5} />
+        <ArrowLeftIcon />
       </div>
       <div css={mainContent}>
         <div css={contentContainer}>
