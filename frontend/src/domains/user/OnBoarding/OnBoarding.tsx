@@ -22,12 +22,12 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
 
   const { placeName } = useOrganizationName();
-    
+
   const handleCategoryButtonClick = () => {
     // api 통신
     moveNextStep();
   };
-    
+
   return (
     <section css={container}>
       <div>
