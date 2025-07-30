@@ -34,7 +34,7 @@ export const questionTitle = (theme: Theme) => css`
 `;
 
 export const question = (theme: Theme) => css`
-  ${theme.typography.inter.small}
+  ${theme.typography.inter.caption}
 
   color: ${theme.colors.gray[600]};
 `;
@@ -52,7 +52,8 @@ export const questionContainer = (theme: Theme) => css`
 
 export const buttonContainer = css`
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
   margin-top: 32px;
 `;
