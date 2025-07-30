@@ -7,7 +7,7 @@ import {
   title,
   skipText,
   skipButtonContainer,
-} from '@/domains/components/FeedbackPage/FeedbackPage.styles';
+} from '@/domains/user/FeedbackPage/FeedbackPage.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackInput';
 import BasicButton from '@/components/BasicButton/BasicButton';

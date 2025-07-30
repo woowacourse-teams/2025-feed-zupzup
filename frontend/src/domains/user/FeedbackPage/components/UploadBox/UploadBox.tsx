@@ -5,7 +5,7 @@ import {
   uploadBox,
   uploadButton,
   uploadText,
-} from '@/domains/user/suggestions/components/UploadBox/UploadBox.style';
+} from '@/domains/user/FeedbackPage/components/UploadBox/UploadBox.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useRef } from 'react';
 

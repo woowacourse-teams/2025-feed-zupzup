@@ -1,4 +1,4 @@
-import IMG1 from '@/assets/images/user1.png';
+import IMG1 from '@/assets/images/avatar1.png';
 import { userImages } from '@/utils/getUserImages';
 import { useEffect, useState } from 'react';
 
