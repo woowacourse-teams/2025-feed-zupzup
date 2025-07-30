@@ -1,10 +1,10 @@
 import { ThemeProvider } from '@emotion/react';
 import { createRoot } from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
 import './index.css';
 import './reset.css';
 import { theme } from './theme';
-import { router } from './router';
+import { RouterProvider } from 'react-router-dom';
+import { router } from '@/router';
 
 const root = createRoot(document.getElementById('root')!);
 root.render(
