@@ -66,6 +66,12 @@ tasks.register('copySecretTest', Copy) {
     into 'src/test/resources'
 }
 
+tasks.register('copySecretAlloy', Copy) {
+    from file('./backend-submodule/alloy')
+    include 'config.alloy'
+    into '.'
+}
+
 compileJava.dependsOn copySecret, copySecretTest
 processResources.dependsOn copySecret
 processTestResources.dependsOn copySecretTest
