@@ -9,9 +9,11 @@ import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
 import useFeedbackManagement from './hooks/useFeedbackManagement';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 export default function AdminHome() {
   const navigate = useNavigate();
+  const { isAuthorized, isCheckingAuth } = useAdminAuth();
 
   const {
     items: originalFeedbacks,
@@ -43,6 +45,14 @@ export default function AdminHome() {
   });
 
   useGetFeedback({ fetchMore, hasNext, loading });
+
+  if (isCheckingAuth) {
+    return <div>로딩중...</div>;
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <section>
