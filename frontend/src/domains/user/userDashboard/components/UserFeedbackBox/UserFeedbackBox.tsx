@@ -32,7 +32,11 @@ export default function UserFeedbackBox({
 
   return (
     <FeedbackBoxBackGround type={type}>
-      <FeedbackBoxHeader userName={userName} type={type} />
+      <FeedbackBoxHeader
+        userName={userName}
+        type={type}
+        feedbackId={feedbackId}
+      />
       {isSecret ? (
         <div css={secretText(theme)}>
           <p>비밀글입니다.</p>
