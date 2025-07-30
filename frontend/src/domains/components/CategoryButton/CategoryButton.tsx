@@ -1,6 +1,8 @@
 import Button from '@/components/@commons/Button/Button';
-import { container } from '@/components/Tag/Tag.styles';
-import { iconCSS } from '@/domains/components/CategoryButton/CategoryButton.styles';
+import {
+  iconCSS,
+  container,
+} from '@/domains/components/CategoryButton/CategoryButton.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import React from 'react';
 
