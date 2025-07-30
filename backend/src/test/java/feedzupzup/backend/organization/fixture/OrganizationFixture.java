@@ -5,7 +5,7 @@ import feedzupzup.backend.organization.domain.Organization;
 
 public class OrganizationFixture {
 
-    public static Organization createAllRandom() {
+    public static Organization createAllBlackBox() {
         return Organization.builder()
                 .name("테스트장소")
                 .cheeringCount(new CheeringCount(0))

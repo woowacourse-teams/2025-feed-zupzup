@@ -32,7 +32,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
         @DisplayName("단체 ID로 단체를 성공적으로 조회한다")
         void get_organization_by_id_success() {
             // given
-            final Organization organization = OrganizationFixture.createAllRandom();
+            final Organization organization = OrganizationFixture.createAllBlackBox();
 
             final Organization savedOrganization = organizationRepository.save(organization);
 
@@ -61,7 +61,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
     @DisplayName("요청한 응원 수만큼 단체의 응원 총 횟수가 증가한다.")
     void get_organization_by_id_success() {
         // given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
         CheeringRequest request = new CheeringRequest(100);

@@ -46,7 +46,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_success() {
             //given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
 

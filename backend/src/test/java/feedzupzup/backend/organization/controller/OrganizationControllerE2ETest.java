@@ -23,7 +23,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("단체 ID로 단체 이름을 성공적으로 조회한다")
     void get_organization_name_success() {
         // given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
         final Organization savedOrganization = organizationRepository.save(organization);
 
         // when & then
@@ -59,7 +59,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("요청한 응원수만큼 해당 단체 id로 조회된 단체의 총 응원수가 증가한다.")
     void cheer_organization_by_id() {
         // given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
 

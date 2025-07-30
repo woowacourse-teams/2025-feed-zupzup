@@ -160,7 +160,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("피드백을 성공적으로 생성한다")
     void create_feedback_success() {
         // given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
@@ -187,7 +187,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 비밀 피드백을 성공적으로 생성한다")
     void user_create_secret_feedback_success() {
         // given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저");
@@ -214,7 +214,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 새로 생성한 피드백이 목록에 나타난다")
     void user_create_feedback_appears_in_list() {
         // given
-        final Organization organization = OrganizationFixture.createAllRandom();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", false, "테스트유저");
