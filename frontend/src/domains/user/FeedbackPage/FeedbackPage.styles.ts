@@ -12,9 +12,9 @@ export const buttonGroupContainer = css`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: auto;
-  padding-bottom: 70px;
+  padding-bottom: 20px;
 `;
+
 export const submitButtonContainer = css`
   display: flex;
   justify-content: center;
@@ -26,30 +26,28 @@ export const skipButtonContainer = css`
 `;
 
 export const contentContainer = css`
-  margin-top: 50px;
-  margin-bottom: 30px;
+  margin-top: 10%;
 `;
 
 export const container = css`
-  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 100%;
-  height: 100vh;
-  min-height: 500px;
+  height: 100%;
   text-align: center;
 `;
 
 export const mainContent = css`
   display: flex;
-  flex: 1; /* 남은 공간 모두 차지 */
+  flex: 1;
   flex-direction: column;
 `;
 
 export const arrowLeftIconContainer = css`
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 30px;
+  left: 20px;
 `;
 
 export const titleContainer = css`
