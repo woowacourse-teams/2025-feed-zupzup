@@ -1,5 +1,3 @@
-import LockIcon from '@/components/icons/LockIcon';
-import UnlockIcon from '@/components/icons/UnlockIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
@@ -19,7 +17,6 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
     feedback,
     username,
     isLocked,
-    currentAvatar,
     handleFeedbackChange,
     handleRandomChange,
     handleLockToggle,
@@ -42,13 +39,7 @@ export default function FeedbackInput({ className }: FeedbackInputProps) {
           랜덤변경
         </Button>
 
-        <div css={styles.avatar(currentAvatar)} />
-
         <div css={styles.topInputBorder(theme)} />
-
-        <Button onClick={handleLockToggle} css={styles.lockButton(theme)}>
-          {isLocked ? <LockIcon /> : <UnlockIcon />}
-        </Button>
 
         <div css={styles.textareaContainer(theme)}>
           <TextArea

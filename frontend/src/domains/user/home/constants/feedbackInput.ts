@@ -74,5 +74,5 @@ export const FEEDBACK_INPUT_CONSTANTS = {
     MIN_LENGTH: 1,
   } as const,
 
-  PLACEHOLDER: '건의하고 싶은 내용을 자세히 입력해주세요',
+  PLACEHOLDER: '건의하고 싶은 내용을 입력해주세요.',
 } as const;

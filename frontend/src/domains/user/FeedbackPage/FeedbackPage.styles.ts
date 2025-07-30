@@ -14,6 +14,11 @@ export const skipButtonContainer = css`
   margin-top: 20px;
 `;
 
+export const contentContainer = css`
+  margin-top: 50px;
+  margin-bottom: 66px;
+`;
+
 export const container = css`
   display: flex;
   flex-direction: column;
@@ -22,11 +27,23 @@ export const container = css`
   text-align: center;
 `;
 
+export const titleContainer = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+`;
+
 export const title = (theme: Theme) => css`
   ${theme.typography.inter.h5}
+`;
 
-  margin-top: 10%;
-  margin-bottom: 20px;
+export const mainTitle = (theme: Theme) => css`
+  ${theme.typography.BMHANNAPro.small}
+
+  font-size: 32px;
+  color: ${theme.colors.purple[100]};
 `;
 
 export const subTitle = (theme: Theme) => css`
@@ -34,13 +51,6 @@ export const subTitle = (theme: Theme) => css`
 
   line-height: 1.5;
   color: ${theme.colors.darkGray[100]};
-`;
-
-export const place = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.small}
-
-  font-size: 32px;
-  color: ${theme.colors.purple[100]};
 `;
 
 export const questionTitle = (theme: Theme) => css`
