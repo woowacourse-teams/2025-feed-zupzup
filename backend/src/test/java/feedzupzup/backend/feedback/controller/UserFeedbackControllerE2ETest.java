@@ -254,7 +254,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 특정 장소의 통계를 성공적으로 조회한다")
     void user_get_statistic_success() {
         // given
-        final Organization organization = new Organization("통계테스트장소");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
         final Organization savedOrganization = organizationRepository.save(organization);
         final Long organizationId = savedOrganization.getId();
 

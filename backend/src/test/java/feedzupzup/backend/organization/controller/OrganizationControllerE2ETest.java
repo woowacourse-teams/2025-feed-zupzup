@@ -71,7 +71,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/organizations/{organizationId}/cheering", savedOrganization.getId())
+                .post("/organizations/{organizationId}/cheer", savedOrganization.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

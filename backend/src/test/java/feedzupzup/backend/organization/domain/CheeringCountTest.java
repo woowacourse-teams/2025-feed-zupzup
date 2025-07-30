@@ -3,6 +3,7 @@ package feedzupzup.backend.organization.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import feedzupzup.backend.organization.domain.OrganizationException.OrganizationNumberException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class CheeringCountTest {
 
         // when & then
         assertThatThrownBy(() -> new CheeringCount(negativeValue))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(OrganizationNumberException.class);
     }
 
     @DisplayName("자신의 응원횟수에 요청한 응원횟수만큼 더할 수 있다.")
