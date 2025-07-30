@@ -18,14 +18,14 @@ public class GlobalExceptionHandler {
     //TODO : 로깅 추가
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    public ErrorResponse<Void> handleException(final Exception e) {
+    public ErrorResponse handleException(final Exception e) {
         final ErrorCode errorCode = ErrorCode.SERVER_ERROR;
         log.error(errorCode.getMessage(), e);
         return ErrorResponse.error(errorCode);
     }
 
     @ExceptionHandler(ResourceException.class)
-    public ResponseEntity<ErrorResponse<Void>> handleException(final ResourceException e) {
+    public ResponseEntity<ErrorResponse> handleException(final ResourceException e) {
         log.warn(e.getMessage(), e);
         final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
         return ResponseEntity.status(httpStatus)
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BusinessViolationException.class)
-    public ResponseEntity<ErrorResponse<Void>> handleBusinessViolationException(final BusinessViolationException e) {
+    public ResponseEntity<ErrorResponse> handleBusinessViolationException(final BusinessViolationException e) {
         log.warn(e.getMessage(), e);
         final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
         return ResponseEntity.status(httpStatus)

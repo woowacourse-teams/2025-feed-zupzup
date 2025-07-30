@@ -9,7 +9,7 @@ public record CheeringResponse(
         int cheeringTotalCount
 ) {
 
-        public static CheeringResponse from(CheeringCount cheeringCount) {
+        public static CheeringResponse from(final CheeringCount cheeringCount) {
                 return new CheeringResponse(cheeringCount.getValue());
         }
 }
