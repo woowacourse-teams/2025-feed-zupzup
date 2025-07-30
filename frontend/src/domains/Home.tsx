@@ -6,15 +6,16 @@ import useProgressStep from '@/hooks/useProgressStep';
 import { css } from '@emotion/react';
 
 export default function Home() {
-  const { currentStep, moveNextStep, totalStep } = useProgressStep({
-    totalStep: 2,
-  });
+  const { currentStep, moveNextStep, movePrevStep, totalStep } =
+    useProgressStep({
+      totalStep: 2,
+    });
 
   return (
     <section css={container}>
       <ProgressBar currentStep={currentStep} totalStep={totalStep} />
       {currentStep === 1 && <OnBoarding moveNextStep={moveNextStep} />}
-      {currentStep === 2 && <FeedbackPage />}
+      {currentStep === 2 && <FeedbackPage movePrevStep={movePrevStep} />}
     </section>
   );
 }

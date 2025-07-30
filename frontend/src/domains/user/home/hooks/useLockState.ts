@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { FEEDBACK_INPUT_CONSTANTS } from '@/domains/user/home/constants/feedbackInput';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 
 export interface UseLockStateReturn {
   isLocked: boolean;
@@ -9,7 +9,7 @@ export interface UseLockStateReturn {
 
 export function useLockState(): UseLockStateReturn {
   const [isLocked, setIsLocked] = useState(
-    FEEDBACK_INPUT_CONSTANTS.DEFAULTS.IS_LOCKED
+    FEEDBACK_FORM_CONSTANTS.DEFAULTS.IS_LOCKED
   );
 
   const handleLockToggle = useCallback(() => {
@@ -17,7 +17,7 @@ export function useLockState(): UseLockStateReturn {
   }, []);
 
   const resetLockState = useCallback(() => {
-    setIsLocked(FEEDBACK_INPUT_CONSTANTS.DEFAULTS.IS_LOCKED);
+    setIsLocked(FEEDBACK_FORM_CONSTANTS.DEFAULTS.IS_LOCKED);
   }, []);
 
   return {

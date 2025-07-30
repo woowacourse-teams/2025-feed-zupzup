@@ -12,7 +12,7 @@ export const trackStyle = (theme: Theme, isToggled: boolean) => css`
   width: 100%;
   height: 100%;
   background-color: ${isToggled
-    ? theme.colors.yellow[200]
+    ? theme.colors.purple[100]
     : 'rgb(224, 224, 224)'};
   border-radius: 30px;
   transition: background-color 0.3s;
