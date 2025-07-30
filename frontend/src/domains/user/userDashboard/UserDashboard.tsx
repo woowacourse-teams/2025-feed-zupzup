@@ -1,13 +1,17 @@
+import { ArrowIcon } from '@/components/icons/arrowIcon';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
+import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
 
 import { getLocalStorage } from '@/utils/localStorage';
+import { useNavigate } from 'react-router-dom';
 
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
+  const navigate = useNavigate();
 
   // const {
   //   items: feedbacks,
@@ -65,6 +69,12 @@ export default function UserDashboard() {
           {/* {loading && <div>로딩중...</div>} */}
         </FeedbackBoxList>
       </div>
+      <FloatingButton
+        icon={<ArrowIcon />}
+        onClick={() => {
+          navigate('/');
+        }}
+      />
     </div>
   );
 }
