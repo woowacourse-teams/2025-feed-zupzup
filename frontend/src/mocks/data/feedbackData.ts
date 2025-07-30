@@ -1,6 +1,6 @@
-import { AdminFeedback } from '@/types/feedback.types';
+import { FeedbackType } from '@/types/feedback.types';
 
-export const feedbackData: AdminFeedback[] = [
+export const feedbackData: FeedbackType[] = [
   {
     feedbackId: 1,
     content: '이 앱 너무 좋아요!',
@@ -9,7 +9,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-01T12:00:00.000Z',
     userName: '김철수',
     likeCount: 12,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 2,
@@ -19,7 +18,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-02T08:30:00.000Z',
     userName: '익명',
     likeCount: 4,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 3,
@@ -29,7 +27,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-03T14:15:00.000Z',
     userName: '홍길동',
     likeCount: 7,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 4,
@@ -39,7 +36,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-04T10:20:00.000Z',
     userName: '박지민',
     likeCount: 9,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 5,
@@ -49,7 +45,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-05T16:40:00.000Z',
     userName: '이지은',
     likeCount: 15,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 6,
@@ -59,7 +54,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-06T11:55:00.000Z',
     userName: '익명',
     likeCount: 2,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 7,
@@ -69,7 +63,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-07T09:10:00.000Z',
     userName: '최유리',
     likeCount: 6,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 8,
@@ -79,7 +72,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-08T13:00:00.000Z',
     userName: '정우성',
     likeCount: 3,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 9,
@@ -89,7 +81,6 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-09T17:30:00.000Z',
     userName: '한가인',
     likeCount: 8,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
   {
     feedbackId: 10,
@@ -99,6 +90,5 @@ export const feedbackData: AdminFeedback[] = [
     createdAt: '2024-07-10T15:45:00.000Z',
     userName: '감사합니다',
     likeCount: 10,
-    imageUrl: 'https://static.cdn.kmong.com/gigs/F1zfb1718452618.jpg',
   },
 ];

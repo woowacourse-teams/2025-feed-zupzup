@@ -64,10 +64,24 @@ export const typography = {
     letterSpacing: 0,
   },
   bmHannaPro: {
-    fontFamily: 'BM HANNA Pro OTF, sans-serif',
-    fontSize: 90,
-    lineHeight: 'auto',
-    letterSpacing: 0,
+    h1: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 90,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyLarge: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 26,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyRegular: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 22,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
   },
   inter: {
     h1: {
@@ -178,6 +192,13 @@ export const typography = {
     },
   },
   BMHANNAPro: {
+    caption: {
+      fontFamily: 'BMHANNAPro, sans-serif',
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
     small: {
       fontFamily: 'BMHANNAPro, sans-serif',
       fontWeight: 400,

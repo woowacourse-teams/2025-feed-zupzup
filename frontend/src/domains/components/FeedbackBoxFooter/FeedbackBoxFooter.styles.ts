@@ -14,8 +14,10 @@ export const calendar = (theme: Theme) => css`
   color: ${theme.colors.gray[600]};
 `;
 
-export const day = css`
-  line-height: 1;
+export const day = (theme: Theme) => css`
+  ${theme.typography.inter.caption}
+
+  color: ${theme.colors.gray[500]};
 `;
 
 export const content = (theme: Theme) => css`
@@ -25,4 +27,9 @@ export const content = (theme: Theme) => css`
   color: ${theme.colors.gray[600]};
 
   ${theme.typography.inter.small}
+`;
+
+export const confirmedText = (theme: Theme) => css`
+  background-color: ${theme.colors.gray[200]}66;
+  border: 1px solid ${theme.colors.gray[300]};
 `;

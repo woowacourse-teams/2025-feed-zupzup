@@ -1,36 +1,30 @@
 import AlertModal from '@/components/AlertModal/AlertModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
+import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
+import useFeedbackManagement from '@/domains/admin/adminDashboard/hooks/useFeedbackManagement';
+import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
-import Hero from '@/domains/user/home/components/Hero/Hero';
-import { useNavigate } from 'react-router-dom';
-import AdminFeedbackBox from './components/AdminFeedbackBox';
-import useGetFeedback from '@/domains/admin/home/hooks/useGetFeedback';
-import useInfinityScroll from '@/hooks/useInfinityScroll';
-import { AdminFeedback, FeedbackResponse } from '@/types/feedback.types';
-import useFeedbackManagement from './hooks/useFeedbackManagement';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
 
-export default function AdminHome() {
-  const navigate = useNavigate();
-  const { isAuthorized, isCheckingAuth } = useAdminAuth();
-
-  const {
-    items: originalFeedbacks,
-    fetchMore,
-    hasNext,
-    loading,
-  } = useInfinityScroll<
-    AdminFeedback,
-    'feedbacks',
-    FeedbackResponse<AdminFeedback>
-  >({
-    url: '/admin/places/1/feedbacks',
-    key: 'feedbacks',
-  });
+export default function AdminDashboard() {
+  // const {
+  //   items: originalFeedbacks,
+  //   fetchMore,
+  //   hasNext,
+  //   loading,
+  // } = useInfinityScroll<
+  //   AdminFeedback,
+  //   'feedbacks',
+  //   FeedbackResponse<AdminFeedback>
+  // >({
+  //   url: '/admin/places/1/feedbacks',
+  //   key: 'feedbacks',
+  // });
 
   const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-    originalFeedbacks,
+    originalFeedbacks: FEEDBACK_MOCK,
   });
 
   const {
@@ -44,25 +38,13 @@ export default function AdminHome() {
     onDeleteFeedback: deleteFeedback,
   });
 
-  useGetFeedback({ fetchMore, hasNext, loading });
-
-  if (isCheckingAuth) {
-    return <div>로딩중...</div>;
-  }
-
-  if (!isAuthorized) {
-    return null;
-  }
+  // useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
-    <section>
-      <Hero
-        onSuggestClick={() => navigate('/suggestion')}
-        title='우테코'
-        isUserPage={false}
-      />
+    <section css={dashboardLayout}>
+      <DashboardOverview />
       <FeedbackBoxList>
-        {feedbacks.map((feedback: AdminFeedback) => (
+        {feedbacks.map((feedback) => (
           <AdminFeedbackBox
             key={feedback.feedbackId}
             feedbackId={feedback.feedbackId}
@@ -72,14 +54,13 @@ export default function AdminHome() {
             content={feedback.content}
             createdAt={feedback.createdAt}
             isSecret={feedback.isSecret}
-            imageUrl={feedback.imageUrl}
             likeCount={feedback.likeCount}
             userName={feedback.userName}
           />
         ))}
-        {loading && <div>로딩중...</div>}
+        {/* {loading && <div>로딩중...</div>} */}
       </FeedbackBoxList>
-      {hasNext && <div id='scroll-observer'></div>}
+      {/* {hasNext && <div id='scroll-observer'></div>} */}
 
       {modalState.type === 'delete' && (
         <ConfirmModal

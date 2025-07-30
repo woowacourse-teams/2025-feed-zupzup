@@ -1,15 +1,14 @@
-import CategoryTag from '../../../../components/CategoryTag/CategoryTag';
-import StatusTag from '../../../../components/StatusTag/StatusTag';
-import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
-import { secretText, tagContainer } from './UserFeedbackBox.styles';
-import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
-import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import LockIcon from '@/components/icons/LockIcon';
+import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
+import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
+import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader';
+import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { SerializedStyles } from '@emotion/react';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+import { secretText } from './UserFeedbackBox.styles';
 
 interface UserFeedbackBox {
+  userName: string;
   type: FeedbackStatusType;
   content: string;
   isLiked: boolean;
@@ -17,10 +16,10 @@ interface UserFeedbackBox {
   createdAt: string;
   feedbackId: number;
   likeCount: number;
-  customCSS: SerializedStyles | null;
 }
 
 export default function UserFeedbackBox({
+  userName,
   type,
   content,
   isLiked,
@@ -28,16 +27,12 @@ export default function UserFeedbackBox({
   createdAt,
   feedbackId,
   likeCount,
-  customCSS,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
   return (
-    <FeedbackBoxBackGround type={type} customCSS={customCSS}>
-      <div css={tagContainer}>
-        <CategoryTag text='맛' type={type} />
-        <StatusTag type={type} />
-      </div>
+    <FeedbackBoxBackGround type={type}>
+      <FeedbackBoxHeader userName={userName} type={type} />
       {isSecret ? (
         <div css={secretText(theme)}>
           <p>비밀글입니다.</p>
@@ -49,6 +44,7 @@ export default function UserFeedbackBox({
         <FeedbackText type={type} text={content} />
       )}
       <FeedbackBoxFooter
+        type={type}
         isLiked={isLiked}
         createdAt={createdAt}
         isSecret={isSecret}
