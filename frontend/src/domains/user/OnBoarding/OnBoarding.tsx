@@ -1,5 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import SkipIcon from '@/components/icons/SkipIcon';
+import CategoryButton from '@/domains/components/CategoryButton/CategoryButton';
 import {
   container,
   place,
@@ -19,6 +20,11 @@ interface OnBoardingProps {
 export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
 
+  const handleCategoryButtonClick = () => {
+    // api 통신
+    moveNextStep();
+  };
+
   const placeName = '우아한테크코스 캠퍼스';
   return (
     <section css={container}>
@@ -28,19 +34,30 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
           환영합니다
         </p>
         <div css={questionContainer(theme)}>
-          <p css={questionTitle(theme)}>오늘의 질문</p>
-          <p css={question(theme)}>"오늘 캠퍼스 분위기 어떠세요?"</p>
+          <p css={questionTitle(theme)}>카테고리 선택</p>
+          <p css={question(theme)}>건의하고 싶은 카테고리를 선택해주세요</p>
         </div>
         <div css={buttonContainer}>
-          <BasicButton icon='😊' variant='secondary' onClick={moveNextStep}>
-            <p>좋아요</p>
-          </BasicButton>
-          <BasicButton icon='😐' variant='secondary' onClick={moveNextStep}>
-            <p>보통이에요</p>
-          </BasicButton>
-          <BasicButton icon='😔' variant='secondary' onClick={moveNextStep}>
-            <p>별로에요</p>
-          </BasicButton>
+          <CategoryButton
+            icon='🏠'
+            text='시설'
+            onClick={handleCategoryButtonClick}
+          />
+          <CategoryButton
+            icon='📑'
+            text='학사행정'
+            onClick={handleCategoryButtonClick}
+          />
+          <CategoryButton
+            icon='👥'
+            text='인간관계'
+            onClick={handleCategoryButtonClick}
+          />
+          <CategoryButton
+            icon='💡'
+            text='기타'
+            onClick={handleCategoryButtonClick}
+          />
         </div>
       </div>
       <BasicButton icon={<SkipIcon />} variant='secondary'>
