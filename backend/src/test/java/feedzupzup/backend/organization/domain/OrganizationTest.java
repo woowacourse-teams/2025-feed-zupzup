@@ -1,5 +1,8 @@
 package feedzupzup.backend.organization.domain;
 
+import static org.assertj.core.api.Assertions.*;
+
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,19 +13,16 @@ class OrganizationTest {
     @Test
     void cheer_test() {
         // given
-        int originCount = 100;
-        Organization organization = Organization.builder()
-                .name("우아한테크코스")
-                .cheeringCount(new CheeringCount(originCount))
-                .build();
+        final int originCount = 100;
+        final Organization organization = OrganizationFixture.create(originCount);
 
-        int updateCount = 150;
-        CheeringCount updateCheeringCount = new CheeringCount(updateCount);
+        final int updateCount = 150;
+        final CheeringCount updateCheeringCount = new CheeringCount(updateCount);
 
         // when
         organization.cheer(updateCheeringCount);
 
         // then
-        Assertions.assertThat(organization.getCheeringCount()).isEqualTo(new CheeringCount(originCount + updateCount));
+        assertThat(organization.getCheeringCount()).isEqualTo(new CheeringCount(originCount + updateCount));
     }
 }
