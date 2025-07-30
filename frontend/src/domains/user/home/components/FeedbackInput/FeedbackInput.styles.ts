@@ -16,11 +16,12 @@ export const formContainer = css`
 export const userInfo = (theme: Theme) => css`
   position: absolute;
   top: 24px;
-  right: 56px;
+  left: 34px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: calc(100% - 98px);
+  align-items: flex-start;
+  width: calc(100% - 124px);
   height: 45px;
   color: ${theme.colors.gray[600]};
   transform: translateY(-50%);
@@ -83,7 +84,7 @@ export const textareaContainer = (theme: Theme) => css`
   top: 61px;
   right: 11px;
   left: 11px;
-  height: 224px;
+  height: 150px;
   border-radius: 10px;
 
   &::after {
@@ -112,4 +113,27 @@ export const textarea = (theme: Theme) => css`
   &::placeholder {
     color: ${theme.colors.gray[500]};
   }
+`;
+
+export const toggleButtonContainer = css`
+  position: absolute;
+  top: 226px;
+  left: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const toggleButtonText = (theme: Theme) => css`
+  ${theme.typography.inter.captionSmall}
+
+  margin-left: 10px;
+  color: ${theme.colors.gray[600]};
+`;
+
+export const submitButtonContainer = css`
+  position: absolute;
+  top: 350px;
+  left: 0;
+  width: 100%;
 `;
