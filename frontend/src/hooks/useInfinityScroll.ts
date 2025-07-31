@@ -50,6 +50,7 @@ export default function useInfinityScroll<
       setHasNext(responseData.hasNext);
       setCursorId(responseData.nextCursorId);
     } catch (error) {
+      setHasNext(false);
       console.error('무한 스크롤 에러:', error);
     } finally {
       setLoading(false);
