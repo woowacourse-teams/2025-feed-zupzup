@@ -21,7 +21,7 @@ interface OnBoardingProps {
 export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
 
-  const { placeName } = useOrganizationName();
+  const { groupName } = useOrganizationName();
 
   const handleCategoryButtonClick = () => {
     // api 통신
@@ -32,7 +32,7 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
     <section css={container}>
       <div>
         <p css={title(theme)}>
-          <span css={place(theme)}>{placeName}</span>에<br /> 오신 것을
+          <span css={place(theme)}>{groupName}</span>에<br /> 오신 것을
           환영합니다
         </p>
         <div css={questionContainer(theme)}>
