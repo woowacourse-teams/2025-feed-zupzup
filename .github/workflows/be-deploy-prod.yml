@@ -3,23 +3,10 @@ name: Build and Deploy
 on:
   push:
     branches: [ "release" ]
+    paths:
+      - 'backend/**'
 
 jobs:
-  check_commit_message:
-    runs-on: ubuntu-latest
-    outputs:
-      should_run_be_workflow: ${{ steps.check.outputs.should_run_be_workflow }}
-    steps:
-      - name: 커밋 메세지 가져오기
-        id: check
-        run: |
-          COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
-          if [[ "$COMMIT_MESSAGE" == *"BE"* ]]; then
-            echo "::set-output name=should_run_be_workflow::true"
-          else
-            echo "::set-output name=should_run_be_workflow::false"
-          fi
-
   build:
     runs-on: ubuntu-latest
     environment: prod
