@@ -55,19 +55,27 @@ dependencies {
 }
 
 tasks.register('copySecret', Copy) {
+    mustRunAfter copySecretAlloy
     from file('./backend-submodule/main')
     include 'application*.yml'
     into 'src/main/resources'
 }
 
 tasks.register('copySecretTest', Copy) {
+    mustRunAfter copySecretAlloy
     from file('./backend-submodule/test')
     include 'application*.yml'
     into 'src/test/resources'
 }
 
-compileJava.dependsOn copySecret, copySecretTest
-processResources.dependsOn copySecret
+tasks.register('copySecretAlloy', Copy) {
+    from file('./backend-submodule/alloy')
+    include 'config.alloy'
+    into '.'
+}
+
+compileJava.dependsOn copySecret, copySecretTest, copySecretAlloy
+processResources.dependsOn copySecret, copySecretAlloy
 processTestResources.dependsOn copySecretTest
 
 test {

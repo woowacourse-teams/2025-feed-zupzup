@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.api;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,9 +30,9 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/places/{placeId}/feedbacks")
+    @GetMapping("/organizations/{organizationId}/feedbacks")
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
     );
@@ -43,9 +44,9 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/places/{placeId}/feedbacks")
+    @PostMapping("/organizations/{organizationId}/feedbacks")
     SuccessResponse<CreateFeedbackResponse> create(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("placeId") final Long placeId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @RequestBody @Valid final CreateFeedbackRequest request
     );
 
@@ -69,5 +70,16 @@ public interface UserFeedbackApi {
     @DeleteMapping("/feedbacks/{feedbackId}/like")
     SuccessResponse<LikeResponse> unlike(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
+    );
+
+    @Operation(summary = "피드백 통계 계산", description = "피드백의 통계를 계산합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @GetMapping("/organizations/{organizationId}/statistic")
+    SuccessResponse<StatisticResponse> getStatistic(
+            @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
+            @Parameter(description = "날짜의 기간", example = "WEEK") @RequestParam(defaultValue = "7") final String period
     );
 }
