@@ -27,8 +27,9 @@ export default function AdminDashboard() {
   const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
     originalFeedbacks: FEEDBACK_MOCK,
   });
+  
   const { isAuthorized, isCheckingAuth } = useAdminAuth();
-
+        
   const {
     modalState,
     openFeedbackCompleteModal,
@@ -42,6 +43,7 @@ export default function AdminDashboard() {
 
   // useGetFeedback({ fetchMore, hasNext, loading });
 
+
   if (isCheckingAuth) {
     return <div>로딩중...</div>;
   }
@@ -49,6 +51,7 @@ export default function AdminDashboard() {
   if (!isAuthorized) {
     return null;
   }
+
 
   return (
     <section css={dashboardLayout}>
