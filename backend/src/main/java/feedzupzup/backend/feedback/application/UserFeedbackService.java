@@ -9,6 +9,7 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.place.domain.Place;
 import feedzupzup.backend.place.domain.PlaceRepository;
 import java.util.List;
@@ -27,6 +28,7 @@ public class UserFeedbackService {
     private final PlaceRepository placeRepository;
 
     @Transactional
+    @BusinessActionLog
     public CreateFeedbackResponse create(final CreateFeedbackRequest request, final Long placeId) {
         final Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));

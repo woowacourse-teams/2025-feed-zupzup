@@ -10,6 +10,7 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.log.BusinessActionLog;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,11 +26,13 @@ public class AdminFeedbackService {
     private final FeedbackLikeCounter feedbackLikeCounter;
 
     @Transactional
+    @BusinessActionLog
     public void delete(final Long feedbackId) {
         feedBackRepository.deleteById(feedbackId);
     }
 
     @Transactional
+    @BusinessActionLog
     public UpdateFeedbackStatusResponse updateFeedbackStatus(
             final UpdateFeedbackStatusRequest request,
             final Long feedbackId
@@ -41,6 +44,7 @@ public class AdminFeedbackService {
     }
 
     @Transactional
+    @BusinessActionLog
     public UpdateFeedbackSecretResponse updateFeedbackSecret(
             final Long feedbackId,
             final UpdateFeedbackSecretRequest request
