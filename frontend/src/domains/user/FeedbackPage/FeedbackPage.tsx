@@ -59,8 +59,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         <ArrowLeftIcon />
       </div>
 
-
-      <form css={mainContent} onSubmit={handleFormSubmitAndNavigate}>
+      <form css={mainContent} onSubmit={onSubmit}>
         <div>
           <div css={contentContainer}>
             <div css={titleContainer}>
