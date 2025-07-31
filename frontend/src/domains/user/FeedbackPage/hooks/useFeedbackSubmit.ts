@@ -52,12 +52,25 @@ export default function useFeedbackSubmit() {
     [navigate, isSubmitting]
   );
 
+  const handleFormSubmit = useCallback(
+    (params: FeedbackSubmitParams, canSubmit: boolean) =>
+      async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (canSubmit && !isSubmitting) {
+          await submitFeedback(params);
+        }
+      },
+    [submitFeedback, isSubmitting]
+  );
+
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
   return {
     submitFeedback,
+    handleFormSubmit,
     isSubmitting,
     error,
     clearError,

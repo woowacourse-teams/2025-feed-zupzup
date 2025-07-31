@@ -39,25 +39,20 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { submitFeedback, isSubmitting } = useFeedbackSubmit();
+  const { handleFormSubmit, isSubmitting } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = () => {
     navigate('/dashboard');
   };
 
-  const handleFormSubmitAndNavigate = async (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-
-    if (canSubmit && !isSubmitting) {
-      await submitFeedback({
-        content: feedback,
-        userName: username,
-        isSecret: isLocked,
-      });
-    }
-  };
+  const onSubmit = handleFormSubmit(
+    {
+      content: feedback,
+      userName: username,
+      isSecret: isLocked,
+    },
+    canSubmit
+  );
 
   return (
     <section css={container}>
@@ -65,7 +60,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         <ArrowLeftIcon />
       </div>
 
-      <form css={mainContent} onSubmit={handleFormSubmitAndNavigate}>
+      <form css={mainContent} onSubmit={onSubmit}>
         <div css={contentContainer}>
           <div css={titleContainer}>
             <span css={mainTitle(theme)}>소중한 의견</span>
