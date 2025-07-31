@@ -42,3 +42,6 @@ src/test/resources/*.yml
 
 ### mysql volume ###
 /mysql/
+
+### alloy ###
+config.alloy
