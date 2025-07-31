@@ -1,3 +1,4 @@
+import { postOrganizationCheer } from '@/apis/organization.api';
 import Button from '@/components/@commons/Button/Button';
 import EmptyHeartIcon from '@/components/icons/EmptyHeartIcon';
 import FillHeartIcon from '@/components/icons/FillHeartIcon';
@@ -7,8 +8,9 @@ import {
   iconWrapperStyle,
   textStyle,
 } from '@/domains/components/CheerButton/CheerButton.style';
+import { useDebounce } from '@/hooks/useDebounce';
 import { theme } from '@/theme';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function CheerButton() {
   const [count, setCount] = useState(0);
@@ -20,7 +22,20 @@ export default function CheerButton() {
     setClicked(true);
     setAnimate(true);
     setTimeout(() => setAnimate(false), 300);
+    debouncedSearch(count);
   };
+
+  const debouncedSearch = useDebounce(
+    ((count: number) => {
+      postOrganizationCheer({
+        organizationId: 1,
+        cheeringCount: count,
+      });
+    }) as (...args: unknown[]) => void,
+    500
+  );
+
+  useEffect(() => {});
 
   return (
     <Button onClick={handleClick} css={cheerButtonStyle}>

@@ -3,28 +3,30 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 import useFeedbackManagement from '@/domains/admin/adminDashboard/hooks/useFeedbackManagement';
+import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
-import { FEEDBACK_MOCK } from '@/domains/mocks/feedback.mock';
+import useInfinityScroll from '@/hooks/useInfinityScroll';
+import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 
 export default function AdminDashboard() {
-  // const {
-  //   items: originalFeedbacks,
-  //   fetchMore,
-  //   hasNext,
-  //   loading,
-  // } = useInfinityScroll<
-  //   AdminFeedback,
-  //   'feedbacks',
-  //   FeedbackResponse<AdminFeedback>
-  // >({
-  //   url: '/admin/places/1/feedbacks',
-  //   key: 'feedbacks',
-  // });
+  const {
+    items: originalFeedbacks,
+    fetchMore,
+    hasNext,
+    loading,
+  } = useInfinityScroll<
+    FeedbackType,
+    'feedbacks',
+    FeedbackResponse<FeedbackType>
+  >({
+    url: '/admin/organizations/1/feedbacks',
+    key: 'feedbacks',
+  });
 
   const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-    originalFeedbacks: FEEDBACK_MOCK,
+    originalFeedbacks: originalFeedbacks,
   });
 
   const {
@@ -38,7 +40,7 @@ export default function AdminDashboard() {
     onDeleteFeedback: deleteFeedback,
   });
 
-  // useGetFeedback({ fetchMore, hasNext, loading });
+  useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
     <section css={dashboardLayout}>
@@ -58,9 +60,9 @@ export default function AdminDashboard() {
             userName={feedback.userName}
           />
         ))}
-        {/* {loading && <div>로딩중...</div>} */}
+        {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
-      {/* {hasNext && <div id='scroll-observer'></div>} */}
+      {hasNext && <div id='scroll-observer'></div>}
 
       {modalState.type === 'delete' && (
         <ConfirmModal
