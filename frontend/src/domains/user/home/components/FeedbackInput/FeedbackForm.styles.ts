@@ -102,7 +102,6 @@ export const textarea = (theme: Theme) => css`
   position: absolute;
   padding: 10px 16px;
   inset: 8px;
-  color: ${theme.colors.brown[300]};
   background: transparent;
   resize: none;
   outline: none;
@@ -110,10 +109,6 @@ export const textarea = (theme: Theme) => css`
   ${theme.typography.inter.caption}
 
   border: none;
-
-  &::placeholder {
-    color: ${theme.colors.gray[500]};
-  }
 `;
 
 export const toggleButtonContainer = css`
@@ -136,15 +131,11 @@ export const usernameInput = (theme: Theme) => css`
   width: 100%;
   font-size: inherit;
   font-weight: inherit;
-  text-align: center;
-  color: inherit;
+  text-align: start;
+  color: black;
   background: transparent;
   border: none;
   outline: none;
-
-  &::placeholder {
-    color: ${theme.colors.gray[400]};
-  }
 
   &:disabled {
     color: ${theme.colors.gray[500]};
