@@ -8,39 +8,72 @@ export const skipText = (theme: Theme) => css`
   color: ${theme.colors.darkGray[100]};
 `;
 
+export const buttonGroupContainer = css`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 20px;
+`;
+
+export const submitButtonContainer = css`
+  display: flex;
+  justify-content: center;
+`;
+
 export const skipButtonContainer = css`
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+`;
+
+export const contentContainer = css`
+  margin-top: 10%;
 `;
 
 export const container = css`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  max-height: 100vh;
+  width: 100%;
+  height: 100%;
   text-align: center;
+`;
+
+export const mainContent = css`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+`;
+
+export const arrowLeftIconContainer = css`
+  position: absolute;
+  top: 30px;
+  left: 20px;
+`;
+
+export const titleContainer = css`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 70px;
 `;
 
 export const title = (theme: Theme) => css`
   ${theme.typography.inter.h5}
-
-  margin-top: 10%;
-  margin-bottom: 20px;
 `;
 
-export const subTitle = (theme: Theme) => css`
-  ${theme.typography.inter.small}
-
-  line-height: 1.5;
-  color: ${theme.colors.darkGray[100]};
-`;
-
-export const place = (theme: Theme) => css`
+export const mainTitle = (theme: Theme) => css`
   ${theme.typography.BMHANNAPro.small}
 
   font-size: 32px;
   color: ${theme.colors.purple[100]};
+`;
+
+export const subTitle = (theme: Theme) => css`
+  ${theme.typography.inter.caption}
+
+  line-height: 1.5;
+  color: ${theme.colors.darkGray[100]};
 `;
 
 export const questionTitle = (theme: Theme) => css`

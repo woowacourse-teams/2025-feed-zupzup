@@ -3,6 +3,7 @@ import { SerializedStyles } from '@emotion/react';
 export interface InputProps extends React.ComponentProps<'input'> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
   placeholder: string;
   customCSS: SerializedStyles;
   maxLength: number;
@@ -13,6 +14,7 @@ export default function Input({
   name,
   value,
   onChange,
+  onFocus,
   placeholder,
   customCSS,
   maxLength,
@@ -26,6 +28,7 @@ export default function Input({
       minLength={minLength}
       value={value}
       onChange={onChange}
+      onFocus={onFocus}
       placeholder={placeholder}
     />
   );
