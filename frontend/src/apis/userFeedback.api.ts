@@ -45,6 +45,7 @@ export async function postUserFeedback({
     }
   } catch (error) {
     console.error('피드백 전송 에러:', error);
+    onError();
   }
 }
 
