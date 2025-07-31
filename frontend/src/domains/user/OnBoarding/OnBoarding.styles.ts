@@ -19,7 +19,7 @@ export const container = css`
 export const title = (theme: Theme) => css`
   ${theme.typography.inter.h5}
 
-  margin-top: 10%;
+  margin-top: 8%;
 `;
 
 export const place = (theme: Theme) => css`
@@ -43,7 +43,7 @@ export const questionContainer = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 64px;
+  margin-top: 8%;
   padding: 22px 0;
   text-align: center;
   background-color: ${theme.colors.white[300]};
@@ -55,5 +55,5 @@ export const buttonContainer = css`
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 32px;
+  margin-top: 8%;
 `;
