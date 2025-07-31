@@ -14,7 +14,6 @@ interface FeedbackSubmitParams {
 export default function useFeedbackSubmit() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const submitFeedback = useCallback(
     async ({
@@ -26,7 +25,6 @@ export default function useFeedbackSubmit() {
       if (isSubmitting) return;
 
       setIsSubmitting(true);
-      setError(null);
 
       try {
         await postUserFeedback({
@@ -38,13 +36,10 @@ export default function useFeedbackSubmit() {
             setLocalStorage('highlightedId', response.data.feedbackId);
             navigate('/dashboard');
           },
-          onError: () => {
-            setError('피드백 제출에 실패했습니다. 다시 시도해주세요.');
-          },
+          onError: () => {},
         });
       } catch (error) {
         console.error('피드백 제출 에러:', error);
-        setError('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
       } finally {
         setIsSubmitting(false);
       }
@@ -64,15 +59,9 @@ export default function useFeedbackSubmit() {
     [submitFeedback, isSubmitting]
   );
 
-  const clearError = useCallback(() => {
-    setError(null);
-  }, []);
-
   return {
     submitFeedback,
     handleFormSubmit,
     isSubmitting,
-    error,
-    clearError,
   };
 }
