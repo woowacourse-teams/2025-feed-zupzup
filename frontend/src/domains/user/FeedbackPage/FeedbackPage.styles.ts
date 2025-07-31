@@ -59,17 +59,6 @@ export const titleContainer = css`
   margin-bottom: 70px;
 `;
 
-export const title = (theme: Theme) => css`
-  ${theme.typography.inter.h5}
-`;
-
-export const mainTitle = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.small}
-
-  font-size: 32px;
-  color: ${theme.colors.purple[100]};
-`;
-
 export const subTitle = (theme: Theme) => css`
   ${theme.typography.inter.caption}
 
@@ -99,4 +88,18 @@ export const questionContainer = (theme: Theme) => css`
   text-align: center;
   background-color: ${theme.colors.white[300]};
   border-radius: 16px;
+`;
+
+export const combinedTitle = (theme: Theme) => css`
+  ${theme.typography.inter.h5}
+
+  color: ${theme.colors.black};
+  word-break: keep-all;
+
+  strong {
+    ${theme.typography.BMHANNAPro.small}
+
+    font-size: 32px;
+    color: ${theme.colors.purple[100]};
+  }
 `;

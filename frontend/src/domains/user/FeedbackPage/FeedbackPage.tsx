@@ -1,13 +1,12 @@
 import {
   container,
-  title,
   skipText,
-  mainTitle,
   titleContainer,
   contentContainer,
   arrowLeftIconContainer,
   buttonGroupContainer,
   mainContent,
+  combinedTitle,
 } from '@/domains/user/FeedbackPage/FeedbackPage.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
@@ -57,8 +56,9 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         <div>
           <div css={contentContainer}>
             <div css={titleContainer}>
-              <span css={mainTitle(theme)}>소중한 의견</span>
-              <span css={title(theme)}>을 들려주세요</span>
+              <span css={combinedTitle(theme)}>
+                <strong>소중한 의견</strong>을 들려주세요
+              </span>
             </div>
           </div>
 
