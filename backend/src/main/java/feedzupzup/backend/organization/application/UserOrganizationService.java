@@ -31,6 +31,6 @@ public class UserOrganizationService {
 
         organization.cheer(request.toCheeringCount());
 
-        return CheeringResponse.from(organization.getCheeringCount());
+        return CheeringResponse.from(organization.getCheeringCountValue());
     }
 }

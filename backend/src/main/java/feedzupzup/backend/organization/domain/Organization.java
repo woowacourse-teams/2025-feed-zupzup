@@ -34,4 +34,8 @@ public class Organization extends BaseTimeEntity {
     public void cheer(final CheeringCount other) {
         this.cheeringCount.add(other);
     }
+
+    public int getCheeringCountValue() {
+        return cheeringCount.getValue();
+    }
 }
