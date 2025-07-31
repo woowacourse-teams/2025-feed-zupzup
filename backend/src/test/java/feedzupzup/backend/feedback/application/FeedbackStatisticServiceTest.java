@@ -92,7 +92,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         @DisplayName("당일 조회 테스트 케이스")
         void one_day() {
             final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
+            Organization savedOrganization = organizationRepository.save(organization);
             // given
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(2L));// 이틀 전
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(1L)); // 하루 전
@@ -109,7 +109,8 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback3);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, "TODAY");
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+                    savedOrganization.getId(), "TODAY");
 
             // then
             assertThat(response.totalCount()).isEqualTo(1);
@@ -120,7 +121,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         void one_day_boundary_value() {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
+            Organization savedOrganization = organizationRepository.save(organization);
 
             // 당일 전날의 23:59시
             final LocalDateTime targetDate1 = LocalDate.now().atStartOfDay().minusMinutes(1);
@@ -144,7 +145,8 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback3);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, "TODAY");
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+                    savedOrganization.getId(), "TODAY");
 
             // then
             assertThat(response.totalCount()).isEqualTo(2); //targetDate2, targetDate3
@@ -155,7 +157,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         void once_a_week() {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
+            Organization savedOrganization = organizationRepository.save(organization);
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(7L));
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(6L));
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
@@ -166,7 +168,8 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback2);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(1L, "WEEK");
+            final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+                    savedOrganization.getId(), "WEEK");
 
             // then
             assertThat(response.totalCount()).isEqualTo(1);

@@ -5,6 +5,9 @@ on:
     branches: [ "main", "be/develop" ]
     types: [ opened, synchronize, reopened ]
 
+env:
+  TZ: Asia/Seoul
+
 jobs:
   test:
     runs-on: ubuntu-latest
