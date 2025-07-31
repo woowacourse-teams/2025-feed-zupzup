@@ -12,7 +12,6 @@ export const buttonGroupContainer = css`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 20px;
 `;
 
 export const submitButtonContainer = css`
@@ -42,6 +41,8 @@ export const mainContent = css`
   display: flex;
   flex: 1;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;
 
 export const arrowLeftIconContainer = css`

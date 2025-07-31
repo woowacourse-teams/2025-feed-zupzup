@@ -54,24 +54,26 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
       </div>
 
       <form css={mainContent} onSubmit={handleFormSubmitAndNavigate}>
-        <div css={contentContainer}>
-          <div css={titleContainer}>
-            <span css={mainTitle(theme)}>소중한 의견</span>
-            <span css={title(theme)}>을 들려주세요</span>
+        <div>
+          <div css={contentContainer}>
+            <div css={titleContainer}>
+              <span css={mainTitle(theme)}>소중한 의견</span>
+              <span css={title(theme)}>을 들려주세요</span>
+            </div>
           </div>
-        </div>
 
-        <FeedbackInput
-          feedback={feedback}
-          username={username}
-          isLocked={isLocked}
-          canSubmit={canSubmit}
-          onFeedbackChange={handleFeedbackChange}
-          onRandomChange={handleRandomChange}
-          onLockToggle={handleLockToggle}
-          onUsernameChange={handleUsernameChange}
-          onUsernameFocus={handleUsernameFocus}
-        />
+          <FeedbackInput
+            feedback={feedback}
+            username={username}
+            isLocked={isLocked}
+            canSubmit={canSubmit}
+            onFeedbackChange={handleFeedbackChange}
+            onRandomChange={handleRandomChange}
+            onLockToggle={handleLockToggle}
+            onUsernameChange={handleUsernameChange}
+            onUsernameFocus={handleUsernameFocus}
+          />
+        </div>
 
         <div css={buttonGroupContainer}>
           <BasicButton
@@ -95,7 +97,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
             variant='secondary'
             onClick={handleSkipAndNavigate}
           >
-            <p css={skipText(theme)}>건너뛰기</p>
+            <p css={skipText(theme)}>건의 목록 보러가기</p>
           </BasicButton>
         </div>
       </form>
