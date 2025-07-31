@@ -12,7 +12,6 @@ export const buttonGroupContainer = css`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-bottom: 20px;
 `;
 
 export const submitButtonContainer = css`
@@ -42,6 +41,8 @@ export const mainContent = css`
   display: flex;
   flex: 1;
   flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;
 
 export const arrowLeftIconContainer = css`
@@ -56,17 +57,6 @@ export const titleContainer = css`
   justify-content: center;
   align-items: center;
   margin-bottom: 70px;
-`;
-
-export const title = (theme: Theme) => css`
-  ${theme.typography.inter.h5}
-`;
-
-export const mainTitle = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.small}
-
-  font-size: 32px;
-  color: ${theme.colors.purple[100]};
 `;
 
 export const subTitle = (theme: Theme) => css`
@@ -98,4 +88,18 @@ export const questionContainer = (theme: Theme) => css`
   text-align: center;
   background-color: ${theme.colors.white[300]};
   border-radius: 16px;
+`;
+
+export const combinedTitle = (theme: Theme) => css`
+  ${theme.typography.inter.h5}
+
+  color: ${theme.colors.black};
+  word-break: keep-all;
+
+  strong {
+    ${theme.typography.BMHANNAPro.small}
+
+    font-size: 32px;
+    color: ${theme.colors.purple[100]};
+  }
 `;
