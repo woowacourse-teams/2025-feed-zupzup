@@ -46,9 +46,8 @@ export default function useSuggestionForm({
     event.preventDefault();
 
     postUserFeedback({
-      placeId: 1,
+      organizationId: 1,
       content: values.suggestions,
-      imageUrl: values.imgSrc,
       isSecret: values.isSecret,
       userName: values.userName,
       onSuccess: (response: SuggestionFeedback) => {

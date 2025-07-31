@@ -17,6 +17,7 @@ import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import SendIcon from '@/components/icons/SendIcon';
 import { useNavigate } from 'react-router-dom';
+import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 
 interface FeedbackPageProps {
   movePrevStep: () => void;
@@ -25,6 +26,7 @@ interface FeedbackPageProps {
 export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
+
   const {
     feedback,
     username,
@@ -37,13 +39,23 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
+  const { submitFeedback, isSubmitting } = useFeedbackSubmit();
+
   const handleSkipAndNavigate = () => {
     navigate('/dashboard');
   };
 
-  const handleFormSubmitAndNavigate = () => {
-    if (canSubmit) {
-      navigate('/dashboard');
+  const handleFormSubmitAndNavigate = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
+    event.preventDefault();
+
+    if (canSubmit && !isSubmitting) {
+      await submitFeedback({
+        content: feedback,
+        userName: username,
+        isSecret: isLocked,
+      });
     }
   };
 
@@ -76,12 +88,14 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         <div css={buttonGroupContainer}>
           <BasicButton
             type='submit'
-            disabled={!canSubmit}
-            variant={canSubmit ? 'primary' : 'disabled'}
+            disabled={!canSubmit || isSubmitting}
+            variant={canSubmit && !isSubmitting ? 'primary' : 'disabled'}
             icon={
               <SendIcon
                 color={
-                  canSubmit ? theme.colors.white[100] : theme.colors.gray[500]
+                  canSubmit && !isSubmitting
+                    ? theme.colors.white[100]
+                    : theme.colors.gray[500]
                 }
               />
             }
@@ -94,6 +108,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
             icon={<SkipIcon />}
             variant='secondary'
             onClick={handleSkipAndNavigate}
+            disabled={isSubmitting}
           >
             <p css={skipText(theme)}>건너뛰기</p>
           </BasicButton>
