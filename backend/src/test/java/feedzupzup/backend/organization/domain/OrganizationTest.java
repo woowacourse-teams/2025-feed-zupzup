@@ -3,7 +3,6 @@ package feedzupzup.backend.organization.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,6 +22,6 @@ class OrganizationTest {
         organization.cheer(updateCheeringCount);
 
         // then
-        assertThat(organization.getCheeringCount()).isEqualTo(new CheeringCount(originCount + updateCount));
+        assertThat(organization.getCheeringCountValue()).isEqualTo(originCount + updateCount);
     }
 }

@@ -42,6 +42,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
 
             // then
             assertThat(response.organizationName()).isEqualTo(organization.getName());
+            assertThat(response.totalCheeringCount()).isEqualTo(organization.getCheeringCountValue());
         }
 
         @Test
