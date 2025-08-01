@@ -8,9 +8,6 @@ on:
 env:
   TZ: Asia/Seoul
 
-env:
-  TZ: Asia/Seoul
-
 jobs:
   test:
     runs-on: ubuntu-latest
