@@ -1,4 +1,5 @@
 import { postUserFeedback } from '@/apis/userFeedback.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { SuggestionFeedback } from '@/types/feedback.types';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
@@ -14,6 +15,7 @@ interface FeedbackSubmitParams {
 export default function useFeedbackSubmit() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showErrorModal } = useErrorModalContext();
 
   const submitFeedback = useCallback(
     async ({
@@ -38,8 +40,8 @@ export default function useFeedbackSubmit() {
           },
           onError: () => {},
         });
-      } catch (error) {
-        console.error('피드백 제출 에러:', error);
+      } catch (e) {
+        showErrorModal(e, '에러');
       } finally {
         setIsSubmitting(false);
       }
