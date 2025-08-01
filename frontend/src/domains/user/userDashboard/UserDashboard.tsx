@@ -5,10 +5,12 @@ import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxLis
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
+import { highlightStyle } from '@/domains/user/userDashboard/UserHome-delete.styles';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 
 import { getLocalStorage } from '@/utils/localStorage';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function UserDashboard() {
@@ -31,22 +33,22 @@ export default function UserDashboard() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  // const storageHighlightedId = localStorage.getItem('highlightedId');
+  const storageHighlightedId = localStorage.getItem('highlightedId');
 
-  // const [highlightedId, setHighLightedId] = useState<number | null>(null);
+  const [highlightedId, setHighLightedId] = useState<number | null>(null);
 
-  // useEffect(() => {
-  //   if (!storageHighlightedId) return;
+  useEffect(() => {
+    if (!storageHighlightedId) return;
 
-  //   setHighLightedId(Number(storageHighlightedId));
+    setHighLightedId(Number(storageHighlightedId));
 
-  //   const timeout = setTimeout(() => {
-  //     setHighLightedId(null);
-  //     localStorage.removeItem('highlightedId');
-  //   }, 2000);
+    const timeout = setTimeout(() => {
+      setHighLightedId(null);
+      localStorage.removeItem('highlightedId');
+    }, 2000);
 
-  //   return () => clearTimeout(timeout);
-  // }, []);
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <div css={dashboardLayout}>
@@ -64,9 +66,12 @@ export default function UserDashboard() {
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
+              customCSS={
+                feedback.feedbackId === highlightedId ? highlightStyle : null
+              }
             />
           ))}
-          {/* {loading && <div>로딩중...</div>} */}
+          {loading && <div>로딩중...</div>}
         </FeedbackBoxList>
       </div>
       <FloatingButton
