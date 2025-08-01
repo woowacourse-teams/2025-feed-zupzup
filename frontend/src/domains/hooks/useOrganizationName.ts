@@ -2,16 +2,18 @@ import { getOrganizationName } from '@/apis/organization.api';
 import { useEffect, useState } from 'react';
 
 export default function useOrganizationName() {
-  const [placeName, setPlaceName] = useState('피드줍줍');
+  const [groupName, setGroupName] = useState('피드줍줍');
+  const [totalCheeringCount, setTotalCheeringCount] = useState(0);
 
   useEffect(() => {
     async function getOrganization() {
       const response = await getOrganizationName({ organizationId: 1 });
-      setPlaceName(response!.data.organizationName);
+      setGroupName(response!.data.organizationName);
+      setTotalCheeringCount(response!.data.totalCheeringCount);
     }
 
     getOrganization();
   }, []);
 
-  return { placeName };
+  return { groupName, totalCheeringCount };
 }
