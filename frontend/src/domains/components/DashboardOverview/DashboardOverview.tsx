@@ -31,7 +31,7 @@ export default function DashboardOverview() {
     {
       title: '총 건의 수',
       content: statistics?.totalCount,
-      caption: '반영 완료',
+      caption: '접수 완료',
     },
   ];
 
