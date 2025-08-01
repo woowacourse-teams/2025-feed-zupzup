@@ -3,14 +3,16 @@ import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useEffect, useState } from 'react';
 
 export default function useOrganizationName() {
-  const [placeName, setPlaceName] = useState('피드줍줍');
+  const [groupName, setGroupName] = useState('피드줍줍');
+  const [totalCheeringCount, setTotalCheeringCount] = useState(0);
   const { showErrorModal } = useErrorModalContext();
 
   useEffect(() => {
     async function getOrganization() {
       try {
         const response = await getOrganizationName({ organizationId: 1 });
-        setPlaceName(response!.data.organizationName);
+        setGroupName(response!.data.organizationName);
+        setTotalCheeringCount(response!.data.totalCheeringCount);
       } catch (e) {
         showErrorModal(e, '에러');
       }
@@ -19,5 +21,5 @@ export default function useOrganizationName() {
     getOrganization();
   }, []);
 
-  return { placeName };
+  return { groupName, totalCheeringCount };
 }

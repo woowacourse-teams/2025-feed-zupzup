@@ -8,16 +8,36 @@ import {
 } from '@/domains/components/DashboardOverview/DashboardOverview.style';
 
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { DASH_PANELS } from '@/domains/mocks/dashPanels.mock';
-
-const GROUP_NAME = '우아한테크코스';
+import useOrganizationName from '@/domains/hooks/useOrganizationName';
+import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
 
 export default function DashboardOverview() {
   const theme = useAppTheme();
+  const { groupName, totalCheeringCount } = useOrganizationName();
+  const { statistics } = useUserOrganizationsStatistics();
+
+  const DASH_PANELS = [
+    {
+      title: '반영률',
+      content: statistics?.reflectionRate,
+      caption: '총 2개 반영',
+    },
+    {
+      title: '완료',
+      content: statistics?.confirmedCount,
+      caption: '평균 2.5일',
+    },
+    { title: '미처리', content: statistics?.waitingCount, caption: '반영 전' },
+    {
+      title: '총 건의 수',
+      content: statistics?.totalCount,
+      caption: '접수 완료',
+    },
+  ];
 
   return (
     <>
-      <p css={titleText(theme)}>{GROUP_NAME}</p>
+      <p css={titleText(theme)}>{groupName}</p>
       <p css={panelCaption(theme)}>일주일 간의 피드백</p>
       <div css={panelLayout}>
         {DASH_PANELS.map((panel, idx) => (
@@ -30,7 +50,7 @@ export default function DashboardOverview() {
         ))}
       </div>
       <div css={cheerButtonLayout}>
-        <CheerButton />
+        <CheerButton totalCheeringCount={totalCheeringCount} />
       </div>
     </>
   );

@@ -7,12 +7,12 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router';
 import { ErrorModalProvider } from '@/contexts/useErrorModal';
 
-if (process.env.NODE_ENV === 'development') {
-  const { worker } = await import('./mocks/browser');
-  await worker.start({
-    onUnhandledRequest: 'bypass',
-  });
-}
+// if (process.env.NODE_ENV === 'development') {
+//   const { worker } = await import('./mocks/browser');
+//   await worker.start({
+//     onUnhandledRequest: 'bypass',
+//   });
+// }
 
 const root = createRoot(document.getElementById('root')!);
 root.render(
