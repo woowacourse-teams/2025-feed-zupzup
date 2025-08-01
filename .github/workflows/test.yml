@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [ "be/develop" ]
 
+env:
+  TZ: Asia/Seoul
+
 jobs:
   test:
     runs-on: ubuntu-latest
