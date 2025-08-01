@@ -10,6 +10,7 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.log.BusinessActionLog;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,22 +26,25 @@ public class AdminFeedbackService {
     private final FeedbackLikeCounter feedbackLikeCounter;
 
     @Transactional
+    @BusinessActionLog
     public void delete(final Long feedbackId) {
         feedBackRepository.deleteById(feedbackId);
     }
 
     @Transactional
+    @BusinessActionLog
     public UpdateFeedbackStatusResponse updateFeedbackStatus(
             final UpdateFeedbackStatusRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedBack = feedBackRepository.findById(feedbackId)
+        final Feedback feedback = feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
-        feedBack.updateStatus(request.status());
-        return UpdateFeedbackStatusResponse.from(feedBack);
+        feedback.updateStatus(request.status());
+        return UpdateFeedbackStatusResponse.from(feedback);
     }
 
     @Transactional
+    @BusinessActionLog
     public UpdateFeedbackSecretResponse updateFeedbackSecret(
             final Long feedbackId,
             final UpdateFeedbackSecretRequest request

@@ -21,6 +21,9 @@ public enum ErrorCode {
 
     //Organization Error
     CHEERING_INVALID_NUMBER(BAD_REQUEST, "O01", "응원횟수에 유효하지 않은 숫자값입니다."),
+    
+    //Feedback Error
+    INVALID_USERNAME_LENGTH(BAD_REQUEST, "F01", "닉네임은 1글자 이상 10글자 이하여야 합니다."),
     ;
 
     private final HttpStatus httpStatus;
