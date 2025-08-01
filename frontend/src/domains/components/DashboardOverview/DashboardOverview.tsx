@@ -1,10 +1,13 @@
 import CheerButton from '@/domains/components/CheerButton/CheerButton';
 import DashboardPanel from '@/domains/components/DashboardPanel/DashboardPanel';
 import {
+  headerContainer,
   cheerButtonLayout,
   panelCaption,
   panelLayout,
   titleText,
+  headerText,
+  headerCheerButton,
 } from '@/domains/components/DashboardOverview/DashboardOverview.style';
 
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -37,8 +40,17 @@ export default function DashboardOverview() {
 
   return (
     <>
-      <p css={titleText(theme)}>{groupName}</p>
-      <p css={panelCaption(theme)}>일주일 간의 피드백</p>
+      <div css={headerContainer}>
+        <div css={headerText}>
+          <p css={titleText(theme)}>{groupName}</p>
+          <p css={panelCaption(theme)}>일주일 간의 피드백</p>
+        </div>
+        <div css={headerCheerButton}>
+          <div css={cheerButtonLayout}>
+            <CheerButton totalCheeringCount={totalCheeringCount} />
+          </div>
+        </div>
+      </div>
       <div css={panelLayout}>
         {DASH_PANELS.map((panel, idx) => (
           <DashboardPanel
@@ -48,9 +60,6 @@ export default function DashboardOverview() {
             caption={panel.caption}
           />
         ))}
-      </div>
-      <div css={cheerButtonLayout}>
-        <CheerButton totalCheeringCount={totalCheeringCount} />
       </div>
     </>
   );
