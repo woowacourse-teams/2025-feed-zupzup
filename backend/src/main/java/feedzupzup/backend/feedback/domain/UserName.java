@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.feedback.exception.FeedbackException;
+import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -23,7 +25,7 @@ public class UserName {
 
     private void validateNameLength(final String value) {
         if (!(value.length() >= MIN_LENGTH && value.length() <= MAX_LENGTH)) {
-            throw new IllegalArgumentException("닉네임은 1글자 이상 10글자 이하여야 합니다.");
+            throw new FeedbackException(ErrorCode.INVALID_USERNAME_LENGTH, "value = " + value + " length = " + value.length());
         }
     }
 }

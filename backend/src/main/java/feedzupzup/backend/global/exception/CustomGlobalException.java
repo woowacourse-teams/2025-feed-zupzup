@@ -2,6 +2,7 @@ package feedzupzup.backend.global.exception;
 
 import feedzupzup.backend.global.response.ErrorCode;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class CustomGlobalException extends RuntimeException {
@@ -13,5 +14,9 @@ public abstract class CustomGlobalException extends RuntimeException {
         super(message);
         this.message = message;
         this.errorCode = errorCode;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return errorCode.getHttpStatus();
     }
 }
