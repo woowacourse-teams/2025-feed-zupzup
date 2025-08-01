@@ -10,6 +10,7 @@ import {
 } from './FeedbackBoxFooter.styles';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import Tag from '@/components/Tag/Tag';
+import { formatRelativeTime } from '@/utils/formatRelativeTime';
 
 interface FeedbackBoxFooterProps {
   likeCount: number;
@@ -28,15 +29,13 @@ export default function FeedbackBoxFooter({
   feedbackId,
   type,
 }: FeedbackBoxFooterProps) {
-  console.log('props 오류 제거용', createdAt);
   const theme = useAppTheme();
 
   return (
     <div css={container}>
       <div css={calendar(theme)}>
         <ClockIcon />
-        <p css={day(theme)}>2분전</p>
-        {/* <p css={day}>{formatDate(createdAt)}</p> */}
+        <p css={day(theme)}>{formatRelativeTime(createdAt ?? '')}</p>
       </div>
       {!isSecret && (
         <div css={content(theme)}>
