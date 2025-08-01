@@ -40,14 +40,13 @@
 
 body {
   overflow: auto;
-  height: 100vh;
+  height: 100dvh;
 }
 
 #root {
   position: relative;
   max-width: 600px;
   width: 100%;
-  min-height: 100vh;
   height: 100%;
   margin: 0 auto;
   background-color: white;
