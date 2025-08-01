@@ -22,8 +22,8 @@ export default function DashboardOverview() {
   const DASH_PANELS = [
     {
       title: '반영률',
-      content: statistics?.reflectionRate,
-      caption: '총 2개 반영',
+      content: `${statistics?.reflectionRate}%`,
+      caption: `총 ${statistics?.confirmedCount}개 반영`,
     },
     {
       title: '완료',
