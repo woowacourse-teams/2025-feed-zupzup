@@ -3,7 +3,6 @@ import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback'
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
-import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
@@ -15,7 +14,6 @@ import { useNavigate } from 'react-router-dom';
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
-  const { groupName } = useOrganizationName();
 
   const {
     items: feedbacks,
@@ -52,7 +50,7 @@ export default function UserDashboard() {
 
   return (
     <div css={dashboardLayout}>
-      <DashboardOverview groupName={groupName} />
+      <DashboardOverview />
       <div>
         <FeedbackBoxList>
           {feedbacks.map((feedback) => (

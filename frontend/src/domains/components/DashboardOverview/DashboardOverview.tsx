@@ -9,15 +9,11 @@ import {
 
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { DASH_PANELS } from '@/domains/mocks/dashPanels.mock';
+import useOrganizationName from '@/domains/hooks/useOrganizationName';
 
-interface DashboardOverviewProps {
-  groupName: string;
-}
-
-export default function DashboardOverview({
-  groupName,
-}: DashboardOverviewProps) {
+export default function DashboardOverview() {
   const theme = useAppTheme();
+  const { groupName, totalCheeringCount } = useOrganizationName();
 
   return (
     <>
@@ -34,7 +30,7 @@ export default function DashboardOverview({
         ))}
       </div>
       <div css={cheerButtonLayout}>
-        <CheerButton />
+        <CheerButton totalCheeringCount={totalCheeringCount} />
       </div>
     </>
   );
