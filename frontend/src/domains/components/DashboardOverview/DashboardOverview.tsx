@@ -8,12 +8,32 @@ import {
 } from '@/domains/components/DashboardOverview/DashboardOverview.style';
 
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { DASH_PANELS } from '@/domains/mocks/dashPanels.mock';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
+import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
 
 export default function DashboardOverview() {
   const theme = useAppTheme();
   const { groupName, totalCheeringCount } = useOrganizationName();
+  const { statistics } = useUserOrganizationsStatistics();
+
+  const DASH_PANELS = [
+    {
+      title: '반영률',
+      content: statistics?.reflectionRate,
+      caption: '총 2개 반영',
+    },
+    {
+      title: '완료',
+      content: statistics?.confirmedCount,
+      caption: '평균 2.5일',
+    },
+    { title: '미처리', content: statistics?.waitingCount, caption: '반영 전' },
+    {
+      title: '총 건의 수',
+      content: statistics?.totalCount,
+      caption: '반영 완료',
+    },
+  ];
 
   return (
     <>

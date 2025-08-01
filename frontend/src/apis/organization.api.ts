@@ -1,5 +1,8 @@
 import { apiClient, ApiError } from '@/apis/apiClient';
-import { GetOrganizationName } from '@/types/organization.types';
+import {
+  GetOrganizationName,
+  GetOrganizationStatistics,
+} from '@/types/organization.types';
 
 interface PostOrganizationCheerParams {
   organizationId: number;
@@ -8,6 +11,11 @@ interface PostOrganizationCheerParams {
 
 interface GetOrganizationNameParams {
   organizationId: number;
+}
+
+interface GetOrganizationStatistic {
+  organizationId: number;
+  period: 'WEEK' | 'MONTH';
 }
 
 export async function getOrganizationName({
@@ -39,5 +47,20 @@ export async function postOrganizationCheer({
   } catch (e) {
     if (e instanceof ApiError) console.error(e.message);
     return;
+  }
+}
+
+export async function getOrganizationStatistics({
+  organizationId,
+  period,
+}: GetOrganizationStatistic) {
+  try {
+    const response = await apiClient.get<GetOrganizationStatistics>(
+      `/organizations/${organizationId}/statistic?period=${period}`
+    );
+    return response as GetOrganizationStatistics;
+  } catch (e) {
+    if (e instanceof ApiError) console.error(e.message);
+    return { data: '에러입니다.' };
   }
 }
