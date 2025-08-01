@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["cypress", "node"],
+    "types": ["cypress", "node", "jest", "@testing-library/jest-dom"],
     "useDefineForClassFields": true,
     "allowJs": true,
     "allowImportingTsExtensions": true,
@@ -30,5 +30,13 @@
     "noEmit": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "types", "cypress", ".storybook"]
+  "include": [
+    "src",
+    "types",
+    "cypress",
+    ".storybook",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/setupTests.ts"
+  ]
 }

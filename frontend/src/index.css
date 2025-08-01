@@ -38,17 +38,21 @@
   font-style: normal;
 }
 
+body {
+  overflow: auto;
+  height: 100dvh;
+}
+
 #root {
   position: relative;
   max-width: 600px;
   width: 100%;
-  height: 100vh;
-  overflow: auto;
+  height: 100%;
   margin: 0 auto;
-  background-color: #f9fafb;
-  border-left: 1px solid lightgrey;
-  border-right: 1px solid lightgrey;
-  padding: 14px;
+  background-color: white;
+  /* border-left: 1px solid lightgrey;
+  border-right: 1px solid lightgrey; */
+  padding: 32px;
   box-sizing: border-box;
   font-family: 'Pretendard-Regular', sans-serif;
 }

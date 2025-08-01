@@ -1,19 +1,27 @@
+import App from '@/App';
+import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
+import Home from '@/domains/Home';
+import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
-import Suggestions from './domains/user/suggestions/Suggestions';
-import AdminHome from './domains/admin/home/AdminHome';
-import UserHome from './domains/user/home/UserHome';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <UserHome />,
-  },
-  {
-    path: '/suggestion',
-    element: <Suggestions />,
-  },
-  {
-    path: '/admin',
-    element: <AdminHome />,
+    element: <App />,
+    children: [
+      {
+        path: '',
+        element: <Home />,
+      },
+
+      {
+        path: '/admin',
+        element: <AdminDashboard />,
+      },
+      {
+        path: '/dashboard',
+        element: <UserDashboard />,
+      },
+    ],
   },
 ]);
