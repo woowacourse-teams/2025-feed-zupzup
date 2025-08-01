@@ -9,6 +9,7 @@ import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxLis
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 export default function AdminDashboard() {
   const {
@@ -29,6 +30,8 @@ export default function AdminDashboard() {
     originalFeedbacks: originalFeedbacks,
   });
 
+  const { isAuthorized, isCheckingAuth } = useAdminAuth();
+
   const {
     modalState,
     openFeedbackCompleteModal,
@@ -41,6 +44,14 @@ export default function AdminDashboard() {
   });
 
   useGetFeedback({ fetchMore, hasNext, loading });
+
+  if (isCheckingAuth) {
+    return <div>로딩중...</div>;
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <section css={dashboardLayout}>

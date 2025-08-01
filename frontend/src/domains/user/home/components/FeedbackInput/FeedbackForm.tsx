@@ -65,6 +65,7 @@ export default function FeedbackForm({
           onClick={onRandomChange}
           disabled={isLocked}
           css={randomButton(theme)}
+          type='button'
         >
           랜덤변경
         </Button>
