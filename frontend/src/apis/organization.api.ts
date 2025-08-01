@@ -55,8 +55,11 @@ export async function getOrganizationStatistics({
   period,
 }: GetOrganizationStatistic) {
   try {
+    const params = new URLSearchParams({
+      period,
+    }).toString();
     const response = await apiClient.get<GetOrganizationStatistics>(
-      `/organizations/${organizationId}/statistic?period=${period}`
+      `/organizations/${organizationId}/statistic?${params}`
     );
     return response as GetOrganizationStatistics;
   } catch (e) {
