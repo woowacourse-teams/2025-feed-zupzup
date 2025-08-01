@@ -5,6 +5,7 @@ import './reset.css';
 import { theme } from './theme';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router';
+import { ErrorModalProvider } from '@/contexts/useErrorModal';
 
 if (process.env.NODE_ENV === 'development') {
   const { worker } = await import('./mocks/browser');
@@ -15,7 +16,9 @@ if (process.env.NODE_ENV === 'development') {
 
 const root = createRoot(document.getElementById('root')!);
 root.render(
-  <ThemeProvider theme={theme}>
-    <RouterProvider router={router} />
-  </ThemeProvider>
+  <ErrorModalProvider>
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  </ErrorModalProvider>
 );

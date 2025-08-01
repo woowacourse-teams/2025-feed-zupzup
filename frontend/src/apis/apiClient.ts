@@ -127,7 +127,16 @@ async function baseClient<Response, RequestBody>({
     throw new Error(DEFAULT_ERROR_MESSAGE);
   } catch (error) {
     onError?.();
-    throw error;
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
+    const message =
+      error instanceof Error && error.message
+        ? error.message
+        : DEFAULT_ERROR_MESSAGE;
+
+    throw new ApiError(0, message);
   }
 }
 
