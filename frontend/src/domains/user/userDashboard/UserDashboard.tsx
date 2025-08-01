@@ -4,13 +4,12 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
+import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
 import { highlightStyle } from '@/domains/user/userDashboard/UserHome-delete.styles';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
-
 import { getLocalStorage } from '@/utils/localStorage';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function UserDashboard() {
@@ -33,22 +32,7 @@ export default function UserDashboard() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const storageHighlightedId = localStorage.getItem('highlightedId');
-
-  const [highlightedId, setHighLightedId] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!storageHighlightedId) return;
-
-    setHighLightedId(Number(storageHighlightedId));
-
-    const timeout = setTimeout(() => {
-      setHighLightedId(null);
-      localStorage.removeItem('highlightedId');
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, []);
+  const { highlightedId } = useHighLighted();
 
   return (
     <div css={dashboardLayout}>
