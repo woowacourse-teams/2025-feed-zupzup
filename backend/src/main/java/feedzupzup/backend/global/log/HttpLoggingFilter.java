@@ -26,20 +26,19 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         final ContentCachingRequestWrapper cacheRequest = new ContentCachingRequestWrapper(request);
         final ContentCachingResponseWrapper cacheResponse = new ContentCachingResponseWrapper(response);
 
-        String requestId = createRequestId();
+        createRequestId();
 
         writeRequestLog(cacheRequest);
         filterChain.doFilter(cacheRequest, cacheResponse);
         writeResponseLog(cacheResponse);
 
         cacheResponse.copyBodyToResponse();
-        MDC.remove(requestId);
+        MDC.remove("request_id");
     }
 
-    private String createRequestId() {
+    private void createRequestId() {
         String requestId = UUID.randomUUID().toString().substring(0, 8);
         MDC.put("request_id", requestId);
-        return requestId;
     }
 
     private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
