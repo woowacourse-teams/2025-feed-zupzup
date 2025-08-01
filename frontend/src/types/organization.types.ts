@@ -6,3 +6,14 @@ export interface GetOrganizationName {
   status: number;
   message: string;
 }
+
+export interface GetOrganizationStatistics {
+  data: {
+    reflectionRate: string;
+    confirmedCount: string;
+    waitingCount: string;
+    totalCount: string;
+  };
+  status: number;
+  message: string;
+}
