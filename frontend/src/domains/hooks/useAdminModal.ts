@@ -1,4 +1,5 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useState } from 'react';
 
 interface ModalState {
@@ -16,6 +17,7 @@ export const useAdminModal = ({
   onDeleteFeedback,
 }: UseAdminModalProps = {}) => {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
+  const { showErrorModal } = useErrorModalContext();
 
   const openFeedbackCompleteModal = (feedbackId: number) => {
     setModalState({ type: 'confirm', feedbackId });
@@ -46,8 +48,8 @@ export const useAdminModal = ({
         await deleteFeedback({ feedbackId });
         onDeleteFeedback?.(feedbackId);
       }
-    } catch (error) {
-      console.error('Modal action failed:', error);
+    } catch (e) {
+      showErrorModal(e, '에러');
     }
 
     closeModal();

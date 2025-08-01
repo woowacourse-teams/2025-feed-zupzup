@@ -1,3 +1,4 @@
+import { ApiError } from '@/apis/apiClient';
 import {
   createContext,
   Dispatch,
@@ -11,20 +12,18 @@ interface ErrorModalContextProps {
   isError: boolean;
   title: string;
   message: string;
-  setTitle: Dispatch<SetStateAction<string>>;
-  setMessage: Dispatch<SetStateAction<string>>;
-  setErrorTrue: () => void;
-  setErrorFalse: () => void;
+  setErrorTrue: Dispatch<SetStateAction<string>>;
+  setErrorFalse: Dispatch<SetStateAction<string>>;
+  showErrorModal: (error: unknown, title?: string) => void;
 }
 
 const errorModalContext = createContext<ErrorModalContextProps>({
   isError: false,
   title: '',
   message: '',
-  setTitle: () => {},
-  setMessage: () => {},
   setErrorTrue: () => {},
   setErrorFalse: () => {},
+  showErrorModal: () => {},
 });
 
 interface ErrorModalProvider {
@@ -44,6 +43,13 @@ export function ErrorModalProvider({ children }: ErrorModalProvider) {
     setIsError(false);
   }, []);
 
+  const showErrorModal = useCallback((error: unknown, title?: string) => {
+    if (error instanceof ApiError) {
+      setMessage(error.message);
+      setTitle(title ?? '에러 발생');
+      setErrorTrue();
+    }
+  }, []);
   return (
     <errorModalContext.Provider
       value={{
@@ -52,8 +58,7 @@ export function ErrorModalProvider({ children }: ErrorModalProvider) {
         message,
         setErrorTrue,
         setErrorFalse,
-        setTitle,
-        setMessage,
+        showErrorModal,
       }}
     >
       {children}
