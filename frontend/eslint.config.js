@@ -45,5 +45,20 @@ export default [
       ],
     },
   },
+
+  {
+    files: ['public/service-worker.js'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'script',
+      },
+    },
+    env: {
+      browser: true,
+      serviceworker: true,
+    },
+  },
   ...storybook.configs['flat/recommended'],
 ];
