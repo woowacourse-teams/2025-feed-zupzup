@@ -27,7 +27,7 @@ export default function AdminDashboard() {
   });
 
   const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-    originalFeedbacks: originalFeedbacks,
+    originalFeedbacks,
   });
 
   const { isAuthorized, isCheckingAuth } = useAdminAuth();
