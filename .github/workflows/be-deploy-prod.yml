@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ "release" ]
+    branches: [ "main" ]
     paths:
       - 'backend/**'
 
