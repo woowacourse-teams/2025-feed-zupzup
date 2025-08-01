@@ -1,19 +1,12 @@
 import { ApiError } from '@/apis/apiClient';
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 interface ErrorModalContextProps {
   isError: boolean;
   title: string;
   message: string;
-  setErrorTrue: Dispatch<SetStateAction<string>>;
-  setErrorFalse: Dispatch<SetStateAction<string>>;
+  setErrorTrue: () => void;
+  setErrorFalse: () => void;
   showErrorModal: (error: unknown, title?: string) => void;
 }
 
