@@ -54,7 +54,6 @@ export default function useInfinityScroll<
       setCursorId(responseData.nextCursorId);
       retryCountRef.current = 0;
     } catch (error) {
-      setHasNext(false);
       console.error('무한 스크롤 에러:', error);
 
       retryCountRef.current += 1;
