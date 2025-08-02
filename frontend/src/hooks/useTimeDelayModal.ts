@@ -17,33 +17,31 @@ export function useTimeDelayModal({
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setIsLoading(true);
-      setIsComplete(false);
+    if (!isOpen) return;
 
-      const loadingTimer = setTimeout(() => {
-        setIsLoading(false);
-        setIsComplete(true);
-      }, loadingDuration);
+    setIsLoading(true);
+    setIsComplete(false);
 
-      return () => {
-        clearTimeout(loadingTimer);
-      };
-    }
-    return undefined;
+    const loadingTimer = setTimeout(() => {
+      setIsLoading(false);
+      setIsComplete(true);
+    }, loadingDuration);
+
+    return () => {
+      clearTimeout(loadingTimer);
+    };
   }, [isOpen, loadingDuration]);
 
   useEffect(() => {
-    if (isComplete) {
-      const autoCloseTimer = setTimeout(() => {
-        onClose();
-      }, autoCloseDuration);
+    if (!isComplete) return;
 
-      return () => {
-        clearTimeout(autoCloseTimer);
-      };
-    }
-    return undefined;
+    const autoCloseTimer = setTimeout(() => {
+      onClose();
+    }, autoCloseDuration);
+
+    return () => {
+      clearTimeout(autoCloseTimer);
+    };
   }, [isComplete, autoCloseDuration, onClose]);
 
   const handleModalClose = useCallback(() => {
