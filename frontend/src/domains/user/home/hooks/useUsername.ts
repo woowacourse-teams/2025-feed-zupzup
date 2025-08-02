@@ -11,9 +11,7 @@ export interface UseUsernameReturn {
 }
 
 export function useUsername(isLocked: boolean): UseUsernameReturn {
-  const [username, setUsername] = useState(
-    FEEDBACK_FORM_CONSTANTS.DEFAULTS.USERNAME
-  );
+  const [username, setUsername] = useState(() => generateRandomUsername());
 
   const [isUsernameEdited, setIsUsernameEdited] = useState(false);
 
