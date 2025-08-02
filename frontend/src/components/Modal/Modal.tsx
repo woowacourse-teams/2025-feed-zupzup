@@ -10,6 +10,7 @@ export interface ModalProps {
   width?: number;
   height?: number | undefined;
   customCSS?: SerializedStyles | SerializedStyles[];
+  preventClose?: boolean;
 }
 
 export default function Modal({
@@ -19,11 +20,13 @@ export default function Modal({
   width = 300,
   height,
   customCSS,
+  preventClose = false,
 }: ModalProps) {
   const theme = useAppTheme();
   const { handleOverlayClick } = useModal({
     isOpen,
     onClose,
+    preventClose,
   });
 
   if (!isOpen) return null;

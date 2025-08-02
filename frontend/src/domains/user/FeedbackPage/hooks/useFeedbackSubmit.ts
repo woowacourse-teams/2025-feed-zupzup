@@ -36,7 +36,6 @@ export default function useFeedbackSubmit() {
           userName,
           onSuccess: (response: SuggestionFeedback) => {
             setLocalStorage('highlightedId', response.data.feedbackId);
-            navigate('/dashboard');
           },
           onError: () => {},
         });
