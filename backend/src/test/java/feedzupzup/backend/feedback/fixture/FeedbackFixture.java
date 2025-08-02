@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.fixture;
 
+import feedzupzup.backend.feedback.domain.Category;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
@@ -15,6 +16,7 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .category(Category.from("시설"))
                 .build();
     }
 
@@ -26,6 +28,7 @@ public class FeedbackFixture {
                 .organizationId(organizationId)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .category(Category.from("시설"))
                 .build();
     }
 
@@ -37,6 +40,7 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .category(Category.from("시설"))
                 .build();
     }
 
@@ -48,6 +52,7 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .category(Category.from("시설"))
                 .build();
     }
 
@@ -60,6 +65,7 @@ public class FeedbackFixture {
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .category(Category.from("시설"))
                 .build();
     }
 
@@ -74,6 +80,7 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(postedAt)
+                .category(Category.from("시설"))
                 .build();
     }
 }

@@ -45,6 +45,9 @@ public class Feedback extends BaseTimeEntity {
     @Embedded
     private PostedAt postedAt;
 
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     @Builder
     public Feedback(
             final String content,
@@ -53,7 +56,8 @@ public class Feedback extends BaseTimeEntity {
             final Long organizationId,
             final int likeCount,
             final UserName userName,
-            final PostedAt postedAt
+            final PostedAt postedAt,
+            final Category category
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -62,6 +66,7 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
         this.userName = userName;
         this.postedAt = postedAt;
+        this.category = category;
     }
 
     public void updateStatus(final ProcessStatus status) {

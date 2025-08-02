@@ -191,7 +191,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저", "시설");
 
         // when & then
         given()
@@ -218,7 +218,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
 
         final Organization savedOrganization = organizationRepository.save(organization);
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", false, "테스트유저");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", false, "테스트유저", "시설");
 
         // when - 피드백 생성
         final Long createdFeedbackId = given()

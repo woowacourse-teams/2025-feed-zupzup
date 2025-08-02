@@ -8,7 +8,8 @@ public class FeedbackRequestFixture {
         return new CreateFeedbackRequest(
                 content,
                 false,
-                "테스트유저"
+                "테스트유저",
+                "시설"
         );
     }
 
@@ -16,7 +17,8 @@ public class FeedbackRequestFixture {
         return new CreateFeedbackRequest(
                 "내용",
                 isSecret,
-                "테스트유저"
+                "테스트유저",
+                "시설"
         );
     }
 }

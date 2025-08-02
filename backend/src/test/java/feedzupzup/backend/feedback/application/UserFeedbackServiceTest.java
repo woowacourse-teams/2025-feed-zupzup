@@ -48,7 +48,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             //given
         final Organization organization = OrganizationFixture.createAllBlackBox();
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "시설");
 
             //when
             final Organization savedOrganization = organizationRepository.save(organization);
