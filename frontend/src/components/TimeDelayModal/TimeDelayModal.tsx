@@ -37,13 +37,6 @@ export default function TimeDelayModal({
   const [isLoading, setIsLoading] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
-  console.log('🔄 TimeDelayModal 렌더링:', {
-    isOpen,
-    isLoading,
-    isComplete,
-    timestamp: Date.now(),
-  });
-
   useEffect(() => {
     if (isOpen) {
       setIsLoading(true);
