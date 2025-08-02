@@ -12,6 +12,7 @@ export const cheerButtonStyle = css`
 `;
 
 export const textStyle = (theme: Theme) => css`
+  font-family: monospace;
   font-size: 14px;
   color: ${theme.colors.darkGray[100]};
 `;

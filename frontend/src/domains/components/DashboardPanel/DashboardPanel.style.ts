@@ -17,10 +17,10 @@ export const dotLayout = css`
   gap: 8px;
 `;
 
-export const dot = (theme: Theme) => css`
+export const dot = (theme: Theme, color?: string) => css`
   width: 8px;
   height: 8px;
-  background-color: ${theme.colors.gray[600]};
+  background-color: ${color ?? theme.colors.gray[600]};
   border-radius: 50%;
 `;
 

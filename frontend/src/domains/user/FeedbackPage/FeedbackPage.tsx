@@ -11,12 +11,12 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
 import BasicButton from '@/components/BasicButton/BasicButton';
-import SkipIcon from '@/components/icons/SkipIcon';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import SendIcon from '@/components/icons/SendIcon';
 import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
+import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 
 interface FeedbackPageProps {
   movePrevStep: () => void;
@@ -102,7 +102,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
           <BasicButton
             type='button'
-            icon={<SkipIcon />}
+            icon={<p css={skipIcon}>📄</p>}
             variant='secondary'
             onClick={handleSkipAndNavigate}
             disabled={isSubmitting}

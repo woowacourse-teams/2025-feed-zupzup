@@ -8,6 +8,10 @@ export const skipText = (theme: Theme) => css`
   color: ${theme.colors.darkGray[100]};
 `;
 
+export const skipIcon = css`
+  font-size: 20px;
+`;
+
 export const container = css`
   display: flex;
   flex-direction: column;
