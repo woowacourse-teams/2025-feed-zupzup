@@ -4,6 +4,7 @@ import { Theme } from '@/theme';
 export const basicButton = (
   theme: Theme,
   width?: string | number,
+  height?: string | number,
   variant: 'primary' | 'secondary' | 'disabled' = 'primary'
 ) => css`
   display: flex;
@@ -11,7 +12,7 @@ export const basicButton = (
   align-items: center;
   gap: 14px;
   width: ${typeof width === 'number' ? `${width}px` : width || '100%'};
-  height: 54px;
+  height: ${typeof height === 'number' ? `${height}px` : height || '54px'};
   padding: 24px 28px;
   background-color: ${variant === 'primary'
     ? theme.colors.purple[100]
