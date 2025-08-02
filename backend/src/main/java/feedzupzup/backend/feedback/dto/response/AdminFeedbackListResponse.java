@@ -51,7 +51,10 @@ public record AdminFeedbackListResponse(
             String userName,
 
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
-            LocalDateTime createdAt
+            LocalDateTime createdAt,
+
+            @Schema(description = "카테고리", example = "시설")
+            String category
     ) {
 
         private static AdminFeedbackItem from(final Feedback feedback) {
@@ -62,7 +65,8 @@ public record AdminFeedbackListResponse(
                     feedback.isSecret(),
                     feedback.getLikeCount(),
                     feedback.getUserName(),
-                    feedback.getCreatedAt()
+                    feedback.getCreatedAt(),
+                    feedback.getCategory().getName()
             );
         }
 
