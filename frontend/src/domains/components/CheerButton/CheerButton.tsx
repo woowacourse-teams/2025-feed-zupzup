@@ -23,7 +23,9 @@ export default function CheerButton({ totalCheeringCount }: CheerButtonProps) {
   const handleClick = () => {
     setCount(count + 1);
     setAccCount(accCount + 1);
-    setAnimate(true);
+    setAnimate(false);
+    requestAnimationFrame(() => setAnimate(true));
+
     debouncedSearch(count + 1);
   };
 
