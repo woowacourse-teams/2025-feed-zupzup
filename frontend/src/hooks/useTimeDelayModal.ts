@@ -30,6 +30,7 @@ export function useTimeDelayModal({
         clearTimeout(loadingTimer);
       };
     }
+    return undefined;
   }, [isOpen, loadingDuration]);
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export function useTimeDelayModal({
         clearTimeout(autoCloseTimer);
       };
     }
+    return undefined;
   }, [isComplete, autoCloseDuration, onClose]);
 
   const handleModalClose = useCallback(() => {
