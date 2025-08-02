@@ -34,7 +34,7 @@ export default function DashboardOverview() {
     {
       title: '완료',
       content: statistics?.confirmedCount,
-      caption: '평균 2.5일',
+      caption: '완료',
     },
   ];
 
