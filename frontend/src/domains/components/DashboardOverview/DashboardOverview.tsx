@@ -30,11 +30,17 @@ export default function DashboardOverview() {
       content: statistics?.totalCount,
       caption: '접수 완료',
     },
-    { title: '미처리', content: statistics?.waitingCount, caption: '반영 전' },
+    {
+      title: '미처리',
+      content: statistics?.waitingCount,
+      caption: '반영 전',
+      color: theme.colors.red[100],
+    },
     {
       title: '완료',
       content: statistics?.confirmedCount,
       caption: '완료',
+      color: theme.colors.green[100],
     },
   ];
 
@@ -58,6 +64,7 @@ export default function DashboardOverview() {
             title={panel.title}
             content={panel.content}
             caption={panel.caption}
+            color={panel.color}
           />
         ))}
       </div>
