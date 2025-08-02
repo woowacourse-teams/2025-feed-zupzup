@@ -1,6 +1,10 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
+export const modalContainer = css`
+  border-radius: 30px;
+`;
+
 export const modalContent = css`
   display: flex;
   flex-direction: column;
@@ -15,6 +19,7 @@ export const loadingContainer = css`
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  margin-top: 10%;
 `;
 
 export const completeContainer = css`
@@ -24,11 +29,11 @@ export const completeContainer = css`
   gap: 16px;
 `;
 
-export const spinner = css`
+export const spinner = (theme: Theme) => css`
   width: 40px;
   height: 40px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #007bff;
+  border: 3px solid ${theme.colors.gray[100]};
+  border-top: 3px solid ${theme.colors.purple[100]};
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -43,16 +48,16 @@ export const spinner = css`
   }
 `;
 
-export const checkIcon = css`
+export const checkIcon = (theme: Theme) => css`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   font-size: 30px;
   font-weight: bold;
   color: white;
-  background-color: #28a745;
+  background-color: ${theme.colors.gray[100]};
   border-radius: 50%;
 `;
 

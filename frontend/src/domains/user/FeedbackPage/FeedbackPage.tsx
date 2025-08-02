@@ -143,7 +143,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         loadingDuration={1000}
-        autoCloseDuration={2000}
+        autoCloseDuration={1500}
         loadingMessage='피드백을 전송하고 있어요...'
         completeMessage='소중한 의견 감사해요!'
         width={320}

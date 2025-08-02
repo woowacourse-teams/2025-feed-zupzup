@@ -1,6 +1,6 @@
 import { SerializedStyles } from '@emotion/react';
-import { useState, useEffect, useCallback } from 'react';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useTimeDelayModal } from '@/hooks/useTimeDelayModal';
 import Modal from '@/components/Modal/Modal';
 import {
   loadingContainer,
@@ -8,6 +8,7 @@ import {
   spinner,
   checkIcon,
   messageText,
+  modalContainer,
 } from '@/components/TimeDelayModal/TimeDelayModal.styles';
 
 export interface TimeDelayModalProps {
@@ -34,42 +35,13 @@ export default function TimeDelayModal({
   customCSS,
 }: TimeDelayModalProps) {
   const theme = useAppTheme();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
 
-  useEffect(() => {
-    if (isOpen) {
-      setIsLoading(true);
-      setIsComplete(false);
-
-      const loadingTimer = setTimeout(() => {
-        setIsLoading(false);
-        setIsComplete(true);
-      }, loadingDuration);
-
-      return () => {
-        clearTimeout(loadingTimer);
-      };
-    }
-  }, [isOpen, loadingDuration]);
-
-  useEffect(() => {
-    if (isComplete) {
-      const autoCloseTimer = setTimeout(() => {
-        onClose();
-      }, autoCloseDuration);
-
-      return () => {
-        clearTimeout(autoCloseTimer);
-      };
-    }
-  }, [isComplete, autoCloseDuration, onClose]);
-
-  const handleModalClose = useCallback(() => {
-    if (!isLoading) {
-      onClose();
-    }
-  }, [isLoading, onClose]);
+  const { isLoading, handleModalClose } = useTimeDelayModal({
+    isOpen,
+    loadingDuration,
+    autoCloseDuration,
+    onClose,
+  });
 
   return (
     <Modal
@@ -77,16 +49,16 @@ export default function TimeDelayModal({
       onClose={handleModalClose}
       width={width}
       height={height}
-      {...(customCSS && { customCSS })}
+      customCSS={customCSS || modalContainer}
     >
       {isLoading ? (
         <div css={loadingContainer}>
-          <div css={spinner} />
+          <div css={spinner(theme)} />
           <p css={messageText(theme)}>{loadingMessage}</p>
         </div>
       ) : (
         <div css={completeContainer}>
-          <div css={checkIcon}>✓</div>
+          <div css={checkIcon(theme)}>✅</div>
           <p css={messageText(theme)}>{completeMessage}</p>
         </div>
       )}
