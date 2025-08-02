@@ -26,15 +26,15 @@ export default function DashboardOverview() {
       caption: `총 ${statistics?.confirmedCount}개 반영`,
     },
     {
-      title: '완료',
-      content: statistics?.confirmedCount,
-      caption: '평균 2.5일',
-    },
-    { title: '미처리', content: statistics?.waitingCount, caption: '반영 전' },
-    {
       title: '총 건의 수',
       content: statistics?.totalCount,
       caption: '접수 완료',
+    },
+    { title: '미처리', content: statistics?.waitingCount, caption: '반영 전' },
+    {
+      title: '완료',
+      content: statistics?.confirmedCount,
+      caption: '평균 2.5일',
     },
   ];
 
