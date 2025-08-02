@@ -11,6 +11,7 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
+import StatusBox from '@/domains/components/StatusBox/StatusBox';
 
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
@@ -57,6 +58,15 @@ export default function UserDashboard() {
           ))}
           {loading && <div>로딩중...</div>}
         </FeedbackBoxList>
+        {!hasNext && !loading && (
+          <StatusBox
+            width={'100%'}
+            height={200}
+            textIcon='🎉'
+            title='모든 피드백을 다 보셨어요!'
+            description='현재 보실 수 있는 피드백은 여기까지예요.'
+          />
+        )}
       </div>
       <FloatingButton
         icon={<ArrowIcon />}
