@@ -40,7 +40,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
   const { handleFormSubmit, isSubmitting } = useFeedbackSubmit();
 
-  const handleSkipAndNavigate = () => {
+  const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     navigate('/dashboard');
   };
 

@@ -53,8 +53,8 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
             onClick={handleCategoryButtonClick}
           />
           <CategoryButton
-            icon='👥'
-            text='인간관계'
+            icon='📕'
+            text='커리큘럼'
             onClick={handleCategoryButtonClick}
           />
           <CategoryButton
