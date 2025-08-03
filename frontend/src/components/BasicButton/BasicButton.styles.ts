@@ -4,14 +4,15 @@ import { Theme } from '@/theme';
 export const basicButton = (
   theme: Theme,
   width?: string | number,
-  variant: 'primary' | 'secondary' | 'disabled' = 'primary'
+  variant: 'primary' | 'secondary' | 'disabled' = 'primary',
+  height?: string | number
 ) => css`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 14px;
   width: ${typeof width === 'number' ? `${width}px` : width || '100%'};
-  height: 54px;
+  height: ${height ?? '54px'};
   padding: 24px 28px;
   background-color: ${variant === 'primary'
     ? theme.colors.purple[100]

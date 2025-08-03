@@ -183,6 +183,12 @@ export const typography = {
     },
   },
   BMHANNAAir: {
+    bodyBold: {
+      fontFamily: 'BMHANNAAir, sans-serif',
+      fontWeight: 700,
+      fontSize: 22,
+      letterSpacing: 0,
+    },
     caption: {
       fontFamily: 'BMHANNAAir, sans-serif',
       fontWeight: 400,
