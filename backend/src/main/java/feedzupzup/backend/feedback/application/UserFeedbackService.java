@@ -51,7 +51,7 @@ public class UserFeedbackService {
             final ProcessStatus status
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByOrganizationIdAndCursorIdOrderByDesc(
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(
                 organizationId,
                 cursorId,
                 pageable, 

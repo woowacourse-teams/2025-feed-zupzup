@@ -63,7 +63,7 @@ public class AdminFeedbackService {
             final ProcessStatus status
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByOrganizationIdAndCursorIdOrderByDesc(organizationId, cursorId, pageable, status);
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(organizationId, cursorId, pageable, status);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
         return AdminFeedbackListResponse.from(feedbackPage);
