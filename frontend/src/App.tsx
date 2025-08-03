@@ -1,5 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { usePageTracking } from './hooks/usePageTracking';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
+import AlertModal from '@/components/AlertModal/AlertModal';
 
 const gaId = process.env.GA_ID;
 
@@ -21,6 +23,19 @@ if (gaId) {
 
 export default function App() {
   usePageTracking();
+  const { isError, setErrorFalse, message, title } = useErrorModalContext();
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      {isError && (
+        <AlertModal
+          onClose={setErrorFalse}
+          isOpen={isError}
+          title={title}
+          message={message}
+        />
+      )}
+    </>
+  );
 }

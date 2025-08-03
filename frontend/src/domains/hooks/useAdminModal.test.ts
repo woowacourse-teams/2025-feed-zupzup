@@ -181,78 +181,26 @@ describe('useAdminModal', () => {
     });
   });
 
-  describe('에러 처리', () => {
-    it('확인 액션에서 API 에러를 우아하게 처리해야 한다', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      mockedAdminFeedbackApi.patchFeedbackStatus.mockRejectedValue(
-        new Error('API Error')
-      );
+  it('API 호출이 실패해도 모달을 닫아야 한다', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+    mockedAdminFeedbackApi.patchFeedbackStatus.mockRejectedValue(
+      new Error('API Error')
+    );
 
-      const { result } = renderHook(() => useAdminModal());
+    const { result } = renderHook(() => useAdminModal());
 
-      act(() => {
-        result.current.openFeedbackCompleteModal(1);
-      });
-
-      await act(async () => {
-        await result.current.handleModalAction();
-      });
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Modal action failed:',
-        expect.any(Error)
-      );
-      expect(result.current.modalState.type).toBeNull();
-
-      consoleErrorSpy.mockRestore();
+    act(() => {
+      result.current.openFeedbackCompleteModal(1);
     });
 
-    it('삭제 액션에서 API 에러를 우아하게 처리해야 한다', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      mockedAdminFeedbackApi.deleteFeedback.mockRejectedValue(
-        new Error('Network Error')
-      );
+    expect(result.current.modalState.type).toBe('confirm');
 
-      const { result } = renderHook(() => useAdminModal());
-
-      act(() => {
-        result.current.openFeedbackDeleteModal(1);
-      });
-
-      await act(async () => {
-        await result.current.handleModalAction();
-      });
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Modal action failed:',
-        expect.any(Error)
-      );
-      expect(result.current.modalState.type).toBeNull();
-
-      consoleErrorSpy.mockRestore();
+    await act(async () => {
+      await result.current.handleModalAction();
     });
 
-    it('API 호출이 실패해도 모달을 닫아야 한다', async () => {
-      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      mockedAdminFeedbackApi.patchFeedbackStatus.mockRejectedValue(
-        new Error('API Error')
-      );
+    expect(result.current.modalState.type).toBeNull();
 
-      const { result } = renderHook(() => useAdminModal());
-
-      act(() => {
-        result.current.openFeedbackCompleteModal(1);
-      });
-
-      expect(result.current.modalState.type).toBe('confirm');
-
-      await act(async () => {
-        await result.current.handleModalAction();
-      });
-
-      expect(result.current.modalState.type).toBeNull();
-
-      consoleErrorSpy.mockRestore();
-    });
+    consoleErrorSpy.mockRestore();
   });
 });

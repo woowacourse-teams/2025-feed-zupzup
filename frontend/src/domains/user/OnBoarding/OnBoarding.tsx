@@ -1,7 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
-import SkipIcon from '@/components/icons/SkipIcon';
-import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import CategoryButton from '@/domains/components/CategoryButton/CategoryButton';
+import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import {
   container,
   place,
@@ -11,8 +10,10 @@ import {
   skipText,
   buttonContainer,
   title,
+  skipIcon,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useNavigate } from 'react-router-dom';
 
 interface OnBoardingProps {
   moveNextStep: () => void;
@@ -20,8 +21,9 @@ interface OnBoardingProps {
 
 export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
   const theme = useAppTheme();
+  const navigate = useNavigate();
 
-  const { placeName } = useOrganizationName();
+  const { groupName } = useOrganizationName();
 
   const handleCategoryButtonClick = () => {
     // api 통신
@@ -32,7 +34,7 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
     <section css={container}>
       <div>
         <p css={title(theme)}>
-          <span css={place(theme)}>{placeName}</span>에<br /> 오신 것을
+          <span css={place(theme)}>{groupName}</span>에<br /> 오신 것을
           환영합니다
         </p>
         <div css={questionContainer(theme)}>
@@ -62,8 +64,12 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
           />
         </div>
       </div>
-      <BasicButton icon={<SkipIcon />} variant='secondary'>
-        <p css={skipText(theme)}>건너뛰기</p>
+      <BasicButton
+        icon={<p css={skipIcon}>📄</p>}
+        variant='secondary'
+        onClick={() => navigate('/dashboard')}
+      >
+        <p css={skipText(theme)}>건의 목록 보러가기</p>
       </BasicButton>
     </section>
   );
