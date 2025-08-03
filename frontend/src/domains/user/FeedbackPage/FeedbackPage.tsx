@@ -1,20 +1,20 @@
+import BasicButton from '@/components/BasicButton/BasicButton';
+import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
+import SendIcon from '@/components/icons/SendIcon';
+import SkipIcon from '@/components/icons/SkipIcon';
 import {
-  container,
-  skipText,
-  titleContainer,
-  contentContainer,
   arrowLeftIconContainer,
   buttonGroupContainer,
-  mainContent,
   combinedTitle,
+  container,
+  contentContainer,
+  mainContent,
+  skipText,
+  titleContainer,
 } from '@/domains/user/FeedbackPage/FeedbackPage.styles';
-import { useAppTheme } from '@/hooks/useAppTheme';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
-import BasicButton from '@/components/BasicButton/BasicButton';
-import SkipIcon from '@/components/icons/SkipIcon';
-import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
-import SendIcon from '@/components/icons/SendIcon';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 
