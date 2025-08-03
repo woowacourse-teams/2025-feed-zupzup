@@ -1,6 +1,7 @@
 package feedzupzup.backend.organization.domain;
 
 import feedzupzup.backend.global.BaseTimeEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Getter
@@ -20,13 +22,18 @@ public class Organization extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
     @Embedded
+    @Column(nullable = false)
     private CheeringCount cheeringCount;
 
     @Builder
-    public Organization(final String name, final CheeringCount cheeringCount) {
+    public Organization(
+            final @NonNull String name,
+            final @NonNull CheeringCount cheeringCount
+    ) {
         this.name = name;
         this.cheeringCount = cheeringCount;
     }

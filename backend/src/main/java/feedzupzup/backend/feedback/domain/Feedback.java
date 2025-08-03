@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Getter
@@ -27,37 +28,39 @@ public class Feedback extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private boolean isSecret;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProcessStatus status;
 
+    @Column(nullable = false)
     private Long organizationId;
 
     private int likeCount;
 
     @Embedded
+    @Column(nullable = false)
     private UserName userName;
 
-    @Column(nullable = false)
     @Embedded
+    @Column(nullable = false)
     private PostedAt postedAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Category category;
 
     @Builder
     public Feedback(
-            final String content,
+            final @NonNull String content,
             final boolean isSecret,
-            final ProcessStatus status,
-            final Long organizationId,
+            final @NonNull ProcessStatus status,
+            final @NonNull Long organizationId,
             final int likeCount,
-            final UserName userName,
-            final PostedAt postedAt,
-            final Category category
+            final @NonNull UserName userName,
+            final @NonNull PostedAt postedAt,
+            final @NonNull Category category
     ) {
         this.content = content;
         this.isSecret = isSecret;
