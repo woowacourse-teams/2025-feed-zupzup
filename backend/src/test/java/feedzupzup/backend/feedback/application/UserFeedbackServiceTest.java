@@ -81,7 +81,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 2;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
         // then
         assertAll(
@@ -105,7 +105,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 5;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
         // then
         assertAll(
@@ -122,7 +122,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
         // then
         assertAll(
@@ -151,7 +151,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, cursorId);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, cursorId, null);
 
         // then
         assertAll(
@@ -173,7 +173,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
         // then
         assertAll(
@@ -201,7 +201,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(targetOrganizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(targetOrganizationId, size, null, null);
 
         // then
         assertAll(
@@ -237,7 +237,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
         // then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
         assertAll(
@@ -275,7 +275,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when - 인메모리 좋아요 추가 없이 조회
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
         // then - DB 좋아요 수만 반영되는지 확인
         assertAll(
@@ -312,7 +312,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
         final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 인메모리 좋아요 수만 반영되는지 확인
@@ -341,7 +341,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
         final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인

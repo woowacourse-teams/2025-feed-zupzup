@@ -5,7 +5,6 @@ import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Schema(description = "관리자용 피드백 목록 응답")
@@ -39,7 +38,7 @@ public record AdminFeedbackListResponse(
             @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
             String content,
 
-            @Schema(description = "처리 상태", example = "WATING")
+            @Schema(description = "처리 상태", example = "WAITING")
             ProcessStatus status,
 
             @Schema(description = "비밀 피드백 여부", example = "false")

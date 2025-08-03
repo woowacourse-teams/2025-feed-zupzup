@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
@@ -34,7 +35,8 @@ public interface UserFeedbackApi {
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
             @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
-            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
+            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
+            @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status
     );
 
     @Operation(summary = "피드백 생성", description = "새로운 피드백을 생성합니다.")
