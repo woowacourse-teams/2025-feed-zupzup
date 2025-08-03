@@ -30,6 +30,7 @@ export const content = (theme: Theme) => css`
 `;
 
 export const confirmedText = (theme: Theme) => css`
-  background-color: ${theme.colors.gray[200]}66;
-  border: 1px solid ${theme.colors.gray[300]};
+  /* color: ${theme.colors.white[100]}; */
+  background-color: ${theme.colors.green[100]}22;
+  border: 1px solid ${theme.colors.green[100]};
 `;
