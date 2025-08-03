@@ -28,7 +28,7 @@ export default function UserDashboard() {
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/organizations/2/feedbacks',
+    url: '/organizations/1/feedbacks',
     key: 'feedbacks',
   });
 

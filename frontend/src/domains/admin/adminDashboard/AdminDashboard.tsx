@@ -10,6 +10,7 @@ import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
 
 export default function AdminDashboard() {
   const {
@@ -73,6 +74,11 @@ export default function AdminDashboard() {
         ))}
         {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
+      <FeedbackStatusMessage
+        loading={loading}
+        hasNext={hasNext}
+        feedbackCount={feedbacks.length}
+      />
       {hasNext && <div id='scroll-observer'></div>}
 
       {modalState.type === 'delete' && (
