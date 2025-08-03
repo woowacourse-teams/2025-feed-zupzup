@@ -17,7 +17,7 @@ export default function FeedbackStatusMessage({
     return (
       <StatusBox
         width={'100%'}
-        height={200}
+        height={'200px'}
         textIcon='💭'
         title='아직 피드백이 없어요'
         description='첫 번째 피드백을 작성해보세요!'
@@ -29,7 +29,7 @@ export default function FeedbackStatusMessage({
     return (
       <StatusBox
         width={'100%'}
-        height={200}
+        height={'200px'}
         textIcon='🎉'
         title='모든 피드백을 다 보셨어요!'
         description='현재 보실 수 있는 피드백은 여기까지예요.'
