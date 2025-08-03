@@ -13,6 +13,8 @@ interface DashboardPanelProps {
   content: string;
   caption?: string;
   color: string | undefined;
+  isClick: boolean;
+  onClick: (() => void) | undefined;
 }
 
 export default function DashboardPanel({
@@ -20,15 +22,17 @@ export default function DashboardPanel({
   content,
   caption,
   color,
+  isClick,
+  onClick,
 }: DashboardPanelProps) {
   const theme = useAppTheme();
   return (
-    <div css={dashboard(theme)}>
+    <div css={dashboard(theme, isClick)} onClick={onClick}>
       <div css={dotLayout}>
         <div css={dot(theme, color)} />
         <p css={panelTitle(theme)}>{title}</p>
       </div>
-      <p css={panelContent(theme)}>{content}</p>
+      <p css={panelContent(theme, isClick)}>{content}</p>
       <p css={captionContent(theme)}>{caption}</p>
     </div>
   );

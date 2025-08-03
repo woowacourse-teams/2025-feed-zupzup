@@ -1,7 +1,7 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const dashboard = (theme: Theme) => css`
+export const dashboard = (theme: Theme, isClick: boolean) => css`
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -9,6 +9,7 @@ export const dashboard = (theme: Theme) => css`
   padding: 16px;
   background-color: ${theme.colors.white[300]};
   border-radius: 16px;
+  ${isClick && `border: 2px solid ${theme.colors.purple[100]}`}
 `;
 
 export const dotLayout = css`
@@ -30,11 +31,11 @@ export const panelTitle = (theme: Theme) => css`
   color: ${theme.colors.gray[600]};
 `;
 
-export const panelContent = (theme: Theme) => css`
+export const panelContent = (theme: Theme, isClick: boolean) => css`
   ${theme.typography.bmHannaPro.bodyLarge};
 
   font-weight: 900;
-  color: ${theme.colors.black};
+  color: ${isClick ? theme.colors.purple[100] : theme.colors.black};
 `;
 
 export const captionContent = (theme: Theme) => css`

@@ -13,8 +13,17 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
+import { FeedbackFilter } from '@/types/feedback.types';
 
-export default function DashboardOverview() {
+interface DashboardOverviewProps {
+  filter: FeedbackFilter;
+  handlePanelClick: (category: FeedbackFilter) => void;
+}
+
+export default function DashboardOverview({
+  filter,
+  handlePanelClick,
+}: DashboardOverviewProps) {
   const theme = useAppTheme();
   const { groupName, totalCheeringCount } = useOrganizationName();
   const { statistics } = useUserOrganizationsStatistics();
@@ -35,12 +44,14 @@ export default function DashboardOverview() {
       content: statistics?.waitingCount,
       caption: '반영 전',
       color: theme.colors.red[100],
+      onClick: () => handlePanelClick('미처리'),
     },
     {
       title: '완료',
       content: statistics?.confirmedCount,
       caption: '반영 완료',
       color: theme.colors.green[100],
+      onClick: () => handlePanelClick('완료'),
     },
   ];
 
@@ -65,6 +76,8 @@ export default function DashboardOverview() {
             content={panel.content}
             caption={panel.caption}
             color={panel.color}
+            isClick={filter === panel.title}
+            onClick={panel.onClick}
           />
         ))}
       </div>
