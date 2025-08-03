@@ -15,7 +15,7 @@ const meta: Meta<typeof StatusBox> = {
       description: '컨테이너의 너비',
     },
     height: {
-      control: { type: 'number', min: 100, max: 400, step: 50 },
+      control: { type: 'text' },
       description: '컨테이너의 높이',
     },
     textIcon: {
@@ -56,7 +56,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     width: '100%',
-    height: 200,
+    height: '200px',
     textIcon: '📋',
     title: '기본 상태',
     description: 'StatusBox의 기본 형태입니다.',
@@ -66,7 +66,7 @@ export const Default: Story = {
 export const EmptyState: Story = {
   args: {
     width: '100%',
-    height: 220,
+    height: '220px',
     textIcon: '📝',
     title: '아직 내용이 없어요',
     description: '첫 번째 항목을 추가해보세요!',
@@ -76,7 +76,7 @@ export const EmptyState: Story = {
 export const ErrorState: Story = {
   args: {
     width: '100%',
-    height: 200,
+    height: '200px',
     textIcon: '❌',
     title: '오류가 발생했어요',
     description: '다시 시도해주세요.',
@@ -86,7 +86,7 @@ export const ErrorState: Story = {
 export const SuccessState: Story = {
   args: {
     width: '100%',
-    height: 200,
+    height: '200px',
     textIcon: '✅',
     title: '성공적으로 완료되었어요',
     description: '모든 작업이 정상적으로 처리되었습니다.',
@@ -96,7 +96,7 @@ export const SuccessState: Story = {
 export const LoadingError: Story = {
   args: {
     width: '100%',
-    height: 200,
+    height: '200px',
     textIcon: '😅',
     title: '데이터를 불러올 수 없어요',
     description: '네트워크 연결을 확인해주세요.',
@@ -106,7 +106,7 @@ export const LoadingError: Story = {
 export const NoResults: Story = {
   args: {
     width: '100%',
-    height: 180,
+    height: '180px',
     textIcon: '🔍',
     title: '검색 결과가 없어요',
     description: '다른 키워드로 검색해보세요.',
@@ -116,7 +116,7 @@ export const NoResults: Story = {
 export const WithCustomCSS: Story = {
   args: {
     width: '100%',
-    height: 220,
+    height: '220px',
     textIcon: '🎨',
     title: '커스텀 스타일',
     description: '특별한 디자인이 적용된 StatusBox입니다.',

@@ -1,18 +1,14 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 
-export const container = (
-  theme: Theme,
-  width: number | string,
-  height: number | string
-) => css`
+export const container = (theme: Theme, width: string, height: string) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  width: ${typeof width === 'number' ? `${width}px` : width};
-  height: ${typeof height === 'number' ? `${height}px` : height};
+  width: ${width};
+  height: ${height};
   background-color: ${theme.colors.white[100]};
   border-radius: 16px;
 `;

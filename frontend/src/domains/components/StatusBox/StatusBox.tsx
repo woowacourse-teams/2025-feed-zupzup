@@ -8,8 +8,8 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface StatusBoxProps {
-  width?: number | string;
-  height?: number | string;
+  width?: string;
+  height?: string;
   customCSS?: SerializedStyles;
   textIcon: string;
   title: string;
@@ -18,7 +18,7 @@ interface StatusBoxProps {
 
 export default function StatusBox({
   width = '100%',
-  height = 200,
+  height = '200px',
   textIcon,
   title,
   description,
