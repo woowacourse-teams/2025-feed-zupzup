@@ -11,8 +11,10 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
+import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 
 export default function AdminDashboard() {
+  const { filter, handlePanelClick } = useFeedbackFilter();
   const {
     items: originalFeedbacks,
     fetchMore,
@@ -56,7 +58,7 @@ export default function AdminDashboard() {
 
   return (
     <section css={dashboardLayout}>
-      <DashboardOverview filter='전체' handlePanelClick={() => {}} />
+      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox
