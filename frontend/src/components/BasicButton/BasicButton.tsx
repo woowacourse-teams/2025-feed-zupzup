@@ -10,6 +10,7 @@ import Button from '@/components/@commons/Button/Button';
 export interface BasicButtonProps extends React.ComponentProps<'button'> {
   children: React.ReactNode;
   width?: string | number;
+  height?: string | number;
   icon?: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'disabled';
 }
@@ -17,6 +18,7 @@ export interface BasicButtonProps extends React.ComponentProps<'button'> {
 export default function BasicButton({
   children,
   width = '100%',
+  height,
   icon,
   onClick,
   variant = 'primary',
@@ -24,7 +26,7 @@ export default function BasicButton({
   const theme = useAppTheme();
 
   return (
-    <Button css={basicButton(theme, width, variant)} onClick={onClick}>
+    <Button css={basicButton(theme, width, variant, height)} onClick={onClick}>
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant)}>{children}</span>
     </Button>

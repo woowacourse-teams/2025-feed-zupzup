@@ -1,7 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import SendIcon from '@/components/icons/SendIcon';
-import SkipIcon from '@/components/icons/SkipIcon';
 import {
   arrowLeftIconContainer,
   buttonGroupContainer,
@@ -14,6 +13,7 @@ import {
 } from '@/domains/user/FeedbackPage/FeedbackPage.styles';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
+import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
@@ -40,7 +40,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
   const { handleFormSubmit, isSubmitting } = useFeedbackSubmit();
 
-  const handleSkipAndNavigate = () => {
+  const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     navigate('/dashboard');
   };
 
@@ -102,7 +103,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
           <BasicButton
             type='button'
-            icon={<SkipIcon />}
+            icon={<p css={skipIcon}>📄</p>}
             variant='secondary'
             onClick={handleSkipAndNavigate}
             disabled={isSubmitting}

@@ -39,7 +39,12 @@ export default function AlertModal({
         {alertMessage && <p css={message(theme)}>{alertMessage}</p>}
       </div>
       <div css={buttonContainer}>
-        <BasicButton variant='primary' width='100%' onClick={handleConfirm}>
+        <BasicButton
+          variant='primary'
+          width='100%'
+          height='30px'
+          onClick={handleConfirm}
+        >
           {confirmText}
         </BasicButton>
       </div>
