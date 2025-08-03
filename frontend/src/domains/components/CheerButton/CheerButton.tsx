@@ -1,6 +1,5 @@
 import { postOrganizationCheer } from '@/apis/organization.api';
 import Button from '@/components/@commons/Button/Button';
-import EmptyHeartIcon from '@/components/icons/EmptyHeartIcon';
 import FillHeartIcon from '@/components/icons/FillHeartIcon';
 import {
   cheerButtonStyle,
@@ -19,14 +18,14 @@ interface CheerButtonProps {
 export default function CheerButton({ totalCheeringCount }: CheerButtonProps) {
   const [count, setCount] = useState(0);
   const [accCount, setAccCount] = useState(0);
-  const [clicked, setClicked] = useState(false);
   const [animate, setAnimate] = useState(false);
 
   const handleClick = () => {
     setCount(count + 1);
     setAccCount(accCount + 1);
-    setClicked(true);
-    setAnimate(true);
+    setAnimate(false);
+    requestAnimationFrame(() => setAnimate(true));
+
     debouncedSearch(count + 1);
   };
 
@@ -44,7 +43,7 @@ export default function CheerButton({ totalCheeringCount }: CheerButtonProps) {
   return (
     <Button onClick={handleClick} css={cheerButtonStyle}>
       <span css={[iconWrapperStyle, animate && clickedStyle]}>
-        {clicked ? <FillHeartIcon /> : <EmptyHeartIcon />}
+        <FillHeartIcon />
       </span>
       <p css={textStyle(theme)}>응원 {totalCheeringCount + accCount}</p>
     </Button>
