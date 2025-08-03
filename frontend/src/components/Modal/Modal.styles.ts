@@ -38,13 +38,13 @@ export const content = css`
 `;
 
 export const title = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.bodyBold};
+  ${theme.typography.BMHANNAAir.bodyBold};
 
   color: ${theme.colors.black[100]};
 `;
 
 export const message = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.small};
+  ${theme.typography.BMHANNAAir.caption};
 
   color: ${theme.colors.gray[600]};
 `;

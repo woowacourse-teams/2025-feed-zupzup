@@ -49,6 +49,7 @@ export default function ConfirmModal({
           variant='secondary'
           width='calc(50% - 12px)'
           onClick={onClose}
+          height='30px'
         >
           {cancelText}
         </BasicButton>
@@ -56,6 +57,7 @@ export default function ConfirmModal({
           variant='primary'
           width='calc(50% - 12px)'
           onClick={handleConfirm}
+          height='30px'
         >
           {confirmText}
         </BasicButton>
