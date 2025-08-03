@@ -40,7 +40,7 @@ export default function FeedbackBoxFooter({
 
       <div css={content(theme)}>
         {type === 'CONFIRMED' && (
-          <Tag customCSS={confirmedText(theme)}> ✅ 반영됨</Tag>
+          <Tag customCSS={confirmedText(theme)}> ✅ 완료</Tag>
         )}
         {!isSecret && (
           <LikeButton
