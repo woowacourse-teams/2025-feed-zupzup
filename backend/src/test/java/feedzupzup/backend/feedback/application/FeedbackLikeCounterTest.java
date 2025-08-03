@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -21,7 +21,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     private FeedbackLikeService feedbackLikeService;
 
     @Autowired
-    private FeedBackRepository feedBackRepository;
+    private FeedbackRepository feedBackRepository;
 
     @Autowired
     private FeedbackLikeRepository feedbackLikeRepository;
