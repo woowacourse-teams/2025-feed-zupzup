@@ -37,18 +37,19 @@ export default function FeedbackBoxFooter({
         <ClockIcon />
         <p css={day(theme)}>{formatRelativeTime(createdAt ?? '')}</p>
       </div>
-      {!isSecret && (
-        <div css={content(theme)}>
-          {type === 'CONFIRMED' && (
-            <Tag customCSS={confirmedText(theme)}> ✅ 반영됨</Tag>
-          )}
+
+      <div css={content(theme)}>
+        {type === 'CONFIRMED' && (
+          <Tag customCSS={confirmedText(theme)}> ✅ 반영됨</Tag>
+        )}
+        {!isSecret && (
           <LikeButton
             like={isLiked}
             feedbackId={feedbackId}
             likeCount={likeCount}
           />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
