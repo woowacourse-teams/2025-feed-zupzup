@@ -56,7 +56,7 @@ export default function AdminDashboard() {
 
   return (
     <section css={dashboardLayout}>
-      <DashboardOverview />
+      <DashboardOverview filter='전체' handlePanelClick={() => {}} />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox
