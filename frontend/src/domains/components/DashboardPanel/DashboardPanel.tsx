@@ -1,3 +1,4 @@
+import RightArrowIcon from '@/components/icons/RightArrowIcon';
 import {
   button,
   captionContent,
@@ -6,6 +7,7 @@ import {
   dotLayout,
   panelContent,
   panelTitle,
+  topContainer,
 } from '@/domains/components/DashboardPanel/DashboardPanel.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
@@ -34,9 +36,12 @@ export default function DashboardPanel({
       css={[dashboard(theme, isClick), isButton && button]}
       onClick={onClick}
     >
-      <div css={dotLayout}>
-        <div css={dot(theme, color)} />
-        <p css={panelTitle(theme)}>{title}</p>
+      <div css={topContainer}>
+        <div css={dotLayout}>
+          <div css={dot(theme, color)} />
+          <p css={panelTitle(theme)}>{title}</p>
+        </div>
+        {isButton && <RightArrowIcon />}
       </div>
       <p css={panelContent(theme, isClick)}>{content}</p>
       <p css={captionContent(theme)}>{caption}</p>

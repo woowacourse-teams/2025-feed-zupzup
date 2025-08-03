@@ -18,6 +18,11 @@ export const dashboard = (theme: Theme, isClick: boolean) => css`
   ${isClick && ' transform: scale(0.97)'}
 `;
 
+export const topContainer = css`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const button = css`
   cursor: pointer;
 `;
