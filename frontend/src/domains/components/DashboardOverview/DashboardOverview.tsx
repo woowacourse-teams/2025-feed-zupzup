@@ -39,7 +39,7 @@ export default function DashboardOverview() {
     {
       title: '완료',
       content: statistics?.confirmedCount,
-      caption: '완료',
+      caption: '반영 완료',
       color: theme.colors.green[100],
     },
   ];
