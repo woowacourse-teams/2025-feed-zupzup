@@ -1,5 +1,4 @@
 import { postUserFeedback } from '@/apis/userFeedback.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { SuggestionFeedback } from '@/types/feedback.types';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
@@ -12,10 +11,12 @@ interface FeedbackSubmitParams {
   organizationId?: number;
 }
 
+type FeedbackStatus = 'idle' | 'loading' | 'success' | 'error';
+
 export default function useFeedbackSubmit() {
   const navigate = useNavigate();
+  const [modalStatus, setModalStatus] = useState<FeedbackStatus>('idle');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { showErrorModal } = useErrorModalContext();
 
   const submitFeedback = useCallback(
     async ({
@@ -27,6 +28,7 @@ export default function useFeedbackSubmit() {
       if (isSubmitting) return;
 
       setIsSubmitting(true);
+      setModalStatus('loading');
 
       try {
         await postUserFeedback({
@@ -36,11 +38,15 @@ export default function useFeedbackSubmit() {
           userName,
           onSuccess: (response: SuggestionFeedback) => {
             setLocalStorage('highlightedId', response.data.feedbackId);
+            setModalStatus('success');
           },
-          onError: () => {},
+          onError: () => {
+            setModalStatus('error');
+          },
         });
       } catch (e) {
-        showErrorModal(e, '에러');
+        console.error(e);
+        setModalStatus('error');
       } finally {
         setIsSubmitting(false);
       }
@@ -60,9 +66,15 @@ export default function useFeedbackSubmit() {
     [submitFeedback, isSubmitting]
   );
 
+  const resetStatus = useCallback(() => {
+    setModalStatus('idle');
+  }, []);
+
   return {
     submitFeedback,
     handleFormSubmit,
     isSubmitting,
+    modalStatus,
+    resetStatus,
   };
 }

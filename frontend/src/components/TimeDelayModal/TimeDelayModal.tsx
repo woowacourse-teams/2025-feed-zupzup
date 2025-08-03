@@ -9,6 +9,7 @@ import {
   checkIcon,
   messageText,
   modalContainer,
+  errorIcon,
 } from '@/components/TimeDelayModal/TimeDelayModal.styles';
 
 export interface TimeDelayModalProps {
@@ -18,6 +19,8 @@ export interface TimeDelayModalProps {
   autoCloseDuration?: number;
   loadingMessage?: string;
   completeMessage?: string;
+  errorMessage?: string;
+  modalStatus?: 'idle' | 'loading' | 'success' | 'error';
   width?: number;
   height?: number;
   customCSS?: SerializedStyles | SerializedStyles[];
@@ -30,9 +33,11 @@ export default function TimeDelayModal({
   autoCloseDuration = 2000,
   loadingMessage = '피드백을 전송하고 있어요...',
   completeMessage = '소중한 의견 감사해요!',
+  errorMessage = '다시 시도해 주세요.',
   width = 300,
   height,
   customCSS,
+  modalStatus,
 }: TimeDelayModalProps) {
   const theme = useAppTheme();
 
@@ -43,6 +48,33 @@ export default function TimeDelayModal({
     onClose,
   });
 
+  const renderContent = () => {
+    if (modalStatus === 'loading' || isLoading) {
+      return (
+        <div css={loadingContainer}>
+          <div css={spinner(theme)} />
+          <p css={messageText(theme)}>{loadingMessage}</p>
+        </div>
+      );
+    }
+
+    if (modalStatus === 'error') {
+      return (
+        <div css={completeContainer}>
+          <div css={errorIcon(theme)}>❌</div>
+          <p css={messageText(theme)}>{errorMessage}</p>
+        </div>
+      );
+    }
+
+    return (
+      <div css={completeContainer}>
+        <div css={checkIcon(theme)}>✅</div>
+        <p css={messageText(theme)}>{completeMessage}</p>
+      </div>
+    );
+  };
+
   return (
     <Modal
       isOpen={isOpen}
@@ -51,17 +83,7 @@ export default function TimeDelayModal({
       height={height}
       customCSS={customCSS || modalContainer}
     >
-      {isLoading ? (
-        <div css={loadingContainer}>
-          <div css={spinner(theme)} />
-          <p css={messageText(theme)}>{loadingMessage}</p>
-        </div>
-      ) : (
-        <div css={completeContainer}>
-          <div css={checkIcon(theme)}>✅</div>
-          <p css={messageText(theme)}>{completeMessage}</p>
-        </div>
-      )}
+      {renderContent()}
     </Modal>
   );
 }

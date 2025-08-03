@@ -41,16 +41,21 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { handleFormSubmit, isSubmitting } = useFeedbackSubmit();
+  const { handleFormSubmit, isSubmitting, modalStatus } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = useCallback(() => {
     navigate('/dashboard');
   }, [navigate]);
 
-  const handleModalClose = useCallback(() => {
-    setIsModalOpen(false);
-    navigate('/dashboard');
-  }, [navigate]);
+  const handleModalClose = useCallback(
+    (isError: boolean) => {
+      setIsModalOpen(false);
+      if (!isError) {
+        navigate('/dashboard');
+      }
+    },
+    [navigate]
+  );
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,13 +146,14 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
       <TimeDelayModal
         isOpen={isModalOpen}
-        onClose={handleModalClose}
+        onClose={() => handleModalClose(modalStatus === 'error')}
         loadingDuration={800}
         autoCloseDuration={1000}
         loadingMessage='피드백을 전송하고 있어요...'
         completeMessage='소중한 의견 감사해요!'
         width={320}
         height={200}
+        modalStatus={modalStatus}
       />
     </section>
   );

@@ -61,6 +61,19 @@ export const checkIcon = (theme: Theme) => css`
   border-radius: 50%;
 `;
 
+export const errorIcon = (theme: Theme) => css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+  background-color: ${theme.colors.gray[100]};
+  border-radius: 50%;
+`;
+
 export const messageText = (theme: Theme) => css`
   ${theme.typography.inter.bodyRegular};
 
