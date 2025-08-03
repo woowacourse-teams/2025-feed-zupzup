@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
+import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
@@ -51,7 +52,7 @@ public record AdminFeedbackListResponse(
             String userName,
 
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
-            LocalDateTime createdAt,
+            PostedAt postedAt,
 
             @Schema(description = "카테고리", example = "시설")
             String category
@@ -65,7 +66,7 @@ public record AdminFeedbackListResponse(
                     feedback.isSecret(),
                     feedback.getLikeCount(),
                     feedback.getUserName(),
-                    feedback.getCreatedAt(),
+                    feedback.getPostedAt(),
                     feedback.getCategory().getKoreaName()
             );
         }
