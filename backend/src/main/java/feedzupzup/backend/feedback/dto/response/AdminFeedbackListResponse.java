@@ -38,7 +38,7 @@ public record AdminFeedbackListResponse(
             @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
             String content,
 
-            @Schema(description = "처리 상태", example = "WATING")
+            @Schema(description = "처리 상태", example = "WAITING")
             ProcessStatus status,
 
             @Schema(description = "비밀 피드백 여부", example = "false")

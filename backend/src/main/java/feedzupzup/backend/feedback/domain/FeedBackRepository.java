@@ -13,13 +13,15 @@ public interface FeedBackRepository extends JpaRepository<Feedback, Long> {
             SELECT f
             FROM Feedback f
             WHERE f.organizationId = :organizationId
+            AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id < :cursorId)
             ORDER BY f.id DESC
             """)
     List<Feedback> findPageByOrganizationIdAndCursorIdOrderByDesc(
             final Long organizationId,
             final Long cursorId,
-            final Pageable pageable
+            final Pageable pageable,
+            final ProcessStatus status
     );
 
     List<Feedback> findByIdIn(Collection<Long> ids);
