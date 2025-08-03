@@ -8,29 +8,14 @@ import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
 import { highlightStyle } from '@/domains/user/userDashboard/UserHome-delete.styles';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
-import {
-  FeedbackFilter,
-  FeedbackResponse,
-  FeedbackType,
-} from '@/types/feedback.types';
+import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
-
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
-import { useState } from 'react';
+import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 
 export default function UserDashboard() {
-  const [filter, setFilter] = useState<FeedbackFilter>('전체');
-
-  const handlePanelClick = (category: FeedbackFilter) => {
-    if (filter === category) {
-      setFilter('전체');
-      return;
-    }
-
-    setFilter(category);
-  };
-
+  const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
 
