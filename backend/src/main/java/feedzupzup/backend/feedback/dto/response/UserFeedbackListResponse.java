@@ -65,7 +65,7 @@ public record UserFeedbackListResponse(
                     feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getCreatedAt(),
-                    feedback.getCategory().getName()
+                    feedback.getCategory().getKoreaName()
             );
         }
     }

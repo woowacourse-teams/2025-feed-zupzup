@@ -32,7 +32,7 @@ public record CreateFeedbackRequest(
                 .isSecret(isSecret)
                 .userName(new UserName(userName))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(Category.from(category))
+                .category(Category.findByKoreaName(category))
                 .build();
     }
 }

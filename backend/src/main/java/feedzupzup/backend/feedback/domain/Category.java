@@ -2,7 +2,9 @@ package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.Arrays;
+import lombok.Getter;
 
+@Getter
 public enum Category {
 
     FACILITY("시설"),
@@ -17,14 +19,10 @@ public enum Category {
         this.koreaName = koreaName;
     }
 
-    public static Category from(String value) {
+    public static Category findByKoreaName(String value) {
         return Arrays.stream(Category.values())
                 .filter(category -> category.koreaName.equals(value))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
-    }
-
-    public String getName() {
-        return koreaName;
     }
 }
