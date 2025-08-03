@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.*;
+import static feedzupzup.backend.feedback.domain.ProcessStatus.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -12,6 +13,7 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
@@ -311,6 +313,63 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                         .doesNotContain(otherFeedback.getId()),
                 () -> assertThat(response.hasNext()).isFalse()
         );
+    }
+
+    @Test
+    @DisplayName("ProcessStatus가 CONFIRMED 으로 주어졌을 때, CONFIRMED 상태의 피드백만 조회할 수 있어야 한다.")
+    void when_given_process_status_confirmed_then_only_get_confirmed_status() {
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+
+        feedBackRepository.save(feedback1);
+        feedBackRepository.save(feedback2);
+        feedBackRepository.save(feedback3);
+        feedBackRepository.save(feedback4);
+        feedBackRepository.save(feedback5);
+
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(1L, 10, null, CONFIRMED);
+        assertThat(response.feedbacks().size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("ProcessStatus가 WAITING 으로 주어졌을 때, WAITING 상태의 피드백만 조회할 수 있어야 한다.")
+    void when_given_process_status_waiting_then_only_get_waiting_status() {
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+
+        feedBackRepository.save(feedback1);
+        feedBackRepository.save(feedback2);
+        feedBackRepository.save(feedback3);
+        feedBackRepository.save(feedback4);
+        feedBackRepository.save(feedback5);
+
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(1L, 10, null, WAITING);
+        assertThat(response.feedbacks().size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("ProcessStatus가 CONFIRMED 으로 주어졌을 때, CONFIRMED 상태의 피드백만 조회할 수 있어야 한다.")
+    void when_given_process_status_null_then_get_all_feedbacks() {
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+
+        feedBackRepository.save(feedback1);
+        feedBackRepository.save(feedback2);
+        feedBackRepository.save(feedback3);
+        feedBackRepository.save(feedback4);
+        feedBackRepository.save(feedback5);
+
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(1L, 10, null, null);
+        assertThat(response.feedbacks().size()).isEqualTo(5);
     }
 
     @Test
