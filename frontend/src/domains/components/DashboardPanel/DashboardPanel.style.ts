@@ -5,11 +5,21 @@ export const dashboard = (theme: Theme, isClick: boolean) => css`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
   width: 100%;
   padding: 16px;
   background-color: ${theme.colors.white[300]};
+  border: 2px solid ${isClick ? theme.colors.purple[100] : 'transparent'};
   border-radius: 16px;
-  ${isClick && `border: 2px solid ${theme.colors.purple[100]}`}
+  transition:
+    border 0.2s ease,
+    transform 0.2s ease;
+
+  ${isClick && ' transform: scale(0.97)'}
+`;
+
+export const button = css`
+  cursor: pointer;
 `;
 
 export const dotLayout = css`

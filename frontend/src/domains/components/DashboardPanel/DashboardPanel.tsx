@@ -1,4 +1,5 @@
 import {
+  button,
   captionContent,
   dashboard,
   dot,
@@ -15,6 +16,7 @@ interface DashboardPanelProps {
   color: string | undefined;
   isClick: boolean;
   onClick: (() => void) | undefined;
+  isButton: boolean;
 }
 
 export default function DashboardPanel({
@@ -24,10 +26,14 @@ export default function DashboardPanel({
   color,
   isClick,
   onClick,
+  isButton,
 }: DashboardPanelProps) {
   const theme = useAppTheme();
   return (
-    <div css={dashboard(theme, isClick)} onClick={onClick}>
+    <div
+      css={[dashboard(theme, isClick), isButton && button]}
+      onClick={onClick}
+    >
       <div css={dotLayout}>
         <div css={dot(theme, color)} />
         <p css={panelTitle(theme)}>{title}</p>
