@@ -5,7 +5,6 @@ import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Schema(description = "관리자용 피드백 목록 응답")
@@ -67,7 +66,7 @@ public record AdminFeedbackListResponse(
                     feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getPostedAt(),
-                    feedback.getCategory().getKoreaName()
+                    feedback.getCategory().getContent()
             );
         }
 
