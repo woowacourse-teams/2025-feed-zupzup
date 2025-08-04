@@ -1,17 +1,13 @@
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
-export interface UserFeedback {
+export interface FeedbackType {
   feedbackId: number;
   content: string;
   status: FeedbackStatusType;
   isSecret: boolean;
-  createdAt: string; // ISO 형식 날짜 문자열
+  createdAt: string;
   userName: string;
   likeCount: number;
-}
-
-export interface AdminFeedback extends UserFeedback {
-  imageUrl: string | null;
 }
 
 export interface FeedbackResponse<T> {

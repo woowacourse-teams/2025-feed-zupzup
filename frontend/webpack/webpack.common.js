@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -18,6 +19,11 @@ export default {
     alias: {
       '@': path.resolve(__dirname, '../src'),
     },
+  },
+  devServer: {
+    historyApiFallback: true,
+    static: './dist',
+    port: 3000,
   },
   module: {
     rules: [
@@ -55,10 +61,26 @@ export default {
       template: './public/index.html',
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'public/favicon.ico', to: '.' }],
+      patterns: [
+        { from: 'public/favicon.ico', to: '.' },
+        { from: 'public/manifest.json', to: '.' },
+        { from: 'public/512x512.png', to: '.' },
+        { from: 'public/192x192.png', to: '.' },
+        { from: 'public/service-worker.js', to: '.' },
+      ],
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(process.env),
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: 'public',
+          globOptions: {
+            ignore: ['**/index.html'],
+          },
+        },
+      ],
     }),
   ],
 };

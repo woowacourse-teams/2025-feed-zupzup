@@ -64,10 +64,24 @@ export const typography = {
     letterSpacing: 0,
   },
   bmHannaPro: {
-    fontFamily: 'BM HANNA Pro OTF, sans-serif',
-    fontSize: 90,
-    lineHeight: 'auto',
-    letterSpacing: 0,
+    h1: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 90,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyLarge: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 26,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyRegular: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 22,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
   },
   inter: {
     h1: {
@@ -100,8 +114,8 @@ export const typography = {
     },
     h5: {
       fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 400,
-      fontSize: 32,
+      fontWeight: 600,
+      fontSize: 30,
       lineHeight: 'auto',
       letterSpacing: 0,
     },
@@ -143,6 +157,12 @@ export const typography = {
       fontSize: 19,
       letterSpacing: 0.6,
     },
+    smallBold: {
+      fontFamily: `${fontStyle}, sans-serif`,
+      fontWeight: 600,
+      fontSize: 19,
+      letterSpacing: 0.6,
+    },
     caption: {
       fontFamily: `${fontStyle}, sans-serif`,
       fontWeight: 400,
@@ -163,6 +183,12 @@ export const typography = {
     },
   },
   BMHANNAAir: {
+    bodyBold: {
+      fontFamily: 'BMHANNAAir, sans-serif',
+      fontWeight: 700,
+      fontSize: 22,
+      letterSpacing: 0,
+    },
     caption: {
       fontFamily: 'BMHANNAAir, sans-serif',
       fontWeight: 400,
@@ -172,6 +198,13 @@ export const typography = {
     },
   },
   BMHANNAPro: {
+    caption: {
+      fontFamily: 'BMHANNAPro, sans-serif',
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: 'auto',
+      letterSpacing: 0,
+    },
     small: {
       fontFamily: 'BMHANNAPro, sans-serif',
       fontWeight: 400,

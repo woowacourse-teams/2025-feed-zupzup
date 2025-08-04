@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { apiClient } from '@/apis/apiClient';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 
 const DEFAULT_SIZE = 10;
+const MAX_RETRY_COUNT = 3;
 
 interface UseInfinityScrollParams<ResponseData> {
   url: string;
@@ -27,6 +29,9 @@ export default function useInfinityScroll<
   const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
   const [hasNext, setHasNext] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
+  const { showErrorModal } = useErrorModalContext();
+
+  const retryCountRef = useRef(0);
 
   const fetchMore = async (size: number = DEFAULT_SIZE) => {
     if (!hasNext || loading) return;
@@ -42,15 +47,21 @@ export default function useInfinityScroll<
         `${url}?${query.toString()}`
       );
 
-      if (!response) return;
+      if (!response) throw new Error('응답 없음');
 
       const responseData = response.data;
 
       setItems((prev) => [...prev, ...responseData[key]]);
       setHasNext(responseData.hasNext);
       setCursorId(responseData.nextCursorId);
+      retryCountRef.current = 0;
     } catch (error) {
-      console.error('무한 스크롤 에러:', error);
+      showErrorModal(error, '에러');
+
+      retryCountRef.current += 1;
+      if (retryCountRef.current >= MAX_RETRY_COUNT) {
+        setHasNext(false);
+      }
     } finally {
       setLoading(false);
     }

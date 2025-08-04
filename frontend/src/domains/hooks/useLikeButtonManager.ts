@@ -1,4 +1,5 @@
 import { deleteLike, postLike } from '@/apis/userFeedback.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 import { useState } from 'react';
 
@@ -15,6 +16,7 @@ export default function useLikeButtonManager({
 }: useLikeButtonManagerProps) {
   const [isLiked, setIsLiked] = useState(like);
   const [tempLikeCount, setTempLikeCount] = useState(likeCount);
+  const { showErrorModal } = useErrorModalContext();
 
   const addLikeFeedbackIds = (feedbackId: number) => {
     const likeFeedbackIds = getLocalStorage<number[]>('feedbackIds') ?? [];
@@ -39,25 +41,33 @@ export default function useLikeButtonManager({
     if (!isLiked) {
       setTempLikeCount((prev) => prev + 1);
       setIsLiked(true);
-      await postLike({
-        feedbackId,
-        onSuccess: () => addLikeFeedbackIds(feedbackId),
-        onError: () => {
-          setIsLiked(false);
-          setTempLikeCount((prev) => prev - 1);
-        },
-      });
+      try {
+        await postLike({
+          feedbackId,
+          onSuccess: () => addLikeFeedbackIds(feedbackId),
+          onError: () => {
+            setIsLiked(false);
+            setTempLikeCount((prev) => prev - 1);
+          },
+        });
+      } catch (e) {
+        showErrorModal(e, '에러');
+      }
     } else {
       setTempLikeCount((prev) => prev - 1);
       setIsLiked(false);
-      await deleteLike({
-        feedbackId,
-        onSuccess: () => removeLikeFeedbackIds(feedbackId),
-        onError: () => {
-          setIsLiked(false);
-          setTempLikeCount((prev) => prev + 1);
-        },
-      });
+      try {
+        await deleteLike({
+          feedbackId,
+          onSuccess: () => removeLikeFeedbackIds(feedbackId),
+          onError: () => {
+            setIsLiked(false);
+            setTempLikeCount((prev) => prev + 1);
+          },
+        });
+      } catch (e) {
+        showErrorModal(e, '에러');
+      }
     }
   };
 

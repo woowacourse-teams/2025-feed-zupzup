@@ -30,10 +30,6 @@ const meta: Meta<typeof FeedbackBoxFooter> = {
       control: 'date',
       description: '작성일',
     },
-    userName: {
-      control: 'text',
-      description: '닉네임',
-    },
   },
 
   decorators: [
