@@ -11,10 +11,11 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
-
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
+import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 
 export default function UserDashboard() {
+  const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
 
@@ -38,7 +39,7 @@ export default function UserDashboard() {
 
   return (
     <div css={dashboardLayout}>
-      <DashboardOverview />
+      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
       <div>
         <FeedbackBoxList>
           {feedbacks.map((feedback) => (
