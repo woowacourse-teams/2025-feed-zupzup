@@ -32,7 +32,7 @@ export default function TimeDelayModal({
   onClose,
   loadingDuration = 1000,
   autoCloseDuration = 2000,
-  loadingMessage = '피드백을 전송하고 있어요...',
+  loadingMessage = '로딩중입니다...',
   completeMessage = '소중한 의견 감사해요!',
   errorMessage = '다시 시도해 주세요.',
   width = 300,
