@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.dto.request;
 
+import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
@@ -23,7 +24,7 @@ public record CreateFeedbackRequest(
         String category
 ) {
 
-    public Feedback toFeedback(final Long organizationId) {
+    public Feedback toFeedback(final Long organizationId, final Category category) {
         return Feedback.builder()
                 .content(content)
                 .organizationId(organizationId)
@@ -31,7 +32,7 @@ public record CreateFeedbackRequest(
                 .isSecret(isSecret)
                 .userName(new UserName(userName))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(Category.findByKoreaName(category))
+                .category(category)
                 .build();
     }
 }

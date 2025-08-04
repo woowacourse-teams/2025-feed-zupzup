@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.category.domain.AvailableCategories;
+import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
@@ -28,12 +30,28 @@ public class UserFeedbackService {
 
     @Transactional
     @BusinessActionLog
-    public CreateFeedbackResponse create(final CreateFeedbackRequest request,
-            final Long organizationId) {
+    public CreateFeedbackResponse create(
+            final CreateFeedbackRequest request,
+            final Long organizationId
+    ) {
         final Organization organization = findOrganizationBy(organizationId);
-        final Feedback newFeedback = request.toFeedback(organization.getId());
+        final Category category = getCategory(request, organization);
+        final Feedback newFeedback = request.toFeedback(organization.getId(), category);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
+    }
+
+    private Category getCategory(
+            final CreateFeedbackRequest request,
+            final Organization organization
+    ) {
+        final AvailableCategories availableCategories = new AvailableCategories(
+                organization.getAvailableCategories()
+        );
+        if (!availableCategories.contains(request.category())) {
+            throw new ResourceNotFoundException("존재하지 않는 카테고리입니다.");
+        }
+        return availableCategories.findCategoryBy(request.category());
     }
 
     public UserFeedbackListResponse getFeedbackPage(

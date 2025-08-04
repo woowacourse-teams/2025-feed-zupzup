@@ -41,4 +41,8 @@ public class Category extends BaseTimeEntity {
     public void addAvailableCategory(final AvailableCategory availableCategory) {
         this.availableCategories.add(availableCategory);
     }
+
+    public boolean isSameContent(String value) {
+        return this.content.equals(value);
+    }
 }

@@ -38,4 +38,8 @@ public class AvailableCategory {
     public AvailableCategory(final Organization organization, final Category category) {
         this(null, organization, category);
     }
+
+    public boolean isSameCategory(String value) {
+        return category.isSameContent(value);
+    }
 }
