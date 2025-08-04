@@ -20,7 +20,7 @@ export interface TimeDelayModalProps {
   loadingMessage?: string;
   completeMessage?: string;
   errorMessage?: string;
-  modalStatus?: 'idle' | 'loading' | 'success' | 'error';
+  modalStatus?: 'idle' | 'submitting' | 'success' | 'error';
   width?: number;
   height?: number;
   customCSS?: SerializedStyles | SerializedStyles[];
@@ -41,7 +41,7 @@ export default function TimeDelayModal({
 }: TimeDelayModalProps) {
   const theme = useAppTheme();
 
-  const { isLoading, handleModalClose } = useTimeDelayModal({
+  const { isMinimumDelayActive, handleModalClose } = useTimeDelayModal({
     isOpen,
     loadingDuration,
     autoCloseDuration,
@@ -49,7 +49,9 @@ export default function TimeDelayModal({
   });
 
   const renderContent = () => {
-    if (modalStatus === 'loading' || isLoading) {
+    const isApiSubmitting = modalStatus === 'submitting';
+
+    if (isApiSubmitting || isMinimumDelayActive) {
       return (
         <div css={loadingContainer}>
           <div css={spinner(theme)} />

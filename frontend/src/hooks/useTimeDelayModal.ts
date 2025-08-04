@@ -13,22 +13,22 @@ export function useTimeDelayModal({
   autoCloseDuration,
   onClose,
 }: UseTimeDelayModalOptions) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isMinimumDelayActive, setIsMinimumDelayActive] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    setIsLoading(true);
+    setIsMinimumDelayActive(true);
     setIsComplete(false);
 
-    const loadingTimer = setTimeout(() => {
-      setIsLoading(false);
+    const delayTimer = setTimeout(() => {
+      setIsMinimumDelayActive(false);
       setIsComplete(true);
     }, loadingDuration);
 
     return () => {
-      clearTimeout(loadingTimer);
+      clearTimeout(delayTimer);
     };
   }, [isOpen, loadingDuration]);
 
@@ -45,13 +45,13 @@ export function useTimeDelayModal({
   }, [isComplete, autoCloseDuration, onClose]);
 
   const handleModalClose = useCallback(() => {
-    if (!isLoading) {
+    if (!isMinimumDelayActive) {
       onClose();
     }
-  }, [isLoading, onClose]);
+  }, [isMinimumDelayActive, onClose]);
 
   return {
-    isLoading,
+    isMinimumDelayActive,
     isComplete,
     handleModalClose,
   };

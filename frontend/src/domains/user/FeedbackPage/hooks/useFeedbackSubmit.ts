@@ -11,12 +11,11 @@ interface FeedbackSubmitParams {
   organizationId?: number;
 }
 
-type FeedbackStatus = 'idle' | 'loading' | 'success' | 'error';
+type FeedbackStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 export default function useFeedbackSubmit() {
   const navigate = useNavigate();
-  const [modalStatus, setModalStatus] = useState<FeedbackStatus>('idle');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<FeedbackStatus>('idle');
 
   const submitFeedback = useCallback(
     async ({
@@ -25,10 +24,9 @@ export default function useFeedbackSubmit() {
       isSecret,
       organizationId = 1,
     }: FeedbackSubmitParams) => {
-      if (isSubmitting) return;
+      if (submitStatus === 'submitting') return;
 
-      setIsSubmitting(true);
-      setModalStatus('loading');
+      setSubmitStatus('submitting');
 
       try {
         await postUserFeedback({
@@ -38,20 +36,18 @@ export default function useFeedbackSubmit() {
           userName,
           onSuccess: (response: SuggestionFeedback) => {
             setLocalStorage('highlightedId', response.data.feedbackId);
-            setModalStatus('success');
+            setSubmitStatus('success');
           },
           onError: () => {
-            setModalStatus('error');
+            setSubmitStatus('error');
           },
         });
       } catch (e) {
         console.error(e);
-        setModalStatus('error');
-      } finally {
-        setIsSubmitting(false);
+        setSubmitStatus('error');
       }
     },
-    [navigate, isSubmitting]
+    [navigate, submitStatus]
   );
 
   const handleFormSubmit = useCallback(
@@ -59,22 +55,22 @@ export default function useFeedbackSubmit() {
       async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (canSubmit && !isSubmitting) {
+        if (canSubmit && submitStatus !== 'submitting') {
           await submitFeedback(params);
         }
       },
-    [submitFeedback, isSubmitting]
+    [submitFeedback, submitStatus]
   );
 
   const resetStatus = useCallback(() => {
-    setModalStatus('idle');
+    setSubmitStatus('idle');
   }, []);
 
   return {
     submitFeedback,
     handleFormSubmit,
-    isSubmitting,
-    modalStatus,
+    isSubmitting: submitStatus === 'submitting',
+    submitStatus,
     resetStatus,
   };
 }

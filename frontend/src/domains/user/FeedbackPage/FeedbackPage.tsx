@@ -41,7 +41,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { handleFormSubmit, isSubmitting, modalStatus } = useFeedbackSubmit();
+  const { handleFormSubmit, submitStatus } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = useCallback(() => {
     navigate('/dashboard');
@@ -60,7 +60,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!canSubmit || isSubmitting) {
+    if (!canSubmit || submitStatus === 'submitting') {
       return;
     }
 
@@ -80,6 +80,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
       console.error('피드백 제출 실패:', error);
     }
   };
+
+  const isSubmitting = submitStatus === 'submitting';
 
   return (
     <section css={container}>
@@ -146,14 +148,14 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
       <TimeDelayModal
         isOpen={isModalOpen}
-        onClose={() => handleModalClose(modalStatus === 'error')}
+        onClose={() => handleModalClose(submitStatus === 'error')}
         loadingDuration={800}
         autoCloseDuration={1000}
         loadingMessage='피드백을 전송하고 있어요...'
         completeMessage='소중한 의견 감사해요!'
         width={320}
         height={200}
-        modalStatus={modalStatus}
+        modalStatus={submitStatus}
       />
     </section>
   );
