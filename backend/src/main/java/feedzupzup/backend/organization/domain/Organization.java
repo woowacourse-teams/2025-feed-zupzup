@@ -1,5 +1,6 @@
 package feedzupzup.backend.organization.domain;
 
+import feedzupzup.backend.category.domain.AvailableCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -7,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +33,9 @@ public class Organization extends BaseTimeEntity {
     @Column(nullable = false)
     private CheeringCount cheeringCount;
 
+    @OneToMany(mappedBy = "organization")
+    private final Set<AvailableCategory> availableCategories = new HashSet<>();
+
     @Builder
     public Organization(
             final @NonNull String name,
@@ -44,5 +51,9 @@ public class Organization extends BaseTimeEntity {
 
     public int getCheeringCountValue() {
         return cheeringCount.getValue();
+    }
+
+    public void addAvailableCategory(final AvailableCategory availableCategory) {
+        this.availableCategories.add(availableCategory);
     }
 }

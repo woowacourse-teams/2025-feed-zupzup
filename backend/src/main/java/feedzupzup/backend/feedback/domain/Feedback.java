@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -9,6 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -47,8 +49,7 @@ public class Feedback extends BaseTimeEntity {
     @Column(nullable = false)
     private PostedAt postedAt;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @OneToOne
     private Category category;
 
     @Builder
