@@ -141,12 +141,12 @@ describe('useModal', () => {
       expect(mockOnClose).not.toHaveBeenCalled();
     });
 
-    it('preventClose가 true일 때는 Escape 키에 반응하지 않아야 한다', () => {
+    it('disableUserClose true일 때는 Escape 키에 반응하지 않아야 한다', () => {
       renderHook(() =>
         useModal({
           isOpen: true,
           onClose: mockOnClose,
-          preventClose: true,
+          disableUserClose: true,
         })
       );
 
@@ -194,12 +194,12 @@ describe('useModal', () => {
       expect(mockOnClose).not.toHaveBeenCalled();
     });
 
-    it('preventClose가 true일 때는 오버레이 클릭에 반응하지 않아야 한다', () => {
+    it('disableUserClose가 true일 때는 오버레이 클릭에 반응하지 않아야 한다', () => {
       const { result } = renderHook(() =>
         useModal({
           isOpen: true,
           onClose: mockOnClose,
-          preventClose: true,
+          disableUserClose: true,
         })
       );
 
