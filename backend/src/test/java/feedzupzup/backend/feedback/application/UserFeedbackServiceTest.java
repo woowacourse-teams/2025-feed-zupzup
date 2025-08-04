@@ -253,7 +253,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     }
 
     @Test
-    @DisplayName("ProcessStatus가 CONFIRMED 으로 주어졌을 때, CONFIRMED 상태의 피드백만 조회할 수 있어야 한다.")
+    @DisplayName("ProcessStatus가 null로 주어졌을 때, 모든 피드백을 조회할 수 있어야 한다.")
     void when_given_process_status_null_then_get_all_feedbacks() {
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
