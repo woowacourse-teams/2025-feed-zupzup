@@ -11,6 +11,7 @@ import {
   modalContainer,
   errorIcon,
 } from '@/components/TimeDelayModal/TimeDelayModal.styles';
+import { StatusType } from '@/types/status.types';
 
 export interface TimeDelayModalProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ export interface TimeDelayModalProps {
   loadingMessage?: string;
   completeMessage?: string;
   errorMessage?: string;
-  modalStatus?: 'idle' | 'submitting' | 'success' | 'error';
+  modalStatus?: StatusType;
   width?: number;
   height?: number;
   customCSS?: SerializedStyles | SerializedStyles[];

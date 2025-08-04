@@ -2,8 +2,8 @@ import { postUserFeedback } from '@/apis/userFeedback.api';
 import { SuggestionFeedback } from '@/types/feedback.types';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
+import { StatusType } from '@/types/status.types';
 import { useNavigate } from 'react-router-dom';
-
 interface FeedbackSubmitParams {
   content: string;
   userName: string;
@@ -11,11 +11,9 @@ interface FeedbackSubmitParams {
   organizationId?: number;
 }
 
-type FeedbackStatus = 'idle' | 'submitting' | 'success' | 'error';
-
 export default function useFeedbackSubmit() {
   const navigate = useNavigate();
-  const [submitStatus, setSubmitStatus] = useState<FeedbackStatus>('idle');
+  const [submitStatus, setSubmitStatus] = useState<StatusType>('idle');
 
   const submitFeedback = useCallback(
     async ({
