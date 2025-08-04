@@ -69,7 +69,8 @@ describe('useModal', () => {
       removeEventListenerSpy.mockRestore();
     });
 
-    it('의존성이 변경될 때 이벤트 리스너를 업데이트해야 한다', () => {
+    // 이 테스트를 수정합니다 - ref 패턴을 사용하므로 이벤트 리스너가 재등록되지 않아야 합니다
+    it('onClose가 변경되어도 이벤트 리스너를 재등록하지 않아야 한다 (ref 패턴 사용)', () => {
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
       const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
 
@@ -80,13 +81,36 @@ describe('useModal', () => {
         { initialProps: { onClose: mockOnClose } }
       );
 
+      // 초기 렌더링에서 한 번만 addEventListener가 호출되어야 함
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
+
       rerender({ onClose: mockOnClose2 });
 
-      expect(removeEventListenerSpy).toHaveBeenCalled();
-      expect(addEventListenerSpy).toHaveBeenCalledTimes(2);
+      // onClose가 변경되어도 removeEventListener나 추가 addEventListener가 호출되지 않아야 함
+      expect(removeEventListenerSpy).not.toHaveBeenCalled();
+      expect(addEventListenerSpy).toHaveBeenCalledTimes(1); // 여전히 1번만
 
       addEventListenerSpy.mockRestore();
       removeEventListenerSpy.mockRestore();
+    });
+
+    // 새로운 테스트 추가: ref가 실제로 최신 onClose를 참조하는지 확인
+    it('onClose가 변경되면 새로운 onClose가 호출되어야 한다', () => {
+      const mockOnClose2 = jest.fn();
+
+      const { rerender } = renderHook(
+        ({ onClose }) => useModal({ isOpen: true, onClose }),
+        { initialProps: { onClose: mockOnClose } }
+      );
+
+      // onClose를 변경
+      rerender({ onClose: mockOnClose2 });
+
+      // Escape 키를 누르면 변경된 onClose2가 호출되어야 함
+      fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
+
+      expect(mockOnClose).not.toHaveBeenCalled();
+      expect(mockOnClose2).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -116,6 +140,20 @@ describe('useModal', () => {
 
       expect(mockOnClose).not.toHaveBeenCalled();
     });
+
+    it('disableUserClose true일 때는 Escape 키에 반응하지 않아야 한다', () => {
+      renderHook(() =>
+        useModal({
+          isOpen: true,
+          onClose: mockOnClose,
+          disableUserClose: true,
+        })
+      );
+
+      fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
+
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
   });
 
   describe('오버레이 클릭 처리', () => {
@@ -125,7 +163,6 @@ describe('useModal', () => {
       );
 
       const overlayElement = document.createElement('div');
-      // 오버레이 클릭을 시뮬레이션 (target과 currentTarget이 동일)
       const mockEvent = {
         target: overlayElement,
         currentTarget: overlayElement,
@@ -145,9 +182,30 @@ describe('useModal', () => {
 
       const overlayElement = document.createElement('div');
       const contentElement = document.createElement('div');
-      // 모달 내부 클릭을 시뮬레이션 (target과 currentTarget이 다름)
       const mockEvent = {
         target: contentElement,
+        currentTarget: overlayElement,
+      } as unknown as React.MouseEvent<HTMLDivElement>;
+
+      act(() => {
+        result.current.handleOverlayClick(mockEvent);
+      });
+
+      expect(mockOnClose).not.toHaveBeenCalled();
+    });
+
+    it('disableUserClose가 true일 때는 오버레이 클릭에 반응하지 않아야 한다', () => {
+      const { result } = renderHook(() =>
+        useModal({
+          isOpen: true,
+          onClose: mockOnClose,
+          disableUserClose: true,
+        })
+      );
+
+      const overlayElement = document.createElement('div');
+      const mockEvent = {
+        target: overlayElement,
         currentTarget: overlayElement,
       } as unknown as React.MouseEvent<HTMLDivElement>;
 
@@ -227,11 +285,9 @@ describe('useModal', () => {
 
       rerender();
 
-      // 함수 참조는 매번 새로 생성되지만, 기능은 정상 동작해야 함
       expect(typeof result.current.handleOverlayClick).toBe('function');
       expect(typeof result.current.handleConfirm).toBe('function');
 
-      // 실제로 함수가 동작하는지 확인
       act(() => {
         result.current.handleConfirm();
       });

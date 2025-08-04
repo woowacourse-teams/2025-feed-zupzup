@@ -1,3 +1,4 @@
+import { useState, useCallback } from 'react';
 import {
   container,
   skipText,
@@ -16,6 +17,7 @@ import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import SendIcon from '@/components/icons/SendIcon';
 import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
+import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 
 interface FeedbackPageProps {
@@ -25,6 +27,7 @@ interface FeedbackPageProps {
 export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
     feedback,
@@ -38,21 +41,45 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { handleFormSubmit, isSubmitting } = useFeedbackSubmit();
+  const { submitFeedback, submitStatus } = useFeedbackSubmit(); // handleFormSubmit 제거
 
   const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     navigate('/dashboard');
   };
 
-  const onSubmit = handleFormSubmit(
-    {
-      content: feedback,
-      userName: username,
-      isSecret: isLocked,
+  const handleModalClose = useCallback(
+    (isError: boolean) => {
+      setIsModalOpen(false);
+      if (!isError) {
+        navigate('/dashboard');
+      }
     },
-    canSubmit
+    [navigate]
   );
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!canSubmit || submitStatus === 'submitting') {
+      return;
+    }
+
+    try {
+      setIsModalOpen(true);
+
+      await submitFeedback({
+        content: feedback,
+        userName: username,
+        isSecret: isLocked,
+      });
+    } catch (error) {
+      setIsModalOpen(false);
+      console.error('피드백 제출 실패:', error);
+    }
+  };
+
+  const isSubmitting = submitStatus === 'submitting';
 
   return (
     <section css={container}>
@@ -86,12 +113,16 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         <div css={buttonGroupContainer}>
           <BasicButton
             type='submit'
-            disabled={!canSubmit || isSubmitting}
-            variant={canSubmit && !isSubmitting ? 'primary' : 'disabled'}
+            disabled={!canSubmit || isSubmitting || isModalOpen}
+            variant={
+              canSubmit && !isSubmitting && !isModalOpen
+                ? 'primary'
+                : 'disabled'
+            }
             icon={
               <SendIcon
                 color={
-                  canSubmit && !isSubmitting
+                  canSubmit && !isSubmitting && !isModalOpen
                     ? theme.colors.white[100]
                     : theme.colors.gray[500]
                 }
@@ -106,12 +137,24 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
             icon={<p css={skipIcon}>📄</p>}
             variant='secondary'
             onClick={handleSkipAndNavigate}
-            disabled={isSubmitting}
+            disabled={isSubmitting || isModalOpen}
           >
             <p css={skipText(theme)}>건의 목록 보러가기</p>
           </BasicButton>
         </div>
       </form>
+
+      <TimeDelayModal
+        isOpen={isModalOpen}
+        onClose={() => handleModalClose(submitStatus === 'error')}
+        loadingDuration={800}
+        autoCloseDuration={1000}
+        loadingMessage='피드백을 전송하고 있어요...'
+        completeMessage='소중한 의견 감사해요!'
+        width={320}
+        height={200}
+        modalStatus={submitStatus}
+      />
     </section>
   );
 }
