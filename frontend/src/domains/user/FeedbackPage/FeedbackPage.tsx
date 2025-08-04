@@ -41,7 +41,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { handleFormSubmit, submitStatus } = useFeedbackSubmit();
+  const { submitFeedback, submitStatus } = useFeedbackSubmit(); // handleFormSubmit 제거
 
   const handleSkipAndNavigate = () => {
     navigate('/dashboard');
@@ -57,7 +57,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     [navigate]
   );
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!canSubmit || submitStatus === 'submitting') {
@@ -67,14 +67,11 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     try {
       setIsModalOpen(true);
 
-      await handleFormSubmit(
-        {
-          content: feedback,
-          userName: username,
-          isSecret: isLocked,
-        },
-        canSubmit
-      )(e as React.FormEvent<HTMLFormElement>);
+      await submitFeedback({
+        content: feedback,
+        userName: username,
+        isSecret: isLocked,
+      });
     } catch (error) {
       setIsModalOpen(false);
       console.error('피드백 제출 실패:', error);

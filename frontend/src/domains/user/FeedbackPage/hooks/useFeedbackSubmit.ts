@@ -50,26 +50,12 @@ export default function useFeedbackSubmit() {
     [navigate, submitStatus]
   );
 
-  const handleFormSubmit = useCallback(
-    (params: FeedbackSubmitParams, canSubmit: boolean) =>
-      async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        if (canSubmit && submitStatus !== 'submitting') {
-          await submitFeedback(params);
-        }
-      },
-    [submitFeedback, submitStatus]
-  );
-
   const resetStatus = useCallback(() => {
     setSubmitStatus('idle');
   }, []);
 
   return {
     submitFeedback,
-    handleFormSubmit,
-    isSubmitting: submitStatus === 'submitting',
     submitStatus,
     resetStatus,
   };
