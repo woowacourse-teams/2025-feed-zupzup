@@ -43,9 +43,9 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
 
   const { handleFormSubmit, submitStatus } = useFeedbackSubmit();
 
-  const handleSkipAndNavigate = useCallback(() => {
+  const handleSkipAndNavigate = () => {
     navigate('/dashboard');
-  }, [navigate]);
+  };
 
   const handleModalClose = useCallback(
     (isError: boolean) => {
