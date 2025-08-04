@@ -12,6 +12,8 @@ import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 
+import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
+
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
@@ -57,6 +59,11 @@ export default function UserDashboard() {
           ))}
           {loading && <div>로딩중...</div>}
         </FeedbackBoxList>
+        <FeedbackStatusMessage
+          loading={loading}
+          hasNext={hasNext}
+          feedbackCount={feedbacks.length}
+        />
       </div>
       <FloatingButton
         icon={<ArrowIcon />}

@@ -26,7 +26,7 @@ export default function BasicButton({
   const theme = useAppTheme();
 
   return (
-    <Button css={basicButton(theme, width, height, variant)} onClick={onClick}>
+    <Button css={basicButton(theme, width, variant, height)} onClick={onClick}>
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant)}>{children}</span>
     </Button>

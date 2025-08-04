@@ -1,5 +1,4 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
-import SkipIcon from '@/components/icons/SkipIcon';
 import CategoryButton from '@/domains/components/CategoryButton/CategoryButton';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import {
@@ -11,6 +10,7 @@ import {
   skipText,
   buttonContainer,
   title,
+  skipIcon,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
@@ -53,8 +53,8 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
             onClick={handleCategoryButtonClick}
           />
           <CategoryButton
-            icon='👥'
-            text='인간관계'
+            icon='📕'
+            text='커리큘럼'
             onClick={handleCategoryButtonClick}
           />
           <CategoryButton
@@ -65,7 +65,7 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
         </div>
       </div>
       <BasicButton
-        icon={<SkipIcon />}
+        icon={<p css={skipIcon}>📄</p>}
         variant='secondary'
         onClick={() => navigate('/dashboard')}
       >
