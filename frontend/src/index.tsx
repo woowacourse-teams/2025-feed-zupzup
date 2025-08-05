@@ -8,6 +8,12 @@ import { router } from '@/router';
 import { ErrorModalProvider } from '@/contexts/useErrorModal';
 import * as Sentry from '@sentry/react';
 
+declare global {
+  interface Window {
+    Sentry: typeof Sentry;
+  }
+}
+
 // if (process.env.NODE_ENV === 'development') {
 //   const { worker } = await import('./mocks/browser');
 //   await worker.start({
@@ -47,6 +53,8 @@ Sentry.init({
   },
   sendDefaultPii: true,
 });
+
+window.Sentry = Sentry;
 
 const root = createRoot(document.getElementById('root')!);
 root.render(
