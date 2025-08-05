@@ -18,6 +18,7 @@ interface UserFeedbackBox {
   feedbackId: number;
   likeCount: number;
   customCSS: (SerializedStyles | null)[];
+  isMyFeedback: boolean;
 }
 
 export default function UserFeedbackBox({
@@ -30,26 +31,30 @@ export default function UserFeedbackBox({
   feedbackId,
   likeCount,
   customCSS,
+  isMyFeedback = false,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
   return (
     <FeedbackBoxBackGround type={type} customCSS={customCSS}>
       <FeedbackBoxHeader
-        userName={userName}
+        userName={userName + (isMyFeedback ? ' (나)' : '')}
         type={type}
         feedbackId={feedbackId}
       />
-      {isSecret ? (
-        <div css={secretText(theme)}>
-          <p>비밀글입니다.</p>
-          <p>
-            <LockIcon />
-          </p>
-        </div>
-      ) : (
-        <FeedbackText type={type} text={content} />
-      )}
+      <div css={isSecret ? secretText(theme) : undefined}>
+        {isSecret ? (
+          isMyFeedback ? (
+            <FeedbackText type={type} text={content} />
+          ) : (
+            <p>비밀글입니다.</p>
+          )
+        ) : (
+          <FeedbackText type={type} text={content} />
+        )}
+        {isSecret && <LockIcon />}
+      </div>
+
       <FeedbackBoxFooter
         type={type}
         isLiked={isLiked}

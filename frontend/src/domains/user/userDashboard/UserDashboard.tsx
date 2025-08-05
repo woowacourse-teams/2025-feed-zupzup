@@ -57,10 +57,7 @@ export default function UserDashboard() {
         <FeedbackBoxList>
           {feedbacks.map((feedback) => (
             <UserFeedbackBox
-              userName={
-                feedback.userName +
-                (isMyFeedback(feedback.feedbackId) ? ' (나)' : '')
-              }
+              userName={feedback.userName}
               key={feedback.feedbackId}
               type={feedback.status}
               content={feedback.content}
@@ -69,6 +66,7 @@ export default function UserDashboard() {
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
+              isMyFeedback={isMyFeedback(feedback.feedbackId)}
               customCSS={[
                 myFeedbackStyle(theme, isMyFeedback(feedback.feedbackId)),
                 feedback.feedbackId === highlightedId ? highlightStyle : null,
