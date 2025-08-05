@@ -9,6 +9,7 @@ import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
 import { FeedbackType } from '@/types/feedback.types';
+import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
 
 interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
@@ -57,6 +58,9 @@ export default function AdminFeedbackBox({
           </p>
         )}
       </div>
+      {type === 'CONFIRMED' && (
+        <FeedbackAnswer answer='감사합니다 고객님 빠르게 처리하겠습니당' />
+      )}
       <FeedbackBoxFooter
         type={type}
         likeCount={likeCount}
