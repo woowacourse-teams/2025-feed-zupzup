@@ -1,6 +1,7 @@
 package feedzupzup.backend.category.domain;
 
 import feedzupzup.backend.organization.domain.Organization;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class AvailableCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     private Organization organization;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false)
     private Category category;
 
     public AvailableCategory(
@@ -39,9 +40,5 @@ public class AvailableCategory {
 
     public AvailableCategory(final Organization organization, final Category category) {
         this(null, organization, category);
-    }
-
-    public boolean isSameCategory(String value) {
-        return category.isSameContent(value);
     }
 }

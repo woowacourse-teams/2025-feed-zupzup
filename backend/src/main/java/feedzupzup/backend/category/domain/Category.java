@@ -1,41 +1,31 @@
 package feedzupzup.backend.category.domain;
 
-import feedzupzup.backend.global.BaseTimeEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import java.util.Arrays;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Category extends BaseTimeEntity {
+public enum Category {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    FACILITY("시설"),
+    CURRICULUM("커리큘럼"),
+    ETC("기타"),
+    ;
 
-    @Column(nullable = false)
-    private String content;
+    private final String koreanName;
 
-    public Category(
-            final Long id,
-            final @NonNull String content
-    ) {
-        this.id = id;
-        this.content = content;
+    Category(final String koreanName) {
+        this.koreanName = koreanName;
     }
 
-    public Category(final String content) {
-        this(null, content);
+    public boolean isSameCategory(String value) {
+        return this.koreanName.equals(value);
     }
 
-    public boolean isSameContent(String value) {
-        return this.content.equals(value);
+    public static Category findCategoryBy(String value) {
+        return Arrays.stream(Category.values())
+                .filter(result -> result.isSameCategory(value))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
     }
 }

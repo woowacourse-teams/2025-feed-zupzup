@@ -25,7 +25,7 @@ public record UserOrganizationResponse(
 
     private static Set<String> convertCategories(final Set<AvailableCategory> availableCategories) {
         return availableCategories.stream()
-                .map(result -> result.getCategory().getContent())
+                .map(result -> result.getCategory().getKoreanName())
                 .collect(Collectors.toSet());
     }
 }

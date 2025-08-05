@@ -14,16 +14,10 @@ public class AvailableCategories {
         this.availableCategories = new HashSet<>(availableCategories);
     }
 
-    public boolean contains(final String category) {
+    public AvailableCategory findAvailableCategory(final Category category) {
         return availableCategories.stream()
-                .anyMatch(result -> result.isSameCategory(category));
-    }
-
-    public Category findCategoryBy(final String category) {
-        final AvailableCategory availableCategory = availableCategories.stream()
-                .filter(result -> result.isSameCategory(category))
+                .filter(result -> result.getCategory().equals(category))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
-        return availableCategory.getCategory();
     }
 }

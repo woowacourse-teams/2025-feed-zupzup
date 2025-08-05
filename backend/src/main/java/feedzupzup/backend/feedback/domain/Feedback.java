@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
-import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.AvailableCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -51,7 +51,7 @@ public class Feedback extends BaseTimeEntity {
     private PostedAt postedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
+    private AvailableCategory availableCategory;
 
     @Builder
     public Feedback(
@@ -62,7 +62,7 @@ public class Feedback extends BaseTimeEntity {
             final int likeCount,
             final @NonNull UserName userName,
             final @NonNull PostedAt postedAt,
-            final @NonNull Category category
+            final @NonNull AvailableCategory availableCategory
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -71,7 +71,7 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
         this.userName = userName;
         this.postedAt = postedAt;
-        this.category = category;
+        this.availableCategory = availableCategory;
     }
 
     public void updateStatus(final ProcessStatus status) {
