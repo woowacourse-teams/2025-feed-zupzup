@@ -45,7 +45,7 @@ export default function AnswerModal({
           placeholder='사용자에게 전달할 메시지를 작성해주세요.(선택사항)'
           customCSS={contentTextarea(theme)}
         />
-        <p>입력하지 않으면 "확입했습니다."로 자동 전송됩니다.</p>
+        <p>입력하지 않으면 "확인했습니다."로 자동 전송됩니다.</p>
       </div>
       <div css={buttonContainer(theme)}>
         <BasicButton
