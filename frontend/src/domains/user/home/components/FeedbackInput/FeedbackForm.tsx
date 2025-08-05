@@ -12,13 +12,13 @@ import {
   textarea,
   toggleButtonContainer,
   toggleButtonText,
-  textareaCounter,
 } from './FeedbackForm.styles';
 
 import Button from '@/components/@commons/Button/Button';
 import TextArea from '@/components/@commons/TextArea/TextArea';
 import Input from '@/components/@commons/Input/Input'; // 추가
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
+import TextareaCounter from '@/components/TextareaCounter/TextareaCounter';
 
 export interface FeedbackFormProps {
   className?: string;
@@ -82,9 +82,7 @@ export default function FeedbackForm({
             maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
             minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
-          <p css={textareaCounter(theme)}>
-            {feedback.length} / {FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
-          </p>
+          <TextareaCounter textLength={feedback.length} />
         </div>
       </div>
       <div css={toggleButtonContainer}>
