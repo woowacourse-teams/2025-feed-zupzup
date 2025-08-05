@@ -6,7 +6,7 @@ import { SerializedStyles } from '@emotion/react';
 interface FeedbackBoxBackGroundProps {
   children: React.ReactNode;
   type: FeedbackStatusType;
-  customCSS?: SerializedStyles | null;
+  customCSS?: (SerializedStyles | null)[];
 }
 
 export default function FeedbackBoxBackGround({

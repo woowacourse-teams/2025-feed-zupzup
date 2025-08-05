@@ -36,34 +36,36 @@ const userFeedbackWaiting = {
   onConfirm: () => {},
   onDelete: () => {},
   likeCount: 5,
-  type: 'WAITING',
+  type: 'WAITING' as const,
   content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
   isLiked: false,
   isSecret: false,
   createdAt: '2024-05-20',
-  customCSS: null,
+  customCSS: [],
   userName: '익명의 사용자',
-} as const;
+  isMyFeedback: true,
+};
 
 const userFeedbackConfirmed = {
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},
   likeCount: 5,
-  type: 'CONFIRMED',
+  type: 'CONFIRMED' as const,
   content: '이 피드백은 확인 완료되었습니다. 감사합니다.',
   isLiked: true,
   isSecret: false,
   createdAt: '2024-05-19',
-  customCSS: null,
+  customCSS: [],
   userName: '김개발',
-} as const;
+  isMyFeedback: false,
+};
 
 const adminFeedbackWaiting = {
   feedbackId: 1,
   onConfirm: () => {},
   onDelete: () => {},
-  type: 'WAITING',
+  type: 'WAITING' as const,
   content: '관리자가 확인해야 할 피드백입니다. 이미지가 첨부되었습니다.',
   isSecret: false,
   imageUrl:
@@ -71,21 +73,24 @@ const adminFeedbackWaiting = {
   likeCount: 5,
   userName: '익명의 사용자',
   createdAt: '2024-05-21',
-} as const;
+  customCSS: [],
+  isMyFeedback: false,
+};
 
 const adminFeedbackConfirmed = {
   feedbackId: 2,
   onConfirm: () => {},
   onDelete: () => {},
-
-  type: 'CONFIRMED',
+  type: 'CONFIRMED' as const,
   content: '관리자가 확인 완료한 피드백입니다. 비밀글입니다.',
   isSecret: true,
   imageUrl: null,
   likeCount: 12,
   userName: '김개발',
   createdAt: '2024-05-18',
-} as const;
+  customCSS: [],
+  isMyFeedback: false,
+};
 
 export const Default: Story = {
   args: {
