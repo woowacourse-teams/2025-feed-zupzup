@@ -4,8 +4,8 @@ import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
-import feedzupzup.backend.category.domain.AvailableCategoryRepository;
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -18,7 +18,6 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
-    private AvailableCategoryRepository availableCategoryRepository;
+    private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -46,12 +45,14 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 3);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 3);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -81,11 +82,12 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 10);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 10);
         final Feedback saved = feedBackRepository.save(feedback);
 
         // when - 인메모리 좋아요 없이 동기화
@@ -115,11 +117,12 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5);
         final Feedback saved = feedBackRepository.save(feedback);
 
         // 좋아요 증가 후 감소
@@ -144,12 +147,14 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -173,12 +178,13 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
         for (int i = 1; i <= feedbackCount; i++) {
-            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                    organizationCategory, 0);
             final Feedback saved = feedBackRepository.save(feedback);
 
             for (int j = 0; j < likesPerFeedback; j++) {
@@ -202,11 +208,12 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback saved = feedBackRepository.save(feedback);
 
         final int threadCount = 10;

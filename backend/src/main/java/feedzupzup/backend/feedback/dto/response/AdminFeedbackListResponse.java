@@ -66,7 +66,7 @@ public record AdminFeedbackListResponse(
                     feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getPostedAt(),
-                    feedback.getAvailableCategory().getCategory().getKoreanName()
+                    feedback.getOrganizationCategory().getCategory().getKoreanName()
             );
         }
 

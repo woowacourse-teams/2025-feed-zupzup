@@ -1,11 +1,3 @@
-CREATE TABLE category
-(
-    id          bigint NOT NULL PRIMARY KEY,
-    created_at datetime(6) NOT NULL,
-    modified_at datetime(6) NOT NULL,
-    content     varchar(255) NOT NULL
-);
-
 CREATE TABLE available_category (
     id bigint NOT NULL PRIMARY KEY,
     category_id bigint NOT NULL,

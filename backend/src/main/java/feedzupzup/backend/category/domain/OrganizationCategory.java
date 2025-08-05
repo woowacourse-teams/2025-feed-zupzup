@@ -16,7 +16,7 @@ import lombok.NonNull;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class AvailableCategory {
+public class OrganizationCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class AvailableCategory {
     @Column(nullable = false)
     private Category category;
 
-    public AvailableCategory(
+    public OrganizationCategory(
             final Long id,
             final @NonNull Organization organization,
             final @NonNull Category category
@@ -38,7 +38,7 @@ public class AvailableCategory {
         this.category = category;
     }
 
-    public AvailableCategory(final Organization organization, final Category category) {
+    public OrganizationCategory(final Organization organization, final Category category) {
         this(null, organization, category);
     }
 }

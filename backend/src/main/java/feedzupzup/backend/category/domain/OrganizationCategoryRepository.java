@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AvailableCategoryRepository extends JpaRepository<AvailableCategory, Long> {
+public interface OrganizationCategoryRepository extends JpaRepository<OrganizationCategory, Long> {
 
 }

@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.category.domain.AvailableCategories;
-import feedzupzup.backend.category.domain.AvailableCategory;
+import feedzupzup.backend.category.domain.OrganizationCategories;
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -39,20 +39,20 @@ public class UserFeedbackService {
 
         final Category category = Category.findCategoryBy(request.category());
 
-        final AvailableCategory availableCategory = getAvailableCategory(category, organization);
-        final Feedback newFeedback = request.toFeedback(organization.getId(), availableCategory);
+        final OrganizationCategory organizationCategory = getOrganizationCategory(category, organization);
+        final Feedback newFeedback = request.toFeedback(organization.getId(), organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }
 
-    private AvailableCategory getAvailableCategory(
+    private OrganizationCategory getOrganizationCategory(
             final Category category,
             final Organization organization
     ) {
-        final AvailableCategories availableCategories = new AvailableCategories(
+        final OrganizationCategories organizationCategories = new OrganizationCategories(
                 organization.getAvailableCategories()
         );
-        return availableCategories.findAvailableCategoryBy(category);
+        return organizationCategories.findOrganizationCategoryBy(category);
     }
 
     public UserFeedbackListResponse getFeedbackPage(

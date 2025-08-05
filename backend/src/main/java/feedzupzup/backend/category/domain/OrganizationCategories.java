@@ -6,16 +6,16 @@ import java.util.Set;
 import lombok.Getter;
 
 @Getter
-public class AvailableCategories {
+public class OrganizationCategories {
 
-    private final Set<AvailableCategory> availableCategories;
+    private final Set<OrganizationCategory> organizationCategories;
 
-    public AvailableCategories(final Set<AvailableCategory> availableCategories) {
-        this.availableCategories = new HashSet<>(availableCategories);
+    public OrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
+        this.organizationCategories = new HashSet<>(organizationCategories);
     }
 
-    public AvailableCategory findAvailableCategoryBy(final Category category) {
-        return availableCategories.stream()
+    public OrganizationCategory findOrganizationCategoryBy(final Category category) {
+        return organizationCategories.stream()
                 .filter(result -> result.getCategory().equals(category))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));

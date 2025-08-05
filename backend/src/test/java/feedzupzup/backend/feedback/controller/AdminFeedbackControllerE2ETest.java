@@ -4,8 +4,8 @@ import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
-import feedzupzup.backend.category.domain.AvailableCategoryRepository;
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -34,7 +34,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
-    private AvailableCategoryRepository availableCategoryRepository;
+    private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -51,11 +51,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("삭제될 피드백", availableCategory);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("삭제될 피드백",
+                organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then
@@ -77,11 +78,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("상태 변경될 피드백", availableCategory);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("상태 변경될 피드백",
+                organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
         final UpdateFeedbackStatusRequest updateRequest = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
 
@@ -125,11 +127,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false, availableCategory);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false,
+                organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
         final UpdateFeedbackSecretRequest updateRequest = new UpdateFeedbackSecretRequest(true);
 
@@ -174,13 +177,16 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백", availableCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백", availableCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백", availableCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백",
+                organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백",
+                organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백",
+                organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -209,13 +215,16 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백", availableCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백", availableCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백", availableCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백",
+                organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백",
+                organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백",
+                organizationCategory);
 
         // 피드백 3개 생성
         feedBackRepository.save(feedback1);
@@ -284,13 +293,16 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5); // DB에 5개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 3); // DB에 3개 좋아요
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0); // DB에 0개 좋아요
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5); // DB에 5개 좋아요
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 3); // DB에 3개 좋아요
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0); // DB에 0개 좋아요
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -328,12 +340,14 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 10); // DB에 10개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);  // DB에 0개 좋아요
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 10); // DB에 10개 좋아요
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);  // DB에 0개 좋아요
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -361,11 +375,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0); // DB에 0개 좋아요
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0); // DB에 0개 좋아요
         final Feedback saved = feedBackRepository.save(feedback);
 
         // 인메모리에만 좋아요 추가

@@ -6,8 +6,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
-import feedzupzup.backend.category.domain.AvailableCategoryRepository;
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -37,7 +37,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private AvailableCategoryRepository availableCategoryRepository;
+    private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -53,11 +53,12 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             // when
@@ -88,12 +89,13 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
             organizationRepository.save(organization);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                    organizationCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
             final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
 
@@ -131,11 +133,12 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false, availableCategory);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false,
+                    organizationCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
             final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
 
@@ -174,14 +177,18 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -208,12 +215,14 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -263,17 +272,20 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(targetOrganization);
             organizationRepository.save(otherOrganization);
 
-            final AvailableCategory availableCategory1 = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory1 = CategoryFixture.createOrganizationCategory(
                     targetOrganization, FACILITY);
-            availableCategoryRepository.save(availableCategory1);
+            organizationCategoryRepository.save(organizationCategory1);
 
-            final AvailableCategory availableCategory2 = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory2 = CategoryFixture.createOrganizationCategory(
                     targetOrganization, FACILITY);
-            availableCategoryRepository.save(availableCategory2);
+            organizationCategoryRepository.save(organizationCategory2);
             
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), availableCategory1);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), availableCategory1);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), availableCategory2);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(),
+                    organizationCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(),
+                    organizationCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(),
+                    organizationCategory2);
             
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -301,14 +313,18 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -353,14 +369,18 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                     organization, FACILITY);
-            availableCategoryRepository.save(availableCategory);
+            organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
             
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);

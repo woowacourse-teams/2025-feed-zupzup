@@ -1,6 +1,6 @@
 package feedzupzup.backend.organization.dto.response;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.organization.domain.Organization;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
@@ -23,7 +23,7 @@ public record UserOrganizationResponse(
         );
     }
 
-    private static Set<String> convertCategories(final Set<AvailableCategory> availableCategories) {
+    private static Set<String> convertCategories(final Set<OrganizationCategory> availableCategories) {
         return availableCategories.stream()
                 .map(result -> result.getCategory().getKoreanName())
                 .collect(Collectors.toSet());

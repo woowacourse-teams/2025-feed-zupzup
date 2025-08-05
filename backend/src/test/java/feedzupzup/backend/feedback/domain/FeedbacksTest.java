@@ -3,7 +3,7 @@ package feedzupzup.backend.feedback.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.CheeringCount;
@@ -17,7 +17,7 @@ import java.util.List;
 class FeedbacksTest {
 
     private final Organization organization = new Organization("test", new CheeringCount(1));
-    private final AvailableCategory availableCategory = new AvailableCategory(organization, Category.FACILITY);
+    private final OrganizationCategory organizationCategory = new OrganizationCategory(organization, Category.FACILITY);
 
     @Test
     @DisplayName("피드백이 없을 때 통계를 계산한다")
@@ -40,9 +40,12 @@ class FeedbacksTest {
         // given
 
         final List<Feedback> feedbackList = List.of(
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory)
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory)
         );
         final Feedbacks feedbacks = new Feedbacks(feedbackList);
 
@@ -60,10 +63,14 @@ class FeedbacksTest {
     void calculateStatistics_withAllConfirmedFeedbacks() {
         // given
         final List<Feedback> feedbackList = List.of(
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory)
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory)
         );
         final Feedbacks feedbacks = new Feedbacks(feedbackList);
 
@@ -81,11 +88,16 @@ class FeedbacksTest {
     void calculateStatistics_withMixedStatusFeedbacks() {
         // given
         final List<Feedback> feedbackList = List.of(
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory)
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory)
         );
         final Feedbacks feedbacks = new Feedbacks(feedbackList);
 
@@ -103,9 +115,12 @@ class FeedbacksTest {
     void calculateReflectionRate_roundsToTwoDecimalPlaces() {
         // given
         final List<Feedback> feedbackList = List.of(
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory),
-                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED, availableCategory)
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING,
+                        organizationCategory),
+                FeedbackFixture.createFeedbackWithStatus(ProcessStatus.CONFIRMED,
+                        organizationCategory)
         );
         final Feedbacks feedbacks = new Feedbacks(feedbackList);
 

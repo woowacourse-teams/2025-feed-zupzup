@@ -4,8 +4,8 @@ import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
-import feedzupzup.backend.category.domain.AvailableCategoryRepository;
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -31,7 +31,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
-    private AvailableCategoryRepository availableCategoryRepository;
+    private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -48,11 +48,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then
@@ -76,11 +77,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 10);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 10);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 먼저 인메모리에 좋아요 2개 추가
@@ -123,11 +125,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then - 첫 번째 좋아요
@@ -168,11 +171,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 먼저 좋아요 3개 추가
@@ -201,11 +205,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then
@@ -244,11 +249,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 2);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 2);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when - 좋아요 추가
@@ -279,11 +285,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then - 좋아요 추가
@@ -334,11 +341,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then

@@ -4,8 +4,8 @@ import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.category.domain.AvailableCategory;
-import feedzupzup.backend.category.domain.AvailableCategoryRepository;
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -40,7 +40,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private AvailableCategoryRepository availableCategoryRepository;
+    private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -59,11 +59,12 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
                 organization, FACILITY);
-        availableCategoryRepository.save(availableCategory);
+        organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백", availableCategory);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백",
+                organizationCategory);
         return feedBackRepository.save(feedback).getId();
     }
 

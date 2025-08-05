@@ -37,7 +37,7 @@ public record CreateFeedbackResponse(
                 feedback.isSecret(),
                 feedback.getUserName(),
                 feedback.getCreatedAt(),
-                feedback.getAvailableCategory().getCategory().getKoreanName()
+                feedback.getOrganizationCategory().getCategory().getKoreanName()
         );
     }
 
