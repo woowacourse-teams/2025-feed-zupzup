@@ -12,7 +12,7 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
 
-interface AnswerModal {
+interface AnswerModalProps {
   isOpen: boolean;
   handleCloseModal: () => void;
   handleSubmit: () => void;
@@ -22,7 +22,7 @@ export default function AnswerModal({
   isOpen,
   handleCloseModal,
   handleSubmit,
-}: AnswerModal) {
+}: AnswerModalProps) {
   const [answer, setAnswer] = useState('');
   const theme = useAppTheme();
 
