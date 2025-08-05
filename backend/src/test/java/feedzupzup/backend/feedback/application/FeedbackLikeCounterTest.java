@@ -3,6 +3,9 @@ package feedzupzup.backend.feedback.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -11,6 +14,7 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +30,23 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedbackLikeRepository feedbackLikeRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    private Category category;
+
+    @BeforeEach
+    void init() {
+        category = CategoryFixture.createCategoryBy("시설");
+        categoryRepository.save(category);
+    }
+
     @Test
     @DisplayName("인메모리 좋아요를 DB에 성공적으로 동기화한다")
     void syncLikesToDatabase_success() {
         // given
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, 5);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(1L, 3);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, category, 5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(1L, category, 3);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -58,7 +73,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("인메모리에 좋아요가 없는 피드백은 DB에서 변경되지 않는다")
     void syncLikesToDatabase_no_memory_likes() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 10);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 10);
         final Feedback saved = feedBackRepository.save(feedback);
 
         // when - 인메모리 좋아요 없이 동기화
@@ -85,7 +100,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("음수 좋아요도 정상적으로 동기화된다")
     void syncLikesToDatabase_handles_negative_likes() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 5);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 5);
         final Feedback saved = feedBackRepository.save(feedback);
 
         // 좋아요 증가 후 감소
@@ -107,8 +122,8 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("동기화 후 인메모리가 완전히 비워진다")
     void syncLikesToDatabase_clears_memory_completely() {
         // given
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, 0);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -130,7 +145,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final int likesPerFeedback = 50;
 
         for (int i = 1; i <= feedbackCount; i++) {
-            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
             final Feedback saved = feedBackRepository.save(feedback);
 
             for (int j = 0; j < likesPerFeedback; j++) {
@@ -151,7 +166,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("동시에 여러 스레드에서 동기화해도 데이터 정합성이 보장된다")
     void syncLikesToDatabase_concurrent_access() throws InterruptedException {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
         final Feedback saved = feedBackRepository.save(feedback);
 
         final int threadCount = 10;

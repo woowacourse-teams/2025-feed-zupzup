@@ -3,6 +3,9 @@ package feedzupzup.backend.feedback.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -32,9 +35,16 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedBackRepository feedBackRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    private Category category;
+
     @BeforeEach
     void clear() {
         feedbackLikeRepository.clear();
+        category = CategoryFixture.createCategoryBy("시설");
+        categoryRepository.save(category);
     }
 
     @AfterEach
@@ -43,7 +53,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     }
 
     private Long createFeedback() {
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백");
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백", category);
         return feedBackRepository.save(feedback).getId();
     }
 

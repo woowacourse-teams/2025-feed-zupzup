@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -17,6 +20,7 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,6 +37,17 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedbackStatisticService feedbackStatisticService;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    private Category category;
+
+    @BeforeEach
+    void init() {
+        category = CategoryFixture.createCategoryBy("시설");
+        categoryRepository.save(category);
+    }
+
     @Test
     @DisplayName("특정 날짜 이후의 피드백에 대한 통계를 계산한다")
     void calculateStatistic_success() {
@@ -41,11 +56,11 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.CONFIRMED);
+                ProcessStatus.CONFIRMED, category);
         final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.WAITING);
+                ProcessStatus.WAITING, category);
         final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.CONFIRMED);
+                ProcessStatus.CONFIRMED, category);
 
         System.out.println(confirmedFeedback1.getPostedAt().getPostedDate());
 
@@ -98,11 +113,11 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(1L)); // 하루 전
             final PostedAt postedAt3 = PostedAt.from(LocalDateTime.now()); //오늘
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt1, ProcessStatus.WAITING);
+                    postedAt1, ProcessStatus.WAITING, category);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt2, ProcessStatus.WAITING);
+                    postedAt2, ProcessStatus.WAITING, category);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt3, ProcessStatus.WAITING);
+                    postedAt3, ProcessStatus.WAITING, category);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -134,11 +149,11 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final PostedAt postedAt2 = PostedAt.from(targetDate2);
             final PostedAt postedAt3 = PostedAt.from(targetDate3);
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt1, ProcessStatus.WAITING);
+                    postedAt1, ProcessStatus.WAITING, category);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt2, ProcessStatus.WAITING);
+                    postedAt2, ProcessStatus.WAITING, category);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt3, ProcessStatus.WAITING);
+                    postedAt3, ProcessStatus.WAITING, category);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -161,9 +176,9 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(7L));
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(6L));
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt1, ProcessStatus.WAITING);
+                    postedAt1, ProcessStatus.WAITING, category);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt2, ProcessStatus.WAITING);
+                    postedAt2, ProcessStatus.WAITING, category);
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
 

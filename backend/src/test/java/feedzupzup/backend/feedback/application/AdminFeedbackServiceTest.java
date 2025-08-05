@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -16,6 +19,7 @@ import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -29,6 +33,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedBackRepository feedBackRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    private Category category;
+
+    @BeforeEach
+    void init() {
+        category = CategoryFixture.createCategoryBy("시설");
+        categoryRepository.save(category);
+    }
+
     @Nested
     @DisplayName("피드백 삭제 테스트")
     class DeleteFeedbackTest {
@@ -37,7 +52,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("피드백을 성공적으로 삭제한다")
         void delete_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(1L);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(1L, category);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             // when
@@ -66,7 +81,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("유효한 피드백 ID와 상태로 업데이트 시 성공한다")
         void updateFeedbackStatus_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, category);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
             final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
 
@@ -101,7 +116,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("유효한 피드백 ID와 비밀상태로 업데이트 시 성공한다")
         void updateFeedbackSecret_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false, category);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
             final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
 
@@ -138,10 +153,10 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         void getAllFeedbacks_success() {
             // given
             final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -166,8 +181,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         void getAllFeedbacks_last_page() {
             // given
             final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -214,9 +229,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Long targetOrganizationId = 1L;
             final Long otherOrganizationId = 2L;
             
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganizationId);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId, category);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId, category);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganizationId, category);
             
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -242,10 +257,10 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         void getFeedbackPageByOrganizationId_with_paging() {
             // given
             final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -288,10 +303,10 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         void getFeedbackPageByOrganizationId_with_cursor() {
             // given
             final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
             
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
