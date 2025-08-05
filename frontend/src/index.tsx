@@ -41,7 +41,7 @@ Sentry.init({
   beforeSend(event) {
     if (process.env.NODE_ENV === 'development') {
       console.log('개발환경 에러:', event);
-      // return null;
+      return null;
     }
     return event;
   },
