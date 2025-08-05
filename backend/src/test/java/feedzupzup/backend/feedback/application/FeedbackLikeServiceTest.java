@@ -1,13 +1,20 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,6 +39,12 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private FeedBackRepository feedBackRepository;
 
+    @Autowired
+    private OrganizationCategoryRepository organizationCategoryRepository;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
     @BeforeEach
     void clear() {
         feedbackLikeRepository.clear();
@@ -43,7 +56,15 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     }
 
     private Long createFeedback() {
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백");
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백",
+                organizationCategory);
         return feedBackRepository.save(feedback).getId();
     }
 
@@ -55,6 +76,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         @DisplayName("새로운 피드백에 좋아요를 추가하면 1이 된다")
         void like_new_feedback() {
             // given
+
             final Long feedbackId = createFeedback();
 
             // when

@@ -1,19 +1,23 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Getter
@@ -27,33 +31,38 @@ public class Feedback extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private boolean isSecret;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProcessStatus status;
 
+    @Column(nullable = false)
     private Long organizationId;
 
     private int likeCount;
 
     @Embedded
+    @Column(nullable = false)
     private UserName userName;
 
-    @Column(nullable = false)
     @Embedded
+    @Column(nullable = false)
     private PostedAt postedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrganizationCategory organizationCategory;
 
     @Builder
     public Feedback(
-            final String content,
+            final @NonNull String content,
             final boolean isSecret,
-            final ProcessStatus status,
-            final Long organizationId,
+            final @NonNull ProcessStatus status,
+            final @NonNull Long organizationId,
             final int likeCount,
-            final UserName userName,
-            final PostedAt postedAt
+            final @NonNull UserName userName,
+            final @NonNull PostedAt postedAt,
+            final @NonNull OrganizationCategory organizationCategory
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -62,6 +71,7 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
         this.userName = userName;
         this.postedAt = postedAt;
+        this.organizationCategory = organizationCategory;
     }
 
     public void updateStatus(final ProcessStatus status) {
