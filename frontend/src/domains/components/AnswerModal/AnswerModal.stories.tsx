@@ -1,3 +1,4 @@
+import BasicButton from '@/components/BasicButton/BasicButton';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
@@ -27,10 +28,17 @@ type Story = StoryObj<typeof AnswerModal>;
 
 export const Default: Story = {
   render: () => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-      <AnswerModal isOpen={isOpen} handleCloseModal={() => setIsOpen(false)} />
+      <div>
+        <BasicButton onClick={() => setIsOpen(true)}>모달 열기</BasicButton>
+        <AnswerModal
+          isOpen={isOpen}
+          handleCloseModal={() => setIsOpen(false)}
+          handleSubmit={() => setIsOpen(false)}
+        />
+      </div>
     );
   },
 };
