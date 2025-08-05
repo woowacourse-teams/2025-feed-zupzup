@@ -21,6 +21,8 @@ import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 
+import { Analytics, userDashboardEvents } from '@/analytics';
+
 export default function UserDashboard() {
   const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
@@ -45,6 +47,12 @@ export default function UserDashboard() {
 
   const { highlightedId } = useHighLighted();
   const { showButton, scrollToTop } = useScrollUp();
+
+  const handleNavigateToOnboarding = () => {
+    Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
+
+    navigate('/');
+  };
 
   return (
     <div css={dashboardLayout}>
@@ -77,9 +85,7 @@ export default function UserDashboard() {
       </div>
       <FloatingButton
         icon={<ArrowIcon />}
-        onClick={() => {
-          navigate('/');
-        }}
+        onClick={handleNavigateToOnboarding}
         inset={{ bottom: '32px', left: '100%' }}
         customCSS={goOnboardButton(theme)}
       />
