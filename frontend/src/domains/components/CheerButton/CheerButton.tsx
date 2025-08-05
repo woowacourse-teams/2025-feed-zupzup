@@ -1,4 +1,3 @@
-import { postOrganizationCheer } from '@/apis/organization.api';
 import Button from '@/components/@commons/Button/Button';
 import FillHeartIcon from '@/components/icons/FillHeartIcon';
 import {
@@ -7,41 +6,30 @@ import {
   iconWrapperStyle,
   textStyle,
 } from '@/domains/components/CheerButton/CheerButton.style';
-import { useDebounce } from '@/hooks/useDebounce';
 import { theme } from '@/theme';
 import { useState } from 'react';
 
-interface CheerButtonProps {
+export interface CheerButtonProps {
   totalCheeringCount: number;
+  onClick?: () => void;
+  animate?: boolean;
 }
 
-export default function CheerButton({ totalCheeringCount }: CheerButtonProps) {
-  const [count, setCount] = useState(0);
+export default function CheerButton({
+  totalCheeringCount,
+  onClick,
+  animate = false,
+}: CheerButtonProps) {
   const [accCount, setAccCount] = useState(0);
-  const [animate, setAnimate] = useState(false);
-
-  const handleClick = () => {
-    setCount(count + 1);
-    setAccCount(accCount + 1);
-    setAnimate(false);
-    requestAnimationFrame(() => setAnimate(true));
-
-    debouncedSearch(count + 1);
-  };
-
-  const debouncedSearch = useDebounce(
-    ((count: number) => {
-      postOrganizationCheer({
-        organizationId: 1,
-        cheeringCount: count,
-      });
-      setCount(0);
-    }) as (...args: unknown[]) => void,
-    500
-  );
 
   return (
-    <Button onClick={handleClick} css={cheerButtonStyle}>
+    <Button
+      onClick={() => {
+        setAccCount((prev) => prev + 1);
+        onClick?.();
+      }}
+      css={cheerButtonStyle}
+    >
       <span css={[iconWrapperStyle, animate && clickedStyle]}>
         <FillHeartIcon />
       </span>

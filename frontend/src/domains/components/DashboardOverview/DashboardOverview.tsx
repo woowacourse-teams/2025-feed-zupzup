@@ -9,12 +9,12 @@ import {
   headerText,
   headerCheerButton,
 } from '@/domains/components/DashboardOverview/DashboardOverview.style';
-
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
 import { FeedbackFilter } from '@/types/feedback.types';
 import { getDashPanels } from '@/domains/components/DashboardOverview/DashboardOverview.utils';
+import useCheerButton from '@/domains/hooks/useCheerButton';
 
 interface DashboardOverviewProps {
   filter: FeedbackFilter;
@@ -31,6 +31,8 @@ export default function DashboardOverview({
 
   const DASH_PANELS = getDashPanels(statistics, theme, handlePanelClick);
 
+  const { handleCheerButton, animate } = useCheerButton();
+
   return (
     <>
       <div css={headerContainer}>
@@ -40,7 +42,11 @@ export default function DashboardOverview({
         </div>
         <div css={headerCheerButton}>
           <div css={cheerButtonLayout}>
-            <CheerButton totalCheeringCount={totalCheeringCount} />
+            <CheerButton
+              totalCheeringCount={totalCheeringCount}
+              onClick={handleCheerButton}
+              animate={animate}
+            />
           </div>
         </div>
       </div>
