@@ -7,9 +7,11 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
 
+import feedzupzup.backend.category.domain.AvailableCategory;
 import feedzupzup.backend.category.domain.AvailableCategoryRepository;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -175,9 +177,17 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void create_feedback_success() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
-
         final Organization savedOrganization = organizationRepository.save(organization);
+
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
+
+        final Category category = CategoryFixture.createCategoryBy("시설");
+        categoryRepository.save(category);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, category);
+
+        availableCategoryRepository.save(availableCategory);
 
         // when & then
         given()
@@ -202,8 +212,15 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void user_create_secret_feedback_success() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
+        final Category category = CategoryFixture.createCategoryBy("시설");
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, category);
 
         final Organization savedOrganization = organizationRepository.save(organization);
+        categoryRepository.save(category);
+        availableCategoryRepository.save(availableCategory);
+
         final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저", "시설");
 
         // when & then
@@ -229,8 +246,15 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void user_create_feedback_appears_in_list() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
-
         final Organization savedOrganization = organizationRepository.save(organization);
+
+        final Category category = CategoryFixture.createCategoryBy("시설");
+        categoryRepository.save(category);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, category);
+        availableCategoryRepository.save(availableCategory);
+
         final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", false, "테스트유저", "시설");
 
         // when - 피드백 생성

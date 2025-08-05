@@ -157,7 +157,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
             final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            
+
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
             feedBackRepository.save(feedback3);
