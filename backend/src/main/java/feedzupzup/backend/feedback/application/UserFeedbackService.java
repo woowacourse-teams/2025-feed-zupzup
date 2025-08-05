@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
@@ -28,10 +30,15 @@ public class UserFeedbackService {
 
     @Transactional
     @BusinessActionLog
-    public CreateFeedbackResponse create(final CreateFeedbackRequest request,
-            final Long organizationId) {
+    public CreateFeedbackResponse create(
+            final CreateFeedbackRequest request,
+            final Long organizationId
+    ) {
         final Organization organization = findOrganizationBy(organizationId);
-        final Feedback newFeedback = request.toFeedback(organization.getId());
+        final Category category = Category.findCategoryBy(request.category());
+        final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
+                category);
+        final Feedback newFeedback = request.toFeedback(organization.getId(), organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }

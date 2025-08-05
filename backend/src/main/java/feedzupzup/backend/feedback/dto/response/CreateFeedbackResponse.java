@@ -13,7 +13,7 @@ public record CreateFeedbackResponse(
         @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
         String content,
 
-        @Schema(description = "처리 상태", example = "WATING")
+        @Schema(description = "처리 상태", example = "WAITING")
         ProcessStatus status,
 
         @Schema(description = "비밀 피드백 여부", example = "false")
@@ -23,7 +23,10 @@ public record CreateFeedbackResponse(
         String userName,
 
         @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+
+        @Schema(description = "카테고리", example = "시설")
+        String category
 ) {
 
     public static CreateFeedbackResponse from(final Feedback feedback) {
@@ -33,7 +36,8 @@ public record CreateFeedbackResponse(
                 feedback.getStatus(),
                 feedback.isSecret(),
                 feedback.getUserName(),
-                feedback.getCreatedAt()
+                feedback.getCreatedAt(),
+                feedback.getOrganizationCategory().getCategory().getKoreanName()
         );
     }
 

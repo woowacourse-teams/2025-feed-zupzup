@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.dto.request;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
@@ -17,10 +18,13 @@ public record CreateFeedbackRequest(
 
         @Schema(description = "작성자 이름", example = "댕댕이")
         @Length(min = 1, max = 10, message = "작성자 이름 1글자 이상 10글자 이하여야 합니다.")
-        String userName
+        String userName,
+
+        @Schema(description = "카테고리", example = "시설")
+        String category
 ) {
 
-    public Feedback toFeedback(final Long organizationId) {
+    public Feedback toFeedback(final Long organizationId, final OrganizationCategory organizationCategory) {
         return Feedback.builder()
                 .content(content)
                 .organizationId(organizationId)
@@ -28,6 +32,7 @@ public record CreateFeedbackRequest(
                 .isSecret(isSecret)
                 .userName(new UserName(userName))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .organizationCategory(organizationCategory)
                 .build();
     }
 }
