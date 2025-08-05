@@ -2,9 +2,11 @@ package feedzupzup.backend.category.domain;
 
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.Arrays;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Category {
 
     FACILITY("시설"),
@@ -14,10 +16,6 @@ public enum Category {
     ;
 
     private final String koreanName;
-
-    Category(final String koreanName) {
-        this.koreanName = koreanName;
-    }
 
     public boolean isSameCategory(String value) {
         return this.koreanName.equals(value);

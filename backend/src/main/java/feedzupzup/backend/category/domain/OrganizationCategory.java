@@ -32,17 +32,11 @@ public class OrganizationCategory {
     private Category category;
 
     public OrganizationCategory(
-            final Long id,
             final @NonNull Organization organization,
             final @NonNull Category category
     ) {
-        this.id = id;
         this.organization = organization;
         this.category = category;
-    }
-
-    public OrganizationCategory(final Organization organization, final Category category) {
-        this(null, organization, category);
     }
 
     public boolean isSameCategory(final Category category) {
