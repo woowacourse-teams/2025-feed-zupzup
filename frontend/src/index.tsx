@@ -41,7 +41,7 @@ Sentry.init({
   beforeSend(event) {
     if (process.env.NODE_ENV === 'development') {
       console.log('개발환경 에러:', event);
-      return null;
+      // return null;
     }
     return event;
   },
@@ -52,7 +52,9 @@ const root = createRoot(document.getElementById('root')!);
 root.render(
   <ErrorModalProvider>
     <ThemeProvider theme={theme}>
-      <RouterProvider router={router} />
+      <Sentry.ErrorBoundary>
+        <RouterProvider router={router} />
+      </Sentry.ErrorBoundary>
     </ThemeProvider>
   </ErrorModalProvider>
 );
