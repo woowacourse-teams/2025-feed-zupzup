@@ -4,7 +4,7 @@ CREATE TABLE category
     created_at datetime(6) NOT NULL,
     modified_at datetime(6) NOT NULL,
     content     varchar(255) NOT NULL
-)
+);
 
 CREATE TABLE available_category (
     id bigint NOT NULL PRIMARY KEY,
@@ -12,4 +12,4 @@ CREATE TABLE available_category (
     organization_id bigint NOT NULL,
     CONSTRAINT FK_available_category_category_id FOREIGN KEY (category_id) REFERENCES category (id),
     CONSTRAINT FK_available_category_organization_id FOREIGN KEY (organization_id) REFERENCES organization (id)
-)
+);
