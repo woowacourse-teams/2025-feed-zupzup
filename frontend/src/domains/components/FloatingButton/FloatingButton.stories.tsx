@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import FloatingButton, { Position } from './FloatingButton';
 
-// ✅ 메타 정보
 const meta: Meta<typeof FloatingButton> = {
   title: 'Components/FloatingButton',
   component: FloatingButton,
@@ -22,6 +21,12 @@ const meta: Meta<typeof FloatingButton> = {
       box-shadow: 0 4px 10px rgb(0 0 0 / 15%);
     `,
     onClick: () => alert('버튼 클릭!'),
+  },
+  argTypes: {
+    icon: { control: false },
+    inset: { control: 'object' },
+    customCSS: { control: false },
+    onClick: { action: 'clicked' },
   },
 };
 

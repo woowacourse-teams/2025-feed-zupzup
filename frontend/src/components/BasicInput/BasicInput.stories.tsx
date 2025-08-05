@@ -12,6 +12,12 @@ const meta: Meta<typeof BasicInput> = {
     minLength: 1,
     showCharCount: true,
   },
+  argTypes: {
+    placeholder: { control: 'text' },
+    maxLength: { control: 'number' },
+    minLength: { control: 'number' },
+    showCharCount: { control: 'boolean' },
+  },
 };
 
 export default meta;

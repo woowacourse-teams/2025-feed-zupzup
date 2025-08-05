@@ -12,6 +12,13 @@ const meta: Meta<typeof BasicTextArea> = {
     minLength: 10,
     showCharCount: true,
   },
+  argTypes: {
+    placeholder: { control: 'text' },
+    maxLength: { control: 'number' },
+    minLength: { control: 'number' },
+    showCharCount: { control: 'boolean' },
+    value: { control: 'text' },
+  },
 };
 
 export default meta;

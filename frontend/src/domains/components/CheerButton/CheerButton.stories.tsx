@@ -9,6 +9,9 @@ const meta: Meta<typeof CheerButton> = {
   args: {
     totalCheeringCount: 100,
   },
+  argTypes: {
+    totalCheeringCount: { control: 'number' },
+  },
 };
 
 export default meta;

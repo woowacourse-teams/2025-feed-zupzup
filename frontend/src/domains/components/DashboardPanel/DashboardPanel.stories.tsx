@@ -14,6 +14,15 @@ const meta: Meta<typeof DashboardPanel> = {
     isClick: false,
     isButton: false,
   },
+  argTypes: {
+    title: { control: 'text' },
+    content: { control: 'text' },
+    caption: { control: 'text' },
+    color: { control: 'color' },
+    isClick: { control: 'boolean' },
+    isButton: { control: 'boolean' },
+    onClick: { action: 'clicked' },
+  },
 };
 
 export default meta;

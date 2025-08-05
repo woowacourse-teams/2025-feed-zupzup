@@ -9,6 +9,10 @@ const meta: Meta<typeof Tag> = {
   args: {
     children: '기본 태그',
   },
+  argTypes: {
+    children: { control: 'text' },
+    customCSS: { control: false },
+  },
 };
 
 export default meta;
