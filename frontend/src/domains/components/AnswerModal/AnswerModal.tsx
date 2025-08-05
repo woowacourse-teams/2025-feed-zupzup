@@ -15,9 +15,14 @@ import { useState } from 'react';
 interface AnswerModal {
   isOpen: boolean;
   handleCloseModal: () => void;
+  handleSubmit: () => void;
 }
 
-export default function AnswerModal({ isOpen, handleCloseModal }: AnswerModal) {
+export default function AnswerModal({
+  isOpen,
+  handleCloseModal,
+  handleSubmit,
+}: AnswerModal) {
   const [answer, setAnswer] = useState('');
   const theme = useAppTheme();
 
@@ -42,11 +47,17 @@ export default function AnswerModal({ isOpen, handleCloseModal }: AnswerModal) {
         />
         <p>입력하지 않으면 "확입했습니다."로 자동 전송됩니다.</p>
       </div>
-      <div css={buttonContainer}>
-        <BasicButton variant={'secondary'} width={'47%'}>
+      <div css={buttonContainer(theme)}>
+        <BasicButton
+          variant={'secondary'}
+          width={'47%'}
+          onClick={handleCloseModal}
+        >
           취소
         </BasicButton>
-        <BasicButton width={'47%'}>답변 전송</BasicButton>
+        <BasicButton width={'47%'} onClick={handleSubmit}>
+          답변 전송
+        </BasicButton>
       </div>
     </Modal>
   );

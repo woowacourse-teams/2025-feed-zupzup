@@ -1,4 +1,3 @@
-import AlertModal from '@/components/AlertModal/AlertModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
@@ -12,6 +11,7 @@ import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
 import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
+import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 
 export default function AdminDashboard() {
   const { filter, handlePanelClick } = useFeedbackFilter();
@@ -93,11 +93,10 @@ export default function AdminDashboard() {
         />
       )}
       {modalState.type === 'confirm' && (
-        <AlertModal
-          title='확인하시겠습니까?'
+        <AnswerModal
           isOpen={true}
-          onClose={closeModal}
-          onConfirm={handleModalAction}
+          handleCloseModal={closeModal}
+          handleSubmit={handleModalAction}
         />
       )}
     </section>

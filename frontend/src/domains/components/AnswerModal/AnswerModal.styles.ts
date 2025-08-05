@@ -33,7 +33,6 @@ export const contentContainer = (theme: Theme) => css`
 
   p {
     color: ${theme.colors.gray[600]};
-    ${theme.typography.BMHANNAPro.caption}
   }
 `;
 
@@ -51,7 +50,9 @@ export const contentTextarea = (theme: Theme) => css`
   }
 `;
 
-export const buttonContainer = css`
+export const buttonContainer = (theme: Theme) => css`
   display: flex;
   justify-content: space-between;
+
+  ${theme.typography.BMHANNAPro.caption}
 `;
