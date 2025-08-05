@@ -10,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,8 +29,8 @@ public class AvailableCategory {
 
     public AvailableCategory(
             final Long id,
-            final Organization organization,
-            final Category category
+            final @NonNull Organization organization,
+            final @NonNull Category category
     ) {
         this.id = id;
         this.organization = organization;
