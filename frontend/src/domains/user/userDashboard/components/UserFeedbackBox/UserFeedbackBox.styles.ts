@@ -10,3 +10,7 @@ export const secretText = (theme: Theme) => css`
 
   ${theme.typography.inter.small}
 `;
+
+export const HighlightMyFeedback = (theme: Theme) => css`
+  background-color: ${theme.colors.purple[100]};
+`;
