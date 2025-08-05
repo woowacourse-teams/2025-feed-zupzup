@@ -19,12 +19,12 @@ public record UserOrganizationResponse(
         return new UserOrganizationResponse(
                 organization.getName(),
                 organization.getCheeringCountValue(),
-                convertCategories(organization.getAvailableCategories())
+                convertCategories(organization.getOrganizationCategories())
         );
     }
 
-    private static Set<String> convertCategories(final Set<OrganizationCategory> availableCategories) {
-        return availableCategories.stream()
+    private static Set<String> convertCategories(final Set<OrganizationCategory> organizationCategories) {
+        return organizationCategories.stream()
                 .map(result -> result.getCategory().getKoreanName())
                 .collect(Collectors.toSet());
     }

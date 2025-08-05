@@ -1,7 +1,9 @@
 package feedzupzup.backend.organization.domain;
 
+import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -34,7 +36,7 @@ public class Organization extends BaseTimeEntity {
     private CheeringCount cheeringCount;
 
     @OneToMany(mappedBy = "organization")
-    private final Set<OrganizationCategory> availableCategories = new HashSet<>();
+    private final Set<OrganizationCategory> organizationCategories = new HashSet<>();
 
     @Builder
     public Organization(
@@ -53,7 +55,14 @@ public class Organization extends BaseTimeEntity {
         return cheeringCount.getValue();
     }
 
+    public OrganizationCategory findOrganizationCategoryBy(final Category category) {
+        return organizationCategories.stream()
+                .filter(organizationCategory -> organizationCategory.isSameCategory(category))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
+    }
+
     public void addOrganizationCategory(final OrganizationCategory organizationCategory) {
-        this.availableCategories.add(organizationCategory);
+        this.organizationCategories.add(organizationCategory);
     }
 }

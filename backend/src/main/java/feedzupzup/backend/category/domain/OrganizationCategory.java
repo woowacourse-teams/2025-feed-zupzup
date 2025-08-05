@@ -44,4 +44,8 @@ public class OrganizationCategory {
     public OrganizationCategory(final Organization organization, final Category category) {
         this(null, organization, category);
     }
+
+    public boolean isSameCategory(final Category category) {
+       return  this.category.equals(category);
+    }
 }

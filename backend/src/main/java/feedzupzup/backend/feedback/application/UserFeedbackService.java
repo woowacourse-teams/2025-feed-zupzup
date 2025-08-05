@@ -1,6 +1,5 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.category.domain.OrganizationCategories;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -36,23 +35,12 @@ public class UserFeedbackService {
             final Long organizationId
     ) {
         final Organization organization = findOrganizationBy(organizationId);
-
         final Category category = Category.findCategoryBy(request.category());
-
-        final OrganizationCategory organizationCategory = getOrganizationCategory(category, organization);
+        final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
+                category);
         final Feedback newFeedback = request.toFeedback(organization.getId(), organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
-    }
-
-    private OrganizationCategory getOrganizationCategory(
-            final Category category,
-            final Organization organization
-    ) {
-        final OrganizationCategories organizationCategories = new OrganizationCategories(
-                organization.getAvailableCategories()
-        );
-        return organizationCategories.findOrganizationCategoryBy(category);
     }
 
     public UserFeedbackListResponse getFeedbackPage(
