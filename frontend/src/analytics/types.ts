@@ -14,3 +14,5 @@ export interface GtagEventParameters {
   value?: number;
   custom_parameter?: string | number | boolean;
 }
+
+export type CategoryType = '시설' | '학사행정' | '커리큘럼' | '기타';
