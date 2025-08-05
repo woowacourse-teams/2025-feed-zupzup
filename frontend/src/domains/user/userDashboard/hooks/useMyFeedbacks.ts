@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 export default function useMyFeedbacks() {
   const [myFeedbacks, setMyFeedbacks] = useState<number[]>([]);
 
-  const isMyFeedback = (feedbackId: number) => {
+  const getIsMyFeedback = (feedbackId: number) => {
     return myFeedbacks.includes(feedbackId);
   };
 
@@ -14,6 +14,6 @@ export default function useMyFeedbacks() {
   }, []);
 
   return {
-    isMyFeedback,
+    getIsMyFeedback,
   };
 }

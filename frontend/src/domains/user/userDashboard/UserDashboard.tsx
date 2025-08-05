@@ -46,7 +46,7 @@ export default function UserDashboard() {
   useGetFeedback({ fetchMore, hasNext, loading });
 
   const { highlightedId } = useHighLighted();
-  const { isMyFeedback } = useMyFeedbacks();
+  const { getIsMyFeedback } = useMyFeedbacks();
   const { showButton, scrollToTop } = useScrollUp();
 
   return (
@@ -65,9 +65,9 @@ export default function UserDashboard() {
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
-              isMyFeedback={isMyFeedback(feedback.feedbackId)}
+              isMyFeedback={getIsMyFeedback(feedback.feedbackId)}
               customCSS={[
-                myFeedbackStyle(theme, isMyFeedback(feedback.feedbackId)),
+                myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
                 feedback.feedbackId === highlightedId ? highlightStyle : null,
               ]}
             />
