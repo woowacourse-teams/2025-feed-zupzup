@@ -18,7 +18,7 @@ export interface BasicButtonProps extends React.ComponentProps<'button'> {
 export default function BasicButton({
   children,
   width = '100%',
-  height,
+  height = '54px',
   icon,
   onClick,
   variant = 'primary',

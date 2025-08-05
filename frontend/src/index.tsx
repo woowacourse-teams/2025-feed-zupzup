@@ -6,6 +6,7 @@ import { theme } from './theme';
 import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router';
 import { ErrorModalProvider } from '@/contexts/useErrorModal';
+import * as Sentry from '@sentry/react';
 
 // if (process.env.NODE_ENV === 'development') {
 //   const { worker } = await import('./mocks/browser');
@@ -22,6 +23,13 @@ if ('serviceWorker' in navigator) {
       .catch((err) => console.log('Service Worker registration failed:', err));
   });
 }
+
+Sentry.init({
+  dsn: 'https://d078b25843b4ef88ed75b287a7ab8a4b@o4509750841245696.ingest.us.sentry.io/4509750843342849',
+  integrations: [Sentry.browserTracingIntegration()],
+  tracesSampleRate: 0.2,
+  sendDefaultPii: true,
+});
 
 const root = createRoot(document.getElementById('root')!);
 root.render(

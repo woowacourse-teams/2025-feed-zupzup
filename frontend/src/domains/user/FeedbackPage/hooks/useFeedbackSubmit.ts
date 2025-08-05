@@ -1,10 +1,9 @@
 import { postUserFeedback } from '@/apis/userFeedback.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { SuggestionFeedback } from '@/types/feedback.types';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
+import { StatusType } from '@/types/status.types';
 import { useNavigate } from 'react-router-dom';
-
 interface FeedbackSubmitParams {
   content: string;
   userName: string;
@@ -14,8 +13,7 @@ interface FeedbackSubmitParams {
 
 export default function useFeedbackSubmit() {
   const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { showErrorModal } = useErrorModalContext();
+  const [submitStatus, setSubmitStatus] = useState<StatusType>('idle');
 
   const submitFeedback = useCallback(
     async ({
@@ -24,9 +22,9 @@ export default function useFeedbackSubmit() {
       isSecret,
       organizationId = 1,
     }: FeedbackSubmitParams) => {
-      if (isSubmitting) return;
+      if (submitStatus === 'submitting') return;
 
-      setIsSubmitting(true);
+      setSubmitStatus('submitting');
 
       try {
         await postUserFeedback({
@@ -36,34 +34,27 @@ export default function useFeedbackSubmit() {
           userName,
           onSuccess: (response: SuggestionFeedback) => {
             setLocalStorage('highlightedId', response.data.feedbackId);
-            navigate('/dashboard');
+            setSubmitStatus('success');
           },
-          onError: () => {},
+          onError: () => {
+            setSubmitStatus('error');
+          },
         });
       } catch (e) {
-        showErrorModal(e, '에러');
-      } finally {
-        setIsSubmitting(false);
+        console.error(e);
+        setSubmitStatus('error');
       }
     },
-    [navigate, isSubmitting]
+    [navigate, submitStatus]
   );
 
-  const handleFormSubmit = useCallback(
-    (params: FeedbackSubmitParams, canSubmit: boolean) =>
-      async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        if (canSubmit && !isSubmitting) {
-          await submitFeedback(params);
-        }
-      },
-    [submitFeedback, isSubmitting]
-  );
+  const resetStatus = useCallback(() => {
+    setSubmitStatus('idle');
+  }, []);
 
   return {
     submitFeedback,
-    handleFormSubmit,
-    isSubmitting,
+    submitStatus,
+    resetStatus,
   };
 }

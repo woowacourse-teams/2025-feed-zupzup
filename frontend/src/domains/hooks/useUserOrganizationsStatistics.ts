@@ -2,7 +2,7 @@ import { GetOrganizationStatistics } from './../../types/organization.types';
 import { getOrganizationStatistics } from '@/apis/organization.api';
 import { useEffect, useState } from 'react';
 
-interface StatisticsProps {
+export interface StatisticsProps {
   reflectionRate: string;
   confirmedCount: string;
   waitingCount: string;

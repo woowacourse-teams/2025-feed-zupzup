@@ -30,3 +30,5 @@ export interface SuggestionFeedback {
   message: string;
   status: number;
 }
+
+export type FeedbackFilter = '전체' | '완료' | '미처리';
