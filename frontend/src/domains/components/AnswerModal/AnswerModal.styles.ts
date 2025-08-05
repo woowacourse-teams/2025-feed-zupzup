@@ -56,3 +56,7 @@ export const buttonContainer = (theme: Theme) => css`
 
   ${theme.typography.BMHANNAPro.caption}
 `;
+
+export const textareaContainer = css`
+  position: relative;
+`;
