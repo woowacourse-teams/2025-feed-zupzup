@@ -1,8 +1,10 @@
+import { Position } from '@/domains/components/FloatingButton/FloatingButton';
 import { css } from '@emotion/react';
 
-export const floatingButton = (inset: string[]) => css`
+export const floatingButton = (inset: Position) => css`
   position: sticky;
-  inset: ${inset.join(' ')};
+  inset: ${inset.top || 'auto'} ${inset.right || 'auto'}
+    ${inset.bottom || 'auto'} ${inset.left || 'auto'};
   display: flex;
   justify-content: center;
   align-items: center;

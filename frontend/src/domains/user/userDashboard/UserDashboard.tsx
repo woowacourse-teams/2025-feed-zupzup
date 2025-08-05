@@ -4,7 +4,6 @@ import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback'
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
-
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
@@ -81,14 +80,14 @@ export default function UserDashboard() {
         onClick={() => {
           navigate('/');
         }}
-        inset={['0', '0', '32px', '100%']}
+        inset={{ bottom: '32px', left: '100%' }}
         customCSS={goOnboardButton(theme)}
       />
       {showButton && (
         <FloatingButton
           icon={<ArrowUpIcon />}
           onClick={scrollToTop}
-          inset={['0', '0', '32px', '0']}
+          inset={{ bottom: '32px' }}
           customCSS={goTopButton(theme)}
         />
       )}
