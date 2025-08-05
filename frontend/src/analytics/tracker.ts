@@ -11,7 +11,7 @@ declare global {
 export const Analytics = {
   track: (event: BaseEvent): void => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('📊 Analytics Event:', event);
+      console.log('📊 Analytics:', event.name, event.parameters);
     }
 
     try {
@@ -22,7 +22,7 @@ export const Analytics = {
       );
     } catch (error) {
       if (process.env.NODE_ENV === 'development') {
-        console.error('Analytics tracking failed:', error);
+        console.error('Analytics failed:', error);
       }
     }
   },
