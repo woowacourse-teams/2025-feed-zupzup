@@ -1,24 +1,24 @@
-import { useState, useCallback } from 'react';
-import {
-  container,
-  skipText,
-  titleContainer,
-  contentContainer,
-  arrowLeftIconContainer,
-  buttonGroupContainer,
-  mainContent,
-  combinedTitle,
-} from '@/domains/user/FeedbackPage/FeedbackPage.styles';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
-import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import SendIcon from '@/components/icons/SendIcon';
+import { useState, useCallback } from 'react';
+import {
+  arrowLeftIconContainer,
+  buttonGroupContainer,
+  combinedTitle,
+  container,
+  contentContainer,
+  mainContent,
+  skipText,
+  titleContainer,
+} from '@/domains/user/FeedbackPage/FeedbackPage.styles';
+import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
+import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
+import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
-import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 
 interface FeedbackPageProps {
   movePrevStep: () => void;

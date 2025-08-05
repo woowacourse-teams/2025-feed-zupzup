@@ -12,6 +12,7 @@ import {
   textarea,
   toggleButtonContainer,
   toggleButtonText,
+  textareaCounter,
 } from './FeedbackForm.styles';
 
 import Button from '@/components/@commons/Button/Button';
@@ -81,6 +82,9 @@ export default function FeedbackForm({
             maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
             minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
+          <p css={textareaCounter(theme)}>
+            {feedback.length} / {FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
+          </p>
         </div>
       </div>
       <div css={toggleButtonContainer}>
