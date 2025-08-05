@@ -26,8 +26,18 @@ if ('serviceWorker' in navigator) {
 
 Sentry.init({
   dsn: 'https://d078b25843b4ef88ed75b287a7ab8a4b@o4509750841245696.ingest.us.sentry.io/4509750843342849',
-  integrations: [Sentry.browserTracingIntegration()],
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: false,
+      maskAllInputs: true,
+    }),
+  ],
   tracesSampleRate: 0.2,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+  release: process.env.REACT_APP_VERSION || '1.0.0',
+  environment: process.env.NODE_ENV as string,
   sendDefaultPii: true,
 });
 
