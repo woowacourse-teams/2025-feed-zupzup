@@ -37,7 +37,14 @@ Sentry.init({
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
   release: process.env.REACT_APP_VERSION || '1.0.0',
-  environment: process.env.NODE_ENV as string,
+  environment: process.env.NODE_ENV || 'development',
+  beforeSend(event) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('개발환경 에러:', event);
+      return null;
+    }
+    return event;
+  },
   sendDefaultPii: true,
 });
 
