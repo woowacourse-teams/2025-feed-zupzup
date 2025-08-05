@@ -5,8 +5,8 @@ import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBo
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { secretText } from './UserFeedbackBox.styles';
 import { SerializedStyles } from '@emotion/react';
+import { secretText } from './UserFeedbackBox.styles';
 
 interface UserFeedbackBox {
   userName: string;
@@ -17,7 +17,7 @@ interface UserFeedbackBox {
   createdAt: string;
   feedbackId: number;
   likeCount: number;
-  customCSS: SerializedStyles | null;
+  customCSS: (SerializedStyles | null)[];
 }
 
 export default function UserFeedbackBox({
