@@ -19,6 +19,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
+import { Analytics, suggestionFormEvents } from '@/analytics';
 
 interface FeedbackPageProps {
   movePrevStep: () => void;
@@ -41,11 +42,26 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { submitFeedback, submitStatus } = useFeedbackSubmit(); // handleFormSubmit 제거
+  const { submitFeedback, submitStatus } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    Analytics.track(suggestionFormEvents.viewSuggestionsFromForm());
+
     navigate('/dashboard');
+  };
+
+  const handleRandomChangeWithTracking = () => {
+    Analytics.track(suggestionFormEvents.randomNicknameClick());
+
+    handleRandomChange();
+  };
+
+  const handleLockToggleWithTracking = () => {
+    Analytics.track(suggestionFormEvents.privacyToggle(!isLocked));
+
+    handleLockToggle();
   };
 
   const handleModalClose = useCallback(
@@ -66,6 +82,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
     }
 
     try {
+      Analytics.track(suggestionFormEvents.formSubmit());
+
       setIsModalOpen(true);
 
       await submitFeedback({
@@ -103,8 +121,8 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
             isLocked={isLocked}
             canSubmit={canSubmit}
             onFeedbackChange={handleFeedbackChange}
-            onRandomChange={handleRandomChange}
-            onLockToggle={handleLockToggle}
+            onRandomChange={handleRandomChangeWithTracking}
+            onLockToggle={handleLockToggleWithTracking}
             onUsernameChange={handleUsernameChange}
             onUsernameFocus={handleUsernameFocus}
           />
