@@ -1,0 +1,53 @@
+import TextArea from '@/components/@commons/TextArea/TextArea';
+import BasicButton from '@/components/BasicButton/BasicButton';
+import { headerSubtitle, headerTitle } from '@/components/Header/Header.style';
+import Modal from '@/components/Modal/Modal';
+import {
+  buttonContainer,
+  contentContainer,
+  headerContainer,
+  container,
+  contentTextarea,
+} from '@/domains/components/AnswerModal/AnswerModal.styles';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useState } from 'react';
+
+interface AnswerModal {
+  isOpen: boolean;
+  handleCloseModal: () => void;
+}
+
+export default function AnswerModal({ isOpen, handleCloseModal }: AnswerModal) {
+  const [answer, setAnswer] = useState('');
+  const theme = useAppTheme();
+
+  const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setAnswer(e.target.value);
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={handleCloseModal} customCSS={container}>
+      <div css={headerContainer}>
+        <p css={headerTitle(theme)}>관리자 답변</p>
+        <p css={headerSubtitle(theme)}>이 피드백에 답변을 남겨주세요</p>
+      </div>
+      <div css={contentContainer(theme)}>
+        <TextArea
+          minLength={1}
+          maxLength={200}
+          value={answer}
+          onChange={handleAnswerChange}
+          placeholder='사용자에게 전달할 메시지를 작성해주세요.(선택사항)'
+          customCSS={contentTextarea(theme)}
+        />
+        <p>입력하지 않으면 "확입했습니다."로 자동 전송됩니다.</p>
+      </div>
+      <div css={buttonContainer}>
+        <BasicButton variant={'secondary'} width={'47%'}>
+          취소
+        </BasicButton>
+        <BasicButton width={'47%'}>답변 전송</BasicButton>
+      </div>
+    </Modal>
+  );
+}
