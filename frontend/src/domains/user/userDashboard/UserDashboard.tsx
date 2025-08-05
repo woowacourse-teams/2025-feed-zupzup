@@ -57,7 +57,10 @@ export default function UserDashboard() {
         <FeedbackBoxList>
           {feedbacks.map((feedback) => (
             <UserFeedbackBox
-              userName={feedback.userName}
+              userName={
+                feedback.userName +
+                (isMyFeedback(feedback.feedbackId) ? ' (나)' : '')
+              }
               key={feedback.feedbackId}
               type={feedback.status}
               content={feedback.content}
