@@ -11,7 +11,7 @@ import {
 } from '@/domains/components/DashboardPanel/DashboardPanel.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-interface DashboardPanelProps {
+export interface DashboardPanelProps {
   title: string;
   content: string;
   caption?: string;

@@ -7,6 +7,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { SerializedStyles } from '@emotion/react';
 import { secretText } from './UserFeedbackBox.styles';
+import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
 
 interface UserFeedbackBox {
   userName: string;
@@ -54,6 +55,9 @@ export default function UserFeedbackBox({
         )}
         {isSecret && <LockIcon />}
       </div>
+      {type === 'CONFIRMED' && (
+        <FeedbackAnswer answer='감사합니다 고객님 빠르게 처리하겠습니당' />
+      )}
 
       <FeedbackBoxFooter
         type={type}
