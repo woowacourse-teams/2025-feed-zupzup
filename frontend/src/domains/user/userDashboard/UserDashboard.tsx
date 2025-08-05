@@ -1,12 +1,19 @@
 import { ArrowIcon } from '@/components/icons/arrowIcon';
+import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
-import { dashboardLayout } from '@/domains/user/userDashboard/UserDashboard.style';
+import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
+import {
+  dashboardLayout,
+  goOnboardButton,
+  goTopButton,
+} from '@/domains/user/userDashboard/UserDashboard.style';
 import { highlightStyle } from '@/domains/user/userDashboard/UserHome-delete.styles';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
@@ -18,6 +25,7 @@ export default function UserDashboard() {
   const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
+  const theme = useAppTheme();
 
   const {
     items: feedbacks,
@@ -36,6 +44,7 @@ export default function UserDashboard() {
   useGetFeedback({ fetchMore, hasNext, loading });
 
   const { highlightedId } = useHighLighted();
+  const { showButton, scrollToTop } = useScrollUp();
 
   return (
     <div css={dashboardLayout}>
@@ -71,7 +80,18 @@ export default function UserDashboard() {
         onClick={() => {
           navigate('/');
         }}
+        inset={{ bottom: '32px', left: '100%' }}
+        customCSS={goOnboardButton(theme)}
       />
+      {showButton && (
+        <FloatingButton
+          icon={<ArrowUpIcon />}
+          onClick={scrollToTop}
+          inset={{ bottom: '32px' }}
+          customCSS={goTopButton(theme)}
+        />
+      )}
+
       {hasNext && <div id='scroll-observer'></div>}
     </div>
   );
