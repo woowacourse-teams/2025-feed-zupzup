@@ -1,16 +1,20 @@
 package feedzupzup.backend.feedback.controller;
 
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
-import feedzupzup.backend.category.domain.Category;
-import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.domain.AvailableCategory;
+import feedzupzup.backend.category.domain.AvailableCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,22 +31,28 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private AvailableCategoryRepository availableCategoryRepository;
 
-    private Category category;
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     @BeforeEach
     void clearMemory() {
         feedbackLikeRepository.clear();
-        category = CategoryFixture.createCategoryBy("시설");
-        categoryRepository.save(category);
     }
 
     @Test
     @DisplayName("피드백에 좋아요를 성공적으로 추가한다")
     void like_feedback_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 5);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then
@@ -63,7 +73,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("이미 좋아요가 있는 피드백에 추가 좋아요를 성공적으로 추가한다")
     void like_feedback_with_existing_likes_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 10);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 10);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 먼저 인메모리에 좋아요 2개 추가
@@ -103,7 +120,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("같은 피드백에 여러 번 좋아요를 추가한다")
     void like_feedback_multiple_times_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then - 첫 번째 좋아요
@@ -141,7 +165,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("피드백 좋아요를 성공적으로 취소한다")
     void unlike_feedback_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 5);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 5);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 먼저 좋아요 3개 추가
@@ -167,7 +198,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("좋아요가 0인 피드백에서 좋아요를 취소하면 음수가 된다")
     void unlike_feedback_with_zero_likes_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then
@@ -203,7 +241,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("좋아요 추가 후 취소하면 원래 상태로 돌아간다")
     void like_then_unlike_feedback_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 2);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 2);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when - 좋아요 추가
@@ -231,7 +276,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("여러 번의 좋아요와 취소를 반복해도 정확한 카운트를 유지한다")
     void multiple_like_unlike_operations_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then - 좋아요 추가
@@ -279,7 +331,14 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @DisplayName("유효한 피드백 ID에 정상적으로 좋아요가 동작한다")
     void like_valid_feedback_id_success() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, category, 0);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(), availableCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // when & then

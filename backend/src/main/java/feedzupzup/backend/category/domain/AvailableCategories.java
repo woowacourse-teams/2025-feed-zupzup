@@ -14,7 +14,7 @@ public class AvailableCategories {
         this.availableCategories = new HashSet<>(availableCategories);
     }
 
-    public AvailableCategory findAvailableCategory(final Category category) {
+    public AvailableCategory findAvailableCategoryBy(final Category category) {
         return availableCategories.stream()
                 .filter(result -> result.getCategory().equals(category))
                 .findFirst()

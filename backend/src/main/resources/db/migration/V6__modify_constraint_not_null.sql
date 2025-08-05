@@ -8,5 +8,5 @@ ALTER TABLE feedback
 
 ALTER TABLE feedback MODIFY posted_at datetime(6) NOT NULL;
 
-ALTER TABLE organization MODIFY name vatchar(255) NOT NULL;
+ALTER TABLE organization MODIFY name varchar(255) NOT NULL;
 

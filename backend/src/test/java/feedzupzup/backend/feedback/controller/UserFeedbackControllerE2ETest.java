@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static feedzupzup.backend.feedback.domain.ProcessStatus.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -9,8 +10,6 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.category.domain.AvailableCategory;
 import feedzupzup.backend.category.domain.AvailableCategoryRepository;
-import feedzupzup.backend.category.domain.Category;
-import feedzupzup.backend.category.domain.CategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -36,21 +35,22 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
     private AvailableCategoryRepository availableCategoryRepository;
 
     @Test
     @DisplayName("사용자가 특정 장소의 피드백 목록을 성공적으로 조회한다")
     void user_get_feedbacks_success() {
         // given
-        final Long organizationId = 1L;
-        final Category category = createAndSaveCategory();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -61,7 +61,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organizationId)
+                .get("/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -76,11 +76,16 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 커서 기반 페이징으로 피드백 목록을 조회한다")
     void user_get_feedbacks_with_cursor_pagination() {
         // given
-        final Long organizationId = 1L;
-        final Category category = createAndSaveCategory();
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -91,7 +96,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 2)
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organizationId)
+                .get("/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -109,7 +114,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 2)
                 .queryParam("cursorId", firstPageCursor)
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organizationId)
+                .get("/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -145,13 +150,24 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 특정 장소의 피드백만 조회한다 (다른 장소 피드백 제외)")
     void user_get_feedbacks_only_for_specific_organization() {
         // given
-        final Long targetOrganizationId = 1L;
-        final Long otherOrganizationId = 2L;
-        final Category category = createAndSaveCategory();
+        final Organization organization1 = OrganizationFixture.createAllBlackBox();
+        final Organization organization2 = OrganizationFixture.createAllBlackBox();
 
-        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId, category);
-        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId, category);
-        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganizationId, category);
+        organizationRepository.save(organization1);
+        organizationRepository.save(organization2);
+
+        final AvailableCategory availableCategory1 = CategoryFixture.createAvailableCategory(
+                organization1, FACILITY);
+
+        final AvailableCategory availableCategory2 = CategoryFixture.createAvailableCategory(
+                organization2, FACILITY);
+
+        availableCategoryRepository.save(availableCategory1);
+        availableCategoryRepository.save(availableCategory2);
+
+        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization1.getId(), availableCategory1);
+        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization1.getId(), availableCategory1);
+        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(organization2.getId(), availableCategory2);
 
         feedBackRepository.save(targetFeedback1);
         feedBackRepository.save(targetFeedback2);
@@ -162,7 +178,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 10)
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", targetOrganizationId)
+                .get("/organizations/{organizationId}/feedbacks", organization1.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -181,11 +197,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
 
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
-        final Category category = CategoryFixture.createCategoryBy("시설");
-        categoryRepository.save(category);
-
         final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
-                organization, category);
+                organization, FACILITY);
 
         availableCategoryRepository.save(availableCategory);
 
@@ -213,13 +226,11 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void user_create_secret_feedback_success() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
-        final Category category = CategoryFixture.createCategoryBy("시설");
 
         final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
-                organization, category);
+                organization, FACILITY);
 
         final Organization savedOrganization = organizationRepository.save(organization);
-        categoryRepository.save(category);
         availableCategoryRepository.save(availableCategory);
 
         final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저", "시설");
@@ -250,11 +261,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final Organization savedOrganization = organizationRepository.save(organization);
 
-        final Category category = CategoryFixture.createCategoryBy("시설");
-        categoryRepository.save(category);
-
         final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
-                organization, category);
+                organization, FACILITY);
         availableCategoryRepository.save(availableCategory);
 
         final CreateFeedbackRequest request = new CreateFeedbackRequest("새 피드백", false, "테스트유저", "시설");
@@ -296,31 +304,33 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void user_get_statistic_success() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
-        final Organization savedOrganization = organizationRepository.save(organization);
-        final Long organizationId = savedOrganization.getId();
-        final Category category = createAndSaveCategory();
+        organizationRepository.save(organization);
+
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
 
         // 확인된 피드백 2개
-        final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
         confirmedFeedback1.updateStatus(CONFIRMED);
         confirmedFeedback1.updateLikeCount(5); // 좋아요 5개
 
-        final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
         confirmedFeedback2.updateStatus(CONFIRMED);
         confirmedFeedback2.updateLikeCount(3); // 좋아요 3개
 
         // 대기 중인 피드백 3개
-        final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
         waitingFeedback1.updateStatus(WAITING);
 
-        final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
         waitingFeedback2.updateStatus(WAITING);
 
-        final Feedback waitingFeedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+        final Feedback waitingFeedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
         waitingFeedback3.updateStatus(WAITING);
 
         // 다른 장소의 피드백 (통계에 포함되지 않음)
-        final Feedback otherPlaceFeedback = FeedbackFixture.createFeedbackWithOrganizationId(999L, category);
+        final Feedback otherPlaceFeedback = FeedbackFixture.createFeedbackWithOrganizationId(999L, availableCategory);
 
         // 피드백 저장
         feedBackRepository.save(confirmedFeedback1);
@@ -335,7 +345,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("period", "WEEK") // 7일 기간으로 통계 요청
                 .when()
-                .get("/organizations/{organizationId}/statistic", organizationId)
+                .get("/organizations/{organizationId}/statistic", organization.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -345,11 +355,5 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.confirmedCount", equalTo(2))
                 .body("data.waitingCount", equalTo(3))
                 .body("data.totalCount", equalTo(5));
-    }
-
-    private Category createAndSaveCategory() {
-        final Category category = new Category("시설");
-        categoryRepository.save(category);
-        return category;
     }
 }

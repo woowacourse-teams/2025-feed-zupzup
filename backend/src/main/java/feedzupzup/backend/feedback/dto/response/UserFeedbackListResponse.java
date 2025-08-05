@@ -65,7 +65,7 @@ public record UserFeedbackListResponse(
                     feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getPostedAt(),
-                    feedback.getCategory().getContent()
+                    feedback.getAvailableCategory().getCategory().getKoreanName()
             );
         }
     }

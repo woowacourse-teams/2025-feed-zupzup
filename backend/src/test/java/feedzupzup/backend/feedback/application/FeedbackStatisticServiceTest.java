@@ -1,11 +1,13 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.category.domain.Category.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.AvailableCategory;
+import feedzupzup.backend.category.domain.AvailableCategoryRepository;
 import feedzupzup.backend.category.domain.Category;
-import feedzupzup.backend.category.domain.CategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -38,15 +40,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     private FeedbackStatisticService feedbackStatisticService;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    private Category category;
-
-    @BeforeEach
-    void init() {
-        category = CategoryFixture.createCategoryBy("시설");
-        categoryRepository.save(category);
-    }
+    private AvailableCategoryRepository availableCategoryRepository;
 
     @Test
     @DisplayName("특정 날짜 이후의 피드백에 대한 통계를 계산한다")
@@ -55,12 +49,16 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                organization, FACILITY);
+        availableCategoryRepository.save(availableCategory);
+
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.CONFIRMED, category);
+                ProcessStatus.CONFIRMED, availableCategory);
         final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.WAITING, category);
+                ProcessStatus.WAITING, availableCategory);
         final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.CONFIRMED, category);
+                ProcessStatus.CONFIRMED, availableCategory);
 
         System.out.println(confirmedFeedback1.getPostedAt().getPostedDate());
 
@@ -106,18 +104,23 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         @Test
         @DisplayName("당일 조회 테스트 케이스")
         void one_day() {
+            // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
             Organization savedOrganization = organizationRepository.save(organization);
-            // given
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(2L));// 이틀 전
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(1L)); // 하루 전
             final PostedAt postedAt3 = PostedAt.from(LocalDateTime.now()); //오늘
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt1, ProcessStatus.WAITING, category);
+                    postedAt1, ProcessStatus.WAITING, availableCategory);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt2, ProcessStatus.WAITING, category);
+                    postedAt2, ProcessStatus.WAITING, availableCategory);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt3, ProcessStatus.WAITING, category);
+                    postedAt3, ProcessStatus.WAITING, availableCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -138,6 +141,9 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             Organization savedOrganization = organizationRepository.save(organization);
 
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
             // 당일 전날의 23:59시
             final LocalDateTime targetDate1 = LocalDate.now().atStartOfDay().minusMinutes(1);
 
@@ -149,11 +155,11 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final PostedAt postedAt2 = PostedAt.from(targetDate2);
             final PostedAt postedAt3 = PostedAt.from(targetDate3);
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt1, ProcessStatus.WAITING, category);
+                    postedAt1, ProcessStatus.WAITING, availableCategory);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt2, ProcessStatus.WAITING, category);
+                    postedAt2, ProcessStatus.WAITING, availableCategory);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt3, ProcessStatus.WAITING, category);
+                    postedAt3, ProcessStatus.WAITING, availableCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -173,12 +179,17 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
             Organization savedOrganization = organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
             final PostedAt postedAt1 = PostedAt.from(LocalDateTime.now().minusDays(7L));
             final PostedAt postedAt2 = PostedAt.from(LocalDateTime.now().minusDays(6L));
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt1, ProcessStatus.WAITING, category);
+                    postedAt1, ProcessStatus.WAITING, availableCategory);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithPostedAtAndStatus(
-                    postedAt2, ProcessStatus.WAITING, category);
+                    postedAt2, ProcessStatus.WAITING, availableCategory);
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
 

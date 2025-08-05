@@ -1,12 +1,13 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.category.domain.Category;
-import feedzupzup.backend.category.domain.CategoryRepository;
+import feedzupzup.backend.category.domain.AvailableCategory;
+import feedzupzup.backend.category.domain.AvailableCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedBackRepository;
@@ -19,7 +20,9 @@ import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,15 +37,10 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     private FeedBackRepository feedBackRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    private AvailableCategoryRepository availableCategoryRepository;
 
-    private Category category;
-
-    @BeforeEach
-    void init() {
-        category = CategoryFixture.createCategoryBy("시설");
-        categoryRepository.save(category);
-    }
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     @Nested
     @DisplayName("피드백 삭제 테스트")
@@ -52,7 +50,14 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("피드백을 성공적으로 삭제한다")
         void delete_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(1L, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             // when
@@ -81,7 +86,14 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("유효한 피드백 ID와 상태로 업데이트 시 성공한다")
         void updateFeedbackStatus_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            organizationRepository.save(organization);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(ProcessStatus.WAITING, availableCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
             final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
 
@@ -116,7 +128,14 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("유효한 피드백 ID와 비밀상태로 업데이트 시 성공한다")
         void updateFeedbackSecret_success() {
             // given
-            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(false, availableCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
             final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
 
@@ -152,11 +171,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("커서 기반 페이징으로 피드백 목록을 성공적으로 조회한다")
         void getAllFeedbacks_success() {
             // given
-            final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -166,7 +191,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null);
 
             // then
             assertAll(
@@ -180,9 +205,15 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("마지막 페이지에서 hasNext가 false를 반환한다")
         void getAllFeedbacks_last_page() {
             // given
-            final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -190,7 +221,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 5;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null);
 
             // then
             assertAll(
@@ -226,12 +257,23 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("특정 장소의 피드백만 조회한다")
         void getFeedbackPageByOrganizationId_success() {
             // given
-            final Long targetOrganizationId = 1L;
-            final Long otherOrganizationId = 2L;
+            final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
+            final Organization otherOrganization = OrganizationFixture.createAllBlackBox();
+
+            organizationRepository.save(targetOrganization);
+            organizationRepository.save(otherOrganization);
+
+            final AvailableCategory availableCategory1 = CategoryFixture.createAvailableCategory(
+                    targetOrganization, FACILITY);
+            availableCategoryRepository.save(availableCategory1);
+
+            final AvailableCategory availableCategory2 = CategoryFixture.createAvailableCategory(
+                    targetOrganization, FACILITY);
+            availableCategoryRepository.save(availableCategory2);
             
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId, category);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId, category);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganizationId, category);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), availableCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), availableCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), availableCategory2);
             
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -240,7 +282,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganization.getId(), size, null);
 
             // then
             assertAll(
@@ -256,11 +298,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("특정 장소의 피드백을 커서 기반 페이징으로 조회한다")
         void getFeedbackPageByOrganizationId_with_paging() {
             // given
-            final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
             
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -270,7 +318,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null);
 
             // then
             assertAll(
@@ -302,11 +350,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("특정 장소의 피드백을 커서 ID와 함께 조회한다")
         void getFeedbackPageByOrganizationId_with_cursor() {
             // given
-            final Long organizationId = 1L;
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organizationId, category);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final AvailableCategory availableCategory = CategoryFixture.createAvailableCategory(
+                    organization, FACILITY);
+            availableCategoryRepository.save(availableCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(), availableCategory);
             
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -317,7 +371,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, cursorId);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, cursorId);
 
             // then
             assertAll(

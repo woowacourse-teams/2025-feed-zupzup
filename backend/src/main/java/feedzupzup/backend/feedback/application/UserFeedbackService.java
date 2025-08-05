@@ -36,6 +36,7 @@ public class UserFeedbackService {
             final Long organizationId
     ) {
         final Organization organization = findOrganizationBy(organizationId);
+
         final Category category = Category.findCategoryBy(request.category());
 
         final AvailableCategory availableCategory = getAvailableCategory(category, organization);
@@ -51,7 +52,7 @@ public class UserFeedbackService {
         final AvailableCategories availableCategories = new AvailableCategories(
                 organization.getAvailableCategories()
         );
-        return availableCategories.findAvailableCategory(category);
+        return availableCategories.findAvailableCategoryBy(category);
     }
 
     public UserFeedbackListResponse getFeedbackPage(

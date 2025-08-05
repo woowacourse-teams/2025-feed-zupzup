@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.fixture;
 
-import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.AvailableCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
@@ -8,7 +8,7 @@ import feedzupzup.backend.feedback.domain.UserName;
 
 public class FeedbackFixture {
 
-    public static Feedback createFeedbackWithStatus(final ProcessStatus status, final Category category) {
+    public static Feedback createFeedbackWithStatus(final ProcessStatus status, final AvailableCategory category) {
         return Feedback.builder()
                 .content("상태별 피드백")
                 .isSecret(false)
@@ -16,11 +16,11 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(category)
+                .availableCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithOrganizationId(final Long organizationId, final Category category) {
+    public static Feedback createFeedbackWithOrganizationId(final Long organizationId, final AvailableCategory category) {
         return Feedback.builder()
                 .content("장소별 피드백")
                 .isSecret(false)
@@ -28,11 +28,11 @@ public class FeedbackFixture {
                 .organizationId(organizationId)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(category)
+                .availableCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithSecret(final boolean isSecret, final Category category) {
+    public static Feedback createFeedbackWithSecret(final boolean isSecret, final AvailableCategory category) {
         return Feedback.builder()
                 .content("장소별 피드백")
                 .isSecret(isSecret)
@@ -40,11 +40,11 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(category)
+                .availableCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithContent(final String content, final Category category) {
+    public static Feedback createFeedbackWithContent(final String content, final AvailableCategory category) {
         return Feedback.builder()
                 .content(content)
                 .isSecret(false)
@@ -52,13 +52,13 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(category)
+                .availableCategory(category)
                 .build();
     }
 
     public static Feedback createFeedbackWithLikes(
             final Long organizationId,
-            final Category category,
+            final AvailableCategory availableCategory,
             final int likeCount
     ) {
         return Feedback.builder()
@@ -69,14 +69,14 @@ public class FeedbackFixture {
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
-                .category(category)
+                .availableCategory(availableCategory)
                 .build();
     }
 
     public static Feedback createFeedbackWithPostedAtAndStatus(
             final PostedAt postedAt,
             final ProcessStatus status,
-            final Category category
+            final AvailableCategory availableCategory
     ) {
         return Feedback.builder()
                 .content("통계 테스트용 피드백")
@@ -85,7 +85,7 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(postedAt)
-                .category(category)
+                .availableCategory(availableCategory)
                 .build();
     }
 }
