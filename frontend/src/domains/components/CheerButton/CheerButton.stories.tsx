@@ -17,7 +17,6 @@ const meta: Meta<typeof CheerButton> = {
 export default meta;
 type Story = StoryObj<typeof CheerButton>;
 
-// 클릭 시 로컬 상태로 accCount 증가
 const Template = (args: CheerButtonProps) => {
   const [animate, setAnimate] = useState(false);
 

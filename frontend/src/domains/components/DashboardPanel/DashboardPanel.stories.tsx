@@ -29,7 +29,6 @@ export default meta;
 
 type Story = StoryObj<typeof DashboardPanel>;
 
-// ✅ 인터랙티브한 버튼 스타일 스토리
 const ClickableTemplate = (args: DashboardPanelProps) => {
   const [isClick, setIsClick] = useState(false);
 

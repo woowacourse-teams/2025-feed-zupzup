@@ -33,10 +33,8 @@ const meta: Meta<typeof FloatingButton> = {
 export default meta;
 type Story = StoryObj<typeof FloatingButton>;
 
-// ✅ 기본 버튼
 export const Default: Story = {};
 
-// ✅ 오른쪽 위
 export const Right: Story = {
   args: {
     inset: {
@@ -52,7 +50,6 @@ export const Right: Story = {
   },
 };
 
-// ✅ 커스텀 스타일 적용 (크기 및 배경색 변경 등)
 export const WithCustomStyle: Story = {
   args: {
     customCSS: css`
