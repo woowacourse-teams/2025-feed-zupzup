@@ -35,6 +35,7 @@ export const colors = {
   green: {
     100: '#91c681',
     200: '#006045',
+    300: '#00A63E',
   },
 
   darkGray: {
