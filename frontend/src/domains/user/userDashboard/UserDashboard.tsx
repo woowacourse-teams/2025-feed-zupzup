@@ -5,21 +5,24 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
+import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
+import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
 import {
   dashboardLayout,
   goOnboardButton,
   goTopButton,
+  highlightStyle,
+  myFeedbackStyle,
 } from '@/domains/user/userDashboard/UserDashboard.style';
-import { highlightStyle } from '@/domains/user/userDashboard/UserHome-delete.styles';
+
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
-import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 
 export default function UserDashboard() {
   const { filter, handlePanelClick } = useFeedbackFilter();
@@ -44,6 +47,7 @@ export default function UserDashboard() {
   useGetFeedback({ fetchMore, hasNext, loading });
 
   const { highlightedId } = useHighLighted();
+  const { isMyFeedback } = useMyFeedbacks();
   const { showButton, scrollToTop } = useScrollUp();
 
   return (
@@ -62,9 +66,10 @@ export default function UserDashboard() {
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
-              customCSS={
-                feedback.feedbackId === highlightedId ? highlightStyle : null
-              }
+              customCSS={[
+                myFeedbackStyle(theme, isMyFeedback(feedback.feedbackId)),
+                feedback.feedbackId === highlightedId ? highlightStyle : null,
+              ]}
             />
           ))}
           {loading && <div>로딩중...</div>}

@@ -1,6 +1,6 @@
 import { postUserFeedback } from '@/apis/userFeedback.api';
 import { SuggestionFeedback } from '@/types/feedback.types';
-import { setLocalStorage } from '@/utils/localStorage';
+import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
 import { StatusType } from '@/types/status.types';
 import { useNavigate } from 'react-router-dom';
@@ -34,6 +34,10 @@ export default function useFeedbackSubmit() {
           userName,
           onSuccess: (response: SuggestionFeedback) => {
             setLocalStorage('highlightedId', response.data.feedbackId);
+            setLocalStorage('myFeedbacks', [
+              ...(getLocalStorage<number[]>('myFeedbacks') || []),
+              response.data.feedbackId,
+            ]);
             setSubmitStatus('success');
           },
           onError: () => {
