@@ -10,7 +10,6 @@ export const feedbackText = (
   white-space: pre-wrap;
   word-break: break-all;
   overflow-wrap: break-word;
-  overflow: hidden;
 
   ${type === 'WAITING'
     ? `color : ${theme.colors.darkGray[100]}`
