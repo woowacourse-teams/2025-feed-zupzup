@@ -15,7 +15,7 @@ interface UserFeedbackBox {
   content: string;
   isLiked: boolean;
   isSecret: boolean;
-  createdAt: string;
+  postedAt: string;
   feedbackId: number;
   likeCount: number;
   customCSS: (SerializedStyles | null)[];
@@ -28,7 +28,7 @@ export default function UserFeedbackBox({
   content,
   isLiked,
   isSecret,
-  createdAt,
+  postedAt,
   feedbackId,
   likeCount,
   customCSS,
@@ -62,7 +62,7 @@ export default function UserFeedbackBox({
       <FeedbackBoxFooter
         type={type}
         isLiked={isLiked}
-        createdAt={createdAt}
+        postedAt={postedAt}
         isSecret={isSecret}
         feedbackId={feedbackId}
         likeCount={likeCount}

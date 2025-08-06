@@ -15,7 +15,7 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 interface Feedback {
   id: number;
   content: string;
-  createdAt: string;
+  postedAt: string;
 }
 
 interface FeedbackResponse {

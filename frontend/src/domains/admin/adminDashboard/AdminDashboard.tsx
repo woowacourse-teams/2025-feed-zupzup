@@ -68,7 +68,7 @@ export default function AdminDashboard() {
             onDelete={openFeedbackDeleteModal}
             type={feedback.status}
             content={feedback.content}
-            createdAt={feedback.createdAt}
+            postedAt={feedback.postedAt}
             isSecret={feedback.isSecret}
             likeCount={feedback.likeCount}
             userName={feedback.userName}
