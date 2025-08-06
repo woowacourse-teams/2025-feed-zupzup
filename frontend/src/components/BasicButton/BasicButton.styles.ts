@@ -61,7 +61,7 @@ export const basicButtonText = (
       ? theme.colors.gray[500]
       : 'black'};
 
-  ${theme.typography.inter.small};
+  ${theme.typography.pretendard.small};
 `;
 
 export const basicButtonIcon = css`

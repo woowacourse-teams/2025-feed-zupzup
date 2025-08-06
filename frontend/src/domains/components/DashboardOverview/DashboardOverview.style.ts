@@ -21,7 +21,7 @@ export const panelCaption = (theme: Theme) => css`
   margin-bottom: 8px;
   color: ${theme.colors.gray[600]};
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 `;
 
 export const panelLayout = css`
@@ -38,7 +38,7 @@ export const cheerButtonLayout = css`
 `;
 
 export const titleText = (theme: Theme) => css`
-  ${theme.typography.bmHannaPro.bodyRegular};
+  ${theme.typography.BMHANNAPro.bodyBold};
 
   font-weight: 900;
 `;

@@ -75,7 +75,7 @@ export const errorIcon = (theme: Theme) => css`
 `;
 
 export const messageText = (theme: Theme) => css`
-  ${theme.typography.inter.bodyRegular};
+  ${theme.typography.pretendard.bodyRegular};
 
   margin: 0;
   color: ${theme.colors.black[100]};

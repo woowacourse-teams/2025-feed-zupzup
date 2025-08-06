@@ -21,7 +21,7 @@ export const container = css`
 `;
 
 export const title = (theme: Theme) => css`
-  ${theme.typography.inter.h5}
+  ${theme.typography.pretendard.h1}
 
   margin-top: 8%;
 `;
@@ -34,11 +34,11 @@ export const place = (theme: Theme) => css`
 `;
 
 export const questionTitle = (theme: Theme) => css`
-  ${theme.typography.inter.bodyBold}
+  ${theme.typography.pretendard.bodyBold}
 `;
 
 export const question = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;

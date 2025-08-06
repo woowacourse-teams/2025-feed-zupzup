@@ -29,14 +29,14 @@ export const textIconContainer = (theme: Theme) => css`
 export const titleContainer = (theme: Theme) => css`
   font-size: 20px;
   font-weight: 700;
-  ${theme.typography.inter.bodyRegular}
+  ${theme.typography.pretendard.bodyRegular}
 
   color: ${theme.colors.black[100]};
 `;
 
 export const descriptionContainer = (theme: Theme) => css`
   font-size: 12px;
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[500]};
 `;
