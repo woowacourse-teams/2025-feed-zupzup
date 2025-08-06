@@ -5,9 +5,11 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -38,8 +40,7 @@ public class AdminFeedbackService {
             final UpdateFeedbackStatusRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedback = feedBackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+        final Feedback feedback = getFeedback(feedbackId);
         feedback.updateStatus(request.status());
         return UpdateFeedbackStatusResponse.from(feedback);
     }
@@ -50,8 +51,7 @@ public class AdminFeedbackService {
             final Long feedbackId,
             final UpdateFeedbackSecretRequest request
     ) {
-        final Feedback feedBack = feedBackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+        final Feedback feedBack = getFeedback(feedbackId);
         feedBack.updateSecret(request.isSecret());
         return UpdateFeedbackSecretResponse.from(feedBack);
     }
@@ -67,5 +67,21 @@ public class AdminFeedbackService {
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
         return AdminFeedbackListResponse.from(feedbackPage);
+    }
+
+    @Transactional
+    @BusinessActionLog
+    public UpdateFeedbackCommentResponse updateFeedbackComment(
+            final UpdateFeedbackCommentRequest request,
+            final Long feedbackId
+    ) {
+        final Feedback feedback = getFeedback(feedbackId);
+        feedback.updateCommentAndStatus(request.toComment());
+        return UpdateFeedbackCommentResponse.from(feedback);
+    }
+
+    private Feedback getFeedback(final Long feedbackId) {
+        return feedBackRepository.findById(feedbackId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
     }
 }
