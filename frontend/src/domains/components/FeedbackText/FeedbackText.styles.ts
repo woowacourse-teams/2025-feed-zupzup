@@ -7,8 +7,10 @@ export const feedbackText = (
 ) => css`
   ${theme.typography.pretendard.caption}
 
-  line-height: 20px;
-  white-space: pre;
+  line-height: 24px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
 
   ${type === 'WAITING'
     ? `color : ${theme.colors.darkGray[100]}`
