@@ -16,6 +16,7 @@ export interface FilterSectionProps {
   selectedSort: string;
   onSortChange: (sort: string) => void;
   customCSS?: SerializedStyles;
+  isAdmin?: boolean;
 }
 
 export default function FilterSection({
@@ -24,13 +25,14 @@ export default function FilterSection({
   selectedSort,
   onSortChange,
   customCSS,
+  isAdmin,
 }: FilterSectionProps) {
   const theme = useAppTheme();
 
   const filterOptions = [
     { value: 'pending', label: '미처리' },
     { value: 'completed', label: '완료' },
-    { value: 'mine', label: '내가 쓴 글' },
+    ...(!isAdmin ? [{ value: 'mine', label: '내가 쓴 글' }] : []),
   ];
 
   const sortOptions = [
