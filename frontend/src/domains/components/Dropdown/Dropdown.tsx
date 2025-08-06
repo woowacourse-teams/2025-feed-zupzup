@@ -95,7 +95,7 @@ export default function Dropdown({
       <input type='hidden' name={name} id={id} value={value || ''} />
       <Button
         type='button'
-        css={dropdownButton(theme, isOpen, height)}
+        customCSS={dropdownButton(theme, isOpen, height)}
         onClick={handleToggle}
         disabled={disabled}
         aria-haspopup='listbox'
