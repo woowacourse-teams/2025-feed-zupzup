@@ -6,7 +6,7 @@ import {
   dropdownList,
   dropdownItem,
   dropdownText,
-} from './CategorySelector.styles';
+} from './Dropdown.styles';
 import ArrowBottomIcon from '@/components/icons/ArrowBottomIcon';
 import Button from '@/components/@commons/Button/Button';
 
@@ -16,7 +16,7 @@ interface SelectorOption {
   disabled?: boolean;
 }
 
-interface CategorySelectorProps {
+interface DropdownProps {
   width?: string;
   height?: string;
   options: SelectorOption[];
@@ -28,7 +28,7 @@ interface CategorySelectorProps {
   disabled?: boolean;
 }
 
-export default function CategorySelector({
+export default function Dropdown({
   width = 'auto',
   height = 'auto',
   options,
@@ -38,7 +38,7 @@ export default function CategorySelector({
   id,
   name,
   disabled = false,
-}: CategorySelectorProps) {
+}: DropdownProps) {
   const theme = useAppTheme();
   const [isOpen, setIsOpen] = useState(false);
 

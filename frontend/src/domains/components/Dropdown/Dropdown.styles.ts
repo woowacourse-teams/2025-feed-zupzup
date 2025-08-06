@@ -18,7 +18,7 @@ export const dropdownButton = (
   isOpen: boolean,
   height?: string
 ) => css`
-  ${theme.typography.pretendard.caption};
+  ${theme.typography.pretendard.captionSmall};
 
   display: flex;
   justify-content: space-between;
@@ -50,7 +50,7 @@ export const dropdownButton = (
     &:hover {
       border-color: ${theme.colors.gray[200]};
     }
-    ${theme.typography.pretendard.caption}
+    ${theme.typography.pretendard.captionSmall}
   }
 
   svg {
@@ -88,7 +88,7 @@ export const dropdownItem = (theme: Theme, isDisabled: boolean) => css`
   cursor: ${isDisabled ? 'not-allowed' : 'pointer'};
   transition: background-color 0.2s ease;
 
-  ${theme.typography.pretendard.caption}
+  ${theme.typography.pretendard.captionSmall}
 
   &:hover {
     background-color: ${isDisabled ? 'transparent' : theme.colors.gray[100]};

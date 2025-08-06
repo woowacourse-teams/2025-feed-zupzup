@@ -1,7 +1,7 @@
 import { SerializedStyles } from '@emotion/react';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import Tag from '@/components/Tag/Tag';
-import CategorySelector from '@/domains/components/CategorySelector/CategorySelector'; // CategorySelector 사용
+import Dropdown from '@/domains/components/Dropdown/Dropdown'; // CategorySelector 사용
 import {
   filterSectionContainer,
   filterTagsContainer,
@@ -67,13 +67,13 @@ export default function FilterSection({
       </div>
 
       <div css={sortDropdownContainer}>
-        <CategorySelector
+        <Dropdown
           options={sortOptions}
           value={selectedSort}
           onChange={(e) => onSortChange(e.target.value)}
           placeholder='정렬 기준'
           width='120px'
-          height='44px'
+          height='36px'
         />
       </div>
     </div>

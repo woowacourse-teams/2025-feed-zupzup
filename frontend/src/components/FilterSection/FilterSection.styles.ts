@@ -28,10 +28,11 @@ export const tagStyle = (theme: Theme, isSelected: boolean) => css`
     ${isSelected ? theme.colors.purple[100] : theme.colors.gray[200]};
   border-radius: 20px;
   transition: all 0.2s ease;
+  ${theme.typography.pretendard.captionSmall};
 `;
 
 export const tagButton = css`
-  padding: 8px 16px;
+  padding: 4px 4px;
   font-size: 14px;
   font-weight: 500;
   color: inherit;
