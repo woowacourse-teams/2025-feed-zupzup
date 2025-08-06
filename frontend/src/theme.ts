@@ -16,13 +16,6 @@ export const colors = {
     200: '#fbd784',
   },
 
-  brown: {
-    100: '#973c00',
-    200: '#624b47',
-    300: '#4f4f4f',
-    400: '#443536',
-  },
-
   gray: {
     100: '#eeeeee',
     200: '#d9d9d9',
@@ -34,8 +27,7 @@ export const colors = {
 
   green: {
     100: '#91c681',
-    200: '#006045',
-    300: '#00A63E',
+    200: '#00A63E',
   },
 
   darkGray: {
@@ -54,23 +46,8 @@ export const colors = {
   },
 };
 
-const fontStyle = 'Pretendard-Regular';
-const headerFontStyle = 'Pretendard';
-
 export const typography = {
-  bmKkubulim: {
-    fontFamily: 'BM kkubulim, sans-serif',
-    fontSize: 150,
-    lineHeight: 'auto',
-    letterSpacing: 0,
-  },
   bmHannaPro: {
-    h1: {
-      fontFamily: 'BM HANNA Pro OTF, sans-serif',
-      fontSize: 90,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
     bodyLarge: {
       fontFamily: 'BM HANNA Pro OTF, sans-serif',
       fontSize: 26,
@@ -84,101 +61,54 @@ export const typography = {
       letterSpacing: 0,
     },
   },
-  inter: {
+  pretendard: {
     h1: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 600,
-      fontSize: 96,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
-    h2: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 600,
-      fontSize: 48,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
-    h3: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 400,
-      fontSize: 48,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
-    h4: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 600,
-      fontSize: 32,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
-    h5: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 600,
       fontSize: 30,
       lineHeight: 'auto',
       letterSpacing: 0,
     },
-    h6: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
+    h2: {
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 400,
       fontSize: 26,
       lineHeight: 'auto',
       letterSpacing: 0,
     },
-    bodyLarge: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 700,
-      fontSize: 26,
-      letterSpacing: 0,
-    },
-    bodyMedium: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
-      fontWeight: 600,
-      fontSize: 24,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
     bodyRegular: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 400,
       fontSize: 22,
       letterSpacing: 0,
     },
     bodyBold: {
-      fontFamily: `${headerFontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 700,
       fontSize: 22,
       letterSpacing: 0,
     },
     small: {
-      fontFamily: `${fontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 400,
       fontSize: 19,
       letterSpacing: 0.6,
     },
     smallBold: {
-      fontFamily: `${fontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 600,
       fontSize: 19,
       letterSpacing: 0.6,
     },
     caption: {
-      fontFamily: `${fontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 400,
       fontSize: 16,
       letterSpacing: 0,
     },
     captionSmall: {
-      fontFamily: `${fontStyle}, sans-serif`,
+      fontFamily: 'Pretendard, sans-serif',
       fontWeight: 400,
-      fontSize: 14,
-      letterSpacing: 0,
-    },
-    captionSmallBold: {
-      fontFamily: `${fontStyle}, sans-serif`,
-      fontWeight: 600,
       fontSize: 14,
       letterSpacing: 0,
     },

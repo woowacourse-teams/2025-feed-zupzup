@@ -3,7 +3,7 @@ import { colors } from '@/theme';
 import { Theme } from '@/theme';
 
 export const ghostButton = (theme: Theme) => css`
-  ${theme.typography.inter.caption};
+  ${theme.typography.pretendard.caption};
 
   display: flex;
   align-items: center;

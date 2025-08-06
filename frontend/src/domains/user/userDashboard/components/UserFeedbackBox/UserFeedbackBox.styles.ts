@@ -8,7 +8,7 @@ export const secretText = (theme: Theme) => css`
   font-size: 14px;
   color: ${theme.colors.gray[300]};
 
-  ${theme.typography.inter.small}
+  ${theme.typography.pretendard.small}
 `;
 
 export const HighlightMyFeedback = (theme: Theme) => css`

@@ -15,7 +15,7 @@ export const calendar = (theme: Theme) => css`
 `;
 
 export const day = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[500]};
 `;
@@ -26,7 +26,7 @@ export const content = (theme: Theme) => css`
   gap: 8px;
   color: ${theme.colors.gray[600]};
 
-  ${theme.typography.inter.small}
+  ${theme.typography.pretendard.small}
 `;
 
 export const confirmedText = (theme: Theme) => css`

@@ -5,7 +5,7 @@ export const feedbackText = (
   theme: Theme,
   type: 'CONFIRMED' | 'WAITING'
 ) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   line-height: 20px;
   white-space: pre;

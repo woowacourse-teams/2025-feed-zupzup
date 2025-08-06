@@ -21,7 +21,7 @@ export const panelCaption = (theme: Theme) => css`
   margin-bottom: 8px;
   color: ${theme.colors.gray[600]};
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 `;
 
 export const panelLayout = css`

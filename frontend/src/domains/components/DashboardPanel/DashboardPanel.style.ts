@@ -41,7 +41,7 @@ export const dot = (theme: Theme, color?: string) => css`
 `;
 
 export const panelTitle = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;
@@ -54,7 +54,7 @@ export const panelContent = (theme: Theme, isClick: boolean) => css`
 `;
 
 export const captionContent = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;
