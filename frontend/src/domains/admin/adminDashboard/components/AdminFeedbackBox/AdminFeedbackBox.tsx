@@ -27,7 +27,7 @@ export default function AdminFeedbackBox({
   isSecret,
   likeCount,
   userName,
-  createdAt,
+  postedAt,
 }: AdminFeedbackBox) {
   return (
     <FeedbackBoxBackGround type={type}>
@@ -64,7 +64,7 @@ export default function AdminFeedbackBox({
       <FeedbackBoxFooter
         type={type}
         likeCount={likeCount}
-        createdAt={createdAt}
+        postedAt={postedAt}
         feedbackId={feedbackId}
       />
     </FeedbackBoxBackGround>

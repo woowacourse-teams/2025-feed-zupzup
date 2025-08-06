@@ -67,7 +67,7 @@ export default function UserDashboard() {
               key={feedback.feedbackId}
               type={feedback.status}
               content={feedback.content}
-              createdAt={feedback.createdAt}
+              postedAt={feedback.postedAt}
               isLiked={getFeedbackIsLike(likedFeedbackIds, feedback.feedbackId)}
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}

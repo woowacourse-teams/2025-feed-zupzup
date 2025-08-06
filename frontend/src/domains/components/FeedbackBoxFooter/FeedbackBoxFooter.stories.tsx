@@ -26,7 +26,7 @@ const meta: Meta<typeof FeedbackBoxFooter> = {
       control: 'boolean',
       description: '비밀 피드백 여부',
     },
-    createdAt: {
+    postedAt: {
       control: 'date',
       description: '작성일',
     },

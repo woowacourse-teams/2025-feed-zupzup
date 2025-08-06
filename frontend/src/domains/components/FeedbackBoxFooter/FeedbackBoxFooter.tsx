@@ -15,7 +15,7 @@ import { formatRelativeTime } from '@/utils/formatRelativeTime';
 interface FeedbackBoxFooterProps {
   likeCount: number;
   isLiked?: boolean;
-  createdAt?: string;
+  postedAt?: string;
   isSecret?: boolean;
   feedbackId: number;
   type: FeedbackStatusType;
@@ -24,7 +24,7 @@ interface FeedbackBoxFooterProps {
 export default function FeedbackBoxFooter({
   likeCount,
   isLiked,
-  createdAt,
+  postedAt,
   isSecret,
   feedbackId,
   type,
@@ -35,7 +35,7 @@ export default function FeedbackBoxFooter({
     <div css={container}>
       <div css={calendar(theme)}>
         <ClockIcon />
-        <p css={day(theme)}>{formatRelativeTime(createdAt ?? '')}</p>
+        <p css={day(theme)}>{formatRelativeTime(postedAt ?? '')}</p>
       </div>
 
       <div css={content(theme)}>
