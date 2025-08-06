@@ -8,9 +8,9 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
-import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
@@ -196,6 +196,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
@@ -235,6 +236,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Long firstPageCursor = given()
                 .log().all()
                 .queryParam("size", 2)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
@@ -253,6 +255,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("size", 2)
                 .queryParam("cursorId", firstPageCursor)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
@@ -274,6 +277,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organizationId)
                 .then().log().all()
@@ -320,6 +324,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
@@ -356,6 +361,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
@@ -392,6 +398,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
                 .when()
                 .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
                 .then().log().all()
@@ -401,5 +408,125 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .body("message", equalTo("OK"))
                 .body("data.feedbacks.size()", equalTo(1))
                 .body("data.feedbacks[0].likeCount", equalTo(5)); // 인메모리 좋아요 수만
+    }
+
+    @Test
+    @DisplayName("관리자 피드백 목록을 LATEST 정렬로 조회하면 최신순으로 반환된다")
+    void admin_get_feedbacks_ordered_by_latest() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        // 순서대로 저장하여 ID가 증가하도록 함
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백", organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백", organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백", organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+
+        // when & then - LATEST 정렬로 조회하면 최신순(ID 역순)으로 반환
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
+                .when()
+                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks.size()", equalTo(3))
+                .body("data.feedbacks[0].feedbackId", equalTo(saved3.getId().intValue()))
+                .body("data.feedbacks[1].feedbackId", equalTo(saved2.getId().intValue()))
+                .body("data.feedbacks[2].feedbackId", equalTo(saved1.getId().intValue()));
+    }
+
+    @Test
+    @DisplayName("관리자 피드백 목록을 OLDEST 정렬로 조회하면 오래된순으로 반환된다")
+    void admin_get_feedbacks_ordered_by_oldest() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        // 순서대로 저장하여 ID가 증가하도록 함
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백", organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent("두 번째 피드백", organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent("세 번째 피드백", organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+
+        // when & then - OLDEST 정렬로 조회하면 오래된순(ID 순)으로 반환
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "OLDEST")
+                .when()
+                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks.size()", equalTo(3))
+                .body("data.feedbacks[0].feedbackId", equalTo(saved1.getId().intValue()))
+                .body("data.feedbacks[1].feedbackId", equalTo(saved2.getId().intValue()))
+                .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()));
+    }
+
+    @Test
+    @DisplayName("관리자 피드백 목록을 LIKES 정렬로 조회하면 좋아요 많은 순으로 반환된다")
+    void admin_get_feedbacks_ordered_by_likes() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        // 좋아요 수가 다른 피드백들 생성
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), organizationCategory,
+                5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), organizationCategory,
+                10);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(organization.getId(), organizationCategory,
+                3);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+
+        // when & then - LIKES 정렬로 조회하면 좋아요 많은순으로 반환 (10, 5, 3)
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LIKES")
+                .when()
+                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks.size()", equalTo(3))
+                .body("data.feedbacks[0].feedbackId", equalTo(saved2.getId().intValue()))
+                .body("data.feedbacks[0].likeCount", equalTo(10))
+                .body("data.feedbacks[1].feedbackId", equalTo(saved1.getId().intValue()))
+                .body("data.feedbacks[1].likeCount", equalTo(5))
+                .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()))
+                .body("data.feedbacks[2].likeCount", equalTo(3));
     }
 }
