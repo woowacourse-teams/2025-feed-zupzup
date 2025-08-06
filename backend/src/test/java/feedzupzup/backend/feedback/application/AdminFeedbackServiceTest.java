@@ -288,12 +288,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     targetOrganization, FACILITY);
             organizationCategoryRepository.save(organizationCategory2);
 
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    targetOrganization.getId(), organizationCategory1);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    targetOrganization.getId(), organizationCategory1);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(),
-                    organizationCategory2);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), organizationCategory2);
 
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -476,7 +473,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         // then
         assertThat(resultFeedback.getStatus()).isEqualTo(ProcessStatus.CONFIRMED);
     }
-
 
     @Nested
     @DisplayName("정렬 기능 테스트")
