@@ -38,7 +38,7 @@ public interface AdminFeedbackApi {
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(required = false) final FeedbackOrderBy orderBy
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam final FeedbackOrderBy orderBy
     );
 
     @Operation(summary = "피드백 비밀 상태 변경", description = "피드백의 비밀 상태를 변경합니다. (관리자 전용)")
