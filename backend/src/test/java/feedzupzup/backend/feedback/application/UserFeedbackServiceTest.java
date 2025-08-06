@@ -123,9 +123,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 2;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
         // then
         assertAll(
@@ -158,9 +156,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 5;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
         // then
         assertAll(
@@ -173,14 +169,17 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @DisplayName("빈 결과에 대해 적절히 처리한다")
     void getFeedbackPage_empty_result() {
         // given
-        final Long organizationId = 1L;
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organizationId, size, null);
-
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
         // then
         assertAll(
                 () -> assertThat(response.feedbacks()).isEmpty(),
@@ -222,9 +221,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, cursorId, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, cursorId);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, cursorId, null);
 
         // then
         assertAll(
@@ -256,9 +253,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
         // then
         assertAll(
@@ -300,9 +295,8 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(targetOrganizationId, size, null, null);
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                targetOrganization.getId(), size, null);
+                targetOrganization.getId(), size, null, null);
 
         // then
         assertAll(
@@ -317,11 +311,18 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @Test
     @DisplayName("ProcessStatus가 CONFIRMED 으로 주어졌을 때, CONFIRMED 상태의 피드백만 조회할 수 있어야 한다.")
     void when_given_process_status_confirmed_then_only_get_confirmed_status() {
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING);
-        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+
+        final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(targetOrganization);
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                targetOrganization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -336,11 +337,17 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @Test
     @DisplayName("ProcessStatus가 WAITING 으로 주어졌을 때, WAITING 상태의 피드백만 조회할 수 있어야 한다.")
     void when_given_process_status_waiting_then_only_get_waiting_status() {
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING);
-        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+        final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(targetOrganization);
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                targetOrganization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -355,11 +362,17 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     @Test
     @DisplayName("ProcessStatus가 null로 주어졌을 때, 모든 피드백을 조회할 수 있어야 한다.")
     void when_given_process_status_null_then_get_all_feedbacks() {
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING);
-        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING);
+        final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(targetOrganization);
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                targetOrganization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -407,9 +420,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
         // then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
         assertAll(
@@ -457,9 +468,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final int size = 10;
 
         // when - 인메모리 좋아요 추가 없이 조회
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
+        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
         // then - DB 좋아요 수만 반영되는지 확인
         assertAll(
@@ -505,8 +514,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
+                organization.getId(), size, null, null);
         final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 인메모리 좋아요 수만 반영되는지 확인
@@ -544,8 +552,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getId(), size, null);
-        final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(organizationId, size, null, null);
+                organization.getId(), size, null, null);
         final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인

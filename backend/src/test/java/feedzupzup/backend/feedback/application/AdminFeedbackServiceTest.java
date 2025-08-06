@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -197,7 +198,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -229,7 +230,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 5;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -279,9 +280,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     targetOrganization, FACILITY);
             organizationCategoryRepository.save(organizationCategory2);
             
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganizationId);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganizationId);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), organizationCategory2);
             
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -290,7 +291,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganizationId, size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -330,7 +331,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -344,11 +345,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("특정 장소의 피드백이 없을 때 빈 결과를 반환한다")
         void getFeedbackPageByOrganizationId_empty_result() {
             // given
-            final Long emptyOrganizationId = 999L;
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(emptyOrganizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -387,7 +394,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, cursorId, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, cursorId, null);
 
             // then
             assertAll(
