@@ -9,7 +9,7 @@ import { http, HttpResponse } from 'msw';
 
 export const AdminFeedbackHandlers = [
   // 피드백 조회
-  http.get(`${BASE}/admin/places/1/feedbacks`, ({ request }) => {
+  http.get(`${BASE}/admin/organizations/1/feedbacks`, ({ request }) => {
     const url = new URL(request.url);
     const cursorId = url.searchParams.get('cursorId');
 
