@@ -381,7 +381,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("피드백 목록을 LATEST 정렬로 조회하면 최신순으로 반환된다")
+    @DisplayName("피드백 목록을 최신순으로 반환된다")
     void get_feedbacks_ordered_by_latest() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
@@ -422,7 +422,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("피드백 목록을 OLDEST 정렬로 조회하면 오래된순으로 반환된다")
+    @DisplayName("피드백 목록을 오래된순으로 반환된다")
     void get_feedbacks_ordered_by_oldest() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
@@ -463,7 +463,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("피드백 목록을 LIKES 정렬로 조회하면 좋아요 많은 순으로 반환된다")
+    @DisplayName("피드백 목록을 좋아요 많은 순으로 반환된다")
     void get_feedbacks_ordered_by_likes() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();

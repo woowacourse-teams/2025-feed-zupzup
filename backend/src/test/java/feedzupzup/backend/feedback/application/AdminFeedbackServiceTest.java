@@ -423,7 +423,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     class OrderingTest {
 
         @Test
-        @DisplayName("FeedbackOrderBy.LATEST로 정렬하면 최신순으로 조회된다")
+        @DisplayName("최신순으로 조회된다")
         void getFeedbackPage_orders_by_latest() {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
@@ -459,7 +459,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         }
 
         @Test
-        @DisplayName("FeedbackOrderBy.OLDEST로 정렬하면 오래된순으로 조회된다")
+        @DisplayName("오래된순으로 조회된다")
         void getFeedbackPage_orders_by_oldest() {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
@@ -495,7 +495,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         }
 
         @Test
-        @DisplayName("FeedbackOrderBy.LIKES로 정렬하면 좋아요 많은 순으로 조회된다")
+        @DisplayName("좋아요 많은 순으로 조회된다")
         void getFeedbackPage_orders_by_likes() {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
