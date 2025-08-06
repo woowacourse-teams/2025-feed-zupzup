@@ -7,6 +7,7 @@ export const feedbackText = (
 ) => css`
   ${theme.typography.pretendard.caption}
 
+  line-height: 24px;
   white-space: pre-wrap;
   word-break: break-all;
   overflow-wrap: break-word;
