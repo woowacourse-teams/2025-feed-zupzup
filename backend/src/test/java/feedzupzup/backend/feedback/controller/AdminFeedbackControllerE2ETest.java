@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.controller;
 import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
@@ -557,7 +558,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
-                .body("data.feedbacks.size()", equalTo(3))
+                .body("data.feedbacks", hasSize(3))
                 .body("data.feedbacks[0].feedbackId", equalTo(saved2.getId().intValue()))
                 .body("data.feedbacks[0].likeCount", equalTo(10))
                 .body("data.feedbacks[1].feedbackId", equalTo(saved1.getId().intValue()))
