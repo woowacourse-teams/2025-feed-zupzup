@@ -22,7 +22,6 @@ import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
-
 import { Analytics, userDashboardEvents } from '@/analytics';
 
 export default function UserDashboard() {
