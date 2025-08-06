@@ -1,3 +1,4 @@
+import { logError, ErrorType, ErrorSeverity } from '@/utils/errorLogger';
 import {
   DEFAULT_ERROR_MESSAGE,
   FETCH_ERROR_MESSAGE,
@@ -121,11 +122,25 @@ async function baseClient<Response, RequestBody>({
         // response.json() 파싱 실패 시 기본 메시지를 유지
       }
 
-      throw new ApiError(response.status, message);
+      const apiError = new ApiError(response.status, message);
+
+      let severity = ErrorSeverity.MEDIUM;
+      if (response.status >= 500) severity = ErrorSeverity.HIGH;
+      if (response.status === 401) severity = ErrorSeverity.LOW;
+
+      logError(apiError, ErrorType.API_ERROR, severity);
+
+      throw apiError;
     }
 
     throw new Error(DEFAULT_ERROR_MESSAGE);
   } catch (error) {
+    if (!(error instanceof ApiError)) {
+      const networkError =
+        error instanceof Error ? error : new Error('Unknown API Error');
+      logError(networkError, ErrorType.NETWORK_ERROR, ErrorSeverity.HIGH);
+    }
+
     onError?.();
     if (error instanceof ApiError) {
       throw error;
