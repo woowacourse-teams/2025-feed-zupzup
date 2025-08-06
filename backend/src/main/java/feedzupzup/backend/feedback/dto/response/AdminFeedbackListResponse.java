@@ -54,7 +54,10 @@ public record AdminFeedbackListResponse(
             PostedAt postedAt,
 
             @Schema(description = "카테고리", example = "시설")
-            String category
+            String category,
+
+            @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
+            String comment
     ) {
 
         private static AdminFeedbackItem from(final Feedback feedback) {
@@ -66,7 +69,8 @@ public record AdminFeedbackListResponse(
                     feedback.getLikeCount(),
                     feedback.getUserName(),
                     feedback.getPostedAt(),
-                    feedback.getOrganizationCategory().getCategory().getKoreanName()
+                    feedback.getOrganizationCategory().getCategory().getKoreanName(),
+                    feedback.getComment() != null ? feedback.getComment().getValue() : null
             );
         }
 
