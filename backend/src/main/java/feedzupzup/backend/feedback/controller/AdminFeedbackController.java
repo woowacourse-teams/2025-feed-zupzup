@@ -4,11 +4,13 @@ import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
 import feedzupzup.backend.feedback.application.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,6 +60,16 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final UpdateFeedbackStatusRequest request
     ) {
         final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
+                request, feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(
+            final Long feedbackId,
+            final UpdateFeedbackCommentRequest request
+    ) {
+        final UpdateFeedbackCommentResponse response = adminFeedbackService.updateFeedbackComment(
                 request, feedbackId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
