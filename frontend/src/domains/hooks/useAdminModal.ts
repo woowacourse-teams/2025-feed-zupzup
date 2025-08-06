@@ -38,7 +38,7 @@ export const useAdminModal = ({
       try {
         await patchFeedbackStatus({
           feedbackId,
-          status: 'CONFIRMED',
+          comment,
         });
       } catch (e) {
         showErrorModal(e, '에러');
