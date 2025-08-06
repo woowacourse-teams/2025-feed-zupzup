@@ -27,7 +27,6 @@ import { Analytics, userDashboardEvents } from '@/analytics';
 import FilterSection from '@/components/FilterSection/FilterSection';
 
 export default function UserDashboard() {
-  const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
@@ -67,7 +66,7 @@ export default function UserDashboard() {
 
   return (
     <div css={dashboardLayout}>
-      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
+      <DashboardOverview />
       <FilterSection
         selectedFilter={selectedFilter}
         onFilterChange={handleFilterChange}
