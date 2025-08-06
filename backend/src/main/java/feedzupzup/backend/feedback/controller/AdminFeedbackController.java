@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
@@ -22,12 +23,14 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
             final Long organizationId,
             final int size,
-            final Long cursorId
+            final Long cursorId,
+            final ProcessStatus processStatus
     ) {
         return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
                 organizationId,
                 size,
-                cursorId
+                cursorId,
+                processStatus
         ));
     }
 

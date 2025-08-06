@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackLikeService {
 
     private final FeedbackLikeRepository feedbackLikeRepository;
-    private final FeedBackRepository feedBackRepository;
+    private final FeedbackRepository feedBackRepository;
 
     public LikeResponse like(final Long feedbackId) {
         validateExistFeedback(feedbackId);

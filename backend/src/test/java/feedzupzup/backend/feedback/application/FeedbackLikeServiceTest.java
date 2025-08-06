@@ -8,7 +8,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -37,7 +37,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     private FeedbackLikeRepository feedbackLikeRepository;
 
     @Autowired
-    private FeedBackRepository feedBackRepository;
+    private FeedbackRepository feedBackRepository;
 
     @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;

@@ -10,7 +10,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
@@ -34,7 +34,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     private AdminFeedbackService adminFeedbackService;
 
     @Autowired
-    private FeedBackRepository feedBackRepository;
+    private FeedbackRepository feedBackRepository;
 
     @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
@@ -198,7 +198,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -230,7 +230,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 5;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -247,7 +247,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null, null);
 
             // then
             assertAll(
@@ -280,12 +280,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     targetOrganization, FACILITY);
             organizationCategoryRepository.save(organizationCategory2);
             
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(),
-                    organizationCategory1);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(),
-                    organizationCategory1);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(),
-                    organizationCategory2);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), organizationCategory2);
             
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -294,7 +291,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganization.getId(), size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -334,7 +331,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -348,11 +345,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("특정 장소의 피드백이 없을 때 빈 결과를 반환한다")
         void getFeedbackPageByOrganizationId_empty_result() {
             // given
-            final Long emptyOrganizationId = 999L;
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(emptyOrganizationId, size, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
 
             // then
             assertAll(
@@ -391,7 +394,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, cursorId);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, cursorId, null);
 
             // then
             assertAll(
