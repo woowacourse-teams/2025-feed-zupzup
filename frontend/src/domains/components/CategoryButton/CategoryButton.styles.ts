@@ -13,7 +13,7 @@ export const container = (theme: Theme) => css`
   border-radius: 24px;
   transition: all 0.1s ease;
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   &:active {
     border: 1px solid ${theme.colors.purple[100]};

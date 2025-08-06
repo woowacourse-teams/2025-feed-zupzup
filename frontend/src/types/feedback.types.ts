@@ -5,7 +5,7 @@ export interface FeedbackType {
   content: string;
   status: FeedbackStatusType;
   isSecret: boolean;
-  createdAt: string;
+  postedAt: string;
   userName: string;
   likeCount: number;
   comment: null | string;
@@ -22,7 +22,7 @@ interface SuggestionFeedbackData {
   content: string;
   status: FeedbackStatusType;
   isSecret: boolean;
-  createdAt: string; // ISO 형식 날짜 문자열
+  postedAt: string; // ISO 형식 날짜 문자열
   userName: string;
 }
 

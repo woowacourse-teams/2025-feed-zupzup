@@ -12,10 +12,10 @@ export const basicInput = (theme: Theme) => css`
   background-color: white;
   border: 1px solid ${theme.colors.gray[200]};
   border-radius: 16px;
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   ::placeholder {
-    ${theme.typography.inter.caption}
+    ${theme.typography.pretendard.caption}
 
     color : ${theme.colors.gray[500]};
   }
@@ -27,5 +27,5 @@ export const caption = (theme: Theme) => css`
   right: 20px;
   color: ${theme.colors.gray[500]};
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 `;
