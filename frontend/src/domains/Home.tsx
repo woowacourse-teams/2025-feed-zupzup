@@ -13,13 +13,6 @@ export default function Home() {
 
   return (
     <section css={container}>
-      <button
-        onClick={() => {
-          throw new Error('This is your first error!');
-        }}
-      >
-        Break the world
-      </button>
       <ProgressBar currentStep={currentStep} totalStep={totalStep} />
       {currentStep === 1 && <OnBoarding moveNextStep={moveNextStep} />}
       {currentStep === 2 && <FeedbackPage movePrevStep={movePrevStep} />}
