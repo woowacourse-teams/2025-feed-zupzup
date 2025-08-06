@@ -113,8 +113,8 @@ describe('useAdminModal', () => {
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
+        comment: '확인했습니다.',
         feedbackId: 1,
-        status: 'CONFIRMED',
       });
       expect(mockOnConfirmFeedback).toHaveBeenCalledWith(1, '확인했습니다.');
       expect(result.current.modalState.type).toBeNull();
@@ -175,7 +175,7 @@ describe('useAdminModal', () => {
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
         feedbackId: 1,
-        status: 'CONFIRMED',
+        comment: '확인했습니다.',
       });
       expect(result.current.modalState.type).toBeNull();
     });
