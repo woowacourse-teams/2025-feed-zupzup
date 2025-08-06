@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ArrowIcon } from '@/components/icons/arrowIcon';
 import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
@@ -10,6 +9,7 @@ import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFil
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
+import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import {
   dashboardLayout,
   goOnboardButton,
@@ -32,9 +32,6 @@ export default function UserDashboard() {
   const navigate = useNavigate();
   const theme = useAppTheme();
 
-  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-  const [selectedSort, setSelectedSort] = useState('latest');
-
   const {
     items: feedbacks,
     fetchMore,
@@ -49,6 +46,14 @@ export default function UserDashboard() {
     key: 'feedbacks',
   });
 
+  const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    filteredAndSortedFeedbacks,
+  } = useFeedbackFilterSort(feedbacks);
+
   useGetFeedback({ fetchMore, hasNext, loading });
 
   const { highlightedId } = useHighLighted();
@@ -59,57 +64,6 @@ export default function UserDashboard() {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
     navigate('/');
   };
-
-  const handleFilterChange = (newFilter: string | null) => {
-    setSelectedFilter(newFilter);
-  };
-
-  const handleSortChange = (newSort: string) => {
-    setSelectedSort(newSort);
-  };
-
-  const filteredAndSortedFeedbacks = (() => {
-    let filtered = [...feedbacks];
-
-    if (selectedFilter) {
-      switch (selectedFilter) {
-        case 'pending':
-          filtered = filtered.filter(
-            (feedback) => feedback.status === 'WAITING'
-          );
-          break;
-        case 'completed':
-          filtered = filtered.filter(
-            (feedback) => feedback.status === 'CONFIRMED'
-          );
-          break;
-        case 'mine':
-          filtered = filtered.filter((feedback) => feedback.status === 'MINE');
-          break;
-      }
-    }
-
-    switch (selectedSort) {
-      case 'oldest':
-        filtered.sort(
-          (a, b) =>
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-        break;
-      case 'likes':
-        filtered.sort((a, b) => b.likeCount - a.likeCount);
-        break;
-      case 'latest':
-      default:
-        filtered.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        break;
-    }
-
-    return filtered;
-  })();
 
   return (
     <div css={dashboardLayout}>
