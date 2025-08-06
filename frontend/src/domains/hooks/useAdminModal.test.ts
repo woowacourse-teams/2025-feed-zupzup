@@ -109,14 +109,14 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleConfirmFeedback('확인했습니다.');
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
         feedbackId: 1,
         status: 'CONFIRMED',
       });
-      expect(mockOnConfirmFeedback).toHaveBeenCalledWith(1);
+      expect(mockOnConfirmFeedback).toHaveBeenCalledWith(1, '확인했습니다.');
       expect(result.current.modalState.type).toBeNull();
     });
 
@@ -135,7 +135,7 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleDeleteFeedback();
       });
 
       expect(mockedAdminFeedbackApi.deleteFeedback).toHaveBeenCalledWith({
@@ -154,7 +154,7 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleConfirmFeedback('확인했습니다.');
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).not.toHaveBeenCalled();
@@ -170,7 +170,7 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleConfirmFeedback('확인했습니다.');
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
@@ -196,7 +196,7 @@ describe('useAdminModal', () => {
     expect(result.current.modalState.type).toBe('confirm');
 
     await act(async () => {
-      await result.current.handleModalAction();
+      await result.current.handleConfirmFeedback('확인했습니다.');
     });
 
     expect(result.current.modalState.type).toBeNull();

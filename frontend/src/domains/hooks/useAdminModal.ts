@@ -8,7 +8,7 @@ interface ModalState {
 }
 
 interface UseAdminModalProps {
-  onConfirmFeedback?: (feedbackId: number) => void;
+  onConfirmFeedback?: (feedbackId: number, comment: string) => void;
   onDeleteFeedback?: (feedbackId: number) => void;
 }
 
@@ -31,27 +31,32 @@ export const useAdminModal = ({
     setModalState({ type: null });
   };
 
-  const handleModalAction = async () => {
-    const { type, feedbackId } = modalState;
-
-    if (!feedbackId) return;
-
-    try {
-      if (type === 'confirm') {
+  const handleConfirmFeedback = async (comment: string) => {
+    const { feedbackId } = modalState;
+    if (feedbackId) {
+      onConfirmFeedback?.(feedbackId, comment);
+      try {
         await patchFeedbackStatus({
           feedbackId,
           status: 'CONFIRMED',
         });
-
-        onConfirmFeedback?.(feedbackId);
-      } else if (type === 'delete') {
-        await deleteFeedback({ feedbackId });
-        onDeleteFeedback?.(feedbackId);
+      } catch (e) {
+        showErrorModal(e, '에러');
       }
-    } catch (e) {
-      showErrorModal(e, '에러');
     }
+    closeModal();
+  };
 
+  const handleDeleteFeedback = async () => {
+    const { feedbackId } = modalState;
+    if (feedbackId) {
+      onDeleteFeedback?.(feedbackId);
+      try {
+        await deleteFeedback({ feedbackId });
+      } catch (e) {
+        showErrorModal(e, '에러');
+      }
+    }
     closeModal();
   };
 
@@ -60,6 +65,7 @@ export const useAdminModal = ({
     openFeedbackCompleteModal,
     openFeedbackDeleteModal,
     closeModal,
-    handleModalAction,
+    handleConfirmFeedback,
+    handleDeleteFeedback,
   };
 };

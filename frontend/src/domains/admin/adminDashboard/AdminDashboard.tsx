@@ -29,9 +29,10 @@ export default function AdminDashboard() {
     key: 'feedbacks',
   });
 
-  const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-    originalFeedbacks,
-  });
+  const { feedbacks, optimisticConfirmFeedback, optimisticDeleteFeedback } =
+    useFeedbackManagement({
+      originalFeedbacks,
+    });
 
   const { isAuthorized, isCheckingAuth } = useAdminAuth();
 
@@ -40,10 +41,11 @@ export default function AdminDashboard() {
     openFeedbackCompleteModal,
     openFeedbackDeleteModal,
     closeModal,
-    handleModalAction,
+    handleConfirmFeedback,
+    handleDeleteFeedback,
   } = useAdminModal({
-    onConfirmFeedback: confirmFeedback,
-    onDeleteFeedback: deleteFeedback,
+    onConfirmFeedback: optimisticConfirmFeedback,
+    onDeleteFeedback: optimisticDeleteFeedback,
   });
 
   useGetFeedback({ fetchMore, hasNext, loading });
@@ -90,14 +92,14 @@ export default function AdminDashboard() {
           message='삭제한 건의는 되돌릴 수 없습니다.'
           isOpen={true}
           onClose={closeModal}
-          onConfirm={handleModalAction}
+          onConfirm={handleDeleteFeedback}
         />
       )}
       {modalState.type === 'confirm' && (
         <AnswerModal
           isOpen={true}
           handleCloseModal={closeModal}
-          handleSubmit={handleModalAction}
+          handleSubmit={handleConfirmFeedback}
         />
       )}
     </section>
