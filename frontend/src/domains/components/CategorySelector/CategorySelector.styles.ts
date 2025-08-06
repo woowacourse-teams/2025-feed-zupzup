@@ -1,10 +1,11 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 
-export const dropdownContainer = (width?: string | number) => css`
+export const dropdownContainer = (width?: string, height?: string) => css`
   position: relative;
   display: inline-block;
-  width: ${typeof width === 'number' ? `${width}px` : width || 'auto'};
+  width: ${width || 'auto'};
+  height: ${height || 'auto'};
 `;
 
 export const dropdownButton = (theme: Theme, isOpen: boolean) => css`

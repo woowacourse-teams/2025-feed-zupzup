@@ -16,7 +16,8 @@ interface SelectorOption {
 }
 
 interface CategorySelectorProps {
-  width?: string | number;
+  width?: string;
+  height?: string;
   options: SelectorOption[];
   placeholder: string;
   value?: string;
@@ -28,6 +29,7 @@ interface CategorySelectorProps {
 
 export default function CategorySelector({
   width = 'auto',
+  height = 'auto',
   options,
   placeholder,
   value,
@@ -88,7 +90,7 @@ export default function CategorySelector({
   }, [isOpen]);
 
   return (
-    <div css={dropdownContainer(width)} data-category-selector>
+    <div css={dropdownContainer(width, height)} data-category-selector>
       <input type='hidden' name={name} id={id} value={value || ''} />
       <button
         type='button'
