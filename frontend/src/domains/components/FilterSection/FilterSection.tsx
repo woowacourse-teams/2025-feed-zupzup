@@ -9,6 +9,7 @@ import {
   tagButton,
   sortDropdownContainer,
 } from './FilterSection.styles';
+import Button from '@/components/@commons/Button/Button';
 
 export interface FilterSectionProps {
   selectedFilter: string | null;
@@ -57,13 +58,13 @@ export default function FilterSection({
             key={option.value}
             customCSS={tagStyle(theme, selectedFilter === option.value)}
           >
-            <button
+            <Button
               type='button'
-              css={tagButton}
+              customCSS={tagButton(theme)}
               onClick={() => handleFilterClick(option.value)}
             >
               {option.label}
-            </button>
+            </Button>
           </Tag>
         ))}
       </div>

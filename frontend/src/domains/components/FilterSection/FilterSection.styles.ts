@@ -30,10 +30,10 @@ export const tagStyle = (theme: Theme, isSelected: boolean) => css`
   ${theme.typography.pretendard.captionSmall};
 `;
 
-export const tagButton = css`
+export const tagButton = (theme: Theme) => css`
   padding: 4px 4px;
-  font-size: 14px;
-  font-weight: 500;
+  ${theme.typography.pretendard.captionSmall};
+
   color: inherit;
   background: none;
   border: none;
