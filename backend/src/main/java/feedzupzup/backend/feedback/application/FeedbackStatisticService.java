@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedbacks;
 import feedzupzup.backend.feedback.domain.StatisticTargetPeriod;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FeedbackStatisticService {
 
-    private final FeedBackRepository feedBackRepository;
+    private final FeedbackRepository feedBackRepository;
     private final OrganizationRepository organizationRepository;
 
     public StatisticResponse calculateStatistic(final Long organizationId, final String period) {

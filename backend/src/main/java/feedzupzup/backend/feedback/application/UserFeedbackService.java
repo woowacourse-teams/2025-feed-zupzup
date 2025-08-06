@@ -2,10 +2,11 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.Category;
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
@@ -24,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserFeedbackService {
 
-    private final FeedBackRepository feedBackRepository;
+    private final FeedbackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
     private final OrganizationRepository organizationRepository;
 
@@ -46,13 +47,15 @@ public class UserFeedbackService {
     public UserFeedbackListResponse getFeedbackPage(
             final Long organizationId,
             final int size,
-            final Long cursorId
+            final Long cursorId,
+            final ProcessStatus status
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findPageByOrganizationIdAndCursorIdOrderByDesc(
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(
                 organizationId,
                 cursorId,
-                pageable
+                pageable, 
+                status
         );
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
