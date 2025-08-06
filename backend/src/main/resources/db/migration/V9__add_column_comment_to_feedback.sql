@@ -1,1 +1,1 @@
-ALTER TABLE feedback ADD COLUMN comment;
+ALTER TABLE feedback ADD COLUMN comment VARCHAR(255);
