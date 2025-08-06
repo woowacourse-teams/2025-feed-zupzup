@@ -30,40 +30,26 @@ export async function postUserFeedback({
   onSuccess,
   onError,
 }: UserFeedbackParams) {
-  try {
-    const response = await apiClient.post<
-      SuggestionFeedback,
-      FeedbackRequestBody
-    >(`/organizations/${organizationId}/feedbacks`, {
+  await apiClient.post<SuggestionFeedback, FeedbackRequestBody>(
+    `/organizations/${organizationId}/feedbacks`,
+    {
       content,
       isSecret,
       userName,
-    });
-
-    if (response) {
-      onSuccess(response);
-    }
-  } catch (error) {
-    console.error('피드백 전송 에러:', error);
-    onError();
-  }
+    },
+    { onError, onSuccess }
+  );
 }
 
 export async function postLike({ feedbackId, onSuccess, onError }: LikeParams) {
-  try {
-    const response = await apiClient.post(
-      `/feedbacks/${feedbackId}/like`,
-      {},
-      {
-        onSuccess,
-        onError,
-      }
-    );
-    return response;
-  } catch (error) {
-    console.error('피드백 전송 에러:', error);
-    return;
-  }
+  await apiClient.post(
+    `/feedbacks/${feedbackId}/like`,
+    {},
+    {
+      onSuccess,
+      onError,
+    }
+  );
 }
 
 export async function deleteLike({
@@ -71,14 +57,9 @@ export async function deleteLike({
   onSuccess,
   onError,
 }: LikeParams) {
-  try {
-    const response = await apiClient.delete(`/feedbacks/${feedbackId}/like`, {
-      onSuccess,
-      onError,
-    });
-    return response;
-  } catch (error) {
-    console.error('피드백 전송 에러:', error);
-    return;
-  }
+  const response = await apiClient.delete(`/feedbacks/${feedbackId}/like`, {
+    onSuccess,
+    onError,
+  });
+  return response;
 }

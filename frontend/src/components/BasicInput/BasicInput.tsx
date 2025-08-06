@@ -6,7 +6,7 @@ import {
 } from '@/components/BasicInput/BasicInput.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-interface BasicInputProps extends React.ComponentProps<'input'> {
+export interface BasicInputProps extends React.ComponentProps<'input'> {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder: string;

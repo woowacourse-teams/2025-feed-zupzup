@@ -35,6 +35,7 @@ export const colors = {
   green: {
     100: '#91c681',
     200: '#006045',
+    300: '#00A63E',
   },
 
   darkGray: {
@@ -183,6 +184,12 @@ export const typography = {
     },
   },
   BMHANNAAir: {
+    bodyBold: {
+      fontFamily: 'BMHANNAAir, sans-serif',
+      fontWeight: 700,
+      fontSize: 22,
+      letterSpacing: 0,
+    },
     caption: {
       fontFamily: 'BMHANNAAir, sans-serif',
       fontWeight: 400,

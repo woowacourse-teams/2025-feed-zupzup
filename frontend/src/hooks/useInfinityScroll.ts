@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { apiClient } from '@/apis/apiClient';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 
 const DEFAULT_SIZE = 10;
 const MAX_RETRY_COUNT = 3;
@@ -28,6 +29,7 @@ export default function useInfinityScroll<
   const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
   const [hasNext, setHasNext] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
+  const { showErrorModal } = useErrorModalContext();
 
   const retryCountRef = useRef(0);
 
@@ -54,7 +56,7 @@ export default function useInfinityScroll<
       setCursorId(responseData.nextCursorId);
       retryCountRef.current = 0;
     } catch (error) {
-      console.error('무한 스크롤 에러:', error);
+      showErrorModal(error, '에러');
 
       retryCountRef.current += 1;
       if (retryCountRef.current >= MAX_RETRY_COUNT) {

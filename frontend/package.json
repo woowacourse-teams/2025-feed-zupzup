@@ -6,7 +6,8 @@
     "test": "jest",
     "test-e2e": "cypress open",
     "dev": "webpack serve --config webpack/webpack.dev.js",
-    "build": "webpack --config webpack/webpack.prod.js",
+    "build:dev": "webpack --config webpack/webpack.dev.js",
+    "build:prod": "webpack --config webpack/webpack.prod.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
     "prettier": "prettier --write .",
@@ -20,6 +21,7 @@
   "description": "",
   "dependencies": {
     "@emotion/react": "^11.14.0",
+    "@sentry/react": "^9.42.1",
     "dotenv": "^17.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -1,5 +1,4 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
-import SkipIcon from '@/components/icons/SkipIcon';
 import CategoryButton from '@/domains/components/CategoryButton/CategoryButton';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import {
@@ -11,9 +10,11 @@ import {
   skipText,
   buttonContainer,
   title,
+  skipIcon,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
+import { Analytics, onboardingEvents } from '@/analytics';
 
 interface OnBoardingProps {
   moveNextStep: () => void;
@@ -25,9 +26,18 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
 
   const { groupName } = useOrganizationName();
 
-  const handleCategoryButtonClick = () => {
-    // api 통신
+  const handleCategoryButtonClick = (
+    categoryText: '시설' | '학사행정' | '커리큘럼' | '기타'
+  ) => {
+    Analytics.track(onboardingEvents.categorySelect(categoryText));
+
     moveNextStep();
+  };
+
+  const handleViewSuggestionsClick = () => {
+    Analytics.track(onboardingEvents.viewSuggestionsFromOnboarding());
+
+    navigate('/dashboard');
   };
 
   return (
@@ -45,29 +55,29 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
           <CategoryButton
             icon='🏠'
             text='시설'
-            onClick={handleCategoryButtonClick}
+            onClick={() => handleCategoryButtonClick('시설')}
           />
           <CategoryButton
             icon='📑'
             text='학사행정'
-            onClick={handleCategoryButtonClick}
+            onClick={() => handleCategoryButtonClick('학사행정')}
           />
           <CategoryButton
-            icon='👥'
-            text='인간관계'
-            onClick={handleCategoryButtonClick}
+            icon='📕'
+            text='커리큘럼'
+            onClick={() => handleCategoryButtonClick('커리큘럼')}
           />
           <CategoryButton
             icon='💡'
             text='기타'
-            onClick={handleCategoryButtonClick}
+            onClick={() => handleCategoryButtonClick('기타')}
           />
         </div>
       </div>
       <BasicButton
-        icon={<SkipIcon />}
+        icon={<p css={skipIcon}>📄</p>}
         variant='secondary'
-        onClick={() => navigate('/dashboard')}
+        onClick={handleViewSuggestionsClick}
       >
         <p css={skipText(theme)}>건의 목록 보러가기</p>
       </BasicButton>

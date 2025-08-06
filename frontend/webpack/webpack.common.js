@@ -1,16 +1,13 @@
-import path from 'path';
+import {
+  default as CopyPlugin,
+  default as CopyWebpackPlugin,
+} from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import webpack from 'webpack';
-import dotenv from 'dotenv';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
-import CopyPlugin from 'copy-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-dotenv.config();
 
 export default {
   entry: './src/index.tsx',
@@ -19,6 +16,11 @@ export default {
     alias: {
       '@': path.resolve(__dirname, '../src'),
     },
+  },
+  devServer: {
+    historyApiFallback: true,
+    static: './dist',
+    port: 3000,
   },
   module: {
     rules: [
@@ -56,10 +58,13 @@ export default {
       template: './public/index.html',
     }),
     new CopyWebpackPlugin({
-      patterns: [{ from: 'public/favicon.ico', to: '.' }],
-    }),
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env),
+      patterns: [
+        { from: 'public/favicon.ico', to: '.' },
+        { from: 'public/manifest.json', to: '.' },
+        { from: 'public/512x512.png', to: '.' },
+        { from: 'public/192x192.png', to: '.' },
+        { from: 'public/service-worker.js', to: '.' },
+      ],
     }),
     new CopyPlugin({
       patterns: [

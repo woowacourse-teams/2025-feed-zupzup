@@ -1,4 +1,3 @@
-import AlertModal from '@/components/AlertModal/AlertModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
@@ -10,8 +9,12 @@ import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
+import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
+import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 
 export default function AdminDashboard() {
+  const { filter, handlePanelClick } = useFeedbackFilter();
   const {
     items: originalFeedbacks,
     fetchMore,
@@ -55,7 +58,7 @@ export default function AdminDashboard() {
 
   return (
     <section css={dashboardLayout}>
-      <DashboardOverview />
+      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox
@@ -73,6 +76,11 @@ export default function AdminDashboard() {
         ))}
         {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
+      <FeedbackStatusMessage
+        loading={loading}
+        hasNext={hasNext}
+        feedbackCount={feedbacks.length}
+      />
       {hasNext && <div id='scroll-observer'></div>}
 
       {modalState.type === 'delete' && (
@@ -85,11 +93,10 @@ export default function AdminDashboard() {
         />
       )}
       {modalState.type === 'confirm' && (
-        <AlertModal
-          title='확인하시겠습니까?'
+        <AnswerModal
           isOpen={true}
-          onClose={closeModal}
-          onConfirm={handleModalAction}
+          handleCloseModal={closeModal}
+          handleSubmit={handleModalAction}
         />
       )}
     </section>

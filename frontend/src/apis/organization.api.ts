@@ -1,4 +1,4 @@
-import { apiClient, ApiError } from '@/apis/apiClient';
+import { apiClient } from '@/apis/apiClient';
 import {
   GetOrganizationName,
   GetOrganizationStatistics,
@@ -21,49 +21,34 @@ interface GetOrganizationStatistic {
 export async function getOrganizationName({
   organizationId,
 }: GetOrganizationNameParams) {
-  try {
-    const response = await apiClient.get<GetOrganizationName>(
-      `/organizations/${organizationId}`
-    );
-    return response as GetOrganizationName;
-  } catch (e) {
-    if (e instanceof ApiError) console.error(e.message);
-    return;
-  }
+  const response = await apiClient.get<GetOrganizationName>(
+    `/organizations/${organizationId}`
+  );
+  return response as GetOrganizationName;
 }
 
 export async function postOrganizationCheer({
   organizationId,
   cheeringCount,
 }: PostOrganizationCheerParams) {
-  try {
-    const response = await apiClient.post(
-      `/organizations/${organizationId}/cheer`,
-      {
-        cheeringCount,
-      }
-    );
-    return response;
-  } catch (e) {
-    if (e instanceof ApiError) console.error(e.message);
-    return;
-  }
+  const response = await apiClient.post(
+    `/organizations/${organizationId}/cheer`,
+    {
+      cheeringCount,
+    }
+  );
+  return response;
 }
 
 export async function getOrganizationStatistics({
   organizationId,
   period,
 }: GetOrganizationStatistic) {
-  try {
-    const params = new URLSearchParams({
-      period,
-    }).toString();
-    const response = await apiClient.get<GetOrganizationStatistics>(
-      `/organizations/${organizationId}/statistic?${params}`
-    );
-    return response as GetOrganizationStatistics;
-  } catch (e) {
-    if (e instanceof ApiError) console.error(e.message);
-    return { data: '에러입니다.' };
-  }
+  const params = new URLSearchParams({
+    period,
+  }).toString();
+  const response = await apiClient.get<GetOrganizationStatistics>(
+    `/organizations/${organizationId}/statistic?${params}`
+  );
+  return response as GetOrganizationStatistics;
 }

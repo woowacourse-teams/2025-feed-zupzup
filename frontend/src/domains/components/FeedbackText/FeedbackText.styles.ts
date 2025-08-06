@@ -8,6 +8,7 @@ export const feedbackText = (
   ${theme.typography.inter.caption}
 
   line-height: 20px;
+  white-space: pre;
 
   ${type === 'WAITING'
     ? `color : ${theme.colors.darkGray[100]}`
