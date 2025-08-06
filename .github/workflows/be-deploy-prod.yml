@@ -3,9 +3,6 @@ name: Build and Deploy
 on:
   pull_request:
     branches: [ "main" ]
-    paths:
-      - 'backend/**'
-
 jobs:
   build:
     runs-on: ubuntu-latest
