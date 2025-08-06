@@ -2,7 +2,7 @@ name: Build and Deploy
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "deploy-test" ]
 jobs:
   build:
     runs-on: ubuntu-latest
