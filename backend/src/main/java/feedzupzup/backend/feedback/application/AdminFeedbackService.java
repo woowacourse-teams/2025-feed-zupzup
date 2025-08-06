@@ -40,8 +40,7 @@ public class AdminFeedbackService {
             final UpdateFeedbackStatusRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedback = feedBackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+        final Feedback feedback = getFeedback(feedbackId);
         feedback.updateStatus(request.status());
         return UpdateFeedbackStatusResponse.from(feedback);
     }
@@ -52,8 +51,7 @@ public class AdminFeedbackService {
             final Long feedbackId,
             final UpdateFeedbackSecretRequest request
     ) {
-        final Feedback feedBack = feedBackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+        final Feedback feedBack = getFeedback(feedbackId);
         feedBack.updateSecret(request.isSecret());
         return UpdateFeedbackSecretResponse.from(feedBack);
     }
@@ -77,9 +75,13 @@ public class AdminFeedbackService {
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedback = feedBackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+        final Feedback feedback = getFeedback(feedbackId);
         feedback.updateComment(request.comment());
         return UpdateFeedbackCommentResponse.from(feedback);
+    }
+
+    private Feedback getFeedback(final Long feedbackId) {
+        return feedBackRepository.findById(feedbackId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
     }
 }
