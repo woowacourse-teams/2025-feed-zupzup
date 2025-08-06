@@ -26,7 +26,7 @@ export const headerTitle = (theme: Theme) => css`
   font-size: 14px;
   color: ${theme.colors.darkGray[400]};
 
-  ${theme.typography.BMHANNAPro.bodyBold}
+  ${theme.typography.BMHANNAPro.bodyRegular}
 `;
 
 export const headerSubtitle = (theme: Theme) => css`

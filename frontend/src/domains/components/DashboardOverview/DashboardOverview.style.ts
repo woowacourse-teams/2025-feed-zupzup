@@ -38,7 +38,7 @@ export const cheerButtonLayout = css`
 `;
 
 export const titleText = (theme: Theme) => css`
-  ${theme.typography.bmHannaPro.bodyRegular};
+  ${theme.typography.BMHANNAPro.bodyRegular};
 
   font-weight: 900;
 `;

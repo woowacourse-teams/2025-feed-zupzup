@@ -47,20 +47,6 @@ export const colors = {
 };
 
 export const typography = {
-  bmHannaPro: {
-    bodyLarge: {
-      fontFamily: 'BM HANNA Pro OTF, sans-serif',
-      fontSize: 26,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
-    bodyRegular: {
-      fontFamily: 'BM HANNA Pro OTF, sans-serif',
-      fontSize: 22,
-      lineHeight: 'auto',
-      letterSpacing: 0,
-    },
-  },
   pretendard: {
     h1: {
       fontFamily: 'Pretendard, sans-serif',
@@ -129,11 +115,16 @@ export const typography = {
     },
   },
   BMHANNAPro: {
-    caption: {
-      fontFamily: 'BMHANNAPro, sans-serif',
-      fontWeight: 400,
-      fontSize: 16,
+    bodyLarge: {
+      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontSize: 26,
       lineHeight: 'auto',
+      letterSpacing: 0,
+    },
+    bodyRegular: {
+      fontFamily: 'BMHANNAPro, sans-serif',
+      fontWeight: 700,
+      fontSize: 22,
       letterSpacing: 0,
     },
     small: {
@@ -143,10 +134,11 @@ export const typography = {
       lineHeight: 'auto',
       letterSpacing: 0,
     },
-    bodyBold: {
+    caption: {
       fontFamily: 'BMHANNAPro, sans-serif',
-      fontWeight: 700,
-      fontSize: 22,
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: 'auto',
       letterSpacing: 0,
     },
   },
