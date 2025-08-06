@@ -70,7 +70,7 @@ jobs:
         env:
           CI: true
 
-  build:
+  build-dev:
     runs-on: ubuntu-latest
     needs: [type-check, lint, test]
     steps:
@@ -89,3 +89,23 @@ jobs:
 
       - name: Build project
         run: npm run build:dev
+
+  build-prod:
+    runs-on: ubuntu-latest
+    needs: [type-check, lint, test]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: "./frontend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build:prod
