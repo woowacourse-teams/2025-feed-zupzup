@@ -72,6 +72,7 @@ export default function AdminDashboard() {
             isSecret={feedback.isSecret}
             likeCount={feedback.likeCount}
             userName={feedback.userName}
+            comment={feedback.comment}
           />
         ))}
         {loading && <div>로딩중...</div>}

@@ -44,6 +44,7 @@ const userFeedbackWaiting = {
   customCSS: [],
   userName: '익명의 사용자',
   isMyFeedback: true,
+  comment: '감사합니당',
 };
 
 const userFeedbackConfirmed = {
@@ -59,6 +60,7 @@ const userFeedbackConfirmed = {
   customCSS: [],
   userName: '김개발',
   isMyFeedback: false,
+  comment: '감사합니당',
 };
 
 const adminFeedbackWaiting = {
@@ -75,6 +77,7 @@ const adminFeedbackWaiting = {
   createdAt: '2024-05-21',
   customCSS: [],
   isMyFeedback: false,
+  comment: '감사합니당',
 };
 
 const adminFeedbackConfirmed = {
@@ -90,6 +93,7 @@ const adminFeedbackConfirmed = {
   createdAt: '2024-05-18',
   customCSS: [],
   isMyFeedback: false,
+  comment: '감사합니당',
 };
 
 export const Default: Story = {

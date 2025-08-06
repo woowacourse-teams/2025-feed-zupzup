@@ -8,6 +8,7 @@ export interface FeedbackType {
   createdAt: string;
   userName: string;
   likeCount: number;
+  comment: null | string;
 }
 
 export interface FeedbackResponse<T> {

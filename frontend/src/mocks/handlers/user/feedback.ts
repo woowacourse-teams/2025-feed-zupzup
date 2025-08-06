@@ -9,7 +9,7 @@ import { http, HttpResponse } from 'msw';
 
 export const UserFeedbackHandlers = [
   // 피드백 조회
-  http.get(`${BASE}/places/1/feedbacks`, ({ request }) => {
+  http.get(`${BASE}/organizations/1/feedbacks`, ({ request }) => {
     const url = new URL(request.url);
     const cursorId = url.searchParams.get('cursorId');
 
