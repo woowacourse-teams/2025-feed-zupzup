@@ -115,13 +115,13 @@ export const typography = {
     },
   },
   BMHANNAPro: {
-    bodyLarge: {
+    h2: {
       fontFamily: 'BM HANNA Pro OTF, sans-serif',
       fontSize: 26,
       lineHeight: 'auto',
       letterSpacing: 0,
     },
-    bodyRegular: {
+    bodyBold: {
       fontFamily: 'BMHANNAPro, sans-serif',
       fontWeight: 700,
       fontSize: 22,

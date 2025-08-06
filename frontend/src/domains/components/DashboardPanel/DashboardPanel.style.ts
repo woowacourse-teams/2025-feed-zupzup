@@ -47,7 +47,7 @@ export const panelTitle = (theme: Theme) => css`
 `;
 
 export const panelContent = (theme: Theme, isClick: boolean) => css`
-  ${theme.typography.BMHANNAPro.bodyLarge};
+  ${theme.typography.BMHANNAPro.h2};
 
   font-weight: 900;
   color: ${isClick ? theme.colors.purple[100] : theme.colors.black};
