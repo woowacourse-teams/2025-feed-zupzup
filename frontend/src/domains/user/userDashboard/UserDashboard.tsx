@@ -5,7 +5,6 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
-import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
@@ -24,7 +23,7 @@ import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import { Analytics, userDashboardEvents } from '@/analytics';
-import FilterSection from '@/components/FilterSection/FilterSection';
+import FilterSection from '@/domains/components/FilterSection/FilterSection';
 
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
