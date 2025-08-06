@@ -98,7 +98,10 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
     }
 
-    public void updateComment(String value) {
+    public void updateComment(final String value) {
+        if (this.comment == null) {
+            this.comment = new Comment();
+        }
         this.comment.updateComment(value);
     }
 
