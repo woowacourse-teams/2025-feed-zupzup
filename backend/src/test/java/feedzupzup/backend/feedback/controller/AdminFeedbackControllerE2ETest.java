@@ -12,6 +12,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -207,6 +208,41 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks.size()", equalTo(3))
                 .body("data.hasNext", equalTo(false))
                 .body("data.nextCursorId", equalTo(1));
+    }
+
+    @Test
+    @DisplayName("관리자가 답글을 달 수 있어야 한다.")
+    void admin_comment() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("첫 번째 피드백",
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                "testRequest"
+        );
+
+        // when & then
+        given()
+                .log().all()
+                .contentType(ContentType.JSON)
+                .body(updateFeedbackCommentRequest)
+                .when()
+                .patch("/admin/feedbacks/{feedbackId}/comment", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.comment", equalTo("testRequest"))
+                .body("data.feedbackId", equalTo(1));
     }
 
     @Test

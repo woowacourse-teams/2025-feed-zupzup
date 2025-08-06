@@ -14,9 +14,11 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -24,6 +26,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -284,12 +287,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     targetOrganization, FACILITY);
             organizationCategoryRepository.save(organizationCategory2);
 
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    targetOrganization.getId(), organizationCategory1);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    targetOrganization.getId(), organizationCategory1);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(),
-                    organizationCategory2);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), organizationCategory2);
 
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -416,6 +416,62 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.hasNext()).isFalse()
             );
         }
+    }
+  
+    @Test
+    @DisplayName("피드백의 답글을 추가한다")
+    void add_comment() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        String testComment = "testComment";
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                testComment
+        );
+
+        // when
+        final UpdateFeedbackCommentResponse updateFeedbackCommentResponse =
+                adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+
+        // then
+        assertThat(updateFeedbackCommentResponse.comment()).isEqualTo(testComment);
+    }
+
+    @Test
+    @DisplayName("피드백의 답글을 추가한다면, 상태가 바뀌어야 한다.")
+    void when_add_comment_then_change_feedback_status() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        String testComment = "testComment";
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                testComment
+        );
+
+        //when
+        adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+        final Feedback resultFeedback = feedBackRepository.findById(1L).get();
+
+        // then
+        assertThat(resultFeedback.getStatus()).isEqualTo(ProcessStatus.CONFIRMED);
     }
 
     @Nested
