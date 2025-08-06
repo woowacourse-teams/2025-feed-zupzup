@@ -13,9 +13,11 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -223,7 +225,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organizationCategory);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
                     organizationCategory);
-            
+
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
 
@@ -279,11 +281,11 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final OrganizationCategory organizationCategory2 = CategoryFixture.createOrganizationCategory(
                     targetOrganization, FACILITY);
             organizationCategoryRepository.save(organizationCategory2);
-            
+
             final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
             final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(targetOrganization.getId(), organizationCategory1);
             final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(otherOrganization.getId(), organizationCategory2);
-            
+
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
             feedBackRepository.save(otherFeedback);
@@ -322,7 +324,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organizationCategory);
             final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
                     organizationCategory);
-            
+
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
             feedBackRepository.save(feedback3);
@@ -384,7 +386,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organizationCategory);
             final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
                     organizationCategory);
-            
+
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
             final Feedback saved3 = feedBackRepository.save(feedback3);
@@ -405,4 +407,33 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             );
         }
     }
+
+    @Test
+    @DisplayName("피드백의 답글을 추가한다")
+    void add_comment() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        String testComment = "testComment";
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                testComment
+        );
+
+        // when
+        final UpdateFeedbackCommentResponse updateFeedbackCommentResponse =
+                adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+
+        // then
+        assertThat(updateFeedbackCommentResponse.comment()).isEqualTo(testComment);
+    }
+
 }
