@@ -5,10 +5,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -17,12 +20,25 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 @Component
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
+    private static final List<String> EXCLUDE_URI = List.of(
+            "/actuator/**"
+    );
+
+    private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+
     @Override
     protected void doFilterInternal(
             final HttpServletRequest request,
             final HttpServletResponse response,
             final FilterChain filterChain
     ) throws ServletException, IOException {
+
+        final String requestURI = request.getRequestURI();
+        if (isExcluded(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final ContentCachingRequestWrapper cacheRequest = new ContentCachingRequestWrapper(request);
         final ContentCachingResponseWrapper cacheResponse = new ContentCachingResponseWrapper(response);
 
@@ -49,5 +65,10 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
         final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
         log.info(responseLog.toString());
+    }
+
+    private boolean isExcluded(String requestURI) {
+        return EXCLUDE_URI.stream()
+                .anyMatch(pattern -> antPathMatcher.match(pattern, requestURI));
     }
 }
