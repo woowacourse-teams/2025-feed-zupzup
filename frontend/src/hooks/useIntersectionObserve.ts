@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from 'react';
 
 const basicOptions: IntersectionObserverInit = {
   root: null,
-  rootMargin: '0px',
+  rootMargin: '140px',
   threshold: 0.5,
 };
 
