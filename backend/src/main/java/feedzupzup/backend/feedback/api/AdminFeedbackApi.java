@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
+import feedzupzup.backend.feedback.application.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
@@ -33,10 +34,11 @@ public interface AdminFeedbackApi {
     })
     @GetMapping("/admin/organizations/{organizationId}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") Long organizationId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
-            @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status
+            @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(required = false) final FeedbackOrderBy orderBy
     );
 
     @Operation(summary = "피드백 비밀 상태 변경", description = "피드백의 비밀 상태를 변경합니다. (관리자 전용)")

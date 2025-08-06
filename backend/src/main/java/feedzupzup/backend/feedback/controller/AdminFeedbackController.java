@@ -2,12 +2,13 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
+import feedzupzup.backend.feedback.application.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,15 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final Long organizationId,
             final int size,
             final Long cursorId,
-            final ProcessStatus processStatus
+            final ProcessStatus status,
+            final FeedbackOrderBy orderBy
     ) {
         return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
                 organizationId,
                 size,
                 cursorId,
-                processStatus
+                status,
+                orderBy
         ));
     }
 

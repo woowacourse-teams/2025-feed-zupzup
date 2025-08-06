@@ -1,9 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
@@ -60,10 +60,12 @@ public class AdminFeedbackService {
             final Long organizationId,
             final int size,
             final Long cursorId,
-            final ProcessStatus status
+            final ProcessStatus status,
+            final FeedbackOrderBy orderBy
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
-        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(organizationId, cursorId, pageable, status);
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(
+                organizationId, cursorId, pageable, status, orderBy.name());
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
         return AdminFeedbackListResponse.from(feedbackPage);
