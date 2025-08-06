@@ -8,7 +8,6 @@ import {
   dropdownText,
 } from './CategorySelector.styles';
 import ArrowBottomIcon from '@/components/icons/ArrowBottomIcon';
-import { SerializedStyles } from '@emotion/react';
 import Button from '@/components/@commons/Button/Button';
 
 interface SelectorOption {

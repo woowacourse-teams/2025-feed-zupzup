@@ -1,13 +1,12 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 
-export const filterSectionContainer = (theme: Theme) => css`
+export const filterSectionContainer = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
   padding: 16px 20px;
-  background-color: ${theme.colors.white[100]};
 `;
 
 export const sortDropdownButton = css`
@@ -21,19 +20,14 @@ export const filterTagsContainer = css`
 `;
 
 export const tagStyle = (theme: Theme, isSelected: boolean) => css`
+  color: ${isSelected ? theme.colors.white[100] : theme.colors.black[100]};
   background-color: ${isSelected
     ? theme.colors.purple[100]
-    : theme.colors.gray[100]};
+    : theme.colors.white[100]};
   border: 1px solid
     ${isSelected ? theme.colors.purple[100] : theme.colors.gray[200]};
   border-radius: 20px;
   transition: all 0.2s ease;
-
-  &:hover {
-    background-color: ${isSelected
-      ? theme.colors.purple[100]
-      : theme.colors.gray[200]};
-  }
 `;
 
 export const tagButton = css`

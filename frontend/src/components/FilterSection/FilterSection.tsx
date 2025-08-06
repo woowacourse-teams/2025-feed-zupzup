@@ -48,7 +48,7 @@ export default function FilterSection({
   };
 
   return (
-    <div css={[filterSectionContainer(theme), customCSS]}>
+    <div css={[filterSectionContainer, customCSS]}>
       <div css={filterTagsContainer}>
         {filterOptions.map((option) => (
           <Tag

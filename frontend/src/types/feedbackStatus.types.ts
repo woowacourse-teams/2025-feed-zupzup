@@ -1,1 +1,1 @@
-export type FeedbackStatusType = 'CONFIRMED' | 'WAITING' | 'MINE';
+export type FeedbackStatusType = 'CONFIRMED' | 'WAITING';
