@@ -41,20 +41,20 @@ export const dot = (theme: Theme, color?: string) => css`
 `;
 
 export const panelTitle = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;
 
 export const panelContent = (theme: Theme, isClick: boolean) => css`
-  ${theme.typography.bmHannaPro.bodyLarge};
+  ${theme.typography.BMHANNAPro.h2};
 
   font-weight: 900;
   color: ${isClick ? theme.colors.purple[100] : theme.colors.black};
 `;
 
 export const captionContent = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;
