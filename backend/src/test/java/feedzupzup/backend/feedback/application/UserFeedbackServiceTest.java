@@ -76,7 +76,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 () -> assertThat(response.feedbackId()).isNotNull(),
                 () -> assertThat(response.content()).isEqualTo(request.content()),
                 () -> assertThat(response.isSecret()).isEqualTo(request.isSecret()),
-                () -> assertThat(response.createdAt()).isNotNull()
+                () -> assertThat(response.postedAt()).isNotNull()
         );
     }
 

@@ -242,7 +242,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbackId", notNullValue())
                 .body("data.content", equalTo("피드백"))
                 .body("data.isSecret", equalTo(false))
-                .body("data.createdAt", notNullValue())
+                .body("data.postedAt", notNullValue())
                 .body("data.category", equalTo("시설"));
     }
 
@@ -275,7 +275,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbackId", notNullValue())
                 .body("data.content", equalTo("비밀 피드백입니다"))
                 .body("data.isSecret", equalTo(true))
-                .body("data.createdAt", notNullValue())
+                .body("data.postedAt", notNullValue())
                 .body("data.category", equalTo("시설"));
     }
 
