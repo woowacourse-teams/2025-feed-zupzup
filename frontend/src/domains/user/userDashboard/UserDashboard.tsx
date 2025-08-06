@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ArrowIcon } from '@/components/icons/arrowIcon';
 import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
@@ -23,12 +24,16 @@ import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import { Analytics, userDashboardEvents } from '@/analytics';
+import FilterSection from '@/components/FilterSection/FilterSection';
 
 export default function UserDashboard() {
   const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
+
+  const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
+  const [selectedSort, setSelectedSort] = useState('latest');
 
   const {
     items: feedbacks,
@@ -52,16 +57,72 @@ export default function UserDashboard() {
 
   const handleNavigateToOnboarding = () => {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
-
     navigate('/');
   };
+
+  const handleFilterChange = (newFilter: string | null) => {
+    setSelectedFilter(newFilter);
+  };
+
+  const handleSortChange = (newSort: string) => {
+    setSelectedSort(newSort);
+  };
+
+  const filteredAndSortedFeedbacks = (() => {
+    let filtered = [...feedbacks];
+
+    if (selectedFilter) {
+      switch (selectedFilter) {
+        case 'pending':
+          filtered = filtered.filter(
+            (feedback) => feedback.status === 'WAITING'
+          );
+          break;
+        case 'completed':
+          filtered = filtered.filter(
+            (feedback) => feedback.status === 'CONFIRMED'
+          );
+          break;
+        case 'mine':
+          filtered = filtered.filter((feedback) => feedback.status === 'MINE');
+          break;
+      }
+    }
+
+    switch (selectedSort) {
+      case 'oldest':
+        filtered.sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        break;
+      case 'likes':
+        filtered.sort((a, b) => b.likeCount - a.likeCount);
+        break;
+      case 'latest':
+      default:
+        filtered.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        break;
+    }
+
+    return filtered;
+  })();
 
   return (
     <div css={dashboardLayout}>
       <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
+      <FilterSection
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
+        selectedSort={selectedSort}
+        onSortChange={handleSortChange}
+      />
       <div>
         <FeedbackBoxList>
-          {feedbacks.map((feedback) => (
+          {filteredAndSortedFeedbacks.map((feedback) => (
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
@@ -84,7 +145,7 @@ export default function UserDashboard() {
         <FeedbackStatusMessage
           loading={loading}
           hasNext={hasNext}
-          feedbackCount={feedbacks.length}
+          feedbackCount={filteredAndSortedFeedbacks.length}
         />
       </div>
       <FloatingButton
@@ -109,6 +170,5 @@ export default function UserDashboard() {
 
 function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
   const isLiked = likedFeedbackIds?.includes(feedbackId);
-
   return !!isLiked;
 }

@@ -8,6 +8,8 @@ import {
   dropdownText,
 } from './CategorySelector.styles';
 import ArrowBottomIcon from '@/components/icons/ArrowBottomIcon';
+import { SerializedStyles } from '@emotion/react';
+import Button from '@/components/@commons/Button/Button';
 
 interface SelectorOption {
   value: string;
@@ -92,9 +94,9 @@ export default function CategorySelector({
   return (
     <div css={dropdownContainer(width, height)} data-category-selector>
       <input type='hidden' name={name} id={id} value={value || ''} />
-      <button
+      <Button
         type='button'
-        css={dropdownButton(theme, isOpen)}
+        css={dropdownButton(theme, isOpen, height)}
         onClick={handleToggle}
         disabled={disabled}
         aria-haspopup='listbox'
@@ -103,7 +105,7 @@ export default function CategorySelector({
       >
         <span css={dropdownText(theme, !!selectedOption)}>{displayText}</span>
         <ArrowBottomIcon />
-      </button>
+      </Button>
 
       {isOpen && (
         <div css={dropdownList(theme)} role='listbox'>
