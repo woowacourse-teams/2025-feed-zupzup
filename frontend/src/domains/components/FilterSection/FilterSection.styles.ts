@@ -6,7 +6,6 @@ export const filterSectionContainer = css`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
-  padding: 16px 20px;
 `;
 
 export const sortDropdownButton = css`
