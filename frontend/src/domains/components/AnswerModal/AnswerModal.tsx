@@ -50,7 +50,11 @@ export default function AnswerModal({
           />
           <TextareaCounter textLength={answer.length} />
         </div>
-        <p>입력하지 않으면 "확인했습니다."로 자동 전송됩니다.</p>
+        {answer.length === 0 ? (
+          <p>답변 없이 완료 처리됩니다.</p>
+        ) : (
+          <p>답변 전송하고 완료 처리됩니다.</p>
+        )}
       </div>
       <div css={buttonContainer(theme)}>
         <BasicButton
@@ -61,7 +65,7 @@ export default function AnswerModal({
           취소
         </BasicButton>
         <BasicButton width={'47%'} onClick={handleSubmit}>
-          답변 전송
+          완료
         </BasicButton>
       </div>
     </Modal>

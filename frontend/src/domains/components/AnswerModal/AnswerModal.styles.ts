@@ -31,8 +31,8 @@ export const contentContainer = (theme: Theme) => css`
   flex-direction: column;
   gap: 10px;
 
-  p {
-    color: ${theme.colors.gray[600]};
+  > p {
+    color: ${theme.colors.purple[100]};
   }
 `;
 
