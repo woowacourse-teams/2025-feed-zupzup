@@ -1,5 +1,5 @@
 // styles/theme.ts
-export const colors = {
+const colors = {
   white: {
     100: '#ffffff',
     200: '#ffffff',
@@ -46,7 +46,7 @@ export const colors = {
   },
 };
 
-export const typography = {
+const typography = {
   pretendard: {
     h1: {
       fontFamily: 'Pretendard, sans-serif',
