@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.feedback.domain.ProcessStatus.*;
+
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
@@ -77,6 +79,7 @@ public class AdminFeedbackService {
     ) {
         final Feedback feedback = getFeedback(feedbackId);
         feedback.updateComment(request.comment());
+        feedback.updateStatus(CONFIRMED);
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 

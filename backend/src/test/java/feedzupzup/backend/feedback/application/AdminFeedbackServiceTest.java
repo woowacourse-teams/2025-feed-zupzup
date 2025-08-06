@@ -25,6 +25,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -434,6 +435,34 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // then
         assertThat(updateFeedbackCommentResponse.comment()).isEqualTo(testComment);
+    }
+
+    @Test
+    @DisplayName("피드백의 답글을 추가한다면, 상태가 바뀌어야 한다.")
+    void when_add_comment_then_change_feedback_status() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        String testComment = "testComment";
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                testComment
+        );
+
+        //when
+        adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+        final Feedback resultFeedback = feedBackRepository.findById(1L).get();
+
+        // then
+        assertThat(resultFeedback.getStatus()).isEqualTo(ProcessStatus.CONFIRMED);
     }
 
 }
