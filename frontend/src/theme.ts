@@ -116,7 +116,7 @@ export const typography = {
   },
   BMHANNAPro: {
     h2: {
-      fontFamily: 'BM HANNA Pro OTF, sans-serif',
+      fontFamily: 'BMHANNAPro, sans-serif',
       fontSize: 26,
       lineHeight: 'auto',
       letterSpacing: 0,
