@@ -53,6 +53,9 @@ public class Feedback extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private OrganizationCategory organizationCategory;
 
+    @Embedded
+    private Comment comment;
+
     @Builder
     public Feedback(
             final @NonNull String content,
@@ -62,7 +65,8 @@ public class Feedback extends BaseTimeEntity {
             final int likeCount,
             final @NonNull UserName userName,
             final @NonNull PostedAt postedAt,
-            final @NonNull OrganizationCategory organizationCategory
+            final @NonNull OrganizationCategory organizationCategory,
+            final Comment comment
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -72,6 +76,7 @@ public class Feedback extends BaseTimeEntity {
         this.userName = userName;
         this.postedAt = postedAt;
         this.organizationCategory = organizationCategory;
+        this.comment = comment;
     }
 
     public void updateStatus(final ProcessStatus status) {
@@ -91,6 +96,10 @@ public class Feedback extends BaseTimeEntity {
             likeCount = 0;
         }
         this.likeCount = likeCount;
+    }
+
+    public void updateComment(String value) {
+        this.comment.updateComment(value);
     }
 
     public boolean isConfirmed() {

@@ -1,9 +1,11 @@
 package feedzupzup.backend.feedback.api;
 
 import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
@@ -78,5 +80,19 @@ public interface AdminFeedbackApi {
     SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackStatusRequest request
+    );
+
+    @Operation(summary = "답글 추가", description = "답글을 추가합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "답글 추가 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/admin/feedbacks/{feedbackId}/comment")
+    SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(
+            @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
+            @RequestBody @Valid final UpdateFeedbackCommentRequest request
     );
 }
