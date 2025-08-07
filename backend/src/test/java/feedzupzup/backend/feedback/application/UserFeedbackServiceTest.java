@@ -24,6 +24,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -712,11 +713,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback saved3 = feedBackRepository.save(feedback3);
             feedBackRepository.save(feedback4);
 
-            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+            final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId());
             final int size = 5;
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), size, null, null, LATEST, myFeedbacks);
+                    organization.getId(), size, null, null, LATEST, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(3),
@@ -750,11 +751,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback saved3 = feedBackRepository.save(feedback3);
             final Feedback saved4 = feedBackRepository.save(feedback4);
 
-            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId() + "," + saved4.getId();
+            final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId(), saved4.getId());
             final int size = 2;
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), size, null, null, LATEST, myFeedbacks);
+                    organization.getId(), size, null, null, LATEST, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(2),
@@ -781,10 +782,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback saved2 = feedBackRepository.save(confirmedFeedback2);
             final Feedback saved3 = feedBackRepository.save(waitingFeedback);
 
-            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+            final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId());
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), 10, null, CONFIRMED, LATEST, myFeedbacks);
+                    organization.getId(), 10, null, CONFIRMED, LATEST, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(2),
@@ -815,10 +816,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback saved2 = feedBackRepository.save(feedback2);
             final Feedback saved3 = feedBackRepository.save(feedback3);
 
-            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+            final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId());
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), 10, null, null, FeedbackOrderBy.LIKES, myFeedbacks);
+                    organization.getId(), 10, null, null, FeedbackOrderBy.LIKES, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(3),
@@ -853,10 +854,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             feedbackLikeService.like(saved1.getId());
             feedbackLikeService.like(saved2.getId());
 
-            final String myFeedbacks = saved1.getId() + "," + saved2.getId();
+            final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId());
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), 10, null, null, LATEST, myFeedbacks);
+                    organization.getId(), 10, null, null, LATEST, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(2),
@@ -880,11 +881,16 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final String myFeedbacks = "";
+            final List<Long> myFeedbackIds = List.of();
 
-            assertThatThrownBy(() -> userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), 10, null, null, LATEST, myFeedbacks))
-                    .isInstanceOf(NumberFormatException.class);
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, null, LATEST, myFeedbackIds);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).isEmpty(),
+                    () -> assertThat(response.hasNext()).isFalse(),
+                    () -> assertThat(response.nextCursorId()).isNull()
+            );
         }
 
     @Test
@@ -893,10 +899,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final String myFeedbacks = "999999,888888,777777";
+            final List<Long> myFeedbackIds = List.of(999999L, 888888L, 777777L);
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), 10, null, null, LATEST, myFeedbacks);
+                    organization.getId(), 10, null, null, LATEST, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).isEmpty(),
@@ -919,10 +925,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization.getId(), organizationCategory);
             final Feedback saved = feedBackRepository.save(feedback);
 
-            final String myFeedbacks = saved.getId().toString();
+            final List<Long> myFeedbackIds = List.of(saved.getId());
 
             final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getId(), 10, null, null, LATEST, myFeedbacks);
+                    organization.getId(), 10, null, null, LATEST, myFeedbackIds);
 
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(1),
