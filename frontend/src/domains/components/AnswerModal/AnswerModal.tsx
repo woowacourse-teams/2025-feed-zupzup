@@ -17,7 +17,7 @@ import { useState } from 'react';
 interface AnswerModalProps {
   isOpen: boolean;
   handleCloseModal: () => void;
-  handleSubmit: () => void;
+  handleSubmit: (comment: string) => void;
 }
 
 export default function AnswerModal({
@@ -64,7 +64,7 @@ export default function AnswerModal({
         >
           취소
         </BasicButton>
-        <BasicButton width={'47%'} onClick={handleSubmit}>
+        <BasicButton width={'47%'} onClick={() => handleSubmit(answer)}>
           완료
         </BasicButton>
       </div>

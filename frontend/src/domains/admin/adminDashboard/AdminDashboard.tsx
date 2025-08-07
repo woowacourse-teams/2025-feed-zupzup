@@ -83,21 +83,6 @@ export default function AdminDashboard() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const getAdminFeedbackProps = (feedback: FeedbackType) => ({
-    key: feedback.feedbackId,
-    feedbackId: feedback.feedbackId,
-    onConfirm: openFeedbackCompleteModal,
-    onDelete: openFeedbackDeleteModal,
-    type: feedback.status,
-    content: feedback.content,
-    postedAt: feedback.postedAt,
-    isSecret: feedback.isSecret,
-    likeCount: feedback.likeCount,
-    userName: feedback.userName,
-    category: feedback.category,
-    comment: feedback.comment,
-  });
-
   if (isCheckingAuth) {
     return <div>로딩중...</div>;
   }
@@ -118,7 +103,20 @@ export default function AdminDashboard() {
       />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
-          <AdminFeedbackBox {...getAdminFeedbackProps(feedback)} />
+          <AdminFeedbackBox
+            key={feedback.feedbackId}
+            feedbackId={feedback.feedbackId}
+            onConfirm={openFeedbackCompleteModal}
+            onDelete={openFeedbackDeleteModal}
+            type={feedback.status}
+            content={feedback.content}
+            postedAt={feedback.postedAt}
+            isSecret={feedback.isSecret}
+            likeCount={feedback.likeCount}
+            userName={feedback.userName}
+            category={feedback.category}
+            comment={feedback.comment}
+          />
         ))}
         {loading && <div>로딩중...</div>}
       </FeedbackBoxList>

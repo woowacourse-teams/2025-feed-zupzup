@@ -9,6 +9,9 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-01T12:00:00.000Z',
     userName: '김철수',
     likeCount: 12,
+    comment:
+      '좋게 봐주셔서 감사합니다! 앞으로도 더 나은 서비스 제공을 위해 노력하겠습니다.',
+    category: '기타',
   },
   {
     feedbackId: 2,
@@ -18,6 +21,8 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-02T08:30:00.000Z',
     userName: '익명',
     likeCount: 4,
+    comment: null,
+    category: '시설',
   },
   {
     feedbackId: 3,
@@ -27,6 +32,9 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-03T14:15:00.000Z',
     userName: '홍길동',
     likeCount: 7,
+    comment:
+      '디자인을 알아봐 주셔서 감사합니다! 더 나은 UX를 위해 계속 개선하겠습니다.',
+    category: '커리큘럼',
   },
   {
     feedbackId: 4,
@@ -36,6 +44,8 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-04T10:20:00.000Z',
     userName: '박지민',
     likeCount: 9,
+    comment: null,
+    category: '행정',
   },
   {
     feedbackId: 5,
@@ -45,6 +55,8 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-05T16:40:00.000Z',
     userName: '이지은',
     likeCount: 15,
+    comment: '좋은 말씀 감사합니다! 유용하게 사용해 주셔서 기쁩니다.',
+    category: '기타',
   },
   {
     feedbackId: 6,
@@ -54,6 +66,8 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-06T11:55:00.000Z',
     userName: '익명',
     likeCount: 2,
+    comment: null,
+    category: '시설',
   },
   {
     feedbackId: 7,
@@ -63,6 +77,9 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-07T09:10:00.000Z',
     userName: '최유리',
     likeCount: 6,
+    comment:
+      '속도 개선을 느껴주셔서 감사합니다! 앞으로도 지속적으로 최적화하겠습니다.',
+    category: '커리큘럼',
   },
   {
     feedbackId: 8,
@@ -72,6 +89,8 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-08T13:00:00.000Z',
     userName: '정우성',
     likeCount: 3,
+    comment: null,
+    category: '행정',
   },
   {
     feedbackId: 9,
@@ -81,6 +100,9 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-09T17:30:00.000Z',
     userName: '한가인',
     likeCount: 8,
+    comment:
+      '새로운 기능이 마음에 드셨다니 다행입니다! 계속해서 발전해 나가겠습니다.',
+    category: '기타',
   },
   {
     feedbackId: 10,
@@ -90,5 +112,7 @@ export const feedbackData: FeedbackType[] = [
     postedAt: '2024-07-10T15:45:00.000Z',
     userName: '감사합니다',
     likeCount: 10,
+    comment: null,
+    category: '시설',
   },
 ];

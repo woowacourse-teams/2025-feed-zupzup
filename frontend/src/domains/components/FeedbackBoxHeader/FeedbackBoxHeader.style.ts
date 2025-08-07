@@ -25,3 +25,22 @@ export const userNameStyle = (theme: Theme, type: FeedbackStatusType) => css`
     ? `color : ${theme.colors.black}`
     : `color : ${theme.colors.gray[300]}`}
 `;
+
+export const userCategoryStyle = (
+  theme: Theme,
+  type: FeedbackStatusType
+) => css`
+  ${theme.typography.pretendard.captionSmall}
+
+  line-height: 20px;
+
+  ${type === 'WAITING'
+    ? `color : ${theme.colors.gray[500]}`
+    : `color : ${theme.colors.gray[300]}`}
+`;
+
+export const headerInfoBox = css`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;

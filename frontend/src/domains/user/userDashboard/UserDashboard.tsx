@@ -89,25 +89,6 @@ export default function UserDashboard() {
     return likedFeedbackIds?.includes(feedbackId) || false;
   };
 
-  const getUserFeedbackProps = (feedback: FeedbackType) => ({
-    userName: feedback.userName,
-    key: feedback.feedbackId,
-    type: feedback.status,
-    content: feedback.content,
-    postedAt: feedback.postedAt,
-    isLiked: getFeedbackIsLike(feedback.feedbackId),
-    isSecret: feedback.isSecret,
-    feedbackId: feedback.feedbackId,
-    likeCount: feedback.likeCount,
-    comment: feedback.comment,
-    isMyFeedback: getIsMyFeedback(feedback.feedbackId),
-    customCSS: [
-      myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
-      feedback.feedbackId === highlightedId ? highlightStyle : null,
-    ],
-    category: feedback.category,
-  });
-
   return (
     <div css={dashboardLayout}>
       <DashboardOverview />
@@ -120,7 +101,24 @@ export default function UserDashboard() {
       <div>
         <FeedbackBoxList>
           {filteredAndSortedFeedbacks.map((feedback) => (
-            <UserFeedbackBox {...getUserFeedbackProps(feedback)} />
+            <UserFeedbackBox
+              userName={feedback.userName}
+              key={feedback.feedbackId}
+              type={feedback.status}
+              content={feedback.content}
+              postedAt={feedback.postedAt}
+              isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
+              isSecret={feedback.isSecret}
+              feedbackId={feedback.feedbackId}
+              likeCount={feedback.likeCount}
+              comment={feedback.comment}
+              isMyFeedback={getIsMyFeedback(feedback.feedbackId)}
+              customCSS={[
+                myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
+                feedback.feedbackId === highlightedId ? highlightStyle : null,
+              ]}
+              category={feedback.category}
+            />
           ))}
           {loading && <div>로딩중...</div>}
         </FeedbackBoxList>
