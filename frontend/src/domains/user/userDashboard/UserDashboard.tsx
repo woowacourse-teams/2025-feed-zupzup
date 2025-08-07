@@ -5,10 +5,10 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
-import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
+import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import {
   dashboardLayout,
   goOnboardButton,
@@ -23,9 +23,9 @@ import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import { Analytics, userDashboardEvents } from '@/analytics';
+import FilterSection from '@/domains/components/FilterSection/FilterSection';
 
 export default function UserDashboard() {
-  const { filter, handlePanelClick } = useFeedbackFilter();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
@@ -44,6 +44,14 @@ export default function UserDashboard() {
     key: 'feedbacks',
   });
 
+  const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    filteredAndSortedFeedbacks,
+  } = useFeedbackFilterSort(feedbacks);
+
   useGetFeedback({ fetchMore, hasNext, loading });
 
   const { highlightedId } = useHighLighted();
@@ -52,16 +60,21 @@ export default function UserDashboard() {
 
   const handleNavigateToOnboarding = () => {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
-
     navigate('/');
   };
 
   return (
     <div css={dashboardLayout}>
-      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
+      <DashboardOverview />
+      <FilterSection
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
+        selectedSort={selectedSort}
+        onSortChange={handleSortChange}
+      />
       <div>
         <FeedbackBoxList>
-          {feedbacks.map((feedback) => (
+          {filteredAndSortedFeedbacks.map((feedback) => (
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
@@ -85,7 +98,7 @@ export default function UserDashboard() {
         <FeedbackStatusMessage
           loading={loading}
           hasNext={hasNext}
-          feedbackCount={feedbacks.length}
+          feedbackCount={filteredAndSortedFeedbacks.length}
         />
       </div>
       <FloatingButton
@@ -110,6 +123,5 @@ export default function UserDashboard() {
 
 function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
   const isLiked = likedFeedbackIds?.includes(feedbackId);
-
   return !!isLiked;
 }

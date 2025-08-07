@@ -8,4 +8,4 @@ export interface BaseEvent {
   };
 }
 
-export type CategoryType = '시설' | '학사행정' | '커리큘럼' | '기타';
+export type CategoryType = '시설' | '행정' | '커리큘럼' | '기타';

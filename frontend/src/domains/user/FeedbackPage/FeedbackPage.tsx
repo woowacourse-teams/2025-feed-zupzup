@@ -20,12 +20,17 @@ import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { Analytics, suggestionFormEvents } from '@/analytics';
+import { CategoryType } from '@/analytics/types';
 
 interface FeedbackPageProps {
+  category: CategoryType | null;
   movePrevStep: () => void;
 }
 
-export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
+export default function FeedbackPage({
+  movePrevStep,
+  category,
+}: FeedbackPageProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,6 +95,7 @@ export default function FeedbackPage({ movePrevStep }: FeedbackPageProps) {
         content: feedback,
         userName: username,
         isSecret: isLocked,
+        category,
       });
     } catch (error) {
       setIsModalOpen(false);

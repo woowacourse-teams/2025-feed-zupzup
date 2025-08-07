@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import CategorySelector from './CategorySelector';
+import Dropdown from './Dropdown';
 
 const options = [
   { value: 'cat', label: '고양이' },
@@ -8,9 +8,9 @@ const options = [
   { value: 'fish', label: '물고기' },
 ];
 
-const meta: Meta<typeof CategorySelector> = {
-  title: 'components/CategorySelector',
-  component: CategorySelector,
+const meta: Meta<typeof Dropdown> = {
+  title: 'components/Dropdown',
+  component: Dropdown,
   tags: ['autodocs'],
   argTypes: {
     onChange: { action: 'changed' },
@@ -30,7 +30,7 @@ const meta: Meta<typeof CategorySelector> = {
 
 export default meta;
 
-type Story = StoryObj<typeof CategorySelector>;
+type Story = StoryObj<typeof Dropdown>;
 
 export const Default: Story = {
   args: {
