@@ -687,4 +687,247 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             );
         }
     }
+
+    @Test
+    @DisplayName("특정 피드백 ID들로 내 피드백을 성공적으로 조회한다")
+    void getMyFeedbackPage_success() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+            feedBackRepository.save(feedback4);
+
+            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+            final int size = 5;
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), size, null, null, LATEST, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks())
+                            .extracting(UserFeedbackItem::feedbackId)
+                            .containsExactlyInAnyOrder(saved1.getId(), saved2.getId(), saved3.getId())
+            );
+        }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 커서 기반 페이징이 동작한다")
+    void getMyFeedbackPage_with_cursor_pagination() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+            final Feedback saved4 = feedBackRepository.save(feedback4);
+
+            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId() + "," + saved4.getId();
+            final int size = 2;
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), size, null, null, LATEST, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(2),
+                    () -> assertThat(response.hasNext()).isTrue(),
+                    () -> assertThat(response.nextCursorId()).isNotNull()
+            );
+        }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 특정 상태 필터링이 동작한다")
+    void getMyFeedbackPage_with_status_filter() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+            final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+            final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+
+            final Feedback saved1 = feedBackRepository.save(confirmedFeedback1);
+            final Feedback saved2 = feedBackRepository.save(confirmedFeedback2);
+            final Feedback saved3 = feedBackRepository.save(waitingFeedback);
+
+            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, CONFIRMED, LATEST, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(2),
+                    () -> assertThat(response.feedbacks())
+                            .extracting(UserFeedbackItem::feedbackId)
+                            .containsExactlyInAnyOrder(saved1.getId(), saved2.getId())
+            );
+        }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 좋아요 순 정렬이 동작한다")
+    void getMyFeedbackPage_orders_by_likes() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
+                    organization.getId(), organizationCategory, 5);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
+                    organization.getId(), organizationCategory, 10);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(
+                    organization.getId(), organizationCategory, 3);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+
+            final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, null, FeedbackOrderBy.LIKES, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved2.getId()),
+                    () -> assertThat(response.feedbacks().get(0).likeCount()).isEqualTo(10),
+                    () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved1.getId()),
+                    () -> assertThat(response.feedbacks().get(1).likeCount()).isEqualTo(5),
+                    () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId()),
+                    () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
+            );
+        }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 인메모리 좋아요가 반영된다")
+    void getMyFeedbackPage_reflects_memory_likes() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
+                    organization.getId(), organizationCategory, 5);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
+                    organization.getId(), organizationCategory, 3);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+
+            feedbackLikeService.like(saved1.getId());
+            feedbackLikeService.like(saved1.getId());
+            feedbackLikeService.like(saved2.getId());
+
+            final String myFeedbacks = saved1.getId() + "," + saved2.getId();
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, null, LATEST, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(2),
+                    () -> {
+                        final var feedback1Item = response.feedbacks().stream()
+                                .filter(item -> item.feedbackId().equals(saved1.getId()))
+                                .findFirst().orElseThrow();
+                        final var feedback2Item = response.feedbacks().stream()
+                                .filter(item -> item.feedbackId().equals(saved2.getId()))
+                                .findFirst().orElseThrow();
+
+                        assertThat(feedback1Item.likeCount()).isEqualTo(7);
+                        assertThat(feedback2Item.likeCount()).isEqualTo(4);
+                    }
+            );
+        }
+
+    @Test
+    @DisplayName("빈 피드백 ID 목록으로 조회시 빈 결과를 반환한다")
+    void getMyFeedbackPage_empty_feedback_ids() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final String myFeedbacks = "";
+
+            assertThatThrownBy(() -> userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, null, LATEST, myFeedbacks))
+                    .isInstanceOf(NumberFormatException.class);
+        }
+
+    @Test
+    @DisplayName("존재하지 않는 피드백 ID로 조회시 빈 결과를 반환한다")
+    void getMyFeedbackPage_nonexistent_feedback_ids() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final String myFeedbacks = "999999,888888,777777";
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, null, LATEST, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).isEmpty(),
+                    () -> assertThat(response.hasNext()).isFalse(),
+                    () -> assertThat(response.nextCursorId()).isNull()
+            );
+        }
+
+    @Test
+    @DisplayName("단일 피드백 ID로 조회가 가능하다")
+    void getMyFeedbackPage_single_feedback_id() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(
+                    organization.getId(), organizationCategory);
+            final Feedback saved = feedBackRepository.save(feedback);
+
+            final String myFeedbacks = saved.getId().toString();
+
+            final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                    organization.getId(), 10, null, null, LATEST, myFeedbacks);
+
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(1),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved.getId()),
+                    () -> assertThat(response.hasNext()).isFalse()
+            );
+    }
 }
