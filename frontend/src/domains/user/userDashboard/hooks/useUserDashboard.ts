@@ -17,15 +17,12 @@ export default function useUserDashboard() {
   const theme = useAppTheme();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
 
-  // 공통 데이터
   const dashboardData = useDashboardData({ isAdmin: false });
 
-  // 유저 전용 상태들
   const { highlightedId } = useHighLighted();
   const { getIsMyFeedback } = useMyFeedbacks();
   const { showButton, scrollToTop } = useScrollUp();
 
-  // 핸들러
   const handleNavigateToOnboarding = () => {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
     navigate('/');

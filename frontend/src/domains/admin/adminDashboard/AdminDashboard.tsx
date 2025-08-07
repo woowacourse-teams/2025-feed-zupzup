@@ -48,7 +48,7 @@ export default function AdminDashboard() {
       </FeedbackBoxList>
 
       <FeedbackStatusMessage
-        isLoading={loading}
+        loading={loading}
         filterType={selectedFilter as FeedbackFilterType}
         hasNext={hasNext}
         feedbackCount={feedbacks.length}
