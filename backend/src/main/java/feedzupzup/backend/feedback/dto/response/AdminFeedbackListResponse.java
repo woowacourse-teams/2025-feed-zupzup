@@ -2,9 +2,9 @@ package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
-import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Schema(description = "관리자용 피드백 목록 응답")
@@ -51,7 +51,7 @@ public record AdminFeedbackListResponse(
             String userName,
 
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
-            PostedAt postedAt,
+            LocalDateTime postedAt,
 
             @Schema(description = "카테고리", example = "시설")
             String category,
@@ -68,7 +68,7 @@ public record AdminFeedbackListResponse(
                     feedback.isSecret(),
                     feedback.getLikeCount(),
                     feedback.getUserName(),
-                    feedback.getPostedAt(),
+                    feedback.getPostedAt().getPostedAt(),
                     feedback.getOrganizationCategory().getCategory().getKoreanName(),
                     feedback.getComment() != null ? feedback.getComment().getValue() : null
             );
