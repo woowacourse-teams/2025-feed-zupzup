@@ -15,8 +15,8 @@ import { FeedbackFilter, SortType } from '@/types/feedback.types';
 export interface FilterSectionProps {
   selectedFilter: FeedbackFilter | null;
   onFilterChange: (filter: FeedbackFilter | null) => void;
-  selectedSort: string;
-  onSortChange: (sort: string) => void;
+  selectedSort: SortType;
+  onSortChange: (sort: SortType) => void;
   customCSS?: SerializedStyles;
   isAdmin?: boolean;
 }
