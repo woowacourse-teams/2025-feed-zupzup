@@ -10,11 +10,11 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
-import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
+import FilterSection from '@/domains/components/FilterSection/FilterSection';
+import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 
 export default function AdminDashboard() {
-  const { filter, handlePanelClick } = useFeedbackFilter();
   const {
     items: originalFeedbacks,
     fetchMore,
@@ -46,6 +46,8 @@ export default function AdminDashboard() {
     onDeleteFeedback: deleteFeedback,
   });
 
+  const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
+    useFeedbackFilterSort(feedbacks);
   useGetFeedback({ fetchMore, hasNext, loading });
 
   if (isCheckingAuth) {
@@ -58,7 +60,14 @@ export default function AdminDashboard() {
 
   return (
     <section css={dashboardLayout}>
-      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
+      <DashboardOverview />
+      <FilterSection
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
+        selectedSort={selectedSort}
+        onSortChange={handleSortChange}
+        isAdmin={true}
+      />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox

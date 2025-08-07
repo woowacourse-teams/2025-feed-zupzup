@@ -6,8 +6,9 @@ import {
   dropdownList,
   dropdownItem,
   dropdownText,
-} from './CategorySelector.styles';
+} from './Dropdown.styles';
 import ArrowBottomIcon from '@/components/icons/ArrowBottomIcon';
+import Button from '@/components/@commons/Button/Button';
 
 interface SelectorOption {
   value: string;
@@ -15,8 +16,9 @@ interface SelectorOption {
   disabled?: boolean;
 }
 
-interface CategorySelectorProps {
-  width?: string | number;
+interface DropdownProps {
+  width?: string;
+  height?: string;
   options: SelectorOption[];
   placeholder: string;
   value?: string;
@@ -26,8 +28,9 @@ interface CategorySelectorProps {
   disabled?: boolean;
 }
 
-export default function CategorySelector({
+export default function Dropdown({
   width = 'auto',
+  height = 'auto',
   options,
   placeholder,
   value,
@@ -35,7 +38,7 @@ export default function CategorySelector({
   id,
   name,
   disabled = false,
-}: CategorySelectorProps) {
+}: DropdownProps) {
   const theme = useAppTheme();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -88,11 +91,11 @@ export default function CategorySelector({
   }, [isOpen]);
 
   return (
-    <div css={dropdownContainer(width)} data-category-selector>
+    <div css={dropdownContainer(width, height)} data-category-selector>
       <input type='hidden' name={name} id={id} value={value || ''} />
-      <button
+      <Button
         type='button'
-        css={dropdownButton(theme, isOpen)}
+        customCSS={dropdownButton(theme, isOpen, height)}
         onClick={handleToggle}
         disabled={disabled}
         aria-haspopup='listbox'
@@ -101,7 +104,7 @@ export default function CategorySelector({
       >
         <span css={dropdownText(theme, !!selectedOption)}>{displayText}</span>
         <ArrowBottomIcon />
-      </button>
+      </Button>
 
       {isOpen && (
         <div css={dropdownList(theme)} role='listbox'>
