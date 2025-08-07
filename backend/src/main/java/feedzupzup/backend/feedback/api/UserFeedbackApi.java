@@ -86,4 +86,21 @@ public interface UserFeedbackApi {
             @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "날짜의 기간", example = "WEEK") @RequestParam(defaultValue = "7") final String period
     );
+
+    @Operation(summary = "내 피드백 목록 조회", description = "특정 피드백 ID들로 필터링된 내 피드백 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/organizations/{organizationId}/my-feedbacks")
+    SuccessResponse<UserFeedbackListResponse> getMyFeedbacks(
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
+            @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
+            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
+            @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy,
+            @Parameter(description = "내 피드백 ID 목록 (쉼표로 구분)", example = "1,2,3") @RequestParam("myFeedbacks") final String myFeedbacks
+    );
 }

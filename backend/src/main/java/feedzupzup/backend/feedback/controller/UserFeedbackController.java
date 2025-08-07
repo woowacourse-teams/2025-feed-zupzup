@@ -71,4 +71,24 @@ public class UserFeedbackController implements UserFeedbackApi {
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
+
+    @Override
+    public SuccessResponse<UserFeedbackListResponse> getMyFeedbacks(
+            final Long organizationId,
+            final int size,
+            final Long cursorId,
+            final ProcessStatus status,
+            final FeedbackOrderBy orderBy,
+            final String myFeedbacks
+    ) {
+        final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organizationId,
+                size,
+                cursorId,
+                status,
+                orderBy,
+                myFeedbacks
+        );
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
 }
