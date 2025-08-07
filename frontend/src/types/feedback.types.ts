@@ -1,3 +1,4 @@
+import { CategoryType } from '@/analytics/types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 export interface FeedbackType {
@@ -5,9 +6,11 @@ export interface FeedbackType {
   content: string;
   status: FeedbackStatusType;
   isSecret: boolean;
-  createdAt: string;
+  postedAt: string;
   userName: string;
   likeCount: number;
+  comment: null | string;
+  category: CategoryType;
 }
 
 export interface FeedbackResponse<T> {
@@ -21,7 +24,7 @@ interface SuggestionFeedbackData {
   content: string;
   status: FeedbackStatusType;
   isSecret: boolean;
-  createdAt: string; // ISO 형식 날짜 문자열
+  postedAt: string; // ISO 형식 날짜 문자열
   userName: string;
 }
 
@@ -31,4 +34,8 @@ export interface SuggestionFeedback {
   status: number;
 }
 
-export type FeedbackFilter = '전체' | '완료' | '미처리';
+export type FeedbackFilter = '전체' | '완료' | '미처리' | '나의글';
+
+export type FeedbackFilterType = 'COMPLETED' | 'PENDING' | 'MINE' | 'ALL';
+
+export type SortType = 'LATEST' | 'OLDEST' | 'LIKES';

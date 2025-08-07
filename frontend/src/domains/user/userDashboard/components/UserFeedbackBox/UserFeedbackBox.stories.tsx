@@ -37,7 +37,7 @@ const meta: Meta<typeof UserFeedbackBox> = {
       control: 'boolean',
       description: '비밀 피드백 여부',
     },
-    createdAt: {
+    postedAt: {
       control: 'date',
       description: '작성일',
     },
@@ -62,7 +62,7 @@ export const Incomplete: Story = {
     content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
     isLiked: false,
     isSecret: false,
-    createdAt: '2024-05-20T123',
+    postedAt: '2024-05-20T123',
   },
 };
 
@@ -74,6 +74,6 @@ export const Complete: Story = {
     content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
     isLiked: false,
     isSecret: false,
-    createdAt: '2024-05-20T123',
+    postedAt: '2024-05-20T123',
   },
 };

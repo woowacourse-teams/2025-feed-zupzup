@@ -40,10 +40,12 @@ const userFeedbackWaiting = {
   content: '이 피드백은 아직 확인 전입니다. 곧 답변 드릴게요!',
   isLiked: false,
   isSecret: false,
-  createdAt: '2024-05-20',
+  postedAt: '2024-05-20',
   customCSS: [],
   userName: '익명의 사용자',
   isMyFeedback: true,
+  comment: '감사합니당',
+  category: '기타' as const,
 };
 
 const userFeedbackConfirmed = {
@@ -55,10 +57,12 @@ const userFeedbackConfirmed = {
   content: '이 피드백은 확인 완료되었습니다. 감사합니다.',
   isLiked: true,
   isSecret: false,
-  createdAt: '2024-05-19',
+  postedAt: '2024-05-19',
   customCSS: [],
   userName: '김개발',
   isMyFeedback: false,
+  comment: '감사합니당',
+  category: '시설' as const,
 };
 
 const adminFeedbackWaiting = {
@@ -72,9 +76,11 @@ const adminFeedbackWaiting = {
     'https://i.pinimg.com/236x/44/f9/83/44f9831be884e4c65f167b96e16fa94e.jpg',
   likeCount: 5,
   userName: '익명의 사용자',
-  createdAt: '2024-05-21',
+  postedAt: '2024-05-21',
   customCSS: [],
   isMyFeedback: false,
+  comment: '감사합니당',
+  category: '행정' as const,
 };
 
 const adminFeedbackConfirmed = {
@@ -87,9 +93,11 @@ const adminFeedbackConfirmed = {
   imageUrl: null,
   likeCount: 12,
   userName: '김개발',
-  createdAt: '2024-05-18',
+  postedAt: '2024-05-18',
   customCSS: [],
   isMyFeedback: false,
+  comment: '감사합니당',
+  category: '행정' as const,
 };
 
 export const Default: Story = {

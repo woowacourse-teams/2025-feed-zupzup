@@ -10,11 +10,11 @@ import useInfinityScroll from '@/hooks/useInfinityScroll';
 import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
-import useFeedbackFilter from '@/domains/user/userDashboard/hooks/useFeedbackFilter';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
+import FilterSection from '@/domains/components/FilterSection/FilterSection';
+import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 
 export default function AdminDashboard() {
-  const { filter, handlePanelClick } = useFeedbackFilter();
   const {
     items: originalFeedbacks,
     fetchMore,
@@ -29,9 +29,10 @@ export default function AdminDashboard() {
     key: 'feedbacks',
   });
 
-  const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-    originalFeedbacks,
-  });
+  const { feedbacks, optimisticConfirmFeedback, optimisticDeleteFeedback } =
+    useFeedbackManagement({
+      originalFeedbacks,
+    });
 
   const { isAuthorized, isCheckingAuth } = useAdminAuth();
 
@@ -40,12 +41,15 @@ export default function AdminDashboard() {
     openFeedbackCompleteModal,
     openFeedbackDeleteModal,
     closeModal,
-    handleModalAction,
+    handleConfirmFeedback,
+    handleDeleteFeedback,
   } = useAdminModal({
-    onConfirmFeedback: confirmFeedback,
-    onDeleteFeedback: deleteFeedback,
+    onConfirmFeedback: optimisticConfirmFeedback,
+    onDeleteFeedback: optimisticDeleteFeedback,
   });
 
+  const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
+    useFeedbackFilterSort(feedbacks);
   useGetFeedback({ fetchMore, hasNext, loading });
 
   if (isCheckingAuth) {
@@ -58,7 +62,14 @@ export default function AdminDashboard() {
 
   return (
     <section css={dashboardLayout}>
-      <DashboardOverview filter={filter} handlePanelClick={handlePanelClick} />
+      <DashboardOverview />
+      <FilterSection
+        selectedFilter={selectedFilter}
+        onFilterChange={handleFilterChange}
+        selectedSort={selectedSort}
+        onSortChange={handleSortChange}
+        isAdmin={true}
+      />
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox
@@ -68,10 +79,12 @@ export default function AdminDashboard() {
             onDelete={openFeedbackDeleteModal}
             type={feedback.status}
             content={feedback.content}
-            createdAt={feedback.createdAt}
+            postedAt={feedback.postedAt}
             isSecret={feedback.isSecret}
             likeCount={feedback.likeCount}
             userName={feedback.userName}
+            category={feedback.category}
+            comment={feedback.comment}
           />
         ))}
         {loading && <div>로딩중...</div>}
@@ -89,14 +102,14 @@ export default function AdminDashboard() {
           message='삭제한 건의는 되돌릴 수 없습니다.'
           isOpen={true}
           onClose={closeModal}
-          onConfirm={handleModalAction}
+          onConfirm={handleDeleteFeedback}
         />
       )}
       {modalState.type === 'confirm' && (
         <AnswerModal
           isOpen={true}
           handleCloseModal={closeModal}
-          handleSubmit={handleModalAction}
+          handleSubmit={handleConfirmFeedback}
         />
       )}
     </section>

@@ -14,12 +14,13 @@ export default function useFeedbackManagement({
     setFeedbacks(originalFeedbacks);
   }, [originalFeedbacks]);
 
-  const confirmFeedback = (feedbackId: number) => {
+  const optimisticConfirmFeedback = (feedbackId: number, comment: string) => {
     setFeedbacks((prevFeedbacks) =>
       prevFeedbacks.map((feedback) => {
         if (feedback.feedbackId === feedbackId) {
           return {
             ...feedback,
+            comment,
             status: 'CONFIRMED' as FeedbackType['status'],
           };
         }
@@ -28,7 +29,7 @@ export default function useFeedbackManagement({
     );
   };
 
-  const deleteFeedback = (feedbackId: number) => {
+  const optimisticDeleteFeedback = (feedbackId: number) => {
     setFeedbacks((prevFeedbacks) =>
       prevFeedbacks.filter((feedback) => feedback.feedbackId !== feedbackId)
     );
@@ -36,7 +37,7 @@ export default function useFeedbackManagement({
 
   return {
     feedbacks,
-    confirmFeedback,
-    deleteFeedback,
+    optimisticConfirmFeedback,
+    optimisticDeleteFeedback,
   };
 }

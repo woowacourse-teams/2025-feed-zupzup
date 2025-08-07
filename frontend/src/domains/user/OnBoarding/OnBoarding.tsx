@@ -15,24 +15,17 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 import { Analytics, onboardingEvents } from '@/analytics';
+import { CategoryType } from '@/analytics/types';
 
 interface OnBoardingProps {
-  moveNextStep: () => void;
+  onCategoryClick: (newCategory: CategoryType) => void;
 }
 
-export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
+export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
 
   const { groupName } = useOrganizationName();
-
-  const handleCategoryButtonClick = (
-    categoryText: '시설' | '학사행정' | '커리큘럼' | '기타'
-  ) => {
-    Analytics.track(onboardingEvents.categorySelect(categoryText));
-
-    moveNextStep();
-  };
 
   const handleViewSuggestionsClick = () => {
     Analytics.track(onboardingEvents.viewSuggestionsFromOnboarding());
@@ -55,22 +48,22 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
           <CategoryButton
             icon='🏠'
             text='시설'
-            onClick={() => handleCategoryButtonClick('시설')}
+            onClick={() => onCategoryClick('시설')}
           />
           <CategoryButton
             icon='📑'
-            text='학사행정'
-            onClick={() => handleCategoryButtonClick('학사행정')}
+            text='행정'
+            onClick={() => onCategoryClick('행정')}
           />
           <CategoryButton
             icon='📕'
             text='커리큘럼'
-            onClick={() => handleCategoryButtonClick('커리큘럼')}
+            onClick={() => onCategoryClick('커리큘럼')}
           />
           <CategoryButton
             icon='💡'
             text='기타'
-            onClick={() => handleCategoryButtonClick('기타')}
+            onClick={() => onCategoryClick('기타')}
           />
         </div>
       </div>
