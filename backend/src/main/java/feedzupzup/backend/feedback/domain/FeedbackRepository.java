@@ -43,7 +43,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
              SELECT f
              FROM Feedback f
              WHERE f.organizationId = :organizationId
-             AND f.id IN :ids
+             AND (:ids IS NOT NULL AND f.id IN :ids)
              AND (:status IS NULL OR f.status = :status)
              AND (
                  CASE
