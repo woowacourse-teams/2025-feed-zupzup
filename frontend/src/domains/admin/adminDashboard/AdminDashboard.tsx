@@ -1,81 +1,29 @@
-import { useMemo } from 'react';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
-import useFeedbackManagement from '@/domains/admin/adminDashboard/hooks/useFeedbackManagement';
-import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import { useAdminModal } from '@/domains/hooks/useAdminModal';
-import useInfinityScroll from '@/hooks/useInfinityScroll';
-import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
-import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
-import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import FilterSection from '@/domains/components/FilterSection/FilterSection';
-import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
+import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
+import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
+import useAdminDashboard from './hooks/useAdminDashboard';
 
 export default function AdminDashboard() {
   const {
+    feedbacks,
+    loading,
+    hasNext,
     selectedFilter,
     selectedSort,
     handleFilterChange,
     handleSortChange,
-    getFilteredFeedbacks,
-  } = useFeedbackFilterSort();
-
-  const apiUrl = useMemo(() => {
-    const baseUrl = '/admin/organizations/1/feedbacks';
-    const params = new URLSearchParams();
-
-    params.append('orderBy', selectedSort);
-
-    if (selectedFilter === 'COMPLETED') {
-      params.append('status', 'CONFIRMED');
-    } else if (selectedFilter === 'PENDING') {
-      params.append('status', 'WAITING');
-    }
-
-    const queryString = params.toString();
-    console.log('Admin Generated API URL:', `${baseUrl}?${queryString}`); // 디버깅용
-
-    return `${baseUrl}?${queryString}`;
-  }, [selectedFilter, selectedSort]);
-
-  const {
-    items: originalFeedbacks,
-    fetchMore,
-    hasNext,
-    loading,
-  } = useInfinityScroll<
-    FeedbackType,
-    'feedbacks',
-    FeedbackResponse<FeedbackType>
-  >({
-    url: apiUrl,
-    key: 'feedbacks',
-  });
-
-  const { feedbacks, confirmFeedback, deleteFeedback } = useFeedbackManagement({
-    originalFeedbacks,
-  });
-
-  const { isAuthorized, isCheckingAuth } = useAdminAuth();
-
-  const {
+    isAuthorized,
+    isCheckingAuth,
     modalState,
-    openFeedbackCompleteModal,
-    openFeedbackDeleteModal,
     closeModal,
     handleModalAction,
-  } = useAdminModal({
-    onConfirmFeedback: confirmFeedback,
-    onDeleteFeedback: deleteFeedback,
-  });
-
-  useGetFeedback({ fetchMore, hasNext, loading });
-
-  const filteredFeedbacks = getFilteredFeedbacks(feedbacks);
+    getAdminFeedbackProps,
+  } = useAdminDashboard();
 
   if (isCheckingAuth) {
     return <div>로딩중...</div>;
@@ -88,6 +36,7 @@ export default function AdminDashboard() {
   return (
     <section css={dashboardLayout}>
       <DashboardOverview />
+
       <FilterSection
         selectedFilter={selectedFilter}
         onFilterChange={handleFilterChange}
@@ -95,28 +44,20 @@ export default function AdminDashboard() {
         onSortChange={handleSortChange}
         isAdmin={true}
       />
+
       <FeedbackBoxList>
-        {filteredFeedbacks.map((feedback) => (
-          <AdminFeedbackBox
-            key={feedback.feedbackId}
-            feedbackId={feedback.feedbackId}
-            onConfirm={openFeedbackCompleteModal}
-            onDelete={openFeedbackDeleteModal}
-            type={feedback.status}
-            content={feedback.content}
-            postedAt={feedback.postedAt}
-            isSecret={feedback.isSecret}
-            likeCount={feedback.likeCount}
-            userName={feedback.userName}
-          />
+        {feedbacks.map((feedback) => (
+          <AdminFeedbackBox {...getAdminFeedbackProps(feedback)} />
         ))}
         {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
+
       <FeedbackStatusMessage
         loading={loading}
         hasNext={hasNext}
-        feedbackCount={filteredFeedbacks.length}
+        feedbackCount={feedbacks.length}
       />
+
       {hasNext && <div id='scroll-observer'></div>}
 
       {modalState.type === 'delete' && (
@@ -128,6 +69,7 @@ export default function AdminDashboard() {
           onConfirm={handleModalAction}
         />
       )}
+
       {modalState.type === 'confirm' && (
         <AnswerModal
           isOpen={true}
