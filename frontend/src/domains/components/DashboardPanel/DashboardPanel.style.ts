@@ -1,21 +1,14 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const dashboard = (theme: Theme, isClick: boolean) => css`
+export const dashboard = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-sizing: border-box;
   width: 100%;
   padding: 16px;
   background-color: ${theme.colors.white[300]};
-  border: 2px solid ${isClick ? theme.colors.purple[100] : 'transparent'};
   border-radius: 16px;
-  transition:
-    border 0.2s ease,
-    transform 0.2s ease;
-
-  ${isClick && ' transform: scale(0.97)'}
 `;
 
 export const topContainer = css`
@@ -41,20 +34,19 @@ export const dot = (theme: Theme, color?: string) => css`
 `;
 
 export const panelTitle = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;
 
-export const panelContent = (theme: Theme, isClick: boolean) => css`
-  ${theme.typography.bmHannaPro.bodyLarge};
+export const panelContent = (theme: Theme) => css`
+  ${theme.typography.BMHANNAPro.h2};
 
   font-weight: 900;
-  color: ${isClick ? theme.colors.purple[100] : theme.colors.black};
 `;
 
 export const captionContent = (theme: Theme) => css`
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
 `;

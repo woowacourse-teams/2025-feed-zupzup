@@ -1,25 +1,35 @@
-import { css } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 import { Theme } from '@/theme';
 
-export const dropdownContainer = (width?: string | number) => css`
+export const dropdownContainer = (
+  width?: string,
+  height?: string,
+  customCSS?: SerializedStyles
+) => css`
   position: relative;
   display: inline-block;
-  width: ${typeof width === 'number' ? `${width}px` : width || 'auto'};
+  width: ${width || 'auto'};
+  height: ${height || 'auto'};
+  ${customCSS}
 `;
 
-export const dropdownButton = (theme: Theme, isOpen: boolean) => css`
-  ${theme.typography.inter.caption};
+export const dropdownButton = (
+  theme: Theme,
+  isOpen: boolean,
+  height?: string
+) => css`
+  ${theme.typography.pretendard.captionSmall};
 
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 60px;
+  height: ${height};
   padding: 0 12px;
   color: ${theme.colors.black[100]};
   background-color: ${theme.colors.white[100]};
   border: 1px solid ${theme.colors.gray[200]};
-  border-radius: 14px;
+  border-radius: 20px;
   cursor: pointer;
   transition: border-color 0.2s ease;
   outline: none;
@@ -40,7 +50,7 @@ export const dropdownButton = (theme: Theme, isOpen: boolean) => css`
     &:hover {
       border-color: ${theme.colors.gray[200]};
     }
-    ${theme.typography.inter.caption}
+    ${theme.typography.pretendard.captionSmall}
   }
 
   svg {
@@ -78,7 +88,7 @@ export const dropdownItem = (theme: Theme, isDisabled: boolean) => css`
   cursor: ${isDisabled ? 'not-allowed' : 'pointer'};
   transition: background-color 0.2s ease;
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.captionSmall}
 
   &:hover {
     background-color: ${isDisabled ? 'transparent' : theme.colors.gray[100]};

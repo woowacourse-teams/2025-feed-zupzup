@@ -9,27 +9,42 @@ import {
   headerText,
   headerCheerButton,
 } from '@/domains/components/DashboardOverview/DashboardOverview.style';
-
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
-import { FeedbackFilter } from '@/types/feedback.types';
-import { getDashPanels } from '@/domains/components/DashboardOverview/DashboardOverview.utils';
 
-interface DashboardOverviewProps {
-  filter: FeedbackFilter;
-  handlePanelClick: (category: FeedbackFilter) => void;
-}
+import useCheerButton from '@/domains/hooks/useCheerButton';
 
-export default function DashboardOverview({
-  filter,
-  handlePanelClick,
-}: DashboardOverviewProps) {
+export default function DashboardOverview() {
   const theme = useAppTheme();
   const { groupName, totalCheeringCount } = useOrganizationName();
   const { statistics } = useUserOrganizationsStatistics();
 
-  const DASH_PANELS = getDashPanels(statistics, theme, handlePanelClick);
+  const DASH_PANELS = [
+    {
+      title: '반영률',
+      content: `${statistics?.reflectionRate}%`,
+      caption: `총 ${statistics?.confirmedCount}개 반영`,
+    },
+    {
+      title: '총 건의 수',
+      content: statistics?.totalCount,
+      caption: '접수 완료',
+    },
+    {
+      title: '미처리',
+      content: statistics?.waitingCount,
+      caption: '반영 전',
+      color: theme.colors.red[100],
+    },
+    {
+      title: '완료',
+      content: statistics?.confirmedCount,
+      caption: '반영 완료',
+      color: theme.colors.green[100],
+    },
+  ];
+  const { handleCheerButton, animate } = useCheerButton();
 
   return (
     <>
@@ -40,7 +55,11 @@ export default function DashboardOverview({
         </div>
         <div css={headerCheerButton}>
           <div css={cheerButtonLayout}>
-            <CheerButton totalCheeringCount={totalCheeringCount} />
+            <CheerButton
+              totalCheeringCount={totalCheeringCount}
+              onClick={handleCheerButton}
+              animate={animate}
+            />
           </div>
         </div>
       </div>
@@ -52,9 +71,6 @@ export default function DashboardOverview({
             content={panel.content}
             caption={panel.caption}
             color={panel.color}
-            isClick={filter === panel.title}
-            onClick={panel.onClick}
-            isButton={panel.isButton}
           />
         ))}
       </div>

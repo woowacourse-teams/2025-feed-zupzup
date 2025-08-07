@@ -1,11 +1,11 @@
 import { StatisticsProps } from '@/domains/hooks/useUserOrganizationsStatistics';
 import { Theme } from '@/theme';
-import { FeedbackFilter } from '@/types/feedback.types';
+import { FeedbackFilterType } from '@/types/feedback.types';
 
 export function getDashPanels(
   statistics: StatisticsProps,
   theme: Theme,
-  handlePanelClick: (category: FeedbackFilter) => void
+  handlePanelClick: (category: FeedbackFilterType) => void
 ) {
   return [
     {
@@ -25,7 +25,7 @@ export function getDashPanels(
       content: statistics?.waitingCount,
       caption: '반영 전',
       color: theme.colors.red[100],
-      onClick: () => handlePanelClick('미처리'),
+      onClick: () => handlePanelClick('PENDING'),
       isButton: true,
     },
     {
@@ -33,7 +33,7 @@ export function getDashPanels(
       content: statistics?.confirmedCount,
       caption: '반영 완료',
       color: theme.colors.green[100],
-      onClick: () => handlePanelClick('완료'),
+      onClick: () => handlePanelClick('COMPLETED'),
       isButton: true,
     },
   ];

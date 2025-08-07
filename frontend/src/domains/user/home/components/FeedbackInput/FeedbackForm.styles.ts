@@ -25,7 +25,7 @@ export const userInfo = (theme: Theme) => css`
   height: 45px;
   color: ${theme.colors.gray[600]};
   transform: translateY(-50%);
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   p {
     line-height: 26px;
@@ -43,7 +43,7 @@ export const randomButton = (theme: Theme) => css`
   width: 82px;
   height: 34px;
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   color: ${theme.colors.gray[600]};
   background-color: ${theme.colors.gray[100]};
@@ -106,7 +106,7 @@ export const textarea = (theme: Theme) => css`
   resize: none;
   outline: none;
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   border: none;
 `;
@@ -121,7 +121,7 @@ export const toggleButtonContainer = css`
 `;
 
 export const toggleButtonText = (theme: Theme) => css`
-  ${theme.typography.inter.captionSmall}
+  ${theme.typography.pretendard.captionSmall}
 
   margin-left: 10px;
   color: ${theme.colors.gray[600]};
@@ -141,14 +141,4 @@ export const usernameInput = (theme: Theme) => css`
     color: ${theme.colors.gray[500]};
     cursor: not-allowed;
   }
-`;
-
-export const textareaCounter = (theme: Theme) => css`
-  position: absolute;
-  right: 16px;
-  bottom: 8px;
-  color: ${theme.colors.gray[500]};
-  ${theme.typography.inter.captionSmall}
-
-  pointer-events: none;
 `;

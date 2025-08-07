@@ -7,5 +7,5 @@ export const container = (theme: Theme) => css`
   background-color: ${theme.colors.gray[100]};
   border-radius: 20px;
 
-  ${theme.typography.inter.caption};
+  ${theme.typography.pretendard.caption};
 `;

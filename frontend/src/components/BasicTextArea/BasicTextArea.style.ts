@@ -13,10 +13,10 @@ export const textArea = (theme: Theme) => css`
   border: 1px solid ${theme.colors.gray[200]};
   resize: none;
   border-radius: 16px;
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 
   ::placeholder {
-    ${theme.typography.inter.caption}
+    ${theme.typography.pretendard.caption}
 
     color : ${theme.colors.gray[500]};
   }
@@ -28,5 +28,5 @@ export const caption = (theme: Theme) => css`
   bottom: 20%;
   color: ${theme.colors.gray[500]};
 
-  ${theme.typography.inter.caption}
+  ${theme.typography.pretendard.caption}
 `;

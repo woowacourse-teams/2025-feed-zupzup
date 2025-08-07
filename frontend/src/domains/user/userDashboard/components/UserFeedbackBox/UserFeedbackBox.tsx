@@ -5,8 +5,10 @@ import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBo
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { secretText } from './UserFeedbackBox.styles';
 import { SerializedStyles } from '@emotion/react';
+import { secretText } from './UserFeedbackBox.styles';
+import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
+import { CategoryType } from '@/analytics/types';
 
 interface UserFeedbackBox {
   userName: string;
@@ -14,10 +16,13 @@ interface UserFeedbackBox {
   content: string;
   isLiked: boolean;
   isSecret: boolean;
-  createdAt: string;
+  postedAt: string;
   feedbackId: number;
   likeCount: number;
-  customCSS: SerializedStyles | null;
+  customCSS: (SerializedStyles | null)[];
+  isMyFeedback: boolean;
+  comment: null | string;
+  category: CategoryType;
 }
 
 export default function UserFeedbackBox({
@@ -26,34 +31,42 @@ export default function UserFeedbackBox({
   content,
   isLiked,
   isSecret,
-  createdAt,
+  postedAt,
   feedbackId,
   likeCount,
   customCSS,
+  isMyFeedback = false,
+  comment,
+  category,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
   return (
     <FeedbackBoxBackGround type={type} customCSS={customCSS}>
       <FeedbackBoxHeader
-        userName={userName}
+        userName={userName + (isMyFeedback ? ' (나)' : '')}
         type={type}
         feedbackId={feedbackId}
+        category={category}
       />
-      {isSecret ? (
-        <div css={secretText(theme)}>
-          <p>비밀글입니다.</p>
-          <p>
-            <LockIcon />
-          </p>
-        </div>
-      ) : (
-        <FeedbackText type={type} text={content} />
-      )}
+      <div css={isSecret ? secretText(theme) : undefined}>
+        {isSecret ? (
+          isMyFeedback ? (
+            <FeedbackText type={type} text={content} />
+          ) : (
+            <p>비밀글입니다.</p>
+          )
+        ) : (
+          <FeedbackText type={type} text={content} />
+        )}
+        {isSecret && <LockIcon />}
+      </div>
+      {type === 'CONFIRMED' && comment && <FeedbackAnswer answer={comment} />}
+
       <FeedbackBoxFooter
         type={type}
         isLiked={isLiked}
-        createdAt={createdAt}
+        postedAt={postedAt}
         isSecret={isSecret}
         feedbackId={feedbackId}
         likeCount={likeCount}

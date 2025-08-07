@@ -14,20 +14,23 @@ import {
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
+import { Analytics, onboardingEvents } from '@/analytics';
+import { CategoryType } from '@/analytics/types';
 
 interface OnBoardingProps {
-  moveNextStep: () => void;
+  onCategoryClick: (newCategory: CategoryType) => void;
 }
 
-export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
+export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
 
   const { groupName } = useOrganizationName();
 
-  const handleCategoryButtonClick = () => {
-    // api 통신
-    moveNextStep();
+  const handleViewSuggestionsClick = () => {
+    Analytics.track(onboardingEvents.viewSuggestionsFromOnboarding());
+
+    navigate('/dashboard');
   };
 
   return (
@@ -45,29 +48,29 @@ export default function OnBoarding({ moveNextStep }: OnBoardingProps) {
           <CategoryButton
             icon='🏠'
             text='시설'
-            onClick={handleCategoryButtonClick}
+            onClick={() => onCategoryClick('시설')}
           />
           <CategoryButton
             icon='📑'
-            text='학사행정'
-            onClick={handleCategoryButtonClick}
+            text='행정'
+            onClick={() => onCategoryClick('행정')}
           />
           <CategoryButton
             icon='📕'
             text='커리큘럼'
-            onClick={handleCategoryButtonClick}
+            onClick={() => onCategoryClick('커리큘럼')}
           />
           <CategoryButton
             icon='💡'
             text='기타'
-            onClick={handleCategoryButtonClick}
+            onClick={() => onCategoryClick('기타')}
           />
         </div>
       </div>
       <BasicButton
         icon={<p css={skipIcon}>📄</p>}
         variant='secondary'
-        onClick={() => navigate('/dashboard')}
+        onClick={handleViewSuggestionsClick}
       >
         <p css={skipText(theme)}>건의 목록 보러가기</p>
       </BasicButton>
