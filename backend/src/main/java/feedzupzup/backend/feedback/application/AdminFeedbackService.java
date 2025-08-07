@@ -27,6 +27,7 @@ public class AdminFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
+    private final FeedbackLikeService feedbackLikeService;
 
     @Transactional
     @BusinessActionLog
@@ -64,8 +65,13 @@ public class AdminFeedbackService {
             final FeedbackOrderBy orderBy
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
+
+        feedbackLikeService.flushLikeCountBuffer();
+        
         final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(
-                organizationId, cursorId, pageable, status, orderBy.name());
+                organizationId, cursorId, pageable, status, orderBy.name()
+        );
+
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
         return AdminFeedbackListResponse.from(feedbackPage);
