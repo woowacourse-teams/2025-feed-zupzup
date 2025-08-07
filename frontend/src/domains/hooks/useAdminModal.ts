@@ -8,14 +8,14 @@ interface ModalState {
 }
 
 interface UseAdminModalProps {
-  onConfirmFeedback?: (feedbackId: number, comment: string) => void;
-  onDeleteFeedback?: (feedbackId: number) => void;
+  onConfirmFeedback: (feedbackId: number, comment: string) => void;
+  onDeleteFeedback: (feedbackId: number) => void;
 }
 
 export const useAdminModal = ({
   onConfirmFeedback,
   onDeleteFeedback,
-}: UseAdminModalProps = {}) => {
+}: UseAdminModalProps) => {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { showErrorModal } = useErrorModalContext();
 
