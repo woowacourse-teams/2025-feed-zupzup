@@ -10,9 +10,7 @@ import {
   sortDropdownContainer,
 } from './FilterSection.styles';
 import Button from '@/components/@commons/Button/Button';
-import { FeedbackFilter } from '@/types/feedback.types';
-
-type SortType = 'LATEST' | 'OLDEST' | 'LIKES';
+import { FeedbackFilter, SortType } from '@/types/feedback.types';
 
 export interface FilterSectionProps {
   selectedFilter: FeedbackFilter | null;

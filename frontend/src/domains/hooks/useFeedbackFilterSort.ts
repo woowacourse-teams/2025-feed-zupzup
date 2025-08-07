@@ -1,19 +1,19 @@
 import { useState } from 'react';
-import { FeedbackType, FeedbackFilter } from '@/types/feedback.types';
+import { FeedbackType, FeedbackFilter, SortType } from '@/types/feedback.types';
 import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 
 export default function useFeedbackFilterSort(feedbacks: FeedbackType[]) {
   const [selectedFilter, setSelectedFilter] = useState<FeedbackFilter | null>(
     null
   );
-  const [selectedSort, setSelectedSort] = useState('latest');
+  const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
   const { getIsMyFeedback } = useMyFeedbacks();
 
   const handleFilterChange = (newFilter: FeedbackFilter | null) => {
     setSelectedFilter(newFilter);
   };
 
-  const handleSortChange = (newSort: string) => {
+  const handleSortChange = (newSort: SortType) => {
     setSelectedSort(newSort);
   };
 

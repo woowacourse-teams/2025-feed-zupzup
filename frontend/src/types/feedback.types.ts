@@ -32,3 +32,5 @@ export interface SuggestionFeedback {
 }
 
 export type FeedbackFilter = '전체' | '완료' | '미처리' | '나의글';
+
+export type SortType = 'LATEST' | 'OLDEST' | 'LIKES';
