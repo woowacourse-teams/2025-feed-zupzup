@@ -4,10 +4,13 @@ import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
 import { StatusType } from '@/types/status.types';
 import { useNavigate } from 'react-router-dom';
+import { CategoryType } from '@/analytics/types';
+
 interface FeedbackSubmitParams {
   content: string;
   userName: string;
   isSecret: boolean;
+  category: CategoryType | null;
   organizationId?: number;
 }
 
@@ -20,6 +23,7 @@ export default function useFeedbackSubmit() {
       content,
       userName,
       isSecret,
+      category,
       organizationId = 1,
     }: FeedbackSubmitParams) => {
       if (submitStatus === 'submitting') return;
@@ -32,6 +36,7 @@ export default function useFeedbackSubmit() {
           content,
           isSecret,
           userName,
+          category,
           onSuccess: (response: SuggestionFeedback) => {
             setLocalStorage('highlightedId', response.data.feedbackId);
             setLocalStorage('myFeedbacks', [
