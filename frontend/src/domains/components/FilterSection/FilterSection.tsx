@@ -22,8 +22,8 @@ export interface FilterSectionProps {
 }
 
 const filterOptions = (isAdmin: boolean) => [
-  { value: 'PENDING' as FeedbackFilterType, label: '미처리' },
-  { value: 'COMPLETED' as FeedbackFilterType, label: '완료' },
+  { value: 'WAITING' as FeedbackFilterType, label: '미처리' },
+  { value: 'CONFIRMED' as FeedbackFilterType, label: '완료' },
   ...(!isAdmin
     ? [{ value: 'MINE' as FeedbackFilterType, label: '내가 쓴 글' }]
     : []),
