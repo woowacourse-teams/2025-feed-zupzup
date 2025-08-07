@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.feedback.application.FeedbackOrderBy.LATEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -12,6 +13,7 @@ import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
@@ -201,7 +203,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -233,7 +236,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 5;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -250,7 +254,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organizationId, size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organizationId, size, null, null, LATEST);
 
             // then
             assertAll(
@@ -294,7 +299,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(targetOrganization.getId(), size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    targetOrganization.getId(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -334,7 +340,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 2;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -358,7 +365,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, null, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -397,7 +405,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(organization.getId(), size, cursorId, null);
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), size, cursorId, null, LATEST);
 
             // then
             assertAll(
@@ -465,4 +474,119 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         assertThat(resultFeedback.getStatus()).isEqualTo(ProcessStatus.CONFIRMED);
     }
 
+    @Nested
+    @DisplayName("정렬 기능 테스트")
+    class OrderingTest {
+
+        @Test
+        @DisplayName("최신순으로 조회된다")
+        void getFeedbackPage_orders_by_latest() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            // 순서대로 저장하여 ID가 증가하도록 함
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+
+            // when - LATEST로 정렬
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), 10, null, null, FeedbackOrderBy.LATEST);
+
+            // then - 최신(ID가 큰) 순서로 정렬되어야 함
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved3.getId()),
+                    () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved2.getId()),
+                    () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved1.getId())
+            );
+        }
+
+        @Test
+        @DisplayName("오래된순으로 조회된다")
+        void getFeedbackPage_orders_by_oldest() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            // 순서대로 저장하여 ID가 증가하도록 함
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                    organizationCategory);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+
+            // when - OLDEST로 정렬
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), 10, null, null, FeedbackOrderBy.OLDEST);
+
+            // then - 오래된(ID가 작은) 순서로 정렬되어야 함
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved1.getId()),
+                    () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved2.getId()),
+                    () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId())
+            );
+        }
+
+        @Test
+        @DisplayName("좋아요 많은 순으로 조회된다")
+        void getFeedbackPage_orders_by_likes() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                    organization, FACILITY);
+            organizationCategoryRepository.save(organizationCategory);
+
+            // 좋아요 수가 다른 피드백들 생성
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                    organizationCategory, 5);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                    organizationCategory, 10);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                    organizationCategory, 3);
+
+            final Feedback saved1 = feedBackRepository.save(feedback1);
+            final Feedback saved2 = feedBackRepository.save(feedback2);
+            final Feedback saved3 = feedBackRepository.save(feedback3);
+
+            // when - LIKES로 정렬
+            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
+                    organization.getId(), 10, null, null, FeedbackOrderBy.LIKES);
+
+            // then - 좋아요 많은 순서로 정렬되어야 함 (10, 5, 3)
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved2.getId()),
+                    () -> assertThat(response.feedbacks().get(0).likeCount()).isEqualTo(10),
+                    () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved1.getId()),
+                    () -> assertThat(response.feedbacks().get(1).likeCount()).isEqualTo(5),
+                    () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId()),
+                    () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
+            );
+        }
+    }
 }

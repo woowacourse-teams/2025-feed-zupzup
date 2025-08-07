@@ -1,7 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
 import jakarta.persistence.Embeddable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import lombok.AccessLevel;
@@ -30,7 +29,7 @@ public class PostedAt {
         return new PostedAt(postedAt);
     }
 
-    public LocalDate getPostedDate() {
-        return postedAt.toLocalDate();
+    public LocalDateTime getPostedAt() {
+        return postedAt;
     }
 }

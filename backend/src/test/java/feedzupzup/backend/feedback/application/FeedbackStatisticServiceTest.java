@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.category.domain.Category.*;
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,8 +9,8 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
@@ -58,7 +58,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(
                 ProcessStatus.CONFIRMED, organizationCategory);
 
-        System.out.println(confirmedFeedback1.getPostedAt().getPostedDate());
+        System.out.println(confirmedFeedback1.getPostedAt().getPostedAt());
 
         // 피드백 저장
         feedBackRepository.save(confirmedFeedback1);
