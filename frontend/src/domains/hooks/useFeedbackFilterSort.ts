@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { FeedbackType, FeedbackFilter, SortType } from '@/types/feedback.types';
+import {
+  FeedbackType,
+  FeedbackFilterType,
+  SortType,
+} from '@/types/feedback.types';
 import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 
 export default function useFeedbackFilterSort(feedbacks: FeedbackType[]) {
-  const [selectedFilter, setSelectedFilter] = useState<FeedbackFilter | null>(
-    null
-  );
+  const [selectedFilter, setSelectedFilter] =
+    useState<FeedbackFilterType | null>(null);
   const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
   const { getIsMyFeedback } = useMyFeedbacks();
 
-  const handleFilterChange = (newFilter: FeedbackFilter | null) => {
+  const handleFilterChange = (newFilter: FeedbackFilterType | null) => {
     setSelectedFilter(newFilter);
   };
 
@@ -18,7 +21,7 @@ export default function useFeedbackFilterSort(feedbacks: FeedbackType[]) {
   };
 
   const filteredAndSortedFeedbacks = feedbacks.filter((feedback) => {
-    if (selectedFilter === '나의글') {
+    if (selectedFilter === 'MINE') {
       return getIsMyFeedback(feedback.feedbackId);
     }
 

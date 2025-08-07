@@ -10,11 +10,11 @@ import {
   sortDropdownContainer,
 } from './FilterSection.styles';
 import Button from '@/components/@commons/Button/Button';
-import { FeedbackFilter, SortType } from '@/types/feedback.types';
+import { FeedbackFilterType, SortType } from '@/types/feedback.types';
 
 export interface FilterSectionProps {
-  selectedFilter: FeedbackFilter | null;
-  onFilterChange: (filter: FeedbackFilter | null) => void;
+  selectedFilter: FeedbackFilterType | null;
+  onFilterChange: (filter: FeedbackFilterType | null) => void;
   selectedSort: SortType;
   onSortChange: (sort: SortType) => void;
   customCSS?: SerializedStyles;
@@ -22,9 +22,11 @@ export interface FilterSectionProps {
 }
 
 const filterOptions = (isAdmin: boolean) => [
-  { value: 'PENDING', label: '미처리' },
-  { value: 'COMPLETED', label: '완료' },
-  ...(!isAdmin ? [{ value: 'MINE', label: '내가 쓴 글' }] : []),
+  { value: 'PENDING' as FeedbackFilterType, label: '미처리' },
+  { value: 'COMPLETED' as FeedbackFilterType, label: '완료' },
+  ...(!isAdmin
+    ? [{ value: 'MINE' as FeedbackFilterType, label: '내가 쓴 글' }]
+    : []),
 ];
 
 const sortOptions = [
@@ -43,7 +45,7 @@ export default function FilterSection({
 }: FilterSectionProps) {
   const theme = useAppTheme();
 
-  const handleFilterClick = (filterValue: FeedbackFilter) => {
+  const handleFilterClick = (filterValue: FeedbackFilterType) => {
     if (selectedFilter === filterValue) {
       onFilterChange(null);
     } else {
@@ -62,7 +64,7 @@ export default function FilterSection({
             <Button
               type='button'
               customCSS={tagButton(theme)}
-              onClick={() => handleFilterClick(option.value as FeedbackFilter)}
+              onClick={() => handleFilterClick(option.value)}
             >
               {option.label}
             </Button>
@@ -74,7 +76,7 @@ export default function FilterSection({
         <Dropdown
           options={sortOptions}
           value={selectedSort}
-          onChange={(e) => onSortChange(e.target.value)}
+          onChange={(e) => onSortChange(e.target.value as SortType)}
           placeholder='정렬 기준'
           width='120px'
           height='36px'

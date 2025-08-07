@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
 import FilterSection from './FilterSection';
+import { FeedbackFilterType, SortType } from '@/types/feedback.types';
 
 const meta: Meta<typeof FilterSection> = {
   title: 'components/FilterSection',
@@ -25,8 +26,9 @@ type Story = StoryObj<typeof FilterSection>;
 
 export const Default: Story = {
   render: () => {
-    const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
-    const [selectedSort, setSelectedSort] = useState('latest');
+    const [selectedFilter, setSelectedFilter] =
+      useState<FeedbackFilterType | null>(null);
+    const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
 
     return (
       <FilterSection
@@ -41,8 +43,8 @@ export const Default: Story = {
 
 export const WithPendingFilter: Story = {
   args: {
-    selectedFilter: 'pending',
-    selectedSort: 'latest',
+    selectedFilter: '미처리',
+    selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
   },
@@ -50,8 +52,8 @@ export const WithPendingFilter: Story = {
 
 export const WithCompletedFilter: Story = {
   args: {
-    selectedFilter: 'completed',
-    selectedSort: 'latest',
+    selectedFilter: '완료',
+    selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
   },
@@ -59,8 +61,8 @@ export const WithCompletedFilter: Story = {
 
 export const WithMineFilter: Story = {
   args: {
-    selectedFilter: 'mine',
-    selectedSort: 'latest',
+    selectedFilter: '나의글',
+    selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
   },
@@ -69,7 +71,7 @@ export const WithMineFilter: Story = {
 export const WithLikesSort: Story = {
   args: {
     selectedFilter: null,
-    selectedSort: 'likes',
+    selectedSort: 'LIKES',
     onFilterChange: () => {},
     onSortChange: () => {},
   },
@@ -78,7 +80,7 @@ export const WithLikesSort: Story = {
 export const WithOldestSort: Story = {
   args: {
     selectedFilter: null,
-    selectedSort: 'oldest',
+    selectedSort: 'OLDEST',
     onFilterChange: () => {},
     onSortChange: () => {},
   },
