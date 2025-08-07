@@ -83,6 +83,7 @@ export default function AdminDashboard() {
             isSecret={feedback.isSecret}
             likeCount={feedback.likeCount}
             userName={feedback.userName}
+            category={feedback.category}
             comment={feedback.comment}
           />
         ))}

@@ -1,6 +1,9 @@
+import { CategoryType } from '@/analytics/types';
 import {
+  headerInfoBox,
   imgContainer,
   imgLayout,
+  userCategoryStyle,
   userNameStyle,
 } from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader.style';
 import useAvatarSelector from '@/domains/hooks/useAvatarSelector';
@@ -11,12 +14,14 @@ interface FeedbackBoxHeaderProps {
   feedbackId: number;
   userName?: string;
   type: FeedbackStatusType;
+  category: CategoryType;
 }
 
 export default function FeedbackBoxHeader({
   feedbackId,
   userName,
   type,
+  category,
 }: FeedbackBoxHeaderProps) {
   const userImage = useAvatarSelector({ feedbackId });
   const theme = useAppTheme();
@@ -24,7 +29,10 @@ export default function FeedbackBoxHeader({
   return (
     <div css={imgContainer}>
       <img src={userImage} alt='user icon' css={imgLayout} />
-      <p css={userNameStyle(theme, type)}>{userName}</p>
+      <div css={headerInfoBox}>
+        <p css={userNameStyle(theme, type)}>{userName}</p>
+        <p css={userCategoryStyle(theme, type)}>{category}</p>
+      </div>
     </div>
   );
 }
