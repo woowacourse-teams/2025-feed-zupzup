@@ -42,10 +42,11 @@ export default function useInfinityScroll<
       ...(cursorId !== null && { cursorId: cursorId.toString() }),
     });
 
+    const separator = url.includes('?') ? '&' : '?';
+    const requestUrl = `${url}${separator}${query.toString()}`;
+
     try {
-      const response = await apiClient.get<{ data: ResponseData }>(
-        `${url}?${query.toString()}`
-      );
+      const response = await apiClient.get<{ data: ResponseData }>(requestUrl);
 
       if (!response) throw new Error('응답 없음');
 
