@@ -45,7 +45,6 @@ export default function UserDashboard() {
           {feedbacks.map((feedback) => (
             <UserFeedbackBox {...getUserFeedbackProps(feedback)} />
           ))}
-          {loading && <div>로딩중...</div>}
         </FeedbackBoxList>
 
         <FeedbackStatusMessage

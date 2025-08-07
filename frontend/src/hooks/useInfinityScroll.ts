@@ -33,6 +33,7 @@ export default function useInfinityScroll<
 
   const retryCountRef = useRef(0);
   const prevUrlRef = useRef(url);
+  const isFirstFetchAfterUrlChange = useRef(true);
 
   useEffect(() => {
     if (prevUrlRef.current !== url) {
@@ -40,6 +41,7 @@ export default function useInfinityScroll<
       setCursorId(null);
       setHasNext(initialHasNext);
       retryCountRef.current = 0;
+      isFirstFetchAfterUrlChange.current = true;
       prevUrlRef.current = url;
 
       if (url) {
@@ -54,8 +56,11 @@ export default function useInfinityScroll<
 
     const query = new URLSearchParams({
       size: size.toString(),
-      ...(cursorId !== null && { cursorId: cursorId.toString() }),
     });
+
+    if (!isFirstFetchAfterUrlChange.current && cursorId !== null) {
+      query.append('cursorId', cursorId.toString());
+    }
 
     const separator = url.includes('?') ? '&' : '?';
     const requestUrl = `${url}${separator}${query.toString()}`;
@@ -71,6 +76,10 @@ export default function useInfinityScroll<
       setHasNext(responseData.hasNext);
       setCursorId(responseData.nextCursorId);
       retryCountRef.current = 0;
+
+      if (isFirstFetchAfterUrlChange.current) {
+        isFirstFetchAfterUrlChange.current = false;
+      }
     } catch (error) {
       showErrorModal(error, '에러');
 

@@ -25,10 +25,6 @@ export default function AdminDashboard() {
     getAdminFeedbackProps,
   } = useAdminDashboard();
 
-  if (isCheckingAuth) {
-    return <div>로딩중...</div>;
-  }
-
   if (!isAuthorized) {
     return null;
   }
@@ -49,7 +45,6 @@ export default function AdminDashboard() {
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox {...getAdminFeedbackProps(feedback)} />
         ))}
-        {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
 
       <FeedbackStatusMessage
