@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,6 +102,6 @@ public interface UserFeedbackApi {
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
             @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy,
-            @Parameter(description = "내 피드백 ID 목록 (쉼표로 구분)", example = "1,2,3") @RequestParam("myFeedbacks") final String myFeedbacks
+            @Parameter(description = "내 피드백 ID 목록 배열 형태", example = "1,2,3") @RequestParam(value = "myFeedbackIds", required = false) final List<Long> myFeedbackIds
     );
 }

@@ -12,6 +12,7 @@ import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,7 +80,7 @@ public class UserFeedbackController implements UserFeedbackApi {
             final Long cursorId,
             final ProcessStatus status,
             final FeedbackOrderBy orderBy,
-            final String myFeedbacks
+            final List<Long> myFeedbackIds
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
                 organizationId,
@@ -87,7 +88,7 @@ public class UserFeedbackController implements UserFeedbackApi {
                 cursorId,
                 status,
                 orderBy,
-                myFeedbacks
+                myFeedbackIds
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }

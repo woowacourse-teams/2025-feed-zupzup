@@ -14,7 +14,6 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -75,13 +74,9 @@ public class UserFeedbackService {
             final Long cursorId,
             final ProcessStatus status,
             final FeedbackOrderBy orderBy,
-            final String myFeedbacks
+            final List<Long> myFeedbackIds
     ) {
         final Pageable pageable = createPageable(size);
-
-        final List<Long> myFeedbackIds = Arrays.stream(myFeedbacks.split(","))
-                .map(Long::parseLong)
-                .toList();
 
         feedbackLikeService.flushLikeCountBuffer();
 
