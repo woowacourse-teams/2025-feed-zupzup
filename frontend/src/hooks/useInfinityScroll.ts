@@ -37,7 +37,7 @@ export default function useInfinityScroll<
   useEffect(() => {
     if (prevUrlRef.current !== url) {
       setItems([]);
-      setCursorId(initialCursorId);
+      setCursorId(null);
       setHasNext(initialHasNext);
       retryCountRef.current = 0;
       prevUrlRef.current = url;
