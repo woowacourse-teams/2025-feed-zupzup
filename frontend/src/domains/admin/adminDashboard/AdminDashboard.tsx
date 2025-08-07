@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
@@ -16,6 +17,32 @@ import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 
 export default function AdminDashboard() {
   const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    getFilteredFeedbacks,
+  } = useFeedbackFilterSort();
+
+  const apiUrl = useMemo(() => {
+    const baseUrl = '/admin/organizations/1/feedbacks';
+    const params = new URLSearchParams();
+
+    params.append('orderBy', selectedSort);
+
+    if (selectedFilter === 'COMPLETED') {
+      params.append('status', 'CONFIRMED');
+    } else if (selectedFilter === 'PENDING') {
+      params.append('status', 'WAITING');
+    }
+
+    const queryString = params.toString();
+    console.log('Admin Generated API URL:', `${baseUrl}?${queryString}`); // 디버깅용
+
+    return `${baseUrl}?${queryString}`;
+  }, [selectedFilter, selectedSort]);
+
+  const {
     items: originalFeedbacks,
     fetchMore,
     hasNext,
@@ -25,7 +52,7 @@ export default function AdminDashboard() {
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/admin/organizations/1/feedbacks',
+    url: apiUrl,
     key: 'feedbacks',
   });
 
@@ -46,9 +73,9 @@ export default function AdminDashboard() {
     onDeleteFeedback: deleteFeedback,
   });
 
-  const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
-    useFeedbackFilterSort(feedbacks);
   useGetFeedback({ fetchMore, hasNext, loading });
+
+  const filteredFeedbacks = getFilteredFeedbacks(feedbacks);
 
   if (isCheckingAuth) {
     return <div>로딩중...</div>;
@@ -69,7 +96,7 @@ export default function AdminDashboard() {
         isAdmin={true}
       />
       <FeedbackBoxList>
-        {feedbacks.map((feedback) => (
+        {filteredFeedbacks.map((feedback) => (
           <AdminFeedbackBox
             key={feedback.feedbackId}
             feedbackId={feedback.feedbackId}
@@ -88,7 +115,7 @@ export default function AdminDashboard() {
       <FeedbackStatusMessage
         loading={loading}
         hasNext={hasNext}
-        feedbackCount={feedbacks.length}
+        feedbackCount={filteredFeedbacks.length}
       />
       {hasNext && <div id='scroll-observer'></div>}
 

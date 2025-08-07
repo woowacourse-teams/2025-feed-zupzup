@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ArrowIcon } from '@/components/icons/arrowIcon';
 import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
@@ -30,6 +31,33 @@ export default function UserDashboard() {
   const navigate = useNavigate();
   const theme = useAppTheme();
 
+  // 필터/정렬 상태만 관리하는 훅
+  const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    getFilteredFeedbacks,
+  } = useFeedbackFilterSort();
+
+  const apiUrl = useMemo(() => {
+    const baseUrl = '/organizations/1/feedbacks';
+    const params = new URLSearchParams();
+
+    params.append('orderBy', selectedSort);
+
+    if (selectedFilter === 'COMPLETED') {
+      params.append('status', 'CONFIRMED');
+    } else if (selectedFilter === 'PENDING') {
+      params.append('status', 'WAITING');
+    }
+
+    const queryString = params.toString();
+    console.log('Generated API URL:', `${baseUrl}?${queryString}`); // 디버깅용
+
+    return `${baseUrl}?${queryString}`;
+  }, [selectedFilter, selectedSort]);
+
   const {
     items: feedbacks,
     fetchMore,
@@ -40,17 +68,9 @@ export default function UserDashboard() {
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/organizations/1/feedbacks',
+    url: apiUrl,
     key: 'feedbacks',
   });
-
-  const {
-    selectedFilter,
-    selectedSort,
-    handleFilterChange,
-    handleSortChange,
-    filteredAndSortedFeedbacks,
-  } = useFeedbackFilterSort(feedbacks);
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
@@ -62,6 +82,9 @@ export default function UserDashboard() {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
     navigate('/');
   };
+
+  // MINE 필터링만 클라이언트에서 처리
+  const filteredAndSortedFeedbacks = getFilteredFeedbacks(feedbacks);
 
   return (
     <div css={dashboardLayout}>
