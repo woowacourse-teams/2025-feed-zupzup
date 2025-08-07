@@ -7,6 +7,7 @@ import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
 import useAdminDashboard from './hooks/useAdminDashboard';
+import { FeedbackFilterType } from '@/types/feedback.types';
 
 export default function AdminDashboard() {
   const {
@@ -18,7 +19,6 @@ export default function AdminDashboard() {
     handleFilterChange,
     handleSortChange,
     isAuthorized,
-    isCheckingAuth,
     modalState,
     closeModal,
     handleModalAction,
@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   } = useAdminDashboard();
 
   if (!isAuthorized) {
-    return null;
+    return;
   }
 
   return (
@@ -48,7 +48,8 @@ export default function AdminDashboard() {
       </FeedbackBoxList>
 
       <FeedbackStatusMessage
-        loading={loading}
+        isLoading={loading}
+        filterType={selectedFilter as FeedbackFilterType}
         hasNext={hasNext}
         feedbackCount={feedbacks.length}
       />

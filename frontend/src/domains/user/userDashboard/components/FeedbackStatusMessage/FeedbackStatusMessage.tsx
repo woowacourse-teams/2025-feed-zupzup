@@ -1,17 +1,20 @@
 import StatusBox from '@/domains/components/StatusBox/StatusBox';
+import { FeedbackFilterType } from '@/types/feedback.types';
 
 interface FeedbackStatusMessageProps {
-  loading: boolean;
+  isLoading: boolean;
+  filterType?: FeedbackFilterType;
   hasNext: boolean;
   feedbackCount: number;
 }
 
 export default function FeedbackStatusMessage({
-  loading,
+  isLoading,
+  filterType,
   hasNext,
   feedbackCount,
 }: FeedbackStatusMessageProps) {
-  if (loading) return null;
+  if (isLoading && filterType !== 'MINE') return null;
 
   if (feedbackCount === 0) {
     return (

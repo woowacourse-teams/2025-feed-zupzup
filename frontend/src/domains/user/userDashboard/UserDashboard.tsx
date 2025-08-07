@@ -12,6 +12,7 @@ import {
   goOnboardButton,
   goTopButton,
 } from '@/domains/user/userDashboard/UserDashboard.style';
+import { FeedbackFilterType } from '@/types/feedback.types';
 
 export default function UserDashboard() {
   const {
@@ -48,7 +49,8 @@ export default function UserDashboard() {
         </FeedbackBoxList>
 
         <FeedbackStatusMessage
-          loading={loading}
+          isLoading={loading}
+          filterType={selectedFilter as FeedbackFilterType}
           hasNext={hasNext}
           feedbackCount={feedbacks.length}
         />
