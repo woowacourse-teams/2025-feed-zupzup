@@ -10,12 +10,14 @@ import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
 import { FeedbackType } from '@/types/feedback.types';
 import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
+import { CategoryType } from '@/analytics/types';
 
 interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
   feedbackId: number;
   onConfirm: (feedbackId: number) => void;
   onDelete: (feedbackId: number) => void;
+  category: CategoryType;
 }
 
 export default function AdminFeedbackBox({
@@ -28,6 +30,7 @@ export default function AdminFeedbackBox({
   likeCount,
   userName,
   postedAt,
+  category,
 }: AdminFeedbackBox) {
   return (
     <FeedbackBoxBackGround type={type}>
@@ -36,6 +39,7 @@ export default function AdminFeedbackBox({
           userName={userName}
           type={type}
           feedbackId={feedbackId}
+          category={category}
         />
         <div css={iconWrap}>
           {type === 'WAITING' && (

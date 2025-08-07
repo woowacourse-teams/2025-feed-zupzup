@@ -1,3 +1,4 @@
+import { CategoryType } from '@/analytics/types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 export interface FeedbackType {
@@ -8,6 +9,7 @@ export interface FeedbackType {
   postedAt: string;
   userName: string;
   likeCount: number;
+  category: CategoryType;
 }
 
 export interface FeedbackResponse<T> {

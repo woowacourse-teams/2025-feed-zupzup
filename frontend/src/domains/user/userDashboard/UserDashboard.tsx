@@ -1,14 +1,16 @@
+import { Analytics, userDashboardEvents } from '@/analytics';
 import { ArrowIcon } from '@/components/icons/arrowIcon';
 import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
+import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
+import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
-import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import {
   dashboardLayout,
   goOnboardButton,
@@ -22,8 +24,6 @@ import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
-import { Analytics, userDashboardEvents } from '@/analytics';
-import FilterSection from '@/domains/components/FilterSection/FilterSection';
 
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
@@ -90,6 +90,7 @@ export default function UserDashboard() {
                 myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
                 feedback.feedbackId === highlightedId ? highlightStyle : null,
               ]}
+              category={feedback.category}
             />
           ))}
           {loading && <div>로딩중...</div>}

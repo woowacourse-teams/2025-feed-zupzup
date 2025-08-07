@@ -8,6 +8,7 @@ import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { SerializedStyles } from '@emotion/react';
 import { secretText } from './UserFeedbackBox.styles';
 import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
+import { CategoryType } from '@/analytics/types';
 
 interface UserFeedbackBox {
   userName: string;
@@ -20,6 +21,7 @@ interface UserFeedbackBox {
   likeCount: number;
   customCSS: (SerializedStyles | null)[];
   isMyFeedback: boolean;
+  category: CategoryType;
 }
 
 export default function UserFeedbackBox({
@@ -33,6 +35,7 @@ export default function UserFeedbackBox({
   likeCount,
   customCSS,
   isMyFeedback = false,
+  category,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
@@ -42,6 +45,7 @@ export default function UserFeedbackBox({
         userName={userName + (isMyFeedback ? ' (나)' : '')}
         type={type}
         feedbackId={feedbackId}
+        category={category}
       />
       <div css={isSecret ? secretText(theme) : undefined}>
         {isSecret ? (

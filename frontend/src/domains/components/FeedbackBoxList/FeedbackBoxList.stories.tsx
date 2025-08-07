@@ -44,6 +44,7 @@ const userFeedbackWaiting = {
   customCSS: [],
   userName: '익명의 사용자',
   isMyFeedback: true,
+  category: '기타' as const,
 };
 
 const userFeedbackConfirmed = {
@@ -59,6 +60,7 @@ const userFeedbackConfirmed = {
   customCSS: [],
   userName: '김개발',
   isMyFeedback: false,
+  category: '시설' as const,
 };
 
 const adminFeedbackWaiting = {
@@ -75,6 +77,7 @@ const adminFeedbackWaiting = {
   postedAt: '2024-05-21',
   customCSS: [],
   isMyFeedback: false,
+  category: '행정' as const,
 };
 
 const adminFeedbackConfirmed = {
@@ -90,6 +93,7 @@ const adminFeedbackConfirmed = {
   postedAt: '2024-05-18',
   customCSS: [],
   isMyFeedback: false,
+  category: '행정' as const,
 };
 
 export const Default: Story = {
