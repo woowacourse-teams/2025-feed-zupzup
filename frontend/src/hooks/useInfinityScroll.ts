@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { apiClient } from '@/apis/apiClient';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 
@@ -32,6 +32,21 @@ export default function useInfinityScroll<
   const { showErrorModal } = useErrorModalContext();
 
   const retryCountRef = useRef(0);
+  const prevUrlRef = useRef(url);
+
+  useEffect(() => {
+    if (prevUrlRef.current !== url) {
+      setItems([]);
+      setCursorId(initialCursorId);
+      setHasNext(initialHasNext);
+      retryCountRef.current = 0;
+      prevUrlRef.current = url;
+
+      if (url) {
+        fetchMore();
+      }
+    }
+  }, [url, initialCursorId, initialHasNext]);
 
   const fetchMore = async (size: number = DEFAULT_SIZE) => {
     if (!hasNext || loading) return;
@@ -68,5 +83,5 @@ export default function useInfinityScroll<
     }
   };
 
-  return { items, fetchMore, hasNext, loading };
+  return { items: items || [], fetchMore, hasNext, loading };
 }
