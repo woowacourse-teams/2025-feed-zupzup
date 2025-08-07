@@ -40,6 +40,6 @@ public class OrganizationCategory {
     }
 
     public boolean isSameCategory(final Category category) {
-       return  this.category.equals(category);
+       return this.category.equals(category);
     }
 }

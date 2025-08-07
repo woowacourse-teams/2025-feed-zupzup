@@ -11,7 +11,7 @@ public enum Category {
 
     FACILITY("시설"),
     CURRICULUM("커리큘럼"),
-    ADMINISTRATION("학사행정"),
+    ADMINISTRATION("행정"),
     ETC("기타"),
     ;
 
