@@ -43,7 +43,7 @@ export const Default: Story = {
 
 export const WithPendingFilter: Story = {
   args: {
-    selectedFilter: '미처리',
+    selectedFilter: 'PENDING',
     selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
@@ -52,7 +52,7 @@ export const WithPendingFilter: Story = {
 
 export const WithCompletedFilter: Story = {
   args: {
-    selectedFilter: '완료',
+    selectedFilter: 'COMPLETED',
     selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
@@ -61,7 +61,7 @@ export const WithCompletedFilter: Story = {
 
 export const WithMineFilter: Story = {
   args: {
-    selectedFilter: '나의글',
+    selectedFilter: 'MINE',
     selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
