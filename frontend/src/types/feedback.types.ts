@@ -31,4 +31,4 @@ export interface SuggestionFeedback {
   status: number;
 }
 
-export type FeedbackFilter = '전체' | '완료' | '미처리';
+export type FeedbackFilter = '전체' | '완료' | '미처리' | '나의글';
