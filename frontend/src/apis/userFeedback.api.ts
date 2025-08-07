@@ -1,3 +1,4 @@
+import { CategoryType } from '@/analytics/types';
 import { apiClient } from '@/apis/apiClient';
 import { SuggestionFeedback } from '@/types/feedback.types';
 
@@ -6,6 +7,7 @@ interface UserFeedbackParams {
   userName: string;
   isSecret: boolean;
   content: string;
+  category: CategoryType | null;
   onSuccess: (data: SuggestionFeedback) => void;
   onError: () => void;
 }
@@ -20,6 +22,7 @@ interface FeedbackRequestBody {
   content: string;
   isSecret: boolean;
   userName: string;
+  category: CategoryType | null;
 }
 
 export async function postUserFeedback({
@@ -27,6 +30,7 @@ export async function postUserFeedback({
   isSecret,
   userName,
   content,
+  category,
   onSuccess,
   onError,
 }: UserFeedbackParams) {
@@ -36,6 +40,7 @@ export async function postUserFeedback({
       content,
       isSecret,
       userName,
+      category,
     },
     { onError, onSuccess }
   );
