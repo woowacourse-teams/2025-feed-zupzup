@@ -10,15 +10,30 @@ import {
   sortDropdownContainer,
 } from './FilterSection.styles';
 import Button from '@/components/@commons/Button/Button';
+import { FeedbackFilter } from '@/types/feedback.types';
+
+type SortType = 'LATEST' | 'OLDEST' | 'LIKES';
 
 export interface FilterSectionProps {
-  selectedFilter: string | null;
-  onFilterChange: (filter: string | null) => void;
+  selectedFilter: FeedbackFilter | null;
+  onFilterChange: (filter: FeedbackFilter | null) => void;
   selectedSort: string;
   onSortChange: (sort: string) => void;
   customCSS?: SerializedStyles;
   isAdmin?: boolean;
 }
+
+const filterOptions = (isAdmin: boolean) => [
+  { value: 'PENDING', label: '미처리' },
+  { value: 'COMPLETED', label: '완료' },
+  ...(!isAdmin ? [{ value: 'MINE', label: '내가 쓴 글' }] : []),
+];
+
+const sortOptions = [
+  { value: 'LATEST' as SortType, label: '최신순' },
+  { value: 'OLDEST' as SortType, label: '오래된순' },
+  { value: 'LIKES' as SortType, label: '좋아요순' },
+];
 
 export default function FilterSection({
   selectedFilter,
@@ -30,19 +45,7 @@ export default function FilterSection({
 }: FilterSectionProps) {
   const theme = useAppTheme();
 
-  const filterOptions = [
-    { value: 'pending', label: '미처리' },
-    { value: 'completed', label: '완료' },
-    ...(!isAdmin ? [{ value: 'mine', label: '내가 쓴 글' }] : []),
-  ];
-
-  const sortOptions = [
-    { value: 'latest', label: '최신순' },
-    { value: 'oldest', label: '오래된순' },
-    { value: 'likes', label: '좋아요순' },
-  ];
-
-  const handleFilterClick = (filterValue: string) => {
+  const handleFilterClick = (filterValue: FeedbackFilter) => {
     if (selectedFilter === filterValue) {
       onFilterChange(null);
     } else {
@@ -53,7 +56,7 @@ export default function FilterSection({
   return (
     <div css={[filterSectionContainer, customCSS]}>
       <div css={filterTagsContainer}>
-        {filterOptions.map((option) => (
+        {filterOptions(isAdmin ?? false).map((option) => (
           <Tag
             key={option.value}
             customCSS={tagStyle(theme, selectedFilter === option.value)}
@@ -61,7 +64,7 @@ export default function FilterSection({
             <Button
               type='button'
               customCSS={tagButton(theme)}
-              onClick={() => handleFilterClick(option.value)}
+              onClick={() => handleFilterClick(option.value as FeedbackFilter)}
             >
               {option.label}
             </Button>
