@@ -6,14 +6,13 @@ import useProgressStep from '@/hooks/useProgressStep';
 import { css } from '@emotion/react';
 
 export default function Home() {
-  const { category, handleCategoryChange } = useCategoryManager({
-    moveNextStep: () => moveNextStep(),
-  });
-
   const { currentStep, moveNextStep, movePrevStep, totalStep } =
     useProgressStep({
       totalStep: 2,
     });
+  const { category, handleCategoryChange } = useCategoryManager({
+    moveNextStep,
+  });
 
   return (
     <section css={container}>
