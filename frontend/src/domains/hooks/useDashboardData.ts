@@ -27,9 +27,9 @@ export default function useDashboardData({
 
     params.append('orderBy', selectedSort);
 
-    if (selectedFilter === 'COMPLETED') {
+    if (selectedFilter === 'CONFIRMED') {
       params.append('status', 'CONFIRMED');
-    } else if (selectedFilter === 'PENDING') {
+    } else if (selectedFilter === 'WAITING') {
       params.append('status', 'WAITING');
     }
 

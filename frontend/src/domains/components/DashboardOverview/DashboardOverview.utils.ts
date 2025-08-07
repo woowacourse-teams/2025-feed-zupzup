@@ -25,7 +25,7 @@ export function getDashPanels(
       content: statistics?.waitingCount,
       caption: '반영 전',
       color: theme.colors.red[100],
-      onClick: () => handlePanelClick('PENDING'),
+      onClick: () => handlePanelClick('WAITING'),
       isButton: true,
     },
     {
@@ -33,7 +33,7 @@ export function getDashPanels(
       content: statistics?.confirmedCount,
       caption: '반영 완료',
       color: theme.colors.green[100],
-      onClick: () => handlePanelClick('COMPLETED'),
+      onClick: () => handlePanelClick('CONFIRMED'),
       isButton: true,
     },
   ];

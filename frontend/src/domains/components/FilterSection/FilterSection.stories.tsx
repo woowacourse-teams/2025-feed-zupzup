@@ -43,7 +43,7 @@ export const Default: Story = {
 
 export const WithPendingFilter: Story = {
   args: {
-    selectedFilter: 'PENDING',
+    selectedFilter: 'WAITING',
     selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
@@ -52,7 +52,7 @@ export const WithPendingFilter: Story = {
 
 export const WithCompletedFilter: Story = {
   args: {
-    selectedFilter: 'COMPLETED',
+    selectedFilter: 'CONFIRMED',
     selectedSort: 'LATEST',
     onFilterChange: () => {},
     onSortChange: () => {},
