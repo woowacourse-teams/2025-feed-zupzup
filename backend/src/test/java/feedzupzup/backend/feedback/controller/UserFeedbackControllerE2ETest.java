@@ -515,4 +515,265 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()))
                 .body("data.feedbacks[2].likeCount", equalTo(3));
     }
+
+    @Test
+    @DisplayName("특정 피드백 ID들로 내 피드백을 성공적으로 조회한다")
+    void get_my_feedbacks_success() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+        feedBackRepository.save(feedback4);
+
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(3))
+                .body("data.hasNext", equalTo(false));
+    }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 커서 기반 페이징이 동작한다")
+    void get_my_feedbacks_with_cursor_pagination() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(organization.getId(),
+                organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+        final Feedback saved4 = feedBackRepository.save(feedback4);
+
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId() + "," + saved4.getId();
+
+        final Long firstPageCursor = given()
+                .log().all()
+                .queryParam("size", 2)
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(2))
+                .body("data.hasNext", equalTo(true))
+                .extract()
+                .jsonPath()
+                .getLong("data.nextCursorId");
+
+        given()
+                .log().all()
+                .queryParam("size", 2)
+                .queryParam("cursorId", firstPageCursor)
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(2))
+                .body("data.hasNext", equalTo(false));
+    }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 특정 상태 필터링이 동작한다")
+    void get_my_feedbacks_with_status_filter() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
+        final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(confirmedFeedback1);
+        final Feedback saved2 = feedBackRepository.save(confirmedFeedback2);
+        final Feedback saved3 = feedBackRepository.save(waitingFeedback);
+
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("status", "CONFIRMED")
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(2))
+                .body("data.hasNext", equalTo(false));
+    }
+
+    @Test
+    @DisplayName("내 피드백 조회 시 좋아요 순 정렬이 동작한다")
+    void get_my_feedbacks_orders_by_likes() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
+                organization.getId(), organizationCategory, 5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
+                organization.getId(), organizationCategory, 10);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(
+                organization.getId(), organizationCategory, 3);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LIKES")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(3))
+                .body("data.feedbacks[0].feedbackId", equalTo(saved2.getId().intValue()))
+                .body("data.feedbacks[0].likeCount", equalTo(10))
+                .body("data.feedbacks[1].feedbackId", equalTo(saved1.getId().intValue()))
+                .body("data.feedbacks[1].likeCount", equalTo(5))
+                .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()))
+                .body("data.feedbacks[2].likeCount", equalTo(3));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 피드백 ID로 내 피드백 조회시 빈 결과를 반환한다")
+    void get_my_feedbacks_nonexistent_feedback_ids() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final String myFeedbacks = "999999,888888,777777";
+
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(0))
+                .body("data.hasNext", equalTo(false))
+                .body("data.nextCursorId", equalTo(null));
+    }
+
+    @Test
+    @DisplayName("단일 피드백 ID로 내 피드백 조회가 가능하다")
+    void get_my_feedbacks_single_feedback_id() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(
+                organization.getId(), organizationCategory);
+        final Feedback saved = feedBackRepository.save(feedback);
+
+        final String myFeedbacks = saved.getId().toString();
+
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(1))
+                .body("data.feedbacks[0].feedbackId", equalTo(saved.getId().intValue()))
+                .body("data.hasNext", equalTo(false));
+    }
+
+    @Test
+    @DisplayName("빈 피드백 ID 목록으로 내 피드백 조회시 400 에러가 발생한다")
+    void get_my_feedbacks_empty_feedback_ids() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final String myFeedbacks = "";
+
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
+                .when()
+                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }
