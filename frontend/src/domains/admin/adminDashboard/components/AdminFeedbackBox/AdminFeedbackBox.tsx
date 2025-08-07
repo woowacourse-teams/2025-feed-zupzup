@@ -27,6 +27,7 @@ export default function AdminFeedbackBox({
   isSecret,
   likeCount,
   userName,
+  comment,
   postedAt,
 }: AdminFeedbackBox) {
   return (
@@ -58,9 +59,7 @@ export default function AdminFeedbackBox({
           </p>
         )}
       </div>
-      {type === 'CONFIRMED' && (
-        <FeedbackAnswer answer='감사합니다 고객님 빠르게 처리하겠습니당' />
-      )}
+      {type === 'CONFIRMED' && comment && <FeedbackAnswer answer={comment} />}
       <FeedbackBoxFooter
         type={type}
         likeCount={likeCount}

@@ -85,6 +85,7 @@ export default function UserDashboard() {
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
+              comment={feedback.comment}
               isMyFeedback={getIsMyFeedback(feedback.feedbackId)}
               customCSS={[
                 myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
