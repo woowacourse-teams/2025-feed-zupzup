@@ -97,6 +97,7 @@ export default function UserDashboard() {
         onFilterChange={handleFilterChange}
         selectedSort={selectedSort}
         onSortChange={handleSortChange}
+        isAdmin={false}
       />
       <div>
         <FeedbackBoxList>

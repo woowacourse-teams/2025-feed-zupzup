@@ -18,7 +18,7 @@ export interface FilterSectionProps {
   selectedSort: SortType;
   onSortChange: (sort: SortType) => void;
   customCSS?: SerializedStyles;
-  isAdmin?: boolean;
+  isAdmin: boolean;
 }
 
 const filterOptions = (isAdmin: boolean) => [

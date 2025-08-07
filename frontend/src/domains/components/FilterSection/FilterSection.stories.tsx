@@ -36,6 +36,7 @@ export const Default: Story = {
         onFilterChange={setSelectedFilter}
         selectedSort={selectedSort}
         onSortChange={setSelectedSort}
+        isAdmin={false}
       />
     );
   },
