@@ -14,6 +14,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public class UserFeedbackService {
             final ProcessStatus status,
             final FeedbackOrderBy orderBy
     ) {
-        final Pageable pageable = Pageable.ofSize(size + 1);
+        final Pageable pageable = createPageable(size);
 
         feedbackLikeService.flushLikeCountBuffer();
 
@@ -68,8 +69,42 @@ public class UserFeedbackService {
         );
     }
 
+    public UserFeedbackListResponse getMyFeedbackPage(
+            final Long organizationId,
+            final int size,
+            final Long cursorId,
+            final ProcessStatus status,
+            final FeedbackOrderBy orderBy,
+            final String myFeedbacks
+    ) {
+        final Pageable pageable = createPageable(size);
+
+        final List<Long> myFeedbackIds = Arrays.stream(myFeedbacks.split(","))
+                .map(Long::parseLong)
+                .toList();
+
+        feedbackLikeService.flushLikeCountBuffer();
+
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdsAndProcessStatusAndCursor(
+                organizationId, myFeedbackIds, cursorId, pageable, status, orderBy.name());
+
+        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
+        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
+        return UserFeedbackListResponse.of(
+                feedbackPage.getFeedbacks(),
+                feedbackPage.isHasNext(),
+                feedbackPage.calculateNextCursorId()
+        );
+
+    }
+
     private Organization findOrganizationBy(final Long organizationId) {
         return organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
+    }
+
+    private Pageable createPageable(int size) {
+        final Pageable pageable = Pageable.ofSize(size + 1);
+        return pageable;
     }
 }
