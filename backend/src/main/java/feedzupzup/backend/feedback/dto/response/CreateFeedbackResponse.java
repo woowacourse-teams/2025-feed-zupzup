@@ -23,7 +23,7 @@ public record CreateFeedbackResponse(
         String userName,
 
         @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
-        LocalDateTime createdAt,
+        LocalDateTime postedAt,
 
         @Schema(description = "카테고리", example = "시설")
         String category
