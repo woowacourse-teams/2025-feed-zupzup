@@ -6,7 +6,7 @@ interface DeleteFeedbackParams {
 
 interface PatchFeedbackStatusParams {
   feedbackId: number;
-  status: string;
+  comment: string;
 }
 
 export async function deleteFeedback({ feedbackId }: DeleteFeedbackParams) {
@@ -16,11 +16,11 @@ export async function deleteFeedback({ feedbackId }: DeleteFeedbackParams) {
 
 export async function patchFeedbackStatus({
   feedbackId,
-  status,
+  comment,
 }: PatchFeedbackStatusParams) {
   const response = await apiClient.patch(
-    `/admin/feedbacks/${feedbackId}/status`,
-    { status }
+    `/admin/feedbacks/${feedbackId}/comment`,
+    { comment }
   );
   if (!response) return;
 }

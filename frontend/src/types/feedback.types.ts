@@ -9,6 +9,7 @@ export interface FeedbackType {
   postedAt: string;
   userName: string;
   likeCount: number;
+  comment: null | string;
   category: CategoryType;
 }
 

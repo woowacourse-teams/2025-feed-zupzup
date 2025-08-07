@@ -24,14 +24,24 @@ describe('useAdminModal', () => {
 
   describe('모달 상태 관리', () => {
     it('null 모달 상태로 초기화해야 한다', () => {
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       expect(result.current.modalState.type).toBeNull();
       expect(result.current.modalState.feedbackId).toBeUndefined();
     });
 
     it('올바른 피드백 ID로 확인 모달을 열어야 한다', () => {
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       act(() => {
         result.current.openFeedbackCompleteModal(1);
@@ -44,7 +54,12 @@ describe('useAdminModal', () => {
     });
 
     it('올바른 피드백 ID로 삭제 모달을 열어야 한다', () => {
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       act(() => {
         result.current.openFeedbackDeleteModal(2);
@@ -57,7 +72,12 @@ describe('useAdminModal', () => {
     });
 
     it('모달을 닫고 상태를 초기화해야 한다', () => {
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       act(() => {
         result.current.openFeedbackCompleteModal(1);
@@ -74,7 +94,12 @@ describe('useAdminModal', () => {
     });
 
     it('여러 모달 열기를 올바르게 처리해야 한다', () => {
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       act(() => {
         result.current.openFeedbackCompleteModal(1);
@@ -109,14 +134,14 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleConfirmFeedback('확인했습니다.');
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
+        comment: '확인했습니다.',
         feedbackId: 1,
-        status: 'CONFIRMED',
       });
-      expect(mockOnConfirmFeedback).toHaveBeenCalledWith(1);
+      expect(mockOnConfirmFeedback).toHaveBeenCalledWith(1, '확인했습니다.');
       expect(result.current.modalState.type).toBeNull();
     });
 
@@ -135,7 +160,7 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleDeleteFeedback();
       });
 
       expect(mockedAdminFeedbackApi.deleteFeedback).toHaveBeenCalledWith({
@@ -146,7 +171,12 @@ describe('useAdminModal', () => {
     });
 
     it('모달 상태에 feedbackId가 없으면 일찍 반환해야 한다', async () => {
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       // feedbackId 없이 모달 상태를 직접 설정
       act(() => {
@@ -154,7 +184,7 @@ describe('useAdminModal', () => {
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleConfirmFeedback('확인했습니다.');
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).not.toHaveBeenCalled();
@@ -163,19 +193,24 @@ describe('useAdminModal', () => {
     it('콜백 함수 없이도 동작해야 한다', async () => {
       mockedAdminFeedbackApi.patchFeedbackStatus.mockResolvedValue(undefined);
 
-      const { result } = renderHook(() => useAdminModal());
+      const { result } = renderHook(() =>
+        useAdminModal({
+          onConfirmFeedback: mockOnConfirmFeedback,
+          onDeleteFeedback: mockOnDeleteFeedback,
+        })
+      );
 
       act(() => {
         result.current.openFeedbackCompleteModal(1);
       });
 
       await act(async () => {
-        await result.current.handleModalAction();
+        await result.current.handleConfirmFeedback('확인했습니다.');
       });
 
       expect(mockedAdminFeedbackApi.patchFeedbackStatus).toHaveBeenCalledWith({
         feedbackId: 1,
-        status: 'CONFIRMED',
+        comment: '확인했습니다.',
       });
       expect(result.current.modalState.type).toBeNull();
     });
@@ -187,7 +222,12 @@ describe('useAdminModal', () => {
       new Error('API Error')
     );
 
-    const { result } = renderHook(() => useAdminModal());
+    const { result } = renderHook(() =>
+      useAdminModal({
+        onConfirmFeedback: mockOnConfirmFeedback,
+        onDeleteFeedback: mockOnDeleteFeedback,
+      })
+    );
 
     act(() => {
       result.current.openFeedbackCompleteModal(1);
@@ -196,7 +236,7 @@ describe('useAdminModal', () => {
     expect(result.current.modalState.type).toBe('confirm');
 
     await act(async () => {
-      await result.current.handleModalAction();
+      await result.current.handleConfirmFeedback('확인했습니다.');
     });
 
     expect(result.current.modalState.type).toBeNull();

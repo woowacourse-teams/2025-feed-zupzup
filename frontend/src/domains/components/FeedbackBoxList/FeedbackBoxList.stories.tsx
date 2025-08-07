@@ -44,6 +44,7 @@ const userFeedbackWaiting = {
   customCSS: [],
   userName: '익명의 사용자',
   isMyFeedback: true,
+  comment: '감사합니당',
   category: '기타' as const,
 };
 
@@ -60,6 +61,7 @@ const userFeedbackConfirmed = {
   customCSS: [],
   userName: '김개발',
   isMyFeedback: false,
+  comment: '감사합니당',
   category: '시설' as const,
 };
 
@@ -77,6 +79,7 @@ const adminFeedbackWaiting = {
   postedAt: '2024-05-21',
   customCSS: [],
   isMyFeedback: false,
+  comment: '감사합니당',
   category: '행정' as const,
 };
 
@@ -93,6 +96,7 @@ const adminFeedbackConfirmed = {
   postedAt: '2024-05-18',
   customCSS: [],
   isMyFeedback: false,
+  comment: '감사합니당',
   category: '행정' as const,
 };
 

@@ -21,6 +21,7 @@ interface UserFeedbackBox {
   likeCount: number;
   customCSS: (SerializedStyles | null)[];
   isMyFeedback: boolean;
+  comment: null | string;
   category: CategoryType;
 }
 
@@ -35,6 +36,7 @@ export default function UserFeedbackBox({
   likeCount,
   customCSS,
   isMyFeedback = false,
+  comment,
   category,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
@@ -59,9 +61,7 @@ export default function UserFeedbackBox({
         )}
         {isSecret && <LockIcon />}
       </div>
-      {type === 'CONFIRMED' && (
-        <FeedbackAnswer answer='감사합니다 고객님 빠르게 처리하겠습니당' />
-      )}
+      {type === 'CONFIRMED' && comment && <FeedbackAnswer answer={comment} />}
 
       <FeedbackBoxFooter
         type={type}
