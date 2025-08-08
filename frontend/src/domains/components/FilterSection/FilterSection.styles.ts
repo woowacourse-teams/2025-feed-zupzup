@@ -15,7 +15,10 @@ export const sortDropdownButton = css`
 export const filterTagsContainer = css`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
+  margin-right: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
 `;
 
 export const tagStyle = (theme: Theme, isSelected: boolean) => css`
@@ -31,7 +34,7 @@ export const tagStyle = (theme: Theme, isSelected: boolean) => css`
 `;
 
 export const tagButton = (theme: Theme) => css`
-  padding: 4px 4px;
+  padding: 2px;
   ${theme.typography.pretendard.captionSmall};
 
   color: inherit;

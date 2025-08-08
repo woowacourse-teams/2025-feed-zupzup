@@ -121,7 +121,7 @@ export default function UserDashboard() {
               category={feedback.category}
             />
           ))}
-          {loading && <div>로딩중...</div>}
+          {/* {loading && <div>로딩중...</div>} */}
         </FeedbackBoxList>
         <FeedbackStatusMessage
           loading={loading}

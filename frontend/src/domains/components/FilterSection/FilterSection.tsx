@@ -78,8 +78,8 @@ export default function FilterSection({
           value={selectedSort}
           onChange={(e) => onSortChange(e.target.value as SortType)}
           placeholder='정렬 기준'
-          width='120px'
-          height='36px'
+          width='100px'
+          height='32px'
         />
       </div>
     </div>
