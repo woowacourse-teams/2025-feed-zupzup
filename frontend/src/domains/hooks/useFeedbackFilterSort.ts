@@ -25,18 +25,13 @@ export default function useFeedbackFilterSort() {
 
   const getFilteredFeedbacks = useCallback(
     (feedbacks: FeedbackType[]) => {
-      const uniqueFeedbacks = feedbacks.filter(
-        (feedback, index, arr) =>
-          arr.findIndex((f) => f.feedbackId === feedback.feedbackId) === index
-      );
-
       if (selectedFilter === 'MINE') {
-        return uniqueFeedbacks.filter((feedback) =>
+        return feedbacks.filter((feedback) =>
           getIsMyFeedback(feedback.feedbackId)
         );
       }
 
-      return uniqueFeedbacks;
+      return feedbacks;
     },
     [selectedFilter, getIsMyFeedback]
   );
