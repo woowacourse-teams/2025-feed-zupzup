@@ -16,7 +16,6 @@ import {
   goOnboardButton,
   goTopButton,
   highlightStyle,
-  myFeedbackStyle,
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
