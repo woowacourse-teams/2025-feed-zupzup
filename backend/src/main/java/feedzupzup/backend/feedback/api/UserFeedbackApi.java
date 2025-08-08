@@ -84,8 +84,7 @@ public interface UserFeedbackApi {
     })
     @GetMapping("/organizations/{organizationId}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
-            @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
-            @Parameter(description = "날짜의 기간", example = "WEEK") @RequestParam(defaultValue = "7") final String period
+            @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId
     );
 
     @Operation(summary = "내 피드백 목록 조회", description = "특정 피드백 ID들로 필터링된 내 피드백 목록을 조회합니다.")

@@ -1,15 +1,11 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.Feedbacks;
-import feedzupzup.backend.feedback.domain.StatisticTargetPeriod;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,21 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FeedbackStatisticService {
 
-    private final FeedbackRepository feedBackRepository;
+    private final FeedbackRepository feedbackRepository;
     private final OrganizationRepository organizationRepository;
 
-    public StatisticResponse calculateStatistic(final Long organizationId, final String period) {
+    public StatisticResponse calculateStatistic(final Long organizationId) {
         final Organization organization = findOrganizationBy(organizationId);
-        final StatisticTargetPeriod targetPeriod = StatisticTargetPeriod.from(period);
-        final LocalDateTime targetDateTime = LocalDate.now(ZoneId.of("Asia/Seoul"))
-                .minusDays(targetPeriod.getValue()).atStartOfDay();
-        final Feedbacks feedbacks = new Feedbacks(
-                feedBackRepository.findByOrganizationIdAndPostedAtAfter(
-                        organization.getId(),
-                        targetDateTime
-                )
-        );
-        return StatisticResponse.of(feedbacks);
+        final FeedbackAmount feedbackAmount = feedbackRepository.countFeedbackByOrganizationIdAndProcessStatus(organization.getId());
+        return StatisticResponse.of(feedbackAmount, feedbackAmount.calculateReflectionRate());
     }
 
     private Organization findOrganizationBy(final Long organizationId) {

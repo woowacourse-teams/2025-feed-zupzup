@@ -21,7 +21,9 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDE_URI = List.of(
-            "/actuator/**"
+            "/actuator/**",
+            "/swagger-ui/**",
+            "/api/docs"
     );
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();

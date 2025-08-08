@@ -63,12 +63,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<StatisticResponse> getStatistic(
-            final Long organizationId,
-            final String period
-    ) {
+    public SuccessResponse<StatisticResponse> getStatistic(final Long organizationId) {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                organizationId, period
+                organizationId
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
