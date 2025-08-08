@@ -61,7 +61,7 @@ export default function UserFeedbackBox({
         )}
         {isSecret && <LockIcon />}
       </div>
-      {!isSecret && type === 'CONFIRMED' && comment && (
+      {(!isSecret || isMyFeedback) && type === 'CONFIRMED' && comment && (
         <FeedbackAnswer answer={comment} />
       )}
 

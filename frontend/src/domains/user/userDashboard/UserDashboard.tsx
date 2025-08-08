@@ -115,7 +115,6 @@ export default function UserDashboard() {
               comment={feedback.comment}
               isMyFeedback={getIsMyFeedback(feedback.feedbackId)}
               customCSS={[
-                myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
                 feedback.feedbackId === highlightedId ? highlightStyle : null,
               ]}
               category={feedback.category}
