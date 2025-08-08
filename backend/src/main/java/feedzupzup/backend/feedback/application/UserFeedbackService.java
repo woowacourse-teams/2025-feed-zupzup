@@ -56,9 +56,11 @@ public class UserFeedbackService {
 
         feedbackLikeService.flushLikeCountBuffer();
 
-        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndProcessStatusAndCursor(
-                organizationId, cursorId, pageable, status, orderBy.name()
-        );
+        final List<Feedback> feedbacks = switch (orderBy) {
+            case LATEST -> feedBackRepository.findByLatest(organizationId, status, cursorId, pageable);
+            case OLDEST -> feedBackRepository.findByOldest(organizationId, status, cursorId, pageable);
+            case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
+        };
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
         return UserFeedbackListResponse.of(
