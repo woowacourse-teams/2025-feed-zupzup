@@ -7,14 +7,44 @@ import DashboardOverview from '@/domains/components/DashboardOverview/DashboardO
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
-import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
+import {
+  FeedbackResponse,
+  FeedbackType,
+  FeedbackFilterType,
+} from '@/types/feedback.types';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
+import { useMemo } from 'react';
 
 export default function AdminDashboard() {
+  const { isAuthorized, isCheckingAuth } = useAdminAuth();
+
+  const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    getFilteredFeedbacks,
+  } = useFeedbackFilterSort();
+
+  const apiUrl = useMemo(() => {
+    const baseUrl = '/admin/organizations/1/feedbacks';
+    const params = new URLSearchParams();
+
+    params.append('orderBy', selectedSort);
+
+    if (selectedFilter === 'CONFIRMED') {
+      params.append('status', 'CONFIRMED');
+    } else if (selectedFilter === 'WAITING') {
+      params.append('status', 'WAITING');
+    }
+
+    return `${baseUrl}?${params.toString()}`;
+  }, [selectedFilter, selectedSort]);
+
   const {
     items: originalFeedbacks,
     fetchMore,
@@ -25,16 +55,19 @@ export default function AdminDashboard() {
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/admin/organizations/1/feedbacks',
+    url: apiUrl,
     key: 'feedbacks',
   });
 
-  const { feedbacks, optimisticConfirmFeedback, optimisticDeleteFeedback } =
-    useFeedbackManagement({
-      originalFeedbacks,
-    });
+  const {
+    feedbacks: managedFeedbacks,
+    optimisticConfirmFeedback,
+    optimisticDeleteFeedback,
+  } = useFeedbackManagement({
+    originalFeedbacks,
+  });
 
-  const { isAuthorized, isCheckingAuth } = useAdminAuth();
+  const feedbacks = getFilteredFeedbacks(managedFeedbacks);
 
   const {
     modalState,
@@ -48,8 +81,6 @@ export default function AdminDashboard() {
     onDeleteFeedback: optimisticDeleteFeedback,
   });
 
-  const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
-    useFeedbackFilterSort(feedbacks);
   useGetFeedback({ fetchMore, hasNext, loading });
 
   if (isCheckingAuth) {
@@ -87,10 +118,11 @@ export default function AdminDashboard() {
             comment={feedback.comment}
           />
         ))}
-        {loading && <div>로딩중...</div>}
+        {/* {loading && <div>로딩중...</div>} */}
       </FeedbackBoxList>
       <FeedbackStatusMessage
         loading={loading}
+        filterType={selectedFilter as FeedbackFilterType}
         hasNext={hasNext}
         feedbackCount={feedbacks.length}
       />

@@ -20,15 +20,43 @@ import {
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
-import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
+import {
+  FeedbackResponse,
+  FeedbackType,
+  FeedbackFilterType,
+} from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
+import { useMemo } from 'react';
 
 export default function UserDashboard() {
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
+
+  const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    getFilteredFeedbacks,
+  } = useFeedbackFilterSort();
+
+  const apiUrl = useMemo(() => {
+    const baseUrl = '/organizations/1/feedbacks';
+    const params = new URLSearchParams();
+
+    params.append('orderBy', selectedSort);
+
+    if (selectedFilter === 'CONFIRMED') {
+      params.append('status', 'CONFIRMED');
+    } else if (selectedFilter === 'WAITING') {
+      params.append('status', 'WAITING');
+    }
+
+    return `${baseUrl}?${params.toString()}`;
+  }, [selectedFilter, selectedSort]);
 
   const {
     items: feedbacks,
@@ -40,19 +68,13 @@ export default function UserDashboard() {
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/organizations/1/feedbacks',
+    url: apiUrl,
     key: 'feedbacks',
   });
 
-  const {
-    selectedFilter,
-    selectedSort,
-    handleFilterChange,
-    handleSortChange,
-    filteredAndSortedFeedbacks,
-  } = useFeedbackFilterSort(feedbacks);
-
   useGetFeedback({ fetchMore, hasNext, loading });
+
+  const filteredAndSortedFeedbacks = getFilteredFeedbacks(feedbacks);
 
   const { highlightedId } = useHighLighted();
   const { getIsMyFeedback } = useMyFeedbacks();
@@ -63,6 +85,10 @@ export default function UserDashboard() {
     navigate('/');
   };
 
+  const getFeedbackIsLike = (feedbackId: number) => {
+    return likedFeedbackIds?.includes(feedbackId) || false;
+  };
+
   return (
     <div css={dashboardLayout}>
       <DashboardOverview />
@@ -71,6 +97,7 @@ export default function UserDashboard() {
         onFilterChange={handleFilterChange}
         selectedSort={selectedSort}
         onSortChange={handleSortChange}
+        isAdmin={false}
       />
       <div>
         <FeedbackBoxList>
@@ -81,7 +108,7 @@ export default function UserDashboard() {
               type={feedback.status}
               content={feedback.content}
               postedAt={feedback.postedAt}
-              isLiked={getFeedbackIsLike(likedFeedbackIds, feedback.feedbackId)}
+              isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
@@ -94,10 +121,11 @@ export default function UserDashboard() {
               category={feedback.category}
             />
           ))}
-          {loading && <div>로딩중...</div>}
+          {/* {loading && <div>로딩중...</div>} */}
         </FeedbackBoxList>
         <FeedbackStatusMessage
           loading={loading}
+          filterType={selectedFilter as FeedbackFilterType}
           hasNext={hasNext}
           feedbackCount={filteredAndSortedFeedbacks.length}
         />
@@ -120,9 +148,4 @@ export default function UserDashboard() {
       {hasNext && <div id='scroll-observer'></div>}
     </div>
   );
-}
-
-function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
-  const isLiked = likedFeedbackIds?.includes(feedbackId);
-  return !!isLiked;
 }
