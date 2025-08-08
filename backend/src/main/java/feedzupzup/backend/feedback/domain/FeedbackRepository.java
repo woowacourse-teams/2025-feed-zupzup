@@ -41,8 +41,8 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
               COUNT(f),
-              SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END),
-              SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.WAITING THEN 1L ELSE 0L END)
+              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END), 0L),
+              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.WAITING THEN 1L ELSE 0L END), 0L)
             )
             FROM Feedback f
             WHERE f.organizationId = :organizationId
