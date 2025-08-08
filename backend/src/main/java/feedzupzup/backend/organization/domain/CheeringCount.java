@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheeringCount {
 
-    @Column(name = "cheering_count", nullable = false)
+    @Column(name = "cheering_count")
     private int value;
 
     public CheeringCount(final int value) {

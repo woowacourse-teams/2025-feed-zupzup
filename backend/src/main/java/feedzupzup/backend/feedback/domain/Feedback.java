@@ -1,19 +1,22 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.time.LocalDate;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Getter
@@ -27,33 +30,42 @@ public class Feedback extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
     private boolean isSecret;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ProcessStatus status;
 
+    @Column(nullable = false)
     private Long organizationId;
 
     private int likeCount;
 
     @Embedded
+    @Column(nullable = false)
     private UserName userName;
 
-    @Column(nullable = false)
     @Embedded
+    @Column(nullable = false)
     private PostedAt postedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OrganizationCategory organizationCategory;
+
+    @Embedded
+    private Comment comment;
 
     @Builder
     public Feedback(
-            final String content,
+            final @NonNull String content,
             final boolean isSecret,
-            final ProcessStatus status,
-            final Long organizationId,
+            final @NonNull ProcessStatus status,
+            final @NonNull Long organizationId,
             final int likeCount,
-            final UserName userName,
-            final PostedAt postedAt
+            final @NonNull UserName userName,
+            final @NonNull PostedAt postedAt,
+            final @NonNull OrganizationCategory organizationCategory,
+            final Comment comment
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -62,6 +74,8 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
         this.userName = userName;
         this.postedAt = postedAt;
+        this.organizationCategory = organizationCategory;
+        this.comment = comment;
     }
 
     public void updateStatus(final ProcessStatus status) {
@@ -83,15 +97,16 @@ public class Feedback extends BaseTimeEntity {
         this.likeCount = likeCount;
     }
 
+    public void updateCommentAndStatus(final Comment comment) {
+        this.comment = comment;
+        this.status = ProcessStatus.CONFIRMED;
+    }
+
     public boolean isConfirmed() {
         return this.status == ProcessStatus.CONFIRMED;
     }
 
     public boolean isWaiting() {
         return this.status == ProcessStatus.WAITING;
-    }
-
-    public LocalDate getPostedDate() {
-        return postedAt.getPostedDate();
     }
 }

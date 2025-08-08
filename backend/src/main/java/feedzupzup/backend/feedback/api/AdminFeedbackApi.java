@@ -1,8 +1,12 @@
 package feedzupzup.backend.feedback.api;
 
+import feedzupzup.backend.feedback.application.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
@@ -32,9 +36,11 @@ public interface AdminFeedbackApi {
     })
     @GetMapping("/admin/organizations/{organizationId}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") Long organizationId,
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
-            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId
+            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
+            @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy
     );
 
     @Operation(summary = "피드백 비밀 상태 변경", description = "피드백의 비밀 상태를 변경합니다. (관리자 전용)")
@@ -76,5 +82,19 @@ public interface AdminFeedbackApi {
     SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackStatusRequest request
+    );
+
+    @Operation(summary = "답글 추가", description = "답글을 추가합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "답글 추가 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping("/admin/feedbacks/{feedbackId}/comment")
+    SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(
+            @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
+            @RequestBody @Valid final UpdateFeedbackCommentRequest request
     );
 }

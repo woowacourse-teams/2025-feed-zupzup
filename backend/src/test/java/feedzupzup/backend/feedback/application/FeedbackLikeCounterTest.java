@@ -1,13 +1,20 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
+import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.FeedBackRepository;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,17 +28,31 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     private FeedbackLikeService feedbackLikeService;
 
     @Autowired
-    private FeedBackRepository feedBackRepository;
+    private FeedbackRepository feedBackRepository;
 
     @Autowired
     private FeedbackLikeRepository feedbackLikeRepository;
+
+    @Autowired
+    private OrganizationCategoryRepository organizationCategoryRepository;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     @Test
     @DisplayName("인메모리 좋아요를 DB에 성공적으로 동기화한다")
     void syncLikesToDatabase_success() {
         // given
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, 5);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(1L, 3);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 3);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -58,7 +79,15 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("인메모리에 좋아요가 없는 피드백은 DB에서 변경되지 않는다")
     void syncLikesToDatabase_no_memory_likes() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 10);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 10);
         final Feedback saved = feedBackRepository.save(feedback);
 
         // when - 인메모리 좋아요 없이 동기화
@@ -85,7 +114,15 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("음수 좋아요도 정상적으로 동기화된다")
     void syncLikesToDatabase_handles_negative_likes() {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 5);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 5);
         final Feedback saved = feedBackRepository.save(feedback);
 
         // 좋아요 증가 후 감소
@@ -107,8 +144,17 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("동기화 후 인메모리가 완전히 비워진다")
     void syncLikesToDatabase_clears_memory_completely() {
         // given
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(1L, 0);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
 
@@ -129,8 +175,16 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final int feedbackCount = 100;
         final int likesPerFeedback = 50;
 
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
         for (int i = 1; i <= feedbackCount; i++) {
-            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                    organizationCategory, 0);
             final Feedback saved = feedBackRepository.save(feedback);
 
             for (int j = 0; j < likesPerFeedback; j++) {
@@ -151,7 +205,15 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
     @DisplayName("동시에 여러 스레드에서 동기화해도 데이터 정합성이 보장된다")
     void syncLikesToDatabase_concurrent_access() throws InterruptedException {
         // given
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(1L, 0);
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+                organizationCategory, 0);
         final Feedback saved = feedBackRepository.save(feedback);
 
         final int threadCount = 10;

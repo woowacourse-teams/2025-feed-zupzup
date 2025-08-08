@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.dto.response;
 
-import feedzupzup.backend.feedback.domain.Feedbacks;
+import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "피드백 통계 응답")
@@ -9,20 +9,20 @@ public record StatisticResponse(
         int reflectionRate,
 
         @Schema(description = "완료된 피드백 수", example = "1")
-        int confirmedCount,
+        long confirmedCount,
 
         @Schema(description = "대기중인 피드백 수", example = "4")
-        int waitingCount,
+        long waitingCount,
 
         @Schema(description = "총 피드백 수", example = "5")
-        int totalCount
+        long totalCount
 ) {
-    public static StatisticResponse of(Feedbacks feedbacks) {
+    public static StatisticResponse of(final FeedbackAmount feedbackAmount, int reflectionRate) {
         return new StatisticResponse(
-                feedbacks.calculateReflectionRate(),
-                feedbacks.calculateConfirmedCount(),
-                feedbacks.calculateWaitingCount(),
-                feedbacks.getSize()
+                reflectionRate,
+                feedbackAmount.confirmedCount(),
+                feedbackAmount.waitingCount(),
+                feedbackAmount.totalCount()
         );
     }
 }
