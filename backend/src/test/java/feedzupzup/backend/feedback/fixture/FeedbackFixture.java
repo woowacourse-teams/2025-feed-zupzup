@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.fixture;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
@@ -7,7 +8,7 @@ import feedzupzup.backend.feedback.domain.UserName;
 
 public class FeedbackFixture {
 
-    public static Feedback createFeedbackWithStatus(final ProcessStatus status) {
+    public static Feedback createFeedbackWithStatus(final ProcessStatus status, final OrganizationCategory category) {
         return Feedback.builder()
                 .content("상태별 피드백")
                 .isSecret(false)
@@ -15,10 +16,11 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithOrganizationId(final Long organizationId) {
+    public static Feedback createFeedbackWithOrganizationId(final Long organizationId, final OrganizationCategory category) {
         return Feedback.builder()
                 .content("장소별 피드백")
                 .isSecret(false)
@@ -26,10 +28,11 @@ public class FeedbackFixture {
                 .organizationId(organizationId)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithSecret(final boolean isSecret) {
+    public static Feedback createFeedbackWithSecret(final boolean isSecret, final OrganizationCategory category) {
         return Feedback.builder()
                 .content("장소별 피드백")
                 .isSecret(isSecret)
@@ -37,10 +40,11 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithContent(final String content) {
+    public static Feedback createFeedbackWithContent(final String content, final OrganizationCategory category) {
         return Feedback.builder()
                 .content(content)
                 .isSecret(false)
@@ -48,10 +52,15 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithLikes(final Long organizationId, final int likeCount) {
+    public static Feedback createFeedbackWithLikes(
+            final Long organizationId,
+            final OrganizationCategory organizationCategory,
+            final int likeCount
+    ) {
         return Feedback.builder()
                 .content("좋아요 테스트용 피드백")
                 .isSecret(false)
@@ -60,12 +69,14 @@ public class FeedbackFixture {
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
                 .postedAt(PostedAt.createTimeInSeoul())
+                .organizationCategory(organizationCategory)
                 .build();
     }
 
     public static Feedback createFeedbackWithPostedAtAndStatus(
-            PostedAt postedAt,
-            ProcessStatus status
+            final PostedAt postedAt,
+            final ProcessStatus status,
+            final OrganizationCategory organizationCategory
     ) {
         return Feedback.builder()
                 .content("통계 테스트용 피드백")
@@ -74,6 +85,7 @@ public class FeedbackFixture {
                 .organizationId(1L)
                 .userName(new UserName("테스트유저"))
                 .postedAt(postedAt)
+                .organizationCategory(organizationCategory)
                 .build();
     }
 }

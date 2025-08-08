@@ -2,8 +2,10 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
+import feedzupzup.backend.feedback.application.FeedbackOrderBy;
 import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
+import feedzupzup.backend.feedback.domain.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
@@ -26,18 +28,23 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
             final Long organizationId,
             final int size,
-            final Long cursorId
+            final Long cursorId,
+            final ProcessStatus status,
+            final FeedbackOrderBy orderBy
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organizationId,
                 size,
-                cursorId
+                cursorId,
+                status,
+                orderBy
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
-    public SuccessResponse<CreateFeedbackResponse> create(final Long organizationId, final CreateFeedbackRequest request) {
+    public SuccessResponse<CreateFeedbackResponse> create(final Long organizationId,
+            final CreateFeedbackRequest request) {
         final CreateFeedbackResponse response = userFeedbackService.create(request, organizationId);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
@@ -55,12 +62,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<StatisticResponse> getStatistic(
-            final Long organizationId,
-            final String period
-    ) {
+    public SuccessResponse<StatisticResponse> getStatistic(final Long organizationId) {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                organizationId, period
+                organizationId
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }

@@ -18,7 +18,11 @@ public record UserFeedbackListResponse(
         Long nextCursorId
 ) {
 
-    public static UserFeedbackListResponse of(final List<Feedback> feedbacks, final boolean hasNext, final Long nextCursorId) {
+    public static UserFeedbackListResponse of(
+            final List<Feedback> feedbacks,
+            final boolean hasNext,
+            final Long nextCursorId
+    ) {
         final List<UserFeedbackItem> userFeedbackItems = feedbacks.stream()
                 .map(UserFeedbackItem::from)
                 .toList();
@@ -50,7 +54,13 @@ public record UserFeedbackListResponse(
             String userName,
 
             @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
-            LocalDateTime createdAt
+            LocalDateTime postedAt,
+
+            @Schema(description = "카테고리", example = "시설")
+            String category,
+
+            @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
+            String comment
     ) {
 
         public static UserFeedbackItem from(final Feedback feedback) {
@@ -61,7 +71,9 @@ public record UserFeedbackListResponse(
                     feedback.isSecret(),
                     feedback.getLikeCount(),
                     feedback.getUserName(),
-                    feedback.getCreatedAt()
+                    feedback.getPostedAt().getPostedAt(),
+                    feedback.getOrganizationCategory().getCategory().getKoreanName(),
+                    feedback.getComment() != null ? feedback.getComment().getValue() : null
             );
         }
     }
