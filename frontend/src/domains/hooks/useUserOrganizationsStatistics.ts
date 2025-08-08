@@ -21,7 +21,6 @@ export default function useUserOrganizationsStatistics() {
     const getData = async () => {
       const response = (await getOrganizationStatistics({
         organizationId: 1,
-        period: 'WEEK',
       })) as GetOrganizationStatistics;
       setStatistics(response.data);
     };
