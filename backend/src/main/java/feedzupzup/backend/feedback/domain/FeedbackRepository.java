@@ -1,6 +1,5 @@
 package feedzupzup.backend.feedback.domain;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -40,14 +39,13 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     List<Feedback> findByIdIn(Collection<Long> ids);
 
     @Query("""
-            SELECT f
+            SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
+              COUNT(f),
+              SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END),
+              SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.WAITING THEN 1L ELSE 0L END)
+            )
             FROM Feedback f
             WHERE f.organizationId = :organizationId
-            AND f.postedAt.postedAt >= :dateTime
             """)
-    List<Feedback> findByOrganizationIdAndPostedAtAfter(
-            Long organizationId,
-            LocalDateTime dateTime
-    );
-
+    FeedbackAmount countFeedbackByOrganizationIdAndProcessStatus(final Long organizationId);
 }
