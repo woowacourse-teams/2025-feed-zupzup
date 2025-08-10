@@ -1,6 +1,11 @@
 package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.feedback.domain.vo.Comment;
+import feedzupzup.backend.feedback.domain.vo.Content;
+import feedzupzup.backend.feedback.domain.vo.PostedAt;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.UserName;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -82,7 +87,7 @@ public class Feedback extends BaseTimeEntity {
         this.status = status;
     }
 
-    public String getUserName() {
+    public String getUserNameValue() {
         return userName.getValue();
     }
 
