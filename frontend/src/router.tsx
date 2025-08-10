@@ -3,6 +3,7 @@ import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
+import Settings from './domains/admin/Settings/Settings';
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: <UserDashboard />,
+      },
+      {
+        path: '/settings',
+        element: <Settings />,
       },
     ],
   },

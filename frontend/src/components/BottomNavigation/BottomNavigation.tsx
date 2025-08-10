@@ -7,14 +7,23 @@ import {
 } from './BottomNavigation.style';
 import HomeIcon from '../icons/HomeIcon';
 import SettingIcon from '../icons/SettingIcon';
+import { LAYOUT_CONFIGS, LAYOUT_EXCEPT_PATHS } from '@/constants/layoutConfig';
 
 export default function BottomNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useAppTheme();
 
+  if (LAYOUT_CONFIGS[location.pathname] === undefined) return null;
+
+  const { show } = LAYOUT_CONFIGS[location.pathname].bottomNav;
+
+  if (LAYOUT_EXCEPT_PATHS.includes(location.pathname) || !show) {
+    return null;
+  }
+
   const isHomeActive = location.pathname === '/admin';
-  const isSettingsActive = location.pathname === '/dashboard';
+  const isSettingsActive = location.pathname === '/settings';
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -36,7 +45,7 @@ export default function BottomNavigation() {
 
       <div
         css={navItemStyle(theme, isSettingsActive)}
-        onClick={() => handleNavigation('/dashboard')}
+        onClick={() => handleNavigation('/settings')}
       >
         <SettingIcon
           color={

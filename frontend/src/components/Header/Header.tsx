@@ -10,7 +10,7 @@ import {
 } from './Header.style';
 import { useLocation } from 'react-router-dom';
 import Button from '../@commons/Button/Button';
-import { HEADER_EXCEPT_PATHS, HEADER_CONFIGS } from '@/constants/headerConfig';
+import { LAYOUT_EXCEPT_PATHS, LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,12 +19,13 @@ export default function Header() {
   const theme = useAppTheme();
   const navigate = useNavigate();
 
-  if (HEADER_EXCEPT_PATHS.includes(location.pathname)) {
+  if (LAYOUT_EXCEPT_PATHS.includes(location.pathname)) {
     return null;
   }
 
+  if (LAYOUT_CONFIGS[location.pathname] === undefined) return null;
   const { title, subtitle, showMoreIcon, showBackButton } =
-    HEADER_CONFIGS[location.pathname];
+    LAYOUT_CONFIGS[location.pathname].header;
 
   return (
     <header css={header(theme)}>
