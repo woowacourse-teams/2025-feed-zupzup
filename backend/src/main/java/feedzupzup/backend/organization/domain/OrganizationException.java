@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public class OrganizationException extends DomainException {
 
-
     protected OrganizationException(final ErrorCode errorCode, final String message) {
         super(errorCode, message);
     }
@@ -16,8 +15,16 @@ public class OrganizationException extends DomainException {
 
         private static final ErrorCode errorCode = ErrorCode.CHEERING_INVALID_NUMBER;
 
-        protected OrganizationNumberException(final String message) {
+        public OrganizationNumberException(final String message) {
             super(errorCode, message);
         }
+    }
+
+    public static class OrganizationLengthException extends OrganizationException {
+
+        private static final ErrorCode errorCode = ErrorCode.INVALID_ORGANIZATION_LENGTH;
+
+        public OrganizationLengthException(final String message) {
+            super(errorCode, message); }
     }
 }

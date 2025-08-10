@@ -17,7 +17,7 @@ public record UserOrganizationResponse(
         ) {
     public static UserOrganizationResponse from(final Organization organization) {
         return new UserOrganizationResponse(
-                organization.getName(),
+                organization.getName().getValue(),
                 organization.getCheeringCountValue(),
                 convertCategories(organization.getOrganizationCategories())
         );

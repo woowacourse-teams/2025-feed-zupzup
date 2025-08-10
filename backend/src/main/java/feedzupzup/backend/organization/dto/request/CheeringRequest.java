@@ -1,6 +1,6 @@
 package feedzupzup.backend.organization.dto.request;
 
-import feedzupzup.backend.organization.domain.CheeringCount;
+import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "응원하기 요청")
