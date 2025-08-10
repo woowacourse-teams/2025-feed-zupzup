@@ -23,7 +23,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_URI = List.of(
             "/actuator/**",
             "/swagger-ui/**",
-            "/api/docs"
+            "/api-docs"
     );
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
