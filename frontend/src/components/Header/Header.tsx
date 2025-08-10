@@ -12,10 +12,12 @@ import { useLocation } from 'react-router-dom';
 import Button from '../@commons/Button/Button';
 import { HEADER_EXCEPT_PATHS, HEADER_CONFIGS } from '@/constants/headerConfig';
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
+import { useNavigate } from 'react-router-dom';
 
 export default function Header() {
   const location = useLocation();
   const theme = useAppTheme();
+  const navigate = useNavigate();
 
   if (HEADER_EXCEPT_PATHS.includes(location.pathname)) {
     return null;
@@ -40,7 +42,11 @@ export default function Header() {
         </div>
       </div>
       {showMoreIcon && (
-        <Button onClick={() => {}}>
+        <Button
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
           <MoreVerticalIcon />
         </Button>
       )}
