@@ -16,25 +16,18 @@ export default function BottomNavigation() {
 
   const currentPath = location.pathname;
 
-  if (
-    LAYOUT_CONFIGS[currentPath] === undefined ||
-    !LAYOUT_CONFIGS[currentPath].bottomNav.show
-  ) {
+  if (!LAYOUT_CONFIGS[currentPath]?.bottomNav.show) {
     return null;
   }
 
   const isHomeActive = location.pathname === '/admin';
   const isSettingsActive = location.pathname === '/settings';
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-  };
-
   return (
     <nav css={bottomNavStyle(theme)}>
       <div
         css={navItemStyle(theme, isHomeActive)}
-        onClick={() => handleNavigation('/admin')}
+        onClick={() => navigate('/admin')}
       >
         <HomeIcon
           color={
@@ -46,7 +39,7 @@ export default function BottomNavigation() {
 
       <div
         css={navItemStyle(theme, isSettingsActive)}
-        onClick={() => handleNavigation('/settings')}
+        onClick={() => navigate('/settings')}
       >
         <SettingIcon
           color={

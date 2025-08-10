@@ -19,7 +19,10 @@ export default function Header() {
   const theme = useAppTheme();
   const navigate = useNavigate();
 
-  if (LAYOUT_CONFIGS[location.pathname] === undefined) return null;
+  if (!LAYOUT_CONFIGS[location.pathname]?.header.show) {
+    return null;
+  }
+
   const { title, subtitle, showMoreIcon, showBackButton } =
     LAYOUT_CONFIGS[location.pathname].header;
 
