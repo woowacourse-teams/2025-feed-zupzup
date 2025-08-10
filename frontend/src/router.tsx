@@ -4,6 +4,7 @@ import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
 import Settings from './domains/admin/Settings/Settings';
+import AdminHome from './domains/admin/AdminHome/AdminHome';
 
 export const router = createBrowserRouter([
   {
@@ -24,8 +25,12 @@ export const router = createBrowserRouter([
         element: <UserDashboard />,
       },
       {
-        path: '/settings',
+        path: '/admin-settings',
         element: <Settings />,
+      },
+      {
+        path: '/admin-home',
+        element: <AdminHome />,
       },
     ],
   },

@@ -1,9 +1,9 @@
 export interface HeaderConfig {
   show: boolean;
-  title: string;
-  subtitle: string;
-  showMoreIcon: boolean;
-  showBackButton: boolean;
+  title?: string;
+  subtitle?: string;
+  showMoreIcon?: boolean;
+  showBackButton?: boolean;
 }
 
 export interface BottomNavConfig {
@@ -22,13 +22,13 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       title: '피드백 관리',
       subtitle: '피드백 현황 및 관리',
       showMoreIcon: true,
-      showBackButton: false,
+      showBackButton: true,
     },
     bottomNav: {
       show: true,
     },
   },
-  '/settings': {
+  '/admin-settings': {
     header: {
       show: true,
       title: '설정',
@@ -50,6 +50,14 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
     },
     bottomNav: {
       show: false,
+    },
+  },
+  '/admin-home': {
+    header: {
+      show: false,
+    },
+    bottomNav: {
+      show: true,
     },
   },
 };
