@@ -1,5 +1,5 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-import GlitterIcon from '../icons/GlitterIcon';
+import MoreVerticalIcon from '../icons/MoreVerticalIcon';
 import {
   captionSection,
   header,
@@ -7,24 +7,41 @@ import {
   headerSubtitle,
   headerTitle,
 } from './Header.style';
+import { useLocation } from 'react-router-dom';
+import Button from '../@commons/Button/Button';
+import {
+  HEADER_EXCEPT_PATHS,
+  HEADER_CONFIGS,
+  DEFAULT_HEADER_CONFIG,
+} from '@/constants/headerConfig';
 
-export interface HeaderProps {
-  title: string;
-  subtitle: string;
-}
-
-export default function Header({ title, subtitle }: HeaderProps) {
+export default function Header() {
+  const location = useLocation();
   const theme = useAppTheme();
 
+  const getHeaderConfig = () => {
+    return HEADER_CONFIGS[location.pathname] || DEFAULT_HEADER_CONFIG;
+  };
+
+  const { title, subtitle, showMoreIcon } = getHeaderConfig();
+
+  if (HEADER_EXCEPT_PATHS.includes(location.pathname)) {
+    return null;
+  }
+
   return (
-    <header css={header}>
+    <header css={header(theme)}>
       <div css={headerSection}>
         <div css={captionSection}>
           <p css={headerTitle(theme)}>{title}</p>
           <p css={headerSubtitle(theme)}>{subtitle}</p>
         </div>
       </div>
-      <GlitterIcon />
+      {showMoreIcon && (
+        <Button onClick={() => {}}>
+          <MoreVerticalIcon />
+        </Button>
+      )}
     </header>
   );
 }

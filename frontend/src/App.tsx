@@ -2,6 +2,11 @@ import { Outlet } from 'react-router-dom';
 import { usePageTracking } from './hooks/usePageTracking';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
+import Header from './components/Header/Header';
+import BottomNavigation from './components/BottomNavigation/BottomNavigation';
+import { useLocation } from 'react-router-dom';
+import { appContainerStyle } from './App.style';
+import { HEADER_EXCEPT_PATHS } from '@/constants/headerConfig';
 
 const gaId = process.env.GA_ID;
 
@@ -24,10 +29,17 @@ if (gaId) {
 export default function App() {
   usePageTracking();
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
+  const location = useLocation();
+
+  const hasHeader = !HEADER_EXCEPT_PATHS.includes(location.pathname);
 
   return (
-    <>
-      <Outlet />
+    <div css={appContainerStyle(hasHeader)}>
+      <Header />
+      <main>
+        <Outlet />
+      </main>
+      <BottomNavigation />
       {isError && (
         <AlertModal
           onClose={setErrorFalse}
@@ -36,6 +48,6 @@ export default function App() {
           message={message}
         />
       )}
-    </>
+    </div>
   );
 }
