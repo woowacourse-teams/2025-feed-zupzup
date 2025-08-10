@@ -15,6 +15,13 @@ export const header = (theme: Theme) => css`
   background-color: ${theme.colors.blue[100]};
 `;
 
+export const arrowTitleContainer = css`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 16px;
+`;
+
 export const headerSection = css`
   display: flex;
   align-items: center;
