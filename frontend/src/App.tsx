@@ -6,7 +6,7 @@ import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { useLocation } from 'react-router-dom';
 import { appContainerStyle } from './App.style';
-import { LAYOUT_EXCEPT_PATHS } from '@/constants/layoutConfig';
+import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 
 const gaId = process.env.GA_ID;
 
@@ -31,7 +31,7 @@ export default function App() {
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const location = useLocation();
 
-  const hasHeader = !LAYOUT_EXCEPT_PATHS.includes(location.pathname);
+  const hasHeader = LAYOUT_CONFIGS[location.pathname] !== undefined;
 
   return (
     <div css={appContainerStyle(hasHeader)}>

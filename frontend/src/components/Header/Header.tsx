@@ -10,7 +10,7 @@ import {
 } from './Header.style';
 import { useLocation } from 'react-router-dom';
 import Button from '../@commons/Button/Button';
-import { LAYOUT_EXCEPT_PATHS, LAYOUT_CONFIGS } from '@/constants/layoutConfig';
+import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,10 +18,6 @@ export default function Header() {
   const location = useLocation();
   const theme = useAppTheme();
   const navigate = useNavigate();
-
-  if (LAYOUT_EXCEPT_PATHS.includes(location.pathname)) {
-    return null;
-  }
 
   if (LAYOUT_CONFIGS[location.pathname] === undefined) return null;
   const { title, subtitle, showMoreIcon, showBackButton } =
@@ -31,7 +27,11 @@ export default function Header() {
     <header css={header(theme)}>
       <div css={arrowTitleContainer}>
         {showBackButton && (
-          <Button onClick={() => {}}>
+          <Button
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
             <ArrowLeftIcon color={theme.colors.white[100]} />
           </Button>
         )}
@@ -43,11 +43,7 @@ export default function Header() {
         </div>
       </div>
       {showMoreIcon && (
-        <Button
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
+        <Button onClick={() => {}}>
           <MoreVerticalIcon />
         </Button>
       )}

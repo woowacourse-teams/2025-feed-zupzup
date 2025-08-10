@@ -14,13 +14,6 @@ export interface LayoutConfig {
   bottomNav: BottomNavConfig;
 }
 
-export const LAYOUT_EXCEPT_PATHS = [
-  '/login',
-  '/signup',
-  '/dashboard',
-  '/onboarding',
-];
-
 export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
   '/admin': {
     header: {

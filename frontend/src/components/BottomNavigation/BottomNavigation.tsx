@@ -7,18 +7,19 @@ import {
 } from './BottomNavigation.style';
 import HomeIcon from '../icons/HomeIcon';
 import SettingIcon from '../icons/SettingIcon';
-import { LAYOUT_CONFIGS, LAYOUT_EXCEPT_PATHS } from '@/constants/layoutConfig';
+import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 
 export default function BottomNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useAppTheme();
 
-  if (LAYOUT_CONFIGS[location.pathname] === undefined) return null;
+  const currentPath = location.pathname;
 
-  const { show } = LAYOUT_CONFIGS[location.pathname].bottomNav;
-
-  if (LAYOUT_EXCEPT_PATHS.includes(location.pathname) || !show) {
+  if (
+    LAYOUT_CONFIGS[currentPath] === undefined ||
+    !LAYOUT_CONFIGS[currentPath].bottomNav.show
+  ) {
     return null;
   }
 
