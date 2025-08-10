@@ -14,9 +14,7 @@ export default function BottomNavigation() {
   const location = useLocation();
   const theme = useAppTheme();
 
-  const currentPath = location.pathname;
-
-  if (!LAYOUT_CONFIGS[currentPath]?.bottomNav.show) {
+  if (!LAYOUT_CONFIGS[location.pathname]?.bottomNav.show) {
     return null;
   }
 

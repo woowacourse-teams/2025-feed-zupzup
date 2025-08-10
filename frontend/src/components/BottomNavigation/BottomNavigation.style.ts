@@ -11,7 +11,7 @@ export const bottomNavStyle = (theme: Theme) => css`
   justify-content: center;
   align-items: center;
   gap: 40px;
-  height: 67px;
+  height: 66px;
   padding: 26px;
   background-color: ${theme.colors.white[100]};
   border-top: 1px solid ${theme.colors.gray[100]};

@@ -31,9 +31,7 @@ export default function App() {
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const location = useLocation();
 
-  const hasHeader =
-    LAYOUT_CONFIGS[location.pathname] !== undefined &&
-    LAYOUT_CONFIGS[location.pathname].header.show;
+  const hasHeader = LAYOUT_CONFIGS[location.pathname]?.header.show;
 
   return (
     <div css={appContainerStyle(hasHeader)}>
