@@ -28,7 +28,7 @@ public class Feedback extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String content;
+    private Content content;
 
     private boolean isSecret;
 
@@ -57,7 +57,7 @@ public class Feedback extends BaseTimeEntity {
 
     @Builder
     public Feedback(
-            final @NonNull String content,
+            final @NonNull Content content,
             final boolean isSecret,
             final @NonNull ProcessStatus status,
             final @NonNull Long organizationId,

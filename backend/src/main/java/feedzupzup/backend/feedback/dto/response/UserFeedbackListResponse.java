@@ -66,7 +66,7 @@ public record UserFeedbackListResponse(
         public static UserFeedbackItem from(final Feedback feedback) {
             return new UserFeedbackItem(
                     feedback.getId(),
-                    feedback.getContent(),
+                    feedback.getContent().getValue(),
                     feedback.getStatus(),
                     feedback.isSecret(),
                     feedback.getLikeCount(),

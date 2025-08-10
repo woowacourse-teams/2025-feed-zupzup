@@ -24,6 +24,7 @@ public enum ErrorCode {
     
     //Feedback Error
     INVALID_USERNAME_LENGTH(BAD_REQUEST, "F01", "닉네임은 1글자 이상 10글자 이하여야 합니다."),
+    INVALID_CONTENT_LENGTH(BAD_REQUEST, "F02", "내용은 1글자 이상 500글자 이하여야 합니다.")
     ;
 
     private final HttpStatus httpStatus;

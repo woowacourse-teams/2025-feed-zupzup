@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.dto.request;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.feedback.domain.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.PostedAt;
 import feedzupzup.backend.feedback.domain.ProcessStatus;
@@ -26,7 +27,7 @@ public record CreateFeedbackRequest(
 
     public Feedback toFeedback(final Long organizationId, final OrganizationCategory organizationCategory) {
         return Feedback.builder()
-                .content(content)
+                .content(new Content(content))
                 .organizationId(organizationId)
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)

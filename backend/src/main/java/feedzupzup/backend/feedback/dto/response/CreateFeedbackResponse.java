@@ -32,7 +32,7 @@ public record CreateFeedbackResponse(
     public static CreateFeedbackResponse from(final Feedback feedback) {
         return new CreateFeedbackResponse(
                 feedback.getId(),
-                feedback.getContent(),
+                feedback.getContent().getValue(),
                 feedback.getStatus(),
                 feedback.isSecret(),
                 feedback.getUserName(),

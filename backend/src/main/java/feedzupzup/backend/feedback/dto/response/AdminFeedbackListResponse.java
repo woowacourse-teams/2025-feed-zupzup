@@ -63,7 +63,7 @@ public record AdminFeedbackListResponse(
         private static AdminFeedbackItem from(final Feedback feedback) {
             return new AdminFeedbackItem(
                     feedback.getId(),
-                    feedback.getContent(),
+                    feedback.getContent().getValue(),
                     feedback.getStatus(),
                     feedback.isSecret(),
                     feedback.getLikeCount(),
