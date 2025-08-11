@@ -63,7 +63,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent("테스트 피드백",
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, "테스트 피드백",
                 organizationCategory);
         return feedBackRepository.save(feedback).getId();
     }
