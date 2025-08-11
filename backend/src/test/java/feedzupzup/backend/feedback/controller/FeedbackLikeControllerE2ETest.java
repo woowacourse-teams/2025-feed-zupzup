@@ -52,7 +52,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 5);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -81,7 +81,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 10);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -129,7 +129,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -175,7 +175,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 5);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -209,7 +209,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -253,7 +253,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 2);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -289,7 +289,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
@@ -345,7 +345,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 

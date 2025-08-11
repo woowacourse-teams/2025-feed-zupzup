@@ -49,9 +49,9 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 5);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 3);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -86,7 +86,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 10);
         final Feedback saved = feedBackRepository.save(feedback);
 
@@ -121,7 +121,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 5);
         final Feedback saved = feedBackRepository.save(feedback);
 
@@ -151,9 +151,9 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -183,7 +183,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         for (int i = 1; i <= feedbackCount; i++) {
-            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                     organizationCategory, 0);
             final Feedback saved = feedBackRepository.save(feedback);
 
@@ -212,7 +212,7 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback saved = feedBackRepository.save(feedback);
 
