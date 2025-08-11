@@ -4,17 +4,18 @@ import { css } from '@emotion/react';
 export const header = (theme: Theme) => css`
   position: fixed;
   top: 0;
-  right: 0;
-  left: 0;
+  left: 50%;
   z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
   padding: 20px;
   background-color: ${theme.colors.blue[100]};
+  transform: translateX(-50%);
 `;
-
 export const arrowTitleContainer = css`
   display: flex;
   justify-content: flex-start;

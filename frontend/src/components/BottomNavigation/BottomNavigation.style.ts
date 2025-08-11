@@ -3,18 +3,20 @@ import { Theme } from '@/theme';
 
 export const bottomNavStyle = (theme: Theme) => css`
   position: fixed;
-  right: 0;
   bottom: 0;
-  left: 0;
+  left: 50%;
   z-index: 100;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
+  width: 100%;
+  max-width: 600px;
   height: 66px;
   padding: 26px;
   padding-bottom: calc(26px + env(safe-area-inset-bottom));
   background-color: ${theme.colors.white[100]};
+  transform: translateX(-50%);
   border-top: 1px solid ${theme.colors.gray[100]};
 
   @supports (height: 100dvh) {
