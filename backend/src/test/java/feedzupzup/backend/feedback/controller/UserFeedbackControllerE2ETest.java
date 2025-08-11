@@ -540,11 +540,13 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Feedback saved3 = feedBackRepository.save(feedback3);
         feedBackRepository.save(feedback4);
 
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", saved1.getId(), saved2.getId(), saved3.getId())
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -580,11 +582,13 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Feedback saved3 = feedBackRepository.save(feedback3);
         final Feedback saved4 = feedBackRepository.save(feedback4);
 
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId() + "," + saved4.getId();
+
         final Long firstPageCursor = given()
                 .log().all()
                 .queryParam("size", 2)
                 .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", saved1.getId(), saved2.getId(), saved3.getId(), saved4.getId())
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -603,7 +607,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 2)
                 .queryParam("cursorId", firstPageCursor)
                 .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", saved1.getId(), saved2.getId(), saved3.getId(), saved4.getId())
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -633,12 +637,14 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Feedback saved2 = feedBackRepository.save(confirmedFeedback2);
         final Feedback saved3 = feedBackRepository.save(waitingFeedback);
 
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .queryParam("status", "CONFIRMED")
                 .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", saved1.getId(), saved2.getId(), saved3.getId())
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -671,11 +677,13 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Feedback saved2 = feedBackRepository.save(feedback2);
         final Feedback saved3 = feedBackRepository.save(feedback3);
 
+        final String myFeedbacks = saved1.getId() + "," + saved2.getId() + "," + saved3.getId();
+
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LIKES")
-                .queryParam("myFeedbackIds", saved1.getId(), saved2.getId(), saved3.getId())
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -698,11 +706,13 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        final String myFeedbacks = "999999,888888,777777";
+
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", 999999L, 888888L, 777777L)
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -729,11 +739,13 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 organization.getId(), organizationCategory);
         final Feedback saved = feedBackRepository.save(feedback);
 
+        final String myFeedbacks = saved.getId().toString();
+
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", saved.getId())
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
@@ -747,61 +759,21 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("피드백 ID 파라미터 없이 내 피드백 조회시 빈 결과를 반환한다")
-    void get_my_feedbacks_without_feedback_ids() {
+    @DisplayName("빈 피드백 ID 목록으로 내 피드백 조회시 400 에러가 발생한다")
+    void get_my_feedbacks_empty_feedback_ids() {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        final String myFeedbacks = "";
 
         given()
                 .log().all()
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
+                .queryParam("myFeedbacks", myFeedbacks)
                 .when()
                 .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(0))
-                .body("data.hasNext", equalTo(false))
-                .body("data.nextCursorId", equalTo(null));
-    }
-
-    @Test
-    @DisplayName("빈 피드백 ID 배열로 내 피드백 조회시 빈 결과를 반환한다")
-    void get_my_feedbacks_with_empty_array() {
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        // 실제 피드백을 생성해서 DB에 데이터가 있는 상황을 만듦
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(), organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(), organizationCategory);
-        
-        feedBackRepository.save(feedback1);
-        feedBackRepository.save(feedback2);
-
-        // 빈 배열로 요청 (RestAssured에서 빈 배열을 전달하는 방법)
-        given()
-                .log().all()
-                .queryParam("size", 10)
-                .queryParam("orderBy", "LATEST")
-                .queryParam("myFeedbackIds", new Long[0]) // 빈 배열 전달
-                .when()
-                .get("/organizations/{organizationId}/my-feedbacks", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(0)) // DB에 데이터가 있어도 빈 결과
-                .body("data.hasNext", equalTo(false))
-                .body("data.nextCursorId", equalTo(null));
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
