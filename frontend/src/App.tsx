@@ -5,7 +5,7 @@ import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { useLocation } from 'react-router-dom';
-import { appContainerStyle } from './App.style';
+import { appContainer, main } from './App.style';
 import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 
 const gaId = process.env.GA_ID;
@@ -34,9 +34,9 @@ export default function App() {
   const hasHeader = LAYOUT_CONFIGS[location.pathname]?.header.show;
 
   return (
-    <div css={appContainerStyle(hasHeader)}>
+    <div css={appContainer(hasHeader)}>
       <Header />
-      <main>
+      <main css={main}>
         <Outlet />
       </main>
       <BottomNavigation />
