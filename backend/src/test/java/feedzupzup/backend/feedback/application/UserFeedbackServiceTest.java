@@ -18,9 +18,8 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse.MyFeedbackItem;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import java.util.List;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -313,7 +312,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(response.feedbacks()).hasSize(2),
                 () -> assertThat(response.feedbacks())
-                        .extracting(UserFeedbackListResponse.UserFeedbackItem::feedbackId)
+                        .extracting(FeedbackItem::feedbackId)
                         .doesNotContain(otherFeedback.getId()),
                 () -> assertThat(response.hasNext()).isFalse()
         );
@@ -531,7 +530,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organization.getId(), size, null, null, LATEST);
-        final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
+        final FeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 인메모리 좋아요 수만 반영되는지 확인
         assertAll(
@@ -569,7 +568,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organization.getId(), size, null, null, LATEST);
-        final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
+        final FeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인
         assertAll(
@@ -725,7 +724,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(response.feedbacks()).hasSize(3),
                 () -> assertThat(response.feedbacks())
-                        .extracting(MyFeedbackItem::feedbackId)
+                        .extracting(FeedbackItem::feedbackId)
                         .containsExactly(saved3.getId(), saved2.getId(), saved1.getId()) // 최신순 정렬
         );
     }
