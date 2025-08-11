@@ -108,7 +108,7 @@ export default function FeedbackPage({
   return (
     <section css={container}>
       <div css={arrowLeftIconContainer} onClick={movePrevStep}>
-        <ArrowLeftIcon />
+        <ArrowLeftIcon color={theme.colors.gray[600]} />
       </div>
 
       <form css={mainContent} onSubmit={onSubmit}>
