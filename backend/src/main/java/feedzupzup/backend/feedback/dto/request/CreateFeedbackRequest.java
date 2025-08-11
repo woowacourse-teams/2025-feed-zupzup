@@ -1,10 +1,11 @@
 package feedzupzup.backend.feedback.dto.request;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.PostedAt;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
-import feedzupzup.backend.feedback.domain.UserName;
+import feedzupzup.backend.feedback.domain.vo.PostedAt;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.UserName;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
@@ -26,7 +27,7 @@ public record CreateFeedbackRequest(
 
     public Feedback toFeedback(final Long organizationId, final OrganizationCategory organizationCategory) {
         return Feedback.builder()
-                .content(content)
+                .content(new Content(content))
                 .organizationId(organizationId)
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)

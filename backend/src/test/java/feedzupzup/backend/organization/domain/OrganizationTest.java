@@ -2,6 +2,7 @@ package feedzupzup.backend.organization.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
