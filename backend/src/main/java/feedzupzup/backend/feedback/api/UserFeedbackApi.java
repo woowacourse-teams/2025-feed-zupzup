@@ -7,6 +7,8 @@ import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
+import java.util.List;
 import feedzupzup.backend.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -84,5 +86,18 @@ public interface UserFeedbackApi {
     @GetMapping("/organizations/{organizationId}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
             @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId
+    );
+
+    @Operation(summary = "내가 쓴 피드백 목록 조회", description = "내가 쓴 피드백 목록을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/organizations/{organizationId}/feedbacks/my")
+    SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
+            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy,
+            @Parameter(description = "내가 쓴 피드백 ID 목록") @RequestParam final List<Long> feedbackIds
     );
 }

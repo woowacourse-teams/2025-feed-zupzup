@@ -11,6 +11,8 @@ import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
+import java.util.List;
 import feedzupzup.backend.global.response.SuccessResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -65,6 +67,20 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<StatisticResponse> getStatistic(final Long organizationId) {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
                 organizationId
+        );
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
+            final Long organizationId,
+            final FeedbackOrderBy orderBy,
+            final List<Long> feedbackIds
+    ) {
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organizationId,
+                orderBy,
+                feedbackIds
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
