@@ -2,8 +2,8 @@ package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.FACILITY;
 import static feedzupzup.backend.feedback.application.FeedbackOrderBy.LATEST;
-import static feedzupzup.backend.feedback.domain.ProcessStatus.CONFIRMED;
-import static feedzupzup.backend.feedback.domain.ProcessStatus.WAITING;
+import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
+import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
@@ -32,10 +32,10 @@ public record CreateFeedbackResponse(
     public static CreateFeedbackResponse from(final Feedback feedback) {
         return new CreateFeedbackResponse(
                 feedback.getId(),
-                feedback.getContent(),
+                feedback.getContent().getValue(),
                 feedback.getStatus(),
                 feedback.isSecret(),
-                feedback.getUserName(),
+                feedback.getUserName().getValue(),
                 feedback.getCreatedAt(),
                 feedback.getOrganizationCategory().getCategory().getKoreanName()
         );

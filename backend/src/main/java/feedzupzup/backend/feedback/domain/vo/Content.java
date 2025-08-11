@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.feedback.domain.vo;
 
 import feedzupzup.backend.feedback.exception.FeedbackException;
 import feedzupzup.backend.global.response.ErrorCode;
@@ -11,24 +11,23 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+public class Content {
 
     private static final int MAX_LENGTH = 500;
 
-    @Column(name = "comment")
+    @Column(name = "content")
     private String value;
 
-    public Comment(final String value) {
+    public Content(final String value) {
         validateLength(value);
         this.value = value;
     }
 
-    public void validateLength(String value) {
+    private void validateLength(final String value) {
         if (value.length() > MAX_LENGTH) {
             throw new FeedbackException(
-                    ErrorCode.INVALID_USERNAME_LENGTH,
-                    "value의 length은 " + MAX_LENGTH + "를 초과할 수 없습니다.");
+                    ErrorCode.INVALID_CONTENT_LENGTH,
+                    "content의 length은 " + MAX_LENGTH + "를 초과할 수 없습니다.");
         }
     }
-
 }

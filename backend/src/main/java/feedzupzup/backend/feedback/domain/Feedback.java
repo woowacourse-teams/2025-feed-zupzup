@@ -1,6 +1,11 @@
 package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.feedback.domain.vo.Comment;
+import feedzupzup.backend.feedback.domain.vo.Content;
+import feedzupzup.backend.feedback.domain.vo.PostedAt;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.UserName;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -28,7 +33,7 @@ public class Feedback extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String content;
+    private Content content;
 
     private boolean isSecret;
 
@@ -57,7 +62,7 @@ public class Feedback extends BaseTimeEntity {
 
     @Builder
     public Feedback(
-            final @NonNull String content,
+            final @NonNull Content content,
             final boolean isSecret,
             final @NonNull ProcessStatus status,
             final @NonNull Long organizationId,
@@ -80,10 +85,6 @@ public class Feedback extends BaseTimeEntity {
 
     public void updateStatus(final ProcessStatus status) {
         this.status = status;
-    }
-
-    public String getUserName() {
-        return userName.getValue();
     }
 
     public void updateSecret(final boolean isSecret) {
