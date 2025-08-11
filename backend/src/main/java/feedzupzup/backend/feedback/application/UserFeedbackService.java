@@ -10,6 +10,8 @@ import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
+import java.util.Comparator;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
@@ -62,7 +64,7 @@ public class UserFeedbackService {
             case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
         };
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
+        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
         return UserFeedbackListResponse.of(
                 feedbackPage.getFeedbacks(),
                 feedbackPage.isHasNext(),
@@ -70,29 +72,20 @@ public class UserFeedbackService {
         );
     }
 
-    public UserFeedbackListResponse getMyFeedbackPage(
+    public MyFeedbackListResponse getMyFeedbackPage(
             final Long organizationId,
-            final int size,
-            final Long cursorId,
-            final ProcessStatus status,
             final FeedbackOrderBy orderBy,
             final List<Long> myFeedbackIds
     ) {
-        final Pageable pageable = createPageable(size);
-
         feedbackLikeService.flushLikeCountBuffer();
 
-        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdsAndProcessStatusAndCursor(
-                organizationId, myFeedbackIds, cursorId, pageable, status, orderBy.name());
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdIn(
+                organizationId, myFeedbackIds);
 
-        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
-        return UserFeedbackListResponse.of(
-                feedbackPage.getFeedbacks(),
-                feedbackPage.isHasNext(),
-                feedbackPage.calculateNextCursorId()
-        );
-
+        final List<Feedback> sortedFeedbacks = sortFeedbacksByOrderBy(feedbacks, orderBy);
+        
+        feedbackLikeCounter.applyBufferedLikeCount(sortedFeedbacks);
+        return MyFeedbackListResponse.of(sortedFeedbacks);
     }
 
     private Organization findOrganizationBy(final Long organizationId) {
@@ -103,5 +96,24 @@ public class UserFeedbackService {
     private Pageable createPageable(int size) {
         final Pageable pageable = Pageable.ofSize(size + 1);
         return pageable;
+    }
+
+    private List<Feedback> sortFeedbacksByOrderBy(final List<Feedback> feedbacks, final FeedbackOrderBy orderBy) {
+        if (orderBy == FeedbackOrderBy.LATEST) {
+            return feedbacks.stream()
+                    .sorted(Comparator.comparing(Feedback::getId).reversed())
+                    .toList();
+        }
+        
+        if (orderBy == FeedbackOrderBy.OLDEST) {
+            return feedbacks.stream()
+                    .sorted(Comparator.comparing(Feedback::getId))
+                    .toList();
+        }
+        
+        return feedbacks.stream()
+                .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
+                        .thenComparing(Feedback::getId))
+                .toList();
     }
 }

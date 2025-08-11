@@ -75,7 +75,7 @@ public class AdminFeedbackService {
         };
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
+        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
         return AdminFeedbackListResponse.from(feedbackPage);
     }
 
