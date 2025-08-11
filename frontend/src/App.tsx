@@ -31,15 +31,17 @@ export default function App() {
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const location = useLocation();
 
-  const hasHeader = LAYOUT_CONFIGS[location.pathname]?.header.show;
+  const layoutConfig = LAYOUT_CONFIGS[location.pathname];
+  const shouldShowHeader = layoutConfig?.header.show;
+  const shouldShowBottomNav = layoutConfig?.bottomNav.show;
 
   return (
-    <div css={appContainer(hasHeader)}>
-      <Header />
+    <div css={appContainer(shouldShowHeader)}>
+      {shouldShowHeader && <Header />}
       <main css={main}>
         <Outlet />
       </main>
-      <BottomNavigation />
+      {shouldShowBottomNav && <BottomNavigation />}
       {isError && (
         <AlertModal
           onClose={setErrorFalse}

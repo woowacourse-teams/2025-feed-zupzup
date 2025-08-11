@@ -19,22 +19,22 @@ export default function Header() {
   const theme = useAppTheme();
   const navigate = useNavigate();
 
-  if (!LAYOUT_CONFIGS[location.pathname]?.header.show) {
-    return null;
-  }
-
   const { title, subtitle, showMoreIcon, showBackButton } =
     LAYOUT_CONFIGS[location.pathname].header;
+
+  const handleBackButtonClick = () => {
+    navigate(-1);
+  };
+
+  const handleMoreButtonClick = () => {
+    // TODO: 더보기 메뉴 로직 구현 여기서 하심 됩니당.
+  };
 
   return (
     <header css={header(theme)}>
       <div css={arrowTitleContainer}>
         {showBackButton && (
-          <Button
-            onClick={() => {
-              navigate(-1);
-            }}
-          >
+          <Button onClick={handleBackButtonClick}>
             <ArrowLeftIcon color={theme.colors.white[100]} />
           </Button>
         )}
@@ -46,7 +46,7 @@ export default function Header() {
         </div>
       </div>
       {showMoreIcon && (
-        <Button onClick={() => {}}>
+        <Button onClick={handleMoreButtonClick}>
           <MoreVerticalIcon />
         </Button>
       )}

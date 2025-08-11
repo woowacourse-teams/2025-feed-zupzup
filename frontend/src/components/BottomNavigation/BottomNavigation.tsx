@@ -6,7 +6,6 @@ import {
   navItemStyle,
   navTextStyle,
 } from './BottomNavigation.style';
-import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 import { NAVIGATION_ITEMS, NavigationItem } from './navigationItems';
 
 interface NavItemProps {
@@ -36,10 +35,6 @@ export default function BottomNavigation() {
   const location = useLocation();
   const theme = useAppTheme();
   const isKeyboardOpen = useKeyboardDetection();
-
-  if (!LAYOUT_CONFIGS[location.pathname]?.bottomNav.show) {
-    return null;
-  }
 
   const handleNavigate = (path: string) => {
     navigate(path);
