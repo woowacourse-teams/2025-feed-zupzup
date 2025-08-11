@@ -109,14 +109,14 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(), organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(), organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(), organizationCategory);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(), organizationCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -148,11 +148,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -205,17 +205,17 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
@@ -252,8 +252,8 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 organization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganizationId(
-                organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(
+                organization,
                 organizationCategory);
         feedBackRepository.save(feedback);
 
@@ -289,12 +289,12 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory1);
         organizationCategoryRepository.save(organizationCategory2);
 
-        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                targetOrganization.getId(), organizationCategory1);
-        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                targetOrganization.getId(), organizationCategory1);
-        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganizationId(
-                otherOrganization.getId(), organizationCategory2);
+        final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                targetOrganization, organizationCategory1);
+        final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                targetOrganization, organizationCategory1);
+        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(
+                otherOrganization, organizationCategory2);
 
         feedBackRepository.save(targetFeedback1);
         feedBackRepository.save(targetFeedback2);
@@ -326,11 +326,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 targetOrganization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
-        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, WAITING, organizationCategory);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, WAITING, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -352,11 +352,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 targetOrganization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
-        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, WAITING, organizationCategory);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, WAITING, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -378,11 +378,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 targetOrganization, FACILITY);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(CONFIRMED, organizationCategory);
-        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
-        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(WAITING, organizationCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
+        final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, WAITING, organizationCategory);
+        final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, WAITING, organizationCategory);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -407,13 +407,13 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 5); // DB에 5개 좋아요
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 3); // DB에 3개 좋아요
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 0); // DB에 0개 좋아요
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
@@ -468,10 +468,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 10); // DB에 10개 좋아요
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 0);  // DB에 0개 좋아요
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
@@ -513,7 +513,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 0); // DB에 0개 좋아요
 
         final Feedback saved = feedBackRepository.save(feedback);
@@ -549,7 +549,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(
-                organization.getId(), organizationCategory,
+                organization, organizationCategory,
                 8); // DB에 8개 좋아요
 
         final Feedback saved = feedBackRepository.save(feedback);
@@ -590,12 +590,12 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization, FACILITY);
             organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    organization.getId(), organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    organization.getId(), organizationCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    organization.getId(), organizationCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
 
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -625,12 +625,12 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization, FACILITY);
             organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    organization.getId(), organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    organization.getId(), organizationCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganizationId(
-                    organization.getId(), organizationCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
 
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -661,11 +661,11 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
-                    organization.getId(), organizationCategory, 5);
+                    organization, organizationCategory, 5);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
-                    organization.getId(), organizationCategory, 10);
+                    organization, organizationCategory, 10);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(
-                    organization.getId(), organizationCategory, 3);
+                    organization, organizationCategory, 3);
 
             final Feedback saved1 = feedBackRepository.save(feedback1); // 좋아요 5개
             final Feedback saved2 = feedBackRepository.save(feedback2); // 좋아요 10개

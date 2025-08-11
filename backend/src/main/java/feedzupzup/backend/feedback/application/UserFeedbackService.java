@@ -40,7 +40,7 @@ public class UserFeedbackService {
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
                 category);
-        final Feedback newFeedback = request.toFeedback(organization.getId(), organizationCategory);
+        final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         return CreateFeedbackResponse.from(savedFeedback);
     }
