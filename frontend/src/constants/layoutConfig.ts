@@ -1,3 +1,5 @@
+import { ROUTES } from './routes';
+
 interface HeaderConfig {
   show: boolean;
   title?: string;
@@ -16,7 +18,7 @@ export interface LayoutConfig {
 }
 
 export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
-  '/admin': {
+  [ROUTES.ADMIN]: {
     header: {
       show: true,
       title: '피드백 관리',
@@ -28,7 +30,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
     },
   },
-  '/admin-settings': {
+  [ROUTES.ADMIN_SETTINGS]: {
     header: {
       show: true,
       title: '설정',
@@ -40,7 +42,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
     },
   },
-  '/notifications': {
+  [ROUTES.NOTIFICATIONS]: {
     header: {
       show: true,
       title: '알림 설정',
@@ -52,7 +54,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: false,
     },
   },
-  '/admin-home': {
+  [ROUTES.ADMIN_HOME]: {
     header: {
       show: false,
     },

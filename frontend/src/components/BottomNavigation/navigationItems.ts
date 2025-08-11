@@ -1,6 +1,7 @@
 import { ComponentType } from 'react';
 import HomeIcon from '../icons/HomeIcon';
 import SettingIcon from '../icons/SettingIcon';
+import { ROUTES } from '@/constants/routes';
 
 export interface NavigationItem {
   id: string;
@@ -13,13 +14,13 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   {
     id: 'home',
     label: '홈',
-    path: '/admin-home',
+    path: ROUTES.ADMIN_HOME,
     Icon: HomeIcon,
   },
   {
     id: 'settings',
     label: '설정',
-    path: '/admin-settings',
+    path: ROUTES.ADMIN_SETTINGS,
     Icon: SettingIcon,
   },
 ];

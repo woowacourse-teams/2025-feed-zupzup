@@ -1,35 +1,35 @@
-import App from '@/App';
+import App from './App';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
 import Settings from './domains/admin/Settings/Settings';
 import AdminHome from './domains/admin/AdminHome/AdminHome';
+import { ROUTES } from '@/constants/routes';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: ROUTES.HOME,
     element: <App />,
     children: [
       {
-        path: '',
+        path: ROUTES.HOME,
         element: <Home />,
       },
-
       {
-        path: '/admin',
+        path: ROUTES.ADMIN,
         element: <AdminDashboard />,
       },
       {
-        path: '/dashboard',
+        path: ROUTES.USER_DASHBOARD,
         element: <UserDashboard />,
       },
       {
-        path: '/admin-settings',
+        path: ROUTES.ADMIN_SETTINGS,
         element: <Settings />,
       },
       {
-        path: '/admin-home',
+        path: ROUTES.ADMIN_HOME,
         element: <AdminHome />,
       },
     ],
