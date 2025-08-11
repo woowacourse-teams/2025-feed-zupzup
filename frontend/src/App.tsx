@@ -1,12 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import { usePageTracking } from './hooks/usePageTracking';
+import { useLayoutConfig } from './hooks/useLayoutConfig';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
-import { useLocation } from 'react-router-dom';
 import { appContainer, main } from './App.style';
-import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 
 const gaId = process.env.GA_ID;
 
@@ -29,11 +28,7 @@ if (gaId) {
 export default function App() {
   usePageTracking();
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
-  const location = useLocation();
-
-  const layoutConfig = LAYOUT_CONFIGS[location.pathname];
-  const isShowHeader = layoutConfig?.header.show;
-  const isShowBottomNav = layoutConfig?.bottomNav.show;
+  const { isShowHeader, isShowBottomNav } = useLayoutConfig();
 
   return (
     <div css={appContainer(isShowHeader)}>
