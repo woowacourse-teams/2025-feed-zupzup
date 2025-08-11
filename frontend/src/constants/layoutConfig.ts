@@ -1,4 +1,4 @@
-export interface HeaderConfig {
+interface HeaderConfig {
   show: boolean;
   title?: string;
   subtitle?: string;
@@ -6,7 +6,7 @@ export interface HeaderConfig {
   showBackButton?: boolean;
 }
 
-export interface BottomNavConfig {
+interface BottomNavConfig {
   show: boolean;
 }
 
