@@ -19,6 +19,9 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse.MyFeedbackItem;
+import java.util.List;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -686,5 +689,182 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
             );
         }
+    }
+
+    @Test
+    @DisplayName("내가 쓴 피드백 목록을 성공적으로 조회한다")
+    void getMyFeedbackPage_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationRepository.save(organization);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+        feedBackRepository.save(otherFeedback);
+
+        final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId());
+
+        // when
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organization.getId(), FeedbackOrderBy.LATEST, myFeedbackIds);
+
+        // then
+        assertAll(
+                () -> assertThat(response.feedbacks()).hasSize(3),
+                () -> assertThat(response.feedbacks())
+                        .extracting(MyFeedbackItem::feedbackId)
+                        .containsExactly(saved3.getId(), saved2.getId(), saved1.getId()) // 최신순 정렬
+        );
+    }
+
+    @Test
+    @DisplayName("내가 쓴 피드백이 없을 때 빈 목록을 반환한다")
+    void getMyFeedbackPage_empty_result() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final List<Long> emptyFeedbackIds = List.of();
+
+        // when
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organization.getId(), FeedbackOrderBy.LATEST, emptyFeedbackIds);
+
+        // then
+        assertThat(response.feedbacks()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("내가 쓴 피드백을 좋아요 순으로 조회한다")
+    void getMyFeedbackPage_orders_by_likes() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationRepository.save(organization);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
+                organization, organizationCategory, 5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
+                organization, organizationCategory, 10);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(
+                organization, organizationCategory, 3);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1); // 좋아요 5개
+        final Feedback saved2 = feedBackRepository.save(feedback2); // 좋아요 10개
+        final Feedback saved3 = feedBackRepository.save(feedback3); // 좋아요 3개
+
+        final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId());
+
+        // when - LIKES로 정렬
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organization.getId(), FeedbackOrderBy.LIKES, myFeedbackIds);
+
+        // then - 좋아요 많은 순서로 정렬되어야 함 (10, 5, 3)
+        assertAll(
+                () -> assertThat(response.feedbacks()).hasSize(3),
+                () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved2.getId()),
+                () -> assertThat(response.feedbacks().get(0).likeCount()).isEqualTo(10),
+                () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved1.getId()),
+                () -> assertThat(response.feedbacks().get(1).likeCount()).isEqualTo(5),
+                () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId()),
+                () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    @DisplayName("내가 쓴 피드백을 오래된 순으로 조회한다")
+    void getMyFeedbackPage_orders_by_oldest() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationRepository.save(organization);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+        final Feedback saved3 = feedBackRepository.save(feedback3);
+
+        final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId(), saved3.getId());
+
+        // when - OLDEST로 정렬
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organization.getId(), FeedbackOrderBy.OLDEST, myFeedbackIds);
+
+        // then - 오래된(ID가 작은) 순서로 정렬되어야 함
+        assertAll(
+                () -> assertThat(response.feedbacks()).hasSize(3),
+                () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved1.getId()),
+                () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved2.getId()),
+                () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId())
+        );
+    }
+
+    @Test
+    @DisplayName("내가 쓴 피드백에 좋아요 수가 정확히 반영된다")
+    void getMyFeedbackPage_reflects_like_count() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+                organization, FACILITY);
+        organizationRepository.save(organization);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
+                organization, organizationCategory, 5);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
+                organization, organizationCategory, 0);
+
+        final Feedback saved1 = feedBackRepository.save(feedback1);
+        final Feedback saved2 = feedBackRepository.save(feedback2);
+
+        // 인메모리에 좋아요 추가
+        feedbackLikeService.like(saved1.getId()); // 총 6개
+        feedbackLikeService.like(saved2.getId()); // 총 1개
+
+        final List<Long> myFeedbackIds = List.of(saved1.getId(), saved2.getId());
+
+        // when
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
+                organization.getId(), FeedbackOrderBy.LATEST, myFeedbackIds);
+
+        // then
+        assertAll(
+                () -> assertThat(response.feedbacks()).hasSize(2),
+                () -> {
+                    final var feedbackItems = response.feedbacks();
+                    final var feedback1Item = feedbackItems.stream()
+                            .filter(item -> item.feedbackId().equals(saved1.getId()))
+                            .findFirst().orElseThrow();
+                    final var feedback2Item = feedbackItems.stream()
+                            .filter(item -> item.feedbackId().equals(saved2.getId()))
+                            .findFirst().orElseThrow();
+
+                    assertThat(feedback1Item.likeCount()).isEqualTo(6); // 5(DB) + 1(인메모리)
+                    assertThat(feedback2Item.likeCount()).isEqualTo(1); // 0(DB) + 1(인메모리)
+                }
+        );
     }
 }
