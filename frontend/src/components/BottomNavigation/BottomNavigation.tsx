@@ -6,9 +6,30 @@ import {
   navItemStyle,
   navTextStyle,
 } from './BottomNavigation.style';
-import HomeIcon from '../icons/HomeIcon';
-import SettingIcon from '../icons/SettingIcon';
 import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
+import { NAVIGATION_ITEMS, NavigationItem } from './navigationItems';
+
+interface NavItemProps {
+  item: NavigationItem;
+  isActive: boolean;
+  onNavigate: (path: string) => void;
+}
+
+function NavItem({ item, isActive, onNavigate }: NavItemProps) {
+  const theme = useAppTheme();
+  const { Icon, label, path } = item;
+
+  const iconColor = isActive
+    ? theme.colors.purple[100]
+    : theme.colors.gray[600];
+
+  return (
+    <div css={navItemStyle(theme, isActive)} onClick={() => onNavigate(path)}>
+      <Icon color={iconColor} />
+      <span css={navTextStyle(theme, isActive)}>{label}</span>
+    </div>
+  );
+}
 
 export default function BottomNavigation() {
   const navigate = useNavigate();
@@ -20,37 +41,23 @@ export default function BottomNavigation() {
     return null;
   }
 
-  const isHomeActive = location.pathname === '/admin-home';
-  const isSettingsActive = location.pathname === '/admin-settings';
+  const handleNavigate = (path: string) => {
+    navigate(path);
+  };
 
   return (
     <nav
       css={bottomNavStyle(theme)}
       className={isKeyboardOpen ? 'keyboard-open' : ''}
     >
-      <div
-        css={navItemStyle(theme, isHomeActive)}
-        onClick={() => navigate('/admin-home')}
-      >
-        <HomeIcon
-          color={
-            isHomeActive ? theme.colors.purple[100] : theme.colors.gray[600]
-          }
+      {NAVIGATION_ITEMS.map((item) => (
+        <NavItem
+          key={item.id}
+          item={item}
+          isActive={location.pathname === item.path}
+          onNavigate={handleNavigate}
         />
-        <span css={navTextStyle(theme, isHomeActive)}>홈</span>
-      </div>
-
-      <div
-        css={navItemStyle(theme, isSettingsActive)}
-        onClick={() => navigate('/admin-settings')}
-      >
-        <SettingIcon
-          color={
-            isSettingsActive ? theme.colors.purple[100] : theme.colors.gray[600]
-          }
-        />
-        <span css={navTextStyle(theme, isSettingsActive)}>설정</span>
-      </div>
+      ))}
     </nav>
   );
 }
