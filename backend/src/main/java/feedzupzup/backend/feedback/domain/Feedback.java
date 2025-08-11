@@ -87,10 +87,6 @@ public class Feedback extends BaseTimeEntity {
         this.status = status;
     }
 
-    public String getUserNameValue() {
-        return userName.getValue();
-    }
-
     public void updateSecret(final boolean isSecret) {
         this.isSecret = isSecret;
     }
