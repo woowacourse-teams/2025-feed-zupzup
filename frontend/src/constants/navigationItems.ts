@@ -1,7 +1,7 @@
 import { ComponentType } from 'react';
-import HomeIcon from '../icons/HomeIcon';
-import SettingIcon from '../icons/SettingIcon';
-import { ROUTES } from '@/constants/routes';
+import HomeIcon from '../components/icons/HomeIcon';
+import SettingIcon from '../components/icons/SettingIcon';
+import { ROUTES } from './routes';
 
 export interface NavigationItem {
   id: string;

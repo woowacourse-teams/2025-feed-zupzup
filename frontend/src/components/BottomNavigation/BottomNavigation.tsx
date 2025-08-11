@@ -6,7 +6,10 @@ import {
   navItemStyle,
   navTextStyle,
 } from './BottomNavigation.style';
-import { NAVIGATION_ITEMS, NavigationItem } from './navigationItems';
+import {
+  NAVIGATION_ITEMS,
+  NavigationItem,
+} from '../../constants/navigationItems';
 
 interface NavItemProps {
   item: NavigationItem;
