@@ -13,8 +13,17 @@ export const bottomNavStyle = (theme: Theme) => css`
   gap: 40px;
   height: 66px;
   padding: 26px;
+  padding-bottom: calc(26px + env(safe-area-inset-bottom));
   background-color: ${theme.colors.white[100]};
   border-top: 1px solid ${theme.colors.gray[100]};
+
+  @supports (height: 100dvh) {
+    transition: transform 0.3s ease;
+  }
+
+  &.keyboard-open {
+    transform: translateY(100%);
+  }
 `;
 
 export const navItemStyle = (theme: Theme, isActive: boolean) => css`
@@ -24,6 +33,7 @@ export const navItemStyle = (theme: Theme, isActive: boolean) => css`
   align-items: center;
   gap: 4px;
   width: calc(50% - 20px);
+  min-height: 44px;
   padding: 8px 0;
   background-color: ${isActive
     ? `${theme.colors.purple[100]}0D`
@@ -31,10 +41,13 @@ export const navItemStyle = (theme: Theme, isActive: boolean) => css`
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 `;
 
 export const navTextStyle = (theme: Theme, isActive: boolean) => css`
   font-size: 12px;
   font-weight: 500;
   color: ${isActive ? theme.colors.purple[100] : theme.colors.gray[600]};
+  user-select: none;
 `;

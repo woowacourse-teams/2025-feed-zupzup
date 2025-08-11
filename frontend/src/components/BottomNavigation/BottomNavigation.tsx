@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useKeyboardDetection } from '@/hooks/useKeyboardDetection';
 import {
   bottomNavStyle,
   navItemStyle,
@@ -13,6 +14,7 @@ export default function BottomNavigation() {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useAppTheme();
+  const isKeyboardOpen = useKeyboardDetection();
 
   if (!LAYOUT_CONFIGS[location.pathname]?.bottomNav.show) {
     return null;
@@ -22,7 +24,10 @@ export default function BottomNavigation() {
   const isSettingsActive = location.pathname === '/admin-settings';
 
   return (
-    <nav css={bottomNavStyle(theme)}>
+    <nav
+      css={bottomNavStyle(theme)}
+      className={isKeyboardOpen ? 'keyboard-open' : ''}
+    >
       <div
         css={navItemStyle(theme, isHomeActive)}
         onClick={() => navigate('/admin-home')}
