@@ -1,0 +1,66 @@
+package feedzupzup.backend.feedback.dto.response;
+
+import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Schema(description = "내 피드백 목록 응답")
+public record MyFeedbackListResponse(
+        @Schema(description = "피드백 목록")
+        List<MyFeedbackItem> feedbacks
+) {
+
+    public static MyFeedbackListResponse of(final List<Feedback> feedbacks) {
+        final List<MyFeedbackItem> myFeedbackItems = feedbacks.stream()
+                .map(MyFeedbackItem::from)
+                .toList();
+        return new MyFeedbackListResponse(myFeedbackItems);
+    }
+
+    @Schema(description = "내 피드백 항목")
+    public record MyFeedbackItem(
+            @Schema(description = "피드백 ID", example = "1")
+            Long feedbackId,
+
+            @Schema(description = "피드백 내용", example = "급식실 음식 간이 너무 짜요")
+            String content,
+
+            @Schema(description = "처리 상태", example = "WAITING")
+            ProcessStatus status,
+
+            @Schema(description = "비밀 피드백 여부", example = "false")
+            boolean isSecret,
+
+            @Schema(description = "좋아요 수", example = "5")
+            int likeCount,
+
+            @Schema(description = "작성자 이름", example = "댕댕이")
+            String userName,
+
+            @Schema(description = "생성일시", example = "2025-07-12T09:30:00.000Z")
+            LocalDateTime postedAt,
+
+            @Schema(description = "카테고리", example = "시설")
+            String category,
+
+            @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
+            String comment
+    ) {
+
+        public static MyFeedbackItem from(final Feedback feedback) {
+            return new MyFeedbackItem(
+                    feedback.getId(),
+                    feedback.getContent().getValue(),
+                    feedback.getStatus(),
+                    feedback.isSecret(),
+                    feedback.getLikeCount(),
+                    feedback.getUserName().getValue(),
+                    feedback.getPostedAt().getPostedAt(),
+                    feedback.getOrganizationCategory().getCategory().getKoreanName(),
+                    feedback.getComment() != null ? feedback.getComment().getValue() : null
+            );
+        }
+    }
+}
