@@ -32,16 +32,16 @@ export default function App() {
   const location = useLocation();
 
   const layoutConfig = LAYOUT_CONFIGS[location.pathname];
-  const shouldShowHeader = layoutConfig?.header.show;
-  const shouldShowBottomNav = layoutConfig?.bottomNav.show;
+  const isShowHeader = layoutConfig?.header.show;
+  const isShowBottomNav = layoutConfig?.bottomNav.show;
 
   return (
-    <div css={appContainer(shouldShowHeader)}>
-      {shouldShowHeader && <Header />}
+    <div css={appContainer(isShowHeader)}>
+      {isShowHeader && <Header />}
       <main css={main}>
         <Outlet />
       </main>
-      {shouldShowBottomNav && <BottomNavigation />}
+      {isShowBottomNav && <BottomNavigation />}
       {isError && (
         <AlertModal
           onClose={setErrorFalse}
