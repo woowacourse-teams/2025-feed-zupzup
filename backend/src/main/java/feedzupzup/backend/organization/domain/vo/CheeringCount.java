@@ -1,4 +1,4 @@
-package feedzupzup.backend.organization.domain;
+package feedzupzup.backend.organization.domain.vo;
 
 import feedzupzup.backend.organization.domain.OrganizationException.OrganizationNumberException;
 import jakarta.persistence.Column;

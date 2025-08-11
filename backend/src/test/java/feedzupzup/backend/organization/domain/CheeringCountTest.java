@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import feedzupzup.backend.organization.domain.OrganizationException.OrganizationNumberException;
+import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

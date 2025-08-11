@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.dto.request;
 
-import feedzupzup.backend.feedback.domain.Comment;
+import feedzupzup.backend.feedback.domain.vo.Comment;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "답글 추가 요청")

@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.feedback.domain.vo;
 
 import jakarta.persistence.Embeddable;
 import java.time.LocalDateTime;

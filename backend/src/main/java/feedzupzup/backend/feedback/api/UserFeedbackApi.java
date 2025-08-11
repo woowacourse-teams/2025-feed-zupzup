@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.api;
 
 import feedzupzup.backend.feedback.application.FeedbackOrderBy;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,22 +84,5 @@ public interface UserFeedbackApi {
     @GetMapping("/organizations/{organizationId}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
             @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId
-    );
-
-    @Operation(summary = "내 피드백 목록 조회", description = "특정 피드백 ID들로 필터링된 내 피드백 목록을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
-            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/organizations/{organizationId}/my-feedbacks")
-    SuccessResponse<UserFeedbackListResponse> getMyFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
-            @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
-            @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
-            @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy,
-            @Parameter(description = "내 피드백 ID 목록 배열 형태", example = "1,2,3") @RequestParam(value = "myFeedbackIds", required = false) final List<Long> myFeedbackIds
     );
 }

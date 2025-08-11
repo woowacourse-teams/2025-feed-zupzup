@@ -11,7 +11,7 @@ import feedzupzup.backend.category.fixture.CategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -49,11 +49,11 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.CONFIRMED, organizationCategory);
+                organization, ProcessStatus.CONFIRMED, organizationCategory);
         final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.WAITING, organizationCategory);
+                organization, ProcessStatus.WAITING, organizationCategory);
         final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(
-                ProcessStatus.CONFIRMED, organizationCategory);
+                organization, ProcessStatus.CONFIRMED, organizationCategory);
 
         // 피드백 저장
         feedBackRepository.save(confirmedFeedback1);
@@ -103,9 +103,9 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.WAITING, organizationCategory);
+                    organization, ProcessStatus.WAITING, organizationCategory);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.WAITING, organizationCategory);
+                    organization, ProcessStatus.WAITING, organizationCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -135,15 +135,15 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.WAITING, organizationCategory);
+                    organization, ProcessStatus.WAITING, organizationCategory);
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.WAITING, organizationCategory);
+                    organization, ProcessStatus.WAITING, organizationCategory);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.CONFIRMED, organizationCategory);
+                    organization, ProcessStatus.CONFIRMED, organizationCategory);
             final Feedback feedback4 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.CONFIRMED, organizationCategory);
+                    organization, ProcessStatus.CONFIRMED, organizationCategory);
             final Feedback feedback5 = FeedbackFixture.createFeedbackWithStatus(
-                    ProcessStatus.CONFIRMED, organizationCategory);
+                    organization, ProcessStatus.CONFIRMED, organizationCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);

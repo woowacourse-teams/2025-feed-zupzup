@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
     SELECT f
     FROM Feedback f
-    WHERE f.organizationId = :organizationId
+    WHERE f.organization.id = :organizationId
     AND (:status IS NULL OR f.status = :status)
     AND (:cursorId IS NULL OR f.id < :cursorId)
     ORDER BY f.id DESC
@@ -27,7 +28,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
     SELECT f
     FROM Feedback f
-    WHERE f.organizationId = :organizationId
+    WHERE f.organization.id = :organizationId
     AND (:status IS NULL OR f.status = :status)
     AND (:cursorId IS NULL OR f.id > :cursorId)
     ORDER BY f.id ASC
@@ -42,7 +43,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
     SELECT f
     FROM Feedback f
-    WHERE f.organizationId = :organizationId
+    WHERE f.organization.id = :organizationId
     AND (:status IS NULL OR f.status = :status)
     AND (
         :cursorId IS NULL OR 
@@ -63,11 +64,11 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
               COUNT(f),
-              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END), 0L),
-              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.ProcessStatus.WAITING THEN 1L ELSE 0L END), 0L)
+              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END), 0L),
+              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING THEN 1L ELSE 0L END), 0L)
             )
             FROM Feedback f
-            WHERE f.organizationId = :organizationId
+            WHERE f.organization.id = :organizationId
             """)
     FeedbackAmount countFeedbackByOrganizationIdAndProcessStatus(final Long organizationId);
 }

@@ -4,6 +4,8 @@ import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.organization.domain.vo.CheeringCount;
+import feedzupzup.backend.organization.domain.vo.Name;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -29,7 +31,7 @@ public class Organization extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private Name name;
 
     @Embedded
     @Column(nullable = false)
@@ -40,7 +42,7 @@ public class Organization extends BaseTimeEntity {
 
     @Builder
     public Organization(
-            final @NonNull String name,
+            final @NonNull Name name,
             final @NonNull CheeringCount cheeringCount
     ) {
         this.name = name;
