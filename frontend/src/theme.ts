@@ -44,6 +44,9 @@ const colors = {
   purple: {
     100: '#7356FF',
   },
+  blue: {
+    100: '#314158',
+  },
 };
 
 const typography = {
