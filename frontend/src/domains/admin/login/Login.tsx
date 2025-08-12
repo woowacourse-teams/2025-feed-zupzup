@@ -14,7 +14,7 @@ import {
 import {
   validateName,
   validatePassword,
-} from '@/domains/admin/login/utils/loginValidators';
+} from '@/domains/admin/login/utils/loginValidations';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 export default function Login() {

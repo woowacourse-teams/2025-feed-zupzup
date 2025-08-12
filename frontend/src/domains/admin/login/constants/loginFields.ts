@@ -13,7 +13,7 @@ export const loginFields: LoginField[] = [
   {
     name: 'id',
     type: 'text',
-    labelKey: 'login.id',
+    labelKey: '아이디',
     placeholder: '아이디를 입력해주세요',
     maxLength: 10,
     minLength: 5,
@@ -21,7 +21,7 @@ export const loginFields: LoginField[] = [
   {
     name: 'password',
     type: 'password',
-    labelKey: 'login.password',
+    labelKey: '비밀번호',
     placeholder: '비밀번호를 입력해주세요',
     maxLength: 100,
     minLength: 5,
