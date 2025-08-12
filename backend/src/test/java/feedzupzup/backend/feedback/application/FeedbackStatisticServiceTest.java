@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -45,7 +45,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(
@@ -99,7 +99,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(otherOrganization);
 
             final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(
@@ -131,7 +131,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             Organization savedOrganization = organizationRepository.save(organization);
 
             final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(

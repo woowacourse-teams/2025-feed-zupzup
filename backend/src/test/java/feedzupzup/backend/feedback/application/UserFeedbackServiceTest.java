@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static feedzupzup.backend.feedback.application.FeedbackOrderBy.LATEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
@@ -61,10 +61,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         //given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
-        final OrganizationCategory organizationCategory = new OrganizationCategory(organization, FACILITY);
+        final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "시설");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "건의");
 
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
@@ -88,7 +88,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory1 = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory1);
 
@@ -105,7 +105,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -145,7 +145,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
@@ -178,7 +178,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final int size = 10;
@@ -202,7 +202,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
@@ -249,7 +249,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(
@@ -282,9 +282,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(otherOrganization);
 
         final OrganizationCategory organizationCategory1 = CategoryFixture.createOrganizationCategory(
-                targetOrganization, FACILITY);
+                targetOrganization, SUGGESTION);
         final OrganizationCategory organizationCategory2 = CategoryFixture.createOrganizationCategory(
-                otherOrganization, FACILITY);
+                otherOrganization, SUGGESTION);
 
         organizationCategoryRepository.save(organizationCategory1);
         organizationCategoryRepository.save(organizationCategory2);
@@ -323,7 +323,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(targetOrganization);
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                targetOrganization, FACILITY);
+                targetOrganization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
@@ -349,7 +349,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(targetOrganization);
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                targetOrganization, FACILITY);
+                targetOrganization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
@@ -375,7 +375,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(targetOrganization);
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                targetOrganization, FACILITY);
+                targetOrganization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(targetOrganization, CONFIRMED, organizationCategory);
@@ -403,7 +403,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
@@ -464,7 +464,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
@@ -509,7 +509,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(
@@ -545,7 +545,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(
@@ -587,7 +587,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
 
             final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
@@ -622,7 +622,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
 
             final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
@@ -657,7 +657,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
 
             final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
