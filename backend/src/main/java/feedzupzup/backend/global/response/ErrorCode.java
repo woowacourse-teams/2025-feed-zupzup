@@ -30,7 +30,8 @@ public enum ErrorCode {
     //Admin Error
     INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),
     INVALID_PASSWORD_FORMAT(BAD_REQUEST, "A02", "비밀번호는 공백을 포함하지 않고 5글자 이상이어야 합니다."),
-    INVALID_ADMIN_NAME_FORMAT(BAD_REQUEST, "A03", "관리자 이름은 공백을 포함할 수 없습니다.")
+    INVALID_ADMIN_NAME_FORMAT(BAD_REQUEST, "A03", "관리자 이름은 공백을 포함할 수 없습니다."),
+    ADMIN_NOT_LOGGED_IN(BAD_REQUEST, "A04", "로그인이 필요합니다.")
     ;
 
     private final HttpStatus httpStatus;

@@ -1,0 +1,57 @@
+package feedzupzup.backend.auth.session;
+
+import feedzupzup.backend.admin.dto.AdminSession;
+import feedzupzup.backend.admin.exception.AdminException;
+import feedzupzup.backend.global.response.ErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class HttpSessionManager implements SessionManager {
+
+    private final String adminIdSessionKey;
+
+    public HttpSessionManager(@Value("${admin.session.key}") final String adminIdSessionKey) {
+        this.adminIdSessionKey = adminIdSessionKey;
+    }
+
+    @Override
+    public AdminSession getAdminSession(final HttpServletRequest request) {
+        final HttpSession session = getExistingSession(request);
+        final Long adminId = getAdminIdFromSession(session);
+        
+        return new AdminSession(adminId);
+    }
+
+    @Override
+    public void createAdminSession(final HttpServletRequest request, final Long adminId) {
+        final HttpSession session = request.getSession(true);
+        session.setAttribute(adminIdSessionKey, adminId);
+    }
+
+    @Override
+    public void removeAdminSession(final HttpServletRequest request) {
+        final HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
+
+    private HttpSession getExistingSession(final HttpServletRequest request) {
+        final HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "Session not found");
+        }
+        return session;
+    }
+
+    private Long getAdminIdFromSession(final HttpSession session) {
+        final Long adminId = (Long) session.getAttribute(adminIdSessionKey);
+        if (adminId == null) {
+            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "Admin not logged in");
+        }
+        return adminId;
+    }
+}
