@@ -15,22 +15,22 @@ public class LoginId {
     private static final int MAX_LENGTH = 10;
     private static final String BLANK_SPACE = " ";
 
-    private String value;
+    private String loginId;
 
-    public LoginId(final String value) {
-        validateLength(value);
-        validateFormat(value);
-        this.value = value;
+    public LoginId(final String loginId) {
+        validateLength(loginId);
+        validateFormat(loginId);
+        this.loginId = loginId;
     }
 
-    private void validateLength(final String value) {
-        if(value.isEmpty() || value.length() > MAX_LENGTH)
-            throw new AdminException(ErrorCode.INVALID_ADMIN_ID_FORMAT, "value = " + value + " length = " + value.length());
+    private void validateLength(final String loginId) {
+        if(loginId.isEmpty() || loginId.length() > MAX_LENGTH)
+            throw new AdminException(ErrorCode.INVALID_ADMIN_ID_FORMAT, "loginId = " + loginId + " length = " + loginId.length());
     }
 
-    private void validateFormat(final String value) {
-        if (value.contains(BLANK_SPACE)) {
-            throw new AdminException(ErrorCode.INVALID_ADMIN_ID_FORMAT, "value = " + value + " contains whitespace");
+    private void validateFormat(final String loginId) {
+        if (loginId.contains(BLANK_SPACE)) {
+            throw new AdminException(ErrorCode.INVALID_ADMIN_ID_FORMAT, "loginId = " + loginId + " contains whitespace");
         }
     }
 

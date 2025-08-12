@@ -17,8 +17,8 @@ public record AdminLoginResponse(
     
     public static AdminLoginResponse from(final Admin admin) {
         return new AdminLoginResponse(
-                admin.getLoginId().getValue(),
-                admin.getAdminName().getValue(),
+                admin.getLoginId().getLoginId(),
+                admin.getAdminName().getAdminName(),
                 admin.getId()
         );
     }
