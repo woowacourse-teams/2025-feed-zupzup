@@ -25,7 +25,7 @@ type Story = StoryObj<typeof CategoryButton>;
 
 export const Default: Story = {
   args: {
-    text: '시설',
+    text: '건의',
     onClick: () => console.log('클릭'),
     icon: '😊',
   },

@@ -46,19 +46,19 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
         </div>
         <div css={buttonContainer}>
           <CategoryButton
-            icon='🏠'
-            text='시설'
-            onClick={() => onCategoryClick('시설')}
+            icon='🚨'
+            text='신고'
+            onClick={() => onCategoryClick('신고')}
           />
           <CategoryButton
-            icon='📑'
-            text='행정'
-            onClick={() => onCategoryClick('행정')}
+            icon='🙋‍♀️'
+            text='질문'
+            onClick={() => onCategoryClick('질문')}
           />
           <CategoryButton
-            icon='📕'
-            text='커리큘럼'
-            onClick={() => onCategoryClick('커리큘럼')}
+            icon='💬'
+            text='건의'
+            onClick={() => onCategoryClick('건의')}
           />
           <CategoryButton
             icon='💡'
