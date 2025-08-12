@@ -1,21 +1,33 @@
 import { PAGE_PADDING_PX } from '@/constants';
+import FormField from '@/domains/admin/login/components/FormField/FormField';
+import useAuthForm from '@/domains/admin/login/hooks/useAuthForm';
+import {
+  validateName,
+  validatePassword,
+} from '@/domains/admin/login/utils/loginValidators';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
-import { useState } from 'react';
 
 export default function Login() {
   const theme = useAppTheme();
 
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
+  const loginValidators = {
+    id: validateName,
+    password: validatePassword,
+  };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value);
-  };
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+  const {
+    value: loginValue,
+    handleChangeForm,
+    errors,
+  } = useAuthForm({
+    initValues: {
+      id: '',
+      password: '',
+    },
+    validators: loginValidators,
+  });
 
   return (
     <div css={login(theme)}>
@@ -24,9 +36,22 @@ export default function Login() {
         <p css={loginDescription(theme)}>게정에 로그인 하세요</p>
       </div>
       <form css={loginForm(theme)}>
-        {/* Form Container */}
-
-        {/* FormField */}
+        {Object.entries(loginValue).map(([key, value]) => (
+          <FormField
+            key={key}
+            id={key}
+            label={key === 'id' ? '아이디' : '비밀번호'}
+            value={value}
+            onChange={handleChangeForm}
+            maxLength={key === 'id' ? 10 : 100}
+            minLength={5}
+            placeholder={
+              key === 'id' ? '아이디를 입력해주세요' : '비밀번호를 입력해주세요'
+            }
+            validator={loginValidators[key as keyof typeof loginValidators]}
+            errorMessage={errors[key as keyof typeof errors] || ''}
+          />
+        ))}
       </form>
     </div>
   );

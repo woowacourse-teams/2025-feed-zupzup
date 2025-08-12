@@ -1,4 +1,3 @@
-// src/components/@commons/FormField/FormField.stories.tsx
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { ThemeProvider } from '@emotion/react';
