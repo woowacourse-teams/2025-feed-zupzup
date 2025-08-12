@@ -12,6 +12,7 @@ export const fieldLabel = (theme: Theme) => css`
   ${theme.typography.pretendard.caption};
 
   margin-bottom: 4px;
+  color: ${theme.colors.darkGray[100]};
 `;
 
 export const inputFormField = (theme: Theme, isValid: boolean) => css`
@@ -19,11 +20,11 @@ export const inputFormField = (theme: Theme, isValid: boolean) => css`
   flex-direction: column;
   gap: 8px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 18px;
   color: ${theme.colors.black[100]};
   background-color: ${theme.colors.white[300]};
   border: 1px solid ${isValid ? theme.colors.gray[200] : theme.colors.red[100]};
-  border-radius: 16px;
+  border-radius: 12px;
 
   ${theme.typography.pretendard.captionSmall};
 
