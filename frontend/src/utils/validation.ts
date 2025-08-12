@@ -1,4 +1,4 @@
-import { ValidationState } from '@/domains/admin/login/hooks/useAuthForm';
+import { ValidationState } from '@/domains/hooks/useAuthForm';
 
 export const mustMatch =
   (regex: RegExp, message: string) =>

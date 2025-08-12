@@ -4,7 +4,7 @@ import {
   fieldLabel,
   inputFormField,
   loginForm,
-} from '@/domains/admin/login/components/FormField/FormField.style';
+} from '@/domains/components/FormField/FormField.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { memo, useState } from 'react';
 

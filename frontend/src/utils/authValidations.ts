@@ -3,17 +3,18 @@ import {
   lengthBetween,
   mustMatch,
   mustNotMatch,
-} from '@/domains/admin/login/utils/validation';
+} from '@/utils/validation';
 
 type ValidationState = { ok: true } | { ok: false; message: string };
 
 const REGEX = {
   ONLY_ALNUM: /^[a-zA-Z0-9]+$/,
   ALPHA: /[a-zA-Z]/,
+  KOREAN_ENGLISH: /^[a-zA-Z가-힣]+$/,
   SPACE: /\s/,
 };
 
-export const validateName = (value: string): ValidationState => {
+export const validateId = (value: string): ValidationState => {
   const min = 5;
   const max = 10;
 
@@ -44,6 +45,27 @@ export const validatePassword = (value: string): ValidationState => {
     lengthAtLeast(5, `비밀번호는 ${min}자 이상으로 작성해주세요`),
     mustMatch(REGEX.ALPHA, '비밀번호는 영문 대소문자만 사용할 수 있습니다.'),
     mustNotMatch(REGEX.SPACE, '비밀번호에 공백을 포함할 수 없습니다.'),
+  ];
+
+  for (const rule of rules) {
+    const result = rule(value);
+    if (!result.ok) return result;
+  }
+  return { ok: true };
+};
+
+export const validateName = (value: string): ValidationState => {
+  const min = 1;
+  const max = 10;
+
+  const rules = [
+    lengthBetween(
+      min,
+      max,
+      `이름은 ${min}자 이상 ${max}글자 이하로 작성해주세요`
+    ),
+    mustMatch(REGEX.KOREAN_ENGLISH, '이름은 한글과 영문만 사용할 수 있습니다.'),
+    mustNotMatch(REGEX.SPACE, '이름에 공백을 포함할 수 없습니다.'),
   ];
 
   for (const rule of rules) {

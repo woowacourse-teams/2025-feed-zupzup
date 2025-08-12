@@ -1,50 +1,58 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import {
-  LoginField,
-  loginFields,
-} from '@/domains/admin/login/constants/loginFields';
+  validateId,
+  validateName,
+  validatePassword,
+} from '@/utils/authValidations';
+import {
+  SignUpField,
+  signUpFields,
+} from '@/domains/admin/signUp/constants/signUpFields';
 import {
   fieldContainer,
-  loginCaptionContainer,
-  loginForm,
-} from '@/domains/admin/login/Login.style';
-import { validateName, validatePassword } from '@/utils/authValidations';
+  signUpCaptionContainer,
+  signUpForm,
+} from '@/domains/admin/signUp/SignUp.style';
 import AuthLayout from '@/domains/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/components/FormField/FormField';
-import useAuthForm from '@/domains/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import useAuthForm from '@/domains/hooks/useAuthForm';
 
-export default function Login() {
+export default function SignUp() {
   const theme = useAppTheme();
 
-  const loginValidators = {
-    id: validateName,
+  const signUpValidators = {
+    name: validateName,
+    id: validateId,
     password: validatePassword,
+    passwordConfirm: validatePassword,
   };
 
   const {
-    value: loginValue,
+    value: signUpValue,
     handleChangeForm,
     errors,
   } = useAuthForm({
     initValues: {
+      name: '',
       id: '',
       password: '',
+      passwordConfirm: '',
     },
-    validators: loginValidators,
+    validators: signUpValidators,
   });
 
   return (
-    <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
-      <form css={loginForm(theme)}>
+    <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
+      <form css={signUpForm(theme)}>
         <div css={fieldContainer}>
-          {loginFields.map((field: LoginField) => (
+          {signUpFields.map((field: SignUpField) => (
             <FormField
               type={field.type}
               key={field.name}
               id={field.name}
               label={field.labelKey}
-              value={loginValue[field.name]}
+              value={signUpValue[field.name]}
               onChange={handleChangeForm}
               maxLength={field.maxLength}
               minLength={field.minLength}
@@ -53,11 +61,10 @@ export default function Login() {
             />
           ))}
         </div>
-        <BasicButton>로그인</BasicButton>
-        <div css={loginCaptionContainer(theme)}>
-          <p>비밀번호를 잊으셨나요?</p>
+        <BasicButton>계정 만들기</BasicButton>
+        <div css={signUpCaptionContainer(theme)}>
           <p>
-            계정이 없으신가요? <strong>회원가입하기</strong>
+            이미 계정이 있으신가요? <strong>로그인하기</strong>
           </p>
         </div>
       </form>

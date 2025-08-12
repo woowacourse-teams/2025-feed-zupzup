@@ -10,7 +10,7 @@ export const fieldContainer = css`
   margin-bottom: 16px;
 `;
 
-export const loginForm = (theme: Theme) => css`
+export const signUpForm = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -24,7 +24,7 @@ export const loginForm = (theme: Theme) => css`
   border-radius: 16px;
 `;
 
-export const loginCaptionContainer = (theme: Theme) => css`
+export const signUpCaptionContainer = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   align-items: center;
