@@ -1,7 +1,12 @@
 import { profileBox, adminName, adminId } from './ProfileBox.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-export default function ProfileBox({ name, id }: { name: string; id: string }) {
+interface ProfileBoxProps {
+  name: string;
+  id: string;
+}
+
+export default function ProfileBox({ name, id }: ProfileBoxProps) {
   const theme = useAppTheme();
   return (
     <div css={profileBox(theme)}>

@@ -9,8 +9,10 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { useNotificationSetting } from './hooks/useNotificationSetting';
 import { useLogout } from './hooks/useLogout';
 
+type ModalState = 'logout' | null;
+
 export default function Settings() {
-  const [modalState, setModalState] = useState<'logout' | null>(null);
+  const [modalState, setModalState] = useState<ModalState>(null);
   const {
     isToggleEnabled,
     updateNotificationSetting,
