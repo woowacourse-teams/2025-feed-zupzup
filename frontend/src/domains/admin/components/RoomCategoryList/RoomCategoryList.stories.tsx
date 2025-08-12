@@ -34,7 +34,7 @@ export const Default: Story = {
     return (
       <RoomCategoryList
         selectedCategories={selectedCategories}
-        handleCategorySelect={() => {}}
+        handleCategoryClick={() => {}}
       />
     );
   },

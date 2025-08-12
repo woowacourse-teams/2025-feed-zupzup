@@ -8,7 +8,7 @@ interface RoomCategoryListProps {
     icon: string | React.ReactNode;
     category: CategoryListType;
   }[];
-  handleCategorySelect: (
+  handleCategoryClick: (
     icon: string | React.ReactNode,
     category: CategoryListType
   ) => void;
@@ -16,7 +16,7 @@ interface RoomCategoryListProps {
 
 export default function RoomCategoryList({
   selectedCategories,
-  handleCategorySelect,
+  handleCategoryClick,
 }: RoomCategoryListProps) {
   const theme = useAppTheme();
 
@@ -32,7 +32,7 @@ export default function RoomCategoryList({
             isSelected={selectedCategories.some(
               (item) => item.category === category
             )}
-            onClick={handleCategorySelect}
+            onClick={handleCategoryClick}
           />
         ))}
       </div>
