@@ -3,9 +3,9 @@ import { Theme } from '@/theme';
 export const profileBox = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding: 14px 24px;
+  padding: 20px 24px;
   background-color: ${theme.colors.purple[100]}22;
   border-radius: 10px;
 `;
