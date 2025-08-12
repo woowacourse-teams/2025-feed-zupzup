@@ -9,7 +9,7 @@ public class FeedbackRequestFixture {
                 content,
                 false,
                 "테스트유저",
-                "시설"
+                "건의"
         );
     }
 
@@ -18,7 +18,7 @@ public class FeedbackRequestFixture {
                 "내용",
                 isSecret,
                 "테스트유저",
-                "시설"
+                "건의"
         );
     }
 }
