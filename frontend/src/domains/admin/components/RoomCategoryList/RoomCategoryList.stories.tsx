@@ -1,3 +1,4 @@
+import { CategoryListType } from '@/constants/categoryList';
 import RoomCategoryList from '@/domains/admin/components/RoomCategoryList/RoomCategoryList';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
@@ -25,6 +26,16 @@ type Story = StoryObj<typeof RoomCategoryList>;
 
 export const Default: Story = {
   render: () => {
-    return <RoomCategoryList />;
+    const selectedCategories: { icon: string; category: CategoryListType }[] = [
+      { icon: '📚', category: '신고' },
+      { icon: '🎨', category: '칭찬' },
+      { icon: '🎮', category: '피드백' },
+    ];
+    return (
+      <RoomCategoryList
+        selectedCategories={selectedCategories}
+        handleCategorySelect={() => {}}
+      />
+    );
   },
 };
