@@ -3,11 +3,12 @@ import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 
 export const useLayoutConfig = () => {
   const location = useLocation();
+
   const layoutConfig = LAYOUT_CONFIGS[location.pathname];
 
   return {
-    isShowHeader: layoutConfig?.header.show ?? true,
-    isShowBottomNav: layoutConfig?.bottomNav.show ?? true,
+    isShowHeader: layoutConfig?.header?.show ?? false,
+    isShowBottomNav: layoutConfig?.bottomNav?.show ?? false,
     layoutConfig,
   };
 };
