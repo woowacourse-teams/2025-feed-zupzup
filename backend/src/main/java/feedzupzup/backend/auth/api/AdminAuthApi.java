@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "인증", description = "관리자 인증 관련 API")
-public interface AuthApi {
+public interface AdminAuthApi {
 
     @Operation(summary = "관리자 회원가입", description = "새로운 관리자 계정을 생성합니다.")
     @ApiResponses({

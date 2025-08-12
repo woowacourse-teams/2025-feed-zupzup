@@ -1,7 +1,7 @@
 package feedzupzup.backend.auth.controller;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.api.AuthApi;
+import feedzupzup.backend.auth.api.AdminAuthApi;
 import feedzupzup.backend.auth.application.AuthService;
 import feedzupzup.backend.auth.dto.AdminLoginResponse;
 import feedzupzup.backend.auth.dto.LoginRequest;
@@ -11,13 +11,11 @@ import feedzupzup.backend.global.response.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController implements AuthApi {
+public class AdminAuthController implements AdminAuthApi {
 
     private final AuthService authService;
 
