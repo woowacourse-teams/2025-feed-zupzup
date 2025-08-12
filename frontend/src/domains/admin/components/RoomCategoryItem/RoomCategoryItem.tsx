@@ -1,4 +1,5 @@
 import Button from '@/components/@commons/Button/Button';
+import { CategoryListType } from '@/constants/categoryList';
 import {
   categoryItemContainer,
   categoryStyle,
@@ -9,7 +10,7 @@ interface RoomCategoryItemProps {
   icon: string | React.ReactNode;
   category: string;
   isSelected: boolean;
-  onClick: () => void;
+  onClick: (icon: string | React.ReactNode, category: CategoryListType) => void;
 }
 
 export default function RoomCategoryItem({
@@ -19,7 +20,10 @@ export default function RoomCategoryItem({
   onClick,
 }: RoomCategoryItemProps) {
   return (
-    <Button css={categoryItemContainer(isSelected)} onClick={onClick}>
+    <Button
+      css={categoryItemContainer(isSelected)}
+      onClick={() => onClick(icon, category as CategoryListType)}
+    >
       <p css={iconStyle}>{icon}</p>
       <p css={categoryStyle}>{category}</p>
     </Button>
