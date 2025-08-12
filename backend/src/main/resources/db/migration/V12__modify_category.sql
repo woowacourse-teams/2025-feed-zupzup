@@ -8,8 +8,6 @@ ALTER TABLE organization_category MODIFY id BIGINT NOT NULL AUTO_INCREMENT;
 ALTER TABLE feedback ADD CONSTRAINT FK_feedback_organization_category_id
 FOREIGN KEY (organization_category_id) REFERENCES organization_category (id);
 
-ALTER TABLE organization_category MODIFY id BIGINT NOT NULL AUTO_INCREMENT;
-
 -- 기존 카테고리 및 변경 카테고리 추가--
 ALTER TABLE organization_category MODIFY category
     ENUM('FACILITY', 'ADMINISTRATION', 'CURRICULUM', 'REPORT', 'QUESTION', 'SUGGESTION', 'FEEDBACK', 'COMPLIMENT', 'SHARING', 'ETC');
