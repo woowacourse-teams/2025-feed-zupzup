@@ -11,7 +11,10 @@ export interface BasicButtonProps extends React.ComponentProps<'button'> {
   children: React.ReactNode;
   width?: string | number;
   height?: string | number;
+  padding?: string | number;
+  fontSize?: string | number;
   icon?: React.ReactNode;
+  gap?: string | number;
   variant?: 'primary' | 'secondary' | 'disabled';
 }
 
@@ -19,16 +22,23 @@ export default function BasicButton({
   children,
   width = '100%',
   height = '54px',
+  padding,
+  fontSize,
   icon,
   onClick,
+  gap = '14px',
   variant = 'primary',
 }: BasicButtonProps) {
   const theme = useAppTheme();
 
+  console.log(padding);
   return (
-    <Button css={basicButton(theme, width, variant, height)} onClick={onClick}>
+    <Button
+      css={basicButton(theme, width, variant, height, gap, padding)}
+      onClick={onClick}
+    >
       {icon && <span css={basicButtonIcon}>{icon}</span>}
-      <span css={basicButtonText(theme, variant)}>{children}</span>
+      <span css={basicButtonText(theme, variant, fontSize)}>{children}</span>
     </Button>
   );
 }
