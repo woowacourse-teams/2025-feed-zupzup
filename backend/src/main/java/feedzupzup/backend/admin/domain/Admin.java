@@ -1,6 +1,6 @@
 package feedzupzup.backend.admin.domain;
 
-import feedzupzup.backend.admin.domain.vo.AdminId;
+import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.AdminName;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.global.BaseTimeEntity;
@@ -29,6 +29,6 @@ public class Admin extends BaseTimeEntity {
     private AdminName adminName;
 
     @Embedded
-    private AdminId adminId;
+    private LoginId loginId;
 
 }

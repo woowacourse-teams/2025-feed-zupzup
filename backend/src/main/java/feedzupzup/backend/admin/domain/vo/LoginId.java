@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AdminId {
+public class LoginId {
 
     private static final int MAX_LENGTH = 10;
     private static final String BLANK_SPACE = " ";
 
     private String value;
 
-    public AdminId(final String value) {
+    public LoginId(final String value) {
         validateLength(value);
         validateFormat(value);
         this.value = value;
