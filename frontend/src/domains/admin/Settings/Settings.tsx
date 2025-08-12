@@ -9,10 +9,12 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { useNotificationSetting } from './hooks/useNotificationSetting';
 import { useLogout } from './hooks/useLogout';
 
-type ModalState = 'logout' | null;
+interface ModalState {
+  type: 'logout' | null;
+}
 
 export default function Settings() {
-  const [modalState, setModalState] = useState<ModalState>(null);
+  const [modalState, setModalState] = useState<ModalState>({ type: null });
   const {
     isToggleEnabled,
     updateNotificationSetting,
@@ -23,7 +25,7 @@ export default function Settings() {
 
   const handleLogoutConfirm = async () => {
     await handleLogout();
-    setModalState(null);
+    setModalState({ type: null });
   };
 
   //TODO: 아래 사용자 이름과 ID는 이후 전역상태 참조해서 추가 구현해야함.
@@ -48,15 +50,16 @@ export default function Settings() {
         icon={<OutOutlineIcon />}
         title='로그아웃'
         variant='danger'
-        onClick={() => setModalState('logout')}
+        onClick={() => setModalState({ type: 'logout' })}
       />
-      <ConfirmModal
-        title='로그아웃'
-        message='로그아웃 하시겠습니까?'
-        isOpen={modalState === 'logout'}
-        onClose={() => !isLogoutLoading && setModalState(null)}
-        onConfirm={handleLogoutConfirm}
-      />
+      {modalState.type === 'logout' && (
+        <ConfirmModal
+          title='로그아웃'
+          message='로그아웃 하시겠습니까?'
+          onClose={() => !isLogoutLoading && setModalState({ type: null })}
+          onConfirm={handleLogoutConfirm}
+        />
+      )}
     </div>
   );
 }
