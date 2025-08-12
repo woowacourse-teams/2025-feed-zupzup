@@ -39,7 +39,7 @@ export default function Login() {
 
   return (
     <div css={login(theme)}>
-      <div css={loginContainer}>
+      <div css={loginContainer(theme)}>
         <p css={loginText(theme)}>로그인</p>
         <p css={loginDescription(theme)}>게정에 로그인 하세요</p>
       </div>

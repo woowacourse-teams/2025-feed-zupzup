@@ -1,7 +1,11 @@
 import Input from '@/components/@commons/Input/Input';
+import {
+  errorMessageStyle,
+  fieldLabel,
+  inputFormField,
+  loginForm,
+} from '@/domains/admin/login/components/FormField/FormField.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { Theme } from '@/theme';
-import { css } from '@emotion/react';
 import { memo, useState } from 'react';
 
 interface FormFieldProps extends React.ComponentPropsWithoutRef<'input'> {
@@ -32,7 +36,7 @@ export default memo(function FormField({
   const isValidForUI = touched ? !errorMessage : true;
 
   return (
-    <div>
+    <div css={loginForm}>
       <div css={fieldLabel(theme)}>{label}</div>
       <Input
         name={id}
@@ -49,36 +53,3 @@ export default memo(function FormField({
     </div>
   );
 });
-
-export const fieldLabel = (theme: Theme) => css`
-  ${theme.typography.pretendard.caption};
-
-  margin-bottom: 4px;
-`;
-
-export const inputFormField = (theme: Theme, isValid: boolean) => css`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  padding: 12px 16px;
-  color: ${theme.colors.black[100]};
-  background-color: ${theme.colors.white[300]};
-  border: 1px solid ${isValid ? theme.colors.gray[100] : theme.colors.red[100]};
-  border-radius: 16px;
-
-  ${theme.typography.pretendard.caption};
-
-  &::placeholder {
-    color: ${theme.colors.gray[500]};
-    ${theme.typography.pretendard.caption};
-  }
-`;
-
-export const errorMessageStyle = (theme: Theme) => css`
-  height: 14px;
-  margin-top: 4px;
-  color: ${theme.colors.red[100]};
-
-  ${theme.typography.pretendard.captionSmall};
-`;

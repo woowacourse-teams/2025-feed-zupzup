@@ -5,37 +5,47 @@ import { css } from '@emotion/react';
 export const login = (theme: Theme) => css`
   position: absolute;
   top: -${PAGE_PADDING_PX}px;
-  left: -${PAGE_PADDING_PX}px;
+  left: 0;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: start;
   align-items: center;
+  gap: 36px;
   width: 100%;
-  height: calc(100% + ${PAGE_PADDING_PX}px);
-  color: ${theme.colors.white[100]};
+  height: 100%;
+  padding: 64px ${PAGE_PADDING_PX * 2}px 0 ${PAGE_PADDING_PX * 2}px;
   background-color: ${theme.colors.blue[100]};
 `;
 
-export const loginContainer = () => css`
+export const loginContainer = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  align-items: start;
+  gap: 16px;
+  width: 100%;
+  color: ${theme.colors.white[100]};
 `;
 
 export const loginText = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.small};
+  ${theme.typography.BMHANNAPro.bodyBold};
 `;
 
 export const loginDescription = (theme: Theme) => css`
   ${theme.typography.pretendard.caption};
+
+  color: ${theme.colors.gray[300]};
 `;
 
 export const loginForm = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
+  justify-content: start;
+  align-items: start;
   gap: 16px;
-  width: 100%;
-  max-width: 400px;
-  padding: ${PAGE_PADDING_PX}px;
+  width: calc(100% + ${PAGE_PADDING_PX * 4}px);
+  height: 100%;
+  margin: -${PAGE_PADDING_PX}px;
+  padding: ${PAGE_PADDING_PX * 2}px;
   background-color: ${theme.colors.white[100]};
   border-radius: 8px;
 `;
