@@ -42,7 +42,7 @@ public class HttpSessionManager implements SessionManager {
     private HttpSession getExistingSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "Session not found");
+            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "세션을 찾을 수 없습니다");
         }
         return session;
     }
@@ -50,7 +50,7 @@ public class HttpSessionManager implements SessionManager {
     private Long getAdminIdFromSession(final HttpSession session) {
         final Long adminId = (Long) session.getAttribute(adminIdSessionKey);
         if (adminId == null) {
-            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "Admin not logged in");
+            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "관리자가 로그인되어 있지 않습니다");
         }
         return adminId;
     }
