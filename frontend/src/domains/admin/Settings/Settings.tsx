@@ -21,7 +21,7 @@ export default function Settings() {
     isLoading: isNotificationLoading,
   } = useNotificationSetting();
 
-  const { handleLogout, isLoading: isLogoutLoading } = useLogout();
+  const { handleLogout } = useLogout();
 
   const handleLogoutConfirm = async () => {
     await handleLogout();
@@ -56,7 +56,7 @@ export default function Settings() {
         <ConfirmModal
           title='로그아웃'
           message='로그아웃 하시겠습니까?'
-          onClose={() => !isLogoutLoading && setModalState({ type: null })}
+          onClose={() => setModalState({ type: null })}
           onConfirm={handleLogoutConfirm}
         />
       )}
