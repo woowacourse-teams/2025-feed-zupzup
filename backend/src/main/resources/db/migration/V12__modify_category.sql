@@ -1,4 +1,4 @@
-ALTER TABLE organization_category MODIFY id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY;
+ALTER TABLE organization_category MODIFY id BIGINT NOT NULL AUTO_INCREMENT;
 
 -- 기존 카테고리 및 변경 카테고리 추가--
 ALTER TABLE organization_category MODIFY category
