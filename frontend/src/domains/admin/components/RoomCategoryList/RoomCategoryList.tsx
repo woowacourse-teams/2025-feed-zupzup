@@ -1,9 +1,23 @@
-import { CATEGORY_LIST } from '@/constants/categoryList';
+import { CATEGORY_LIST, CategoryListType } from '@/constants/categoryList';
 import RoomCategoryItem from '@/domains/admin/components/RoomCategoryItem/RoomCategoryItem';
 import { categoryListContainer } from '@/domains/admin/components/RoomCategoryList/RoomCategoryList.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-export default function RoomCategoryList() {
+interface RoomCategoryListProps {
+  selectedCategory: {
+    icon: string | React.ReactNode;
+    category: CategoryListType;
+  }[];
+  handleCategorySelect: (
+    icon: string | React.ReactNode,
+    category: CategoryListType
+  ) => void;
+}
+
+export default function RoomCategoryList({
+  selectedCategory,
+  handleCategorySelect,
+}: RoomCategoryListProps) {
   const theme = useAppTheme();
 
   return (
@@ -15,8 +29,10 @@ export default function RoomCategoryList() {
             key={category}
             icon={icon}
             category={category}
-            isSelected={false}
-            onClick={() => {}}
+            isSelected={selectedCategory.some(
+              (item) => item.category === category
+            )}
+            onClick={handleCategorySelect}
           />
         ))}
       </div>

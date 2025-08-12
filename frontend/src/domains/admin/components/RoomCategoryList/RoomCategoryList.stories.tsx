@@ -5,12 +5,6 @@ const meta: Meta<typeof RoomCategoryList> = {
   title: 'components/RoomCategoryList',
   component: RoomCategoryList,
   tags: ['autodocs'],
-  argTypes: {
-    icon: { control: 'text' },
-    category: { control: 'text' },
-    isSelected: { control: 'boolean' },
-    onClick: { action: 'clicked' },
-  },
   decorators: [
     (Story) => (
       <div
