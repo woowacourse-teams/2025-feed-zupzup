@@ -1,3 +1,5 @@
+ALTER TABLE organization_category MODIFY id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY;
+
 -- 기존 카테고리 및 변경 카테고리 추가--
 ALTER TABLE organization_category MODIFY category
     ENUM('FACILITY', 'ADMINISTRATION', 'CURRICULUM', 'REPORT', 'QUESTION', 'SUGGESTION', 'FEEDBACK', 'COMPLIMENT', 'SHARING', 'ETC');
