@@ -4,8 +4,7 @@ import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 export const useLayoutConfig = () => {
   const location = useLocation();
 
-  const layoutConfig =
-    LAYOUT_CONFIGS[location.pathname as keyof typeof LAYOUT_CONFIGS];
+  const layoutConfig = LAYOUT_CONFIGS[location.pathname];
 
   return {
     isShowHeader: layoutConfig?.header?.show ?? false,
