@@ -1,11 +1,13 @@
 package feedzupzup.backend.admin.domain.vo;
 
-import feedzupzup.backend.admin.exception.AdminException;
+import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.regex.Pattern;
 
 @Embeddable
 @Getter
@@ -13,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class AdminName {
 
     private static final int MAX_LENGTH = 10;
-    private static final String BLANK_SPACE = " ";
+    private static final Pattern ALLOWED_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣]+$");
 
     private String adminName;
 
@@ -25,12 +27,15 @@ public class AdminName {
 
     private void validateLength(final String adminName) {
         if(adminName.isEmpty() || adminName.length() > MAX_LENGTH)
-            throw new AdminException(ErrorCode.INVALID_ADMIN_NAME_FORMAT, "adminName = " + adminName + " length = " + adminName.length());
+            throw new AuthException(ErrorCode.INVALID_ADMIN_NAME_FORMAT, "adminName = " + adminName + " length = " + adminName.length());
     }
 
     private void validateFormat(final String adminName) {
-        if (adminName.contains(BLANK_SPACE)) {
-            throw new AdminException(ErrorCode.INVALID_ADMIN_NAME_FORMAT, "adminName = " + adminName + " contains whitespace");
+        if (!ALLOWED_NAME_PATTERN.matcher(adminName).matches()) {
+            throw new AuthException(
+                    ErrorCode.INVALID_ADMIN_NAME_FORMAT,
+                    "adminName = " + adminName + " 은(는) 영어, 숫자, 한글만 포함해야 합니다."
+            );
         }
     }
 }

@@ -1,6 +1,6 @@
 package feedzupzup.backend.admin.domain.vo;
 
-import feedzupzup.backend.admin.exception.AdminException;
+import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -28,7 +28,7 @@ public class Password {
 
     private void validateLength(final String password) {
         if (password.length() < MIN_LENGTH) {
-            throw new AdminException(
+            throw new AuthException(
                     ErrorCode.INVALID_PASSWORD_FORMAT,
                     "password = " + password + " length = " + password.length()
             );
@@ -37,13 +37,13 @@ public class Password {
 
     private void validateFormat(final String password) {
         if (password.contains(BLANK_SPACE)) {
-            throw new AdminException(
+            throw new AuthException(
                     ErrorCode.INVALID_PASSWORD_FORMAT,
                     "password = " + password + " 공백이 포함 되어있습니다."
             );
         }
         if (!ALLOWED_PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new AdminException(
+            throw new AuthException(
                     ErrorCode.INVALID_PASSWORD_FORMAT,
                     "password = " + password + " 은(는) 영어, 숫자, 특수문자만 포함해야 합니다."
             );
