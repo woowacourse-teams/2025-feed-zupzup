@@ -27,4 +27,6 @@ export const CATEGORY_LIST = [
     icon: '📂',
     category: '기타',
   },
-];
+] as const;
+
+export type CategoryListType = (typeof CATEGORY_LIST)[number]['category'];
