@@ -16,7 +16,12 @@ public class Password {
 
     private static final int MIN_LENGTH = 5;
     private static final String BLANK_SPACE = " ";
-    private static final Pattern ALLOWED_PASSWORD_PATTERN = Pattern.compile("^[a-zA-Z0-9!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?`~]+$");
+    private static final Pattern ALLOWED_PASSWORD_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9" +
+                    "!@#$%^&*()_+\\-=\\[\\]{}" +
+                    ";':\"\\\\|,.<>/?`~" +
+                    "]+$"
+    );
 
     private String password;
 
