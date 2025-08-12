@@ -20,12 +20,12 @@ export default function CreateRoomModal({
   onClose,
 }: CreateRoomModalProps) {
   const [roomName, setRoomName] = useState('');
-  const [selectedCategories, setselectedCategories] = useState<
+  const [selectedCategories, setSelectedCategories] = useState<
     { icon: string | React.ReactNode; category: CategoryListType }[]
   >([]);
 
   const handleCategoryTagClick = (category: CategoryListType) => {
-    setselectedCategories((prev) =>
+    setSelectedCategories((prev) =>
       prev.filter((tag) => tag.category !== category)
     );
   };
@@ -34,7 +34,7 @@ export default function CreateRoomModal({
     icon: string | React.ReactNode,
     category: CategoryListType
   ) => {
-    setselectedCategories((prev) => {
+    setSelectedCategories((prev) => {
       const isExists = prev.some((item) => item.category === category);
 
       if (isExists) {
