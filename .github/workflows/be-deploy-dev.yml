@@ -71,6 +71,7 @@ jobs:
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
           cd /home/ubuntu/docker
-          docker-compose down
-          docker-compose up -d --build
+          docker-compose stop feed-zupzup-server
+          docker-compose rm -f feed-zupzup-server
+          docker-compose up -d feed-zupzup-server
           docker image prune -f
