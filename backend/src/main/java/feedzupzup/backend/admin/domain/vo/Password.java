@@ -34,4 +34,8 @@ public class Password {
             throw new AdminException(ErrorCode.INVALID_PASSWORD_FORMAT, "value = " + value + " contains whitespace");
         }
     }
+
+    public boolean matches(final String rawPassword) {
+        return this.value.equals(rawPassword);
+    }
 }

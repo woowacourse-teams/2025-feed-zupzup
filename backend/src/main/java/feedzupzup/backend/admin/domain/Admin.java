@@ -31,4 +31,13 @@ public class Admin extends BaseTimeEntity {
     @Embedded
     private LoginId loginId;
 
+    public Admin(final LoginId loginId, final Password password, final AdminName adminName) {
+        this.loginId = loginId;
+        this.password = password;
+        this.adminName = adminName;
+    }
+
+    public boolean isPasswordMatched(final String rawPassword) {
+        return this.password.matches(rawPassword);
+    }
 }
