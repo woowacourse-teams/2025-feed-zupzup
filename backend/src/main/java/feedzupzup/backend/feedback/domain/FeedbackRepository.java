@@ -16,7 +16,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             WHERE f.organization.id = :organizationId
             AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id < :cursorId)
-            AND deleted_at IS NULL
+            AND f.deletedAt IS NULL
             ORDER BY f.id DESC
             """)
     List<Feedback> findByLatest(
@@ -32,7 +32,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             WHERE f.organization.id = :organizationId
             AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id > :cursorId)
-            AND deleted_at IS NULL
+            AND f.deletedAt IS NULL
             ORDER BY f.id ASC
             """)
     List<Feedback> findByOldest(
@@ -52,7 +52,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
                 f.likeCount < (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) OR 
                 (f.likeCount = (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) AND f.id < :cursorId)
             )
-            AND deleted_at IS NULL
+            AND f.deletedAt IS NULL
             ORDER BY f.likeCount DESC, f.id ASC
             """)
     List<Feedback> findByLikes(
@@ -72,7 +72,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             )
             FROM Feedback f
             WHERE f.organization.id = :organizationId
-            AND deleted_at IS NULL
+            AND f.deletedAt IS NULL
             """)
     FeedbackAmount countFeedbackByOrganizationIdAndProcessStatus(final Long organizationId);
 }
