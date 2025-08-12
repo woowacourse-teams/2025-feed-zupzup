@@ -4,7 +4,7 @@ import { categoryListContainer } from '@/domains/admin/components/RoomCategoryLi
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface RoomCategoryListProps {
-  selectedCategory: {
+  selectedCategories: {
     icon: string | React.ReactNode;
     category: CategoryListType;
   }[];
@@ -15,7 +15,7 @@ interface RoomCategoryListProps {
 }
 
 export default function RoomCategoryList({
-  selectedCategory,
+  selectedCategories,
   handleCategorySelect,
 }: RoomCategoryListProps) {
   const theme = useAppTheme();
@@ -29,7 +29,7 @@ export default function RoomCategoryList({
             key={category}
             icon={icon}
             category={category}
-            isSelected={selectedCategory.some(
+            isSelected={selectedCategories.some(
               (item) => item.category === category
             )}
             onClick={handleCategorySelect}

@@ -7,7 +7,7 @@ const meta: Meta<typeof RoomCategoryTagList> = {
   component: RoomCategoryTagList,
   tags: ['autodocs'],
   argTypes: {
-    selectedCategory: {
+    selectedCategories: {
       control: 'multi-select',
     },
     handleCategoryTagClick: {
@@ -29,7 +29,7 @@ type Story = StoryObj<typeof RoomCategoryTagList>;
 
 export const Default: Story = {
   render: () => {
-    const selectedCategory: { icon: string; category: CategoryListType }[] = [
+    const selectedCategories: { icon: string; category: CategoryListType }[] = [
       { icon: '📚', category: '신고' },
       { icon: '🎨', category: '칭찬' },
       { icon: '🎮', category: '피드백' },
@@ -37,7 +37,7 @@ export const Default: Story = {
 
     return (
       <RoomCategoryTagList
-        selectedCategory={selectedCategory}
+        selectedCategories={selectedCategories}
         handleCategoryTagClick={() => {}}
       />
     );

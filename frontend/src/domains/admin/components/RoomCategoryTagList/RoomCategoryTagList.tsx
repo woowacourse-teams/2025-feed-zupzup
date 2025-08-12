@@ -7,7 +7,7 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface RoomCategoryTagListProps {
-  selectedCategory: {
+  selectedCategories: {
     icon: string | React.ReactNode;
     category: CategoryListType;
   }[];
@@ -15,7 +15,7 @@ interface RoomCategoryTagListProps {
 }
 
 export default function RoomCategoryTagList({
-  selectedCategory,
+  selectedCategories,
   handleCategoryTagClick,
 }: RoomCategoryTagListProps) {
   const theme = useAppTheme();
@@ -24,7 +24,7 @@ export default function RoomCategoryTagList({
     <div css={roomCategoryTagListContainer}>
       <p>선택된 카테고리</p>
       <div css={roomCategoryTagContainer(theme)}>
-        {selectedCategory.map((item) => (
+        {selectedCategories.map((item) => (
           <RoomCategoryTag
             key={item.category}
             category={item.category}
