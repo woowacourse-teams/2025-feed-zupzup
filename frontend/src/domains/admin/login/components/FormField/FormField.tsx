@@ -1,13 +1,10 @@
 import Input from '@/components/@commons/Input/Input';
-import useValidate, {
-  ValidationState,
-} from '@/domains/admin/login/hooks/useValidate';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 import { memo, useState } from 'react';
 
-interface FormFieldProps {
+interface FormFieldProps extends React.ComponentPropsWithoutRef<'input'> {
   id: string;
   label: string;
   value: string;
@@ -16,36 +13,30 @@ interface FormFieldProps {
   minLength: number;
   placeholder: string;
   errorMessage?: string;
-  validator?: (value: string) => ValidationState;
 }
 
 export default memo(function FormField({
   id,
   label,
+  type,
   value,
   onChange,
   maxLength,
   minLength,
   placeholder,
   errorMessage = '',
-  validator,
 }: FormFieldProps) {
   const theme = useAppTheme();
 
-  const { validation } = useValidate({
-    value,
-    validator: validator || (() => ({ ok: true })),
-  });
-
   const [touched, setTouched] = useState(false);
-  const isValidForUI = touched ? validation.ok : true;
+  const isValidForUI = touched ? !errorMessage : true;
 
   return (
     <div>
       <div css={fieldLabel(theme)}>{label}</div>
       <Input
         name={id}
-        type='text'
+        type={type}
         placeholder={placeholder}
         value={value}
         onFocus={() => setTouched(true)}

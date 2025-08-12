@@ -1,6 +1,6 @@
-import { ValidationState } from '@/domains/admin/login/hooks/useValidate';
 import { useCallback, useState } from 'react';
 
+export type ValidationState = { ok: true } | { ok: false; message: string };
 interface FormFieldProps<T> {
   initValues: T;
   validators?: {
@@ -8,7 +8,7 @@ interface FormFieldProps<T> {
   };
 }
 
-export default function useAuthForm<T extends Record<string, any>>({
+export default function useAuthForm<T extends Record<string, string>>({
   initValues,
   validators,
 }: FormFieldProps<T>) {
