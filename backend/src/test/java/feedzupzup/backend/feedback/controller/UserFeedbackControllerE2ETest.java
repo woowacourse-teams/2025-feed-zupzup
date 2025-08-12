@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -55,7 +55,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -94,7 +94,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -177,10 +177,10 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization1);
         organizationRepository.save(organization2);
 
-        final OrganizationCategory organizationCategory1 = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory1 = OrganizationCategoryFixture.createOrganizationCategory(
                 organization1, SUGGESTION);
 
-        final OrganizationCategory organizationCategory2 = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
                 organization2, SUGGESTION);
 
         organizationCategoryRepository.save(organizationCategory1);
@@ -222,7 +222,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
 
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
 
         organizationCategoryRepository.save(organizationCategory);
@@ -252,7 +252,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
 
         final Organization savedOrganization = organizationRepository.save(organization);
@@ -286,7 +286,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final Organization savedOrganization = organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -333,7 +333,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -364,7 +364,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // 다른 장소의 피드백 (통계에 포함되지 않음)
         final Organization otherOrganization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(otherOrganization);
-        final OrganizationCategory otherOrganizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory otherOrganizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 otherOrganization, SUGGESTION);
         organizationCategoryRepository.save(otherOrganizationCategory);
         final Feedback otherPlaceFeedback = FeedbackFixture.createFeedbackWithOrganization(otherOrganization,
@@ -402,7 +402,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -443,7 +443,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -484,7 +484,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
