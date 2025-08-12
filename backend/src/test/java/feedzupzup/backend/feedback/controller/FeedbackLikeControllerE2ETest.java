@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
-import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
@@ -49,7 +49,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -78,7 +78,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -126,7 +126,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -172,7 +172,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -206,7 +206,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -250,7 +250,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -286,7 +286,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -342,7 +342,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization);
 
         final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
