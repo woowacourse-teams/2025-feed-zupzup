@@ -41,7 +41,6 @@ export default function SettingListBox({
       css={container(theme)}
       onClick={handleClick}
       role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
     >
       <div css={leftSection}>
         <div css={iconContainer(theme)}>{icon}</div>

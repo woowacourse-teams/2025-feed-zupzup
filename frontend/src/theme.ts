@@ -39,6 +39,7 @@ const colors = {
 
   red: {
     100: '#FB2C36',
+    200: '#E7000B',
   },
 
   purple: {

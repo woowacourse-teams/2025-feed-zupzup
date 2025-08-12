@@ -41,7 +41,7 @@ export const listTitle = (theme: Theme, variant?: SettingListBoxVariant) => css`
   ${theme.typography.pretendard.captionSmall}
 
   color: ${variant === 'danger'
-    ? theme.colors.red[100]
+    ? theme.colors.red[200]
     : theme.colors.darkGray[100]};
 `;
 
