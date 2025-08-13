@@ -12,29 +12,23 @@ import lombok.NoArgsConstructor;
 import java.util.regex.Pattern;
 
 @Embeddable
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LoginId {
+public record LoginId(
+        @Column(name = "login_id", nullable = false, unique = true)
+        String value
+) {
 
     private static final int MAX_LENGTH = 10;
     private static final String BLANK_SPACE = " ";
     private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$"); // 영여, 숫자만 가능
 
-    @Column(name = "login_id", nullable = false, unique = true)
-    private String value;
-
-    public LoginId(final String value) {
+    public LoginId {
         validateLength(value);
         validateFormat(value);
-        this.value = value;
     }
 
     private void validateLength(final String loginId) {
         if (loginId.isEmpty() || loginId.length() > MAX_LENGTH) {
-            throw new AuthException(
-                    ErrorCode.INVALID_ADMIN_ID_FORMAT,
-                    "loginId = " + loginId + " length = " + loginId.length()
-            );
+            throw new InvalidAdminIdException("loginId = " + loginId + " length = " + loginId.length());
         }
     }
 
