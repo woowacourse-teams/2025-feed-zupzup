@@ -17,9 +17,11 @@ import AuthLayout from '@/domains/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/components/FormField/FormField';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useAuthForm from '@/domains/hooks/useAuthForm';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
   const theme = useAppTheme();
+  const navigate = useNavigate();
 
   const signUpValidators = {
     name: validateName,
@@ -64,7 +66,8 @@ export default function SignUp() {
         <BasicButton>계정 만들기</BasicButton>
         <div css={signUpCaptionContainer(theme)}>
           <p>
-            이미 계정이 있으신가요? <strong>로그인하기</strong>
+            이미 계정이 있으신가요?
+            <strong onClick={() => navigate('/login')}>로그인하기</strong>
           </p>
         </div>
       </form>

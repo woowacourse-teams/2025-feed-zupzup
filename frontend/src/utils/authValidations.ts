@@ -10,7 +10,7 @@ type ValidationState = { ok: true } | { ok: false; message: string };
 const REGEX = {
   ONLY_ALNUM: /^[a-zA-Z0-9]+$/,
   ALPHA: /[a-zA-Z]/,
-  KOREAN_ENGLISH: /^[a-zA-Z가-힣]+$/,
+  KOREAN_ENGLISH: /^[a-zA-Zㄱ-ㅎㅏ-ㅣ가-힣]+$/,
   SPACE: /\s/,
 };
 

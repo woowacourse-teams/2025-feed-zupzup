@@ -8,17 +8,19 @@ import {
   loginCaptionContainer,
   loginForm,
 } from '@/domains/admin/login/Login.style';
-import { validateName, validatePassword } from '@/utils/authValidations';
 import AuthLayout from '@/domains/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/components/FormField/FormField';
 import useAuthForm from '@/domains/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { validateId, validatePassword } from '@/utils/authValidations';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const theme = useAppTheme();
+  const navigate = useNavigate();
 
   const loginValidators = {
-    id: validateName,
+    id: validateId,
     password: validatePassword,
   };
 
@@ -57,7 +59,8 @@ export default function Login() {
         <div css={loginCaptionContainer(theme)}>
           <p>비밀번호를 잊으셨나요?</p>
           <p>
-            계정이 없으신가요? <strong>회원가입하기</strong>
+            계정이 없으신가요?{' '}
+            <strong onClick={() => navigate('/signup')}>회원가입하기</strong>
           </p>
         </div>
       </form>
