@@ -1,12 +1,13 @@
 import { useState, useCallback } from 'react';
 import { CategoryListType } from '@/constants/categoryList';
+import { MAX_CATEGORIES } from '@/constants/maxCategories';
 
 export interface SelectedCategoryItem {
   icon: string | React.ReactNode;
   category: CategoryListType;
 }
 
-export function useCategorySelection(max = 4) {
+export function useCategorySelection() {
   const [selectedCategories, setSelectedCategories] = useState<
     SelectedCategoryItem[]
   >([]);
@@ -18,15 +19,17 @@ export function useCategorySelection(max = 4) {
 
         if (exists) return prev.filter((item) => item.category !== category);
 
-        if (prev.length >= max) {
-          alert(`카테고리는 최대 ${max}개까지만 선택할 수 있습니다.`);
+        if (prev.length >= MAX_CATEGORIES) {
+          alert(
+            `카테고리는 최대 ${MAX_CATEGORIES}개까지만 선택할 수 있습니다.`
+          );
           return prev;
         }
 
         return [...prev, { icon, category }];
       });
     },
-    [max]
+    [MAX_CATEGORIES]
   );
 
   const handleCategoryTagClick = useCallback((category: CategoryListType) => {
