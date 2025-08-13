@@ -1,11 +1,10 @@
+import { ValidationState } from '@/types/validateState.types';
 import {
   lengthAtLeast,
   lengthBetween,
   mustMatch,
   mustNotMatch,
 } from '@/utils/validation';
-
-type ValidationState = { ok: true } | { ok: false; message: string };
 
 const REGEX = {
   ONLY_ALNUM: /^[a-zA-Z0-9]+$/,

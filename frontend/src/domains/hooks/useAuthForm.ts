@@ -1,6 +1,6 @@
+import { ValidationState } from '@/types/validateState.types';
 import { useCallback, useState } from 'react';
 
-export type ValidationState = { ok: true } | { ok: false; message: string };
 interface FormFieldProps<T> {
   initValues: T;
   validators?: {

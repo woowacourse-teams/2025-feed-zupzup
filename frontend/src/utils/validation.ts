@@ -1,4 +1,4 @@
-import { ValidationState } from '@/domains/hooks/useAuthForm';
+import { ValidationState } from '@/types/validateState.types';
 
 export const mustMatch =
   (regex: RegExp, message: string) =>
