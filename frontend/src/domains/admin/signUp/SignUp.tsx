@@ -21,6 +21,8 @@ import {
 } from '@/domains/admin/utils/authValidations';
 import { useNavigate } from 'react-router-dom';
 
+type SignUpFieldName = 'name' | 'id' | 'password';
+
 export default function SignUp() {
   const theme = useAppTheme();
   const navigate = useNavigate();
@@ -56,32 +58,34 @@ export default function SignUp() {
     <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
       <form css={signUpForm(theme)}>
         <div css={fieldContainer}>
-          {signUpFields.map((field: SignUpField) => (
-            <FormField
-              type={field.type}
-              key={field.name}
-              id={field.name}
-              label={field.labelKey}
-              value={
-                field.name === 'passwordConfirm'
-                  ? confirmPasswordValue.confirmPassword
-                  : signUpValue[field.name]
-              }
-              onChange={
-                field.name === 'passwordConfirm'
-                  ? handleChangeConfirmPassword
-                  : handleChangeForm
-              }
-              maxLength={field.maxLength}
-              minLength={field.minLength}
-              placeholder={field.placeholder}
-              errorMessage={
-                field.name === 'passwordConfirm'
-                  ? confirmPasswordErrors || ''
-                  : errors[field.name] || ''
-              }
-            />
-          ))}
+          {signUpFields.map((field: SignUpField) => {
+            const isConfirm = field.name === 'passwordConfirm';
+
+            const props = {
+              value: isConfirm
+                ? confirmPasswordValue.confirmPassword
+                : signUpValue[field.name as SignUpFieldName],
+              onChange: isConfirm
+                ? handleChangeConfirmPassword
+                : handleChangeForm,
+              errorMessage: isConfirm
+                ? confirmPasswordErrors || ''
+                : errors[field.name as SignUpFieldName] || '',
+            };
+
+            return (
+              <FormField
+                type={field.type}
+                key={field.name}
+                id={field.name}
+                label={field.labelKey}
+                maxLength={field.maxLength}
+                minLength={field.minLength}
+                placeholder={field.placeholder}
+                {...props}
+              />
+            );
+          })}
         </div>
         <BasicButton>계정 만들기</BasicButton>
         <div css={signUpCaptionContainer(theme)}>
