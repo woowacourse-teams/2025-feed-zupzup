@@ -4,7 +4,7 @@ interface HeaderConfig {
   show: boolean;
   title?: string;
   subtitle?: string;
-  showMoreIcon?: boolean;
+  hasMoreIcon?: boolean;
   showBackButton?: boolean;
 }
 
@@ -23,7 +23,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
       title: '피드백 관리',
       subtitle: '피드백 현황 및 관리',
-      showMoreIcon: true,
+      hasMoreIcon: true,
       showBackButton: true,
     },
     bottomNav: {
@@ -35,7 +35,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
       title: '설정',
       subtitle: '계정 및 앱 설정',
-      showMoreIcon: false,
+      hasMoreIcon: false,
       showBackButton: false,
     },
     bottomNav: {
@@ -47,7 +47,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
       title: '알림 설정',
       subtitle: '알림 확인 및 관리',
-      showMoreIcon: false,
+      hasMoreIcon: false,
       showBackButton: true,
     },
     bottomNav: {
