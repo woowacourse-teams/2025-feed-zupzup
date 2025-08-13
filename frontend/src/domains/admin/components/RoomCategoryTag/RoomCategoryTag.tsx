@@ -2,9 +2,10 @@ import Tag from '@/components/Tag/Tag';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { container } from './RoomCategoryTag.styles';
 import Button from '@/components/@commons/Button/Button';
+import { CategoryListType } from '@/constants/categoryList';
 
 export interface CategoryTagProps {
-  category: string;
+  category: CategoryListType;
   icon: string | React.ReactNode;
   onDeleteClick: () => void;
 }
