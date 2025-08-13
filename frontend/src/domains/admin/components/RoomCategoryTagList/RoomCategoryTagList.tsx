@@ -1,8 +1,11 @@
 import { CategoryListType } from '@/constants/categoryList';
+import { MAX_CATEGORIES } from '@/constants/maxCategories';
 import RoomCategoryTag from '@/domains/admin/components/RoomCategoryTag/RoomCategoryTag';
 import {
+  categoryCountText,
   roomCategoryTagContainer,
   roomCategoryTagListContainer,
+  roomCategoryTagListText,
 } from '@/domains/admin/components/RoomCategoryTagList/RoomCategoryTagList.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
@@ -22,7 +25,12 @@ export default function RoomCategoryTagList({
 
   return (
     <div css={roomCategoryTagListContainer}>
-      <p>선택된 카테고리</p>
+      <div css={roomCategoryTagListText}>
+        <p>선택된 카테고리</p>
+        <p css={categoryCountText(theme)}>
+          {selectedCategories.length}/{MAX_CATEGORIES}
+        </p>
+      </div>
       <div css={roomCategoryTagContainer(theme)}>
         {selectedCategories.map((item) => (
           <RoomCategoryTag

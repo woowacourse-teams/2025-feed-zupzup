@@ -17,3 +17,13 @@ export const roomCategoryTagContainer = (theme: Theme) => css`
   border-radius: 8px;
   overflow: auto;
 `;
+
+export const roomCategoryTagListText = css`
+  display: flex;
+  gap: 10px;
+`;
+
+export const categoryCountText = (theme: Theme) => css`
+  color: ${theme.colors.gray[500]};
+  ${theme.typography.pretendard.captionSmall}
+`;
