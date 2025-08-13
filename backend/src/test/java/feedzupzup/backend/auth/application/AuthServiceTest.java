@@ -4,9 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
@@ -19,32 +16,23 @@ import feedzupzup.backend.auth.dto.LoginRequest;
 import feedzupzup.backend.auth.dto.SignUpRequest;
 import feedzupzup.backend.auth.dto.SignUpResponse;
 import feedzupzup.backend.auth.exception.AuthException;
-import feedzupzup.backend.auth.session.SessionManager;
+import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.global.response.ErrorCode;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 
-@ExtendWith(MockitoExtension.class)
-class AuthServiceTest {
+class AuthServiceTest extends ServiceIntegrationHelper {
 
-    @InjectMocks
+    @Autowired
     private AuthService authService;
 
-    @Mock
+    @Autowired
     private AdminRepository adminRepository;
 
-    @Mock
-    private SessionManager sessionManager;
-
-    @Mock
-    private HttpServletRequest httpServletRequest;
+    private MockHttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
     @Nested
     @DisplayName("회원가입 테스트")
@@ -55,10 +43,6 @@ class AuthServiceTest {
         void signUp_Success() {
             // Given
             SignUpRequest request = new SignUpRequest("testId", "password123", "password123", "testName");
-            Admin savedAdmin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
-            
-            when(adminRepository.existsByLoginId(any(LoginId.class))).thenReturn(false);
-            when(adminRepository.save(any(Admin.class))).thenReturn(savedAdmin);
 
             // When
             SignUpResponse response = authService.signUp(request, httpServletRequest);
@@ -66,10 +50,13 @@ class AuthServiceTest {
             // Then
             assertAll(
                 () -> assertThat(response.loginId()).isEqualTo("testId"),
-                () -> assertThat(response.adminName()).isEqualTo("testName"),
-                () -> verify(sessionManager).createAdminSession(httpServletRequest, null),
-                () -> verify(adminRepository).save(any(Admin.class))
+                () -> assertThat(response.adminName()).isEqualTo("testName")
             );
+            
+            // Admin이 실제로 저장되었는지 확인
+            Admin savedAdmin = adminRepository.findByLoginId(new LoginId("testId")).orElseThrow();
+            assertThat(savedAdmin.getLoginId().getLoginId()).isEqualTo("testId");
+            assertThat(savedAdmin.getAdminName().getAdminName()).isEqualTo("testName");
         }
 
         @Test
@@ -88,8 +75,10 @@ class AuthServiceTest {
         @DisplayName("중복된 로그인 ID가 존재하면 예외가 발생한다")
         void signUp_DuplicateLoginId() {
             // Given
+            Admin existingAdmin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("existName"));
+            adminRepository.save(existingAdmin);
+            
             SignUpRequest request = new SignUpRequest("testId", "password123", "password123", "testName");
-            when(adminRepository.existsByLoginId(any(LoginId.class))).thenReturn(true);
 
             // When & Then
             assertThatThrownBy(() -> authService.signUp(request, httpServletRequest))
@@ -128,10 +117,10 @@ class AuthServiceTest {
         @DisplayName("정상적인 로그인 요청시 로그인이 성공한다")
         void login_Success() {
             // Given
-            LoginRequest request = new LoginRequest("testId", "password123");
             Admin admin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
+            adminRepository.save(admin);
             
-            when(adminRepository.findByLoginId(any(LoginId.class))).thenReturn(Optional.of(admin));
+            LoginRequest request = new LoginRequest("testId", "password123");
 
             // When
             AdminLoginResponse response = authService.login(request, httpServletRequest);
@@ -139,8 +128,7 @@ class AuthServiceTest {
             // Then
             assertAll(
                 () -> assertThat(response.loginId()).isEqualTo("testId"),
-                () -> assertThat(response.adminName()).isEqualTo("testName"),
-                () -> verify(sessionManager).createAdminSession(httpServletRequest, null)
+                () -> assertThat(response.adminName()).isEqualTo("testName")
             );
         }
 
@@ -149,7 +137,6 @@ class AuthServiceTest {
         void login_LoginIdNotFound() {
             // Given
             LoginRequest request = new LoginRequest("testId", "password123");
-            when(adminRepository.findByLoginId(any(LoginId.class))).thenReturn(Optional.empty());
 
             // When & Then
             assertThatThrownBy(() -> authService.login(request, httpServletRequest))
@@ -161,10 +148,10 @@ class AuthServiceTest {
         @DisplayName("비밀번호가 일치하지 않으면 예외가 발생한다")
         void login_InvalidPassword() {
             // Given
-            LoginRequest request = new LoginRequest("testId", "wrongPassword123");
             Admin admin = new Admin(new LoginId("testId"), new Password("correctPassword123"), new AdminName("testName"));
+            adminRepository.save(admin);
             
-            when(adminRepository.findByLoginId(any(LoginId.class))).thenReturn(Optional.of(admin));
+            LoginRequest request = new LoginRequest("testId", "wrongPassword123");
 
             // When & Then
             assertThatThrownBy(() -> authService.login(request, httpServletRequest))
@@ -183,8 +170,6 @@ class AuthServiceTest {
             // When & Then
             assertThatCode(() -> authService.logout(httpServletRequest))
                     .doesNotThrowAnyException();
-            
-            verify(sessionManager).removeAdminSession(httpServletRequest);
         }
     }
 
@@ -196,10 +181,10 @@ class AuthServiceTest {
         @DisplayName("로그인된 관리자 정보 조회가 성공한다")
         void getAdminLoginInfo_Success() {
             // Given
-            AdminSession adminSession = new AdminSession(1L);
             Admin admin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
+            Admin savedAdmin = adminRepository.save(admin);
             
-            when(adminRepository.findById(1L)).thenReturn(Optional.of(admin));
+            AdminSession adminSession = new AdminSession(savedAdmin.getId());
 
             // When
             AdminLoginResponse response = authService.getAdminLoginInfo(adminSession);
@@ -216,7 +201,6 @@ class AuthServiceTest {
         void getAdminLoginInfo_AdminNotFound() {
             // Given
             AdminSession adminSession = new AdminSession(999L);
-            when(adminRepository.findById(999L)).thenReturn(Optional.empty());
 
             // When & Then
             assertThatThrownBy(() -> authService.getAdminLoginInfo(adminSession))
