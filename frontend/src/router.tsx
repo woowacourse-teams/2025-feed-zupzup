@@ -1,7 +1,7 @@
 import App from './App';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
-import Login from '@/domains/admin/login/Login';
-import SignUp from '@/domains/admin/signUp/SignUp';
+import Login from '@/domains/admin/Login/Login';
+import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';

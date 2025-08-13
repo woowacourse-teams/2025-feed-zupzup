@@ -5,14 +5,13 @@ import FormField from '@/domains/admin/components/FormField/FormField';
 import {
   SignUpField,
   signUpFields,
-} from '@/domains/admin/signUp/constants/signUpFields';
-import useConfirmPassword from '@/domains/admin/signUp/hooks/useConfirmPassword';
+} from '@/domains/admin/SignUp/constants/signUpFields';
+import useConfirmPassword from '@/domains/admin/SignUp/hooks/useConfirmPassword';
 import {
   fieldContainer,
   signUpCaptionContainer,
   signUpForm,
-} from '@/domains/admin/signUp/SignUp.style';
-
+} from '@/domains/admin/SignUp/SignUp.style';
 import useAuthForm from '@/domains/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
