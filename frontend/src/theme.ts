@@ -39,10 +39,12 @@ const colors = {
 
   red: {
     100: '#FB2C36',
+    200: '#E7000B',
   },
 
   purple: {
     100: '#7356FF',
+    200: '#59168B',
   },
   blue: {
     100: '#314158',
@@ -92,6 +94,12 @@ const typography = {
     caption: {
       fontFamily: 'Pretendard, sans-serif',
       fontWeight: 400,
+      fontSize: 16,
+      letterSpacing: 0,
+    },
+    captionBold: {
+      fontFamily: 'Pretendard, sans-serif',
+      fontWeight: 600,
       fontSize: 16,
       letterSpacing: 0,
     },
