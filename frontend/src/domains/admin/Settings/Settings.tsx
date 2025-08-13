@@ -19,6 +19,9 @@ export default function Settings() {
     isToggleEnabled,
     updateNotificationSetting,
     isLoading: isNotificationLoading,
+    fcmStatus,
+    sendTestNotification,
+    clearError,
   } = useNotificationSetting();
 
   const { handleLogout } = useLogout();
@@ -28,11 +31,48 @@ export default function Settings() {
     setModalState({ type: null });
   };
 
+  const handleNotificationToggle = async () => {
+    clearError();
+    await updateNotificationSetting(!isToggleEnabled);
+  };
+
+  const handleTestNotification = async () => {
+    if (sendTestNotification) {
+      try {
+        setTimeout(async () => {
+          try {
+            await sendTestNotification();
+
+            if (
+              'Notification' in window &&
+              Notification.permission === 'granted'
+            ) {
+              new Notification('테스트 알림 🔔', {
+                body: '10초 후에 발송된 테스트 알림입니다!',
+                icon: '/favicon.ico',
+                badge: '/favicon.ico',
+                tag: 'test-notification',
+              });
+            }
+          } catch (error) {
+            console.error('테스트 알림 발송 오류:', error);
+          }
+        }, 10000);
+
+        alert('10초 후에 테스트 알림이 발송됩니다! ⏰');
+      } catch (error) {
+        console.error('테스트 알림 발송 오류:', error);
+        alert('테스트 알림 발송에 실패했습니다.');
+      }
+    }
+  };
+
   //TODO: 아래 사용자 이름과 ID는 이후 전역상태 참조해서 추가 구현해야함.
 
   return (
     <div css={settingsContainer}>
       <ProfileBox name='우아한테크코스' id='woowacourse' />
+
       <SettingListBox
         icon={<BellOutlineIcon />}
         title='알림 설정'
@@ -40,18 +80,30 @@ export default function Settings() {
         rightElement={
           <BasicToggleButton
             isToggled={isToggleEnabled}
-            onClick={() => updateNotificationSetting(!isToggleEnabled)}
+            onClick={handleNotificationToggle}
             name='notification-toggle'
-            disabled={isNotificationLoading}
+            disabled={isNotificationLoading || !fcmStatus.isSupported}
           />
         }
       />
+
+      {/* 개발 환경에서만 테스트 버튼 표시 */}
+      {process.env.NODE_ENV === 'development' && sendTestNotification && (
+        <SettingListBox
+          icon={<BellOutlineIcon />}
+          title='테스트 알림 발송'
+          description='개발용: 테스트 알림을 즉시 발송합니다'
+          onClick={handleTestNotification}
+        />
+      )}
+
       <SettingListBox
         icon={<OutOutlineIcon />}
         title='로그아웃'
         variant='danger'
         onClick={() => setModalState({ type: 'logout' })}
       />
+
       {modalState.type === 'logout' && (
         <ConfirmModal
           title='로그아웃'
