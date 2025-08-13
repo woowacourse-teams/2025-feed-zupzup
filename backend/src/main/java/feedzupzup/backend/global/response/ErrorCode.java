@@ -25,7 +25,18 @@ public enum ErrorCode {
     
     //Feedback Error
     INVALID_USERNAME_LENGTH(BAD_REQUEST, "F01", "닉네임은 1글자 이상 10글자 이하여야 합니다."),
-    INVALID_CONTENT_LENGTH(BAD_REQUEST, "F02", "내용은 1글자 이상 500글자 이하여야 합니다.")
+    INVALID_CONTENT_LENGTH(BAD_REQUEST, "F02", "내용은 1글자 이상 500글자 이하여야 합니다."),
+    
+    //Admin Domain Error
+    INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),
+    INVALID_PASSWORD_FORMAT(BAD_REQUEST, "A02", "비밀번호는 공백을 포함하지 않고 5글자 이상이어야 합니다."),
+    INVALID_ADMIN_NAME_FORMAT(BAD_REQUEST, "A03", "관리자 이름은 공백을 포함할 수 없습니다."),
+    
+    //Auth Error
+    ADMIN_NOT_LOGGED_IN(BAD_REQUEST, "A04", "로그인이 필요합니다."),
+    DUPLICATE_LOGIN_ID(BAD_REQUEST, "A05", "이미 존재하는 로그인 ID입니다."),
+    INVALID_LOGIN_CREDENTIALS(BAD_REQUEST, "A06", "로그인 ID 또는 비밀번호가 올바르지 않습니다."),
+    PASSWORD_NOT_MATCH(BAD_REQUEST, "A07", "비밀번호와 비밀번호 확인이 일치하지 않습니다.")
     ;
 
     private final HttpStatus httpStatus;

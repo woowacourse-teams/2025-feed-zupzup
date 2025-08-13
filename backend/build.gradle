@@ -36,6 +36,9 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
+    //security
+    implementation 'org.springframework.security:spring-security-crypto'
+
     //aws
     implementation 'software.amazon.awssdk:s3:2.30.16'
 
