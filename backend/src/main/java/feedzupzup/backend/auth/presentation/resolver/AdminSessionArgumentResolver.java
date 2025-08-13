@@ -1,8 +1,8 @@
-package feedzupzup.backend.auth.resolver;
+package feedzupzup.backend.auth.presentation.resolver;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.annotation.AdminAuthenticationPrincipal;
-import feedzupzup.backend.auth.session.HttpSessionManager;
+import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;

@@ -1,8 +1,7 @@
 package feedzupzup.backend.admin.domain.vo;
 
+import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminPasswordException;
 import feedzupzup.backend.auth.encoder.PasswordEncoder;
-import feedzupzup.backend.auth.exception.AuthException;
-import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -46,25 +45,16 @@ public class Password {
 
     private static void validateLength(final String password) {
         if (password.length() < MIN_LENGTH) {
-            throw new AuthException(
-                    ErrorCode.INVALID_PASSWORD_FORMAT,
-                    "password = " + password + " length = " + password.length()
-            );
+            throw new InvalidAdminPasswordException("password = " + password + " length = " + password.length());
         }
     }
 
     private static void validateFormat(final String password) {
         if (password.contains(BLANK_SPACE)) {
-            throw new AuthException(
-                    ErrorCode.INVALID_PASSWORD_FORMAT,
-                    "password = " + password + " 공백이 포함 되어있습니다."
-            );
+            throw new InvalidAdminPasswordException("password = " + password + " 공백이 포함 되어있습니다.");
         }
         if (!ALLOWED_PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new AuthException(
-                    ErrorCode.INVALID_PASSWORD_FORMAT,
-                    "password = " + password + " 은(는) 영어, 숫자, 특수문자만 포함해야 합니다."
-            );
+            throw new InvalidAdminPasswordException("password = " + password + " 은(는) 영어, 숫자, 특수문자만 포함해야 합니다.");
         }
     }
 }

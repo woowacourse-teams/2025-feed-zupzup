@@ -1,6 +1,6 @@
 package feedzupzup.backend.global.config;
 
-import feedzupzup.backend.auth.resolver.AdminSessionArgumentResolver;
+import feedzupzup.backend.auth.presentation.resolver.AdminSessionArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

@@ -1,7 +1,7 @@
-package feedzupzup.backend.auth.api;
+package feedzupzup.backend.auth.presentation.api;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.auth.dto.AdminLoginResponse;
 import feedzupzup.backend.auth.dto.LoginRequest;
 import feedzupzup.backend.auth.dto.SignUpRequest;

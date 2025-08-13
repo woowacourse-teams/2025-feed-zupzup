@@ -1,5 +1,6 @@
 package feedzupzup.backend.admin.domain.vo;
 
+import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminIdException;
 import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Column;
@@ -39,16 +40,10 @@ public class LoginId {
 
     private void validateFormat(final String loginId) {
         if (loginId.contains(BLANK_SPACE)) {
-            throw new AuthException(
-                    ErrorCode.INVALID_ADMIN_ID_FORMAT,
-                    "loginId = " + loginId + " 공백이 포함 되어있습니다."
-            );
+            throw new InvalidAdminIdException("loginId = " + loginId + " 공백이 포함 되어있습니다.");
         }
         if (!ALLOWD_LOGIN_PATTERN.matcher(loginId).matches()) {
-            throw new AuthException(
-                    ErrorCode.INVALID_ADMIN_ID_FORMAT,
-                    "loginId = " + loginId + " 은(는) 영문과 숫자만 포함해야 합니다."
-            );
+            throw new InvalidAdminIdException("loginId = " + loginId + " 은(는) 영문과 숫자만 포함해야 합니다.");
         }
     }
 }

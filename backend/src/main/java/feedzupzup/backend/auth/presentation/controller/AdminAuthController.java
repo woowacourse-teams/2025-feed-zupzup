@@ -1,13 +1,13 @@
-package feedzupzup.backend.auth.controller;
+package feedzupzup.backend.auth.presentation.controller;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.api.AdminAuthApi;
+import feedzupzup.backend.auth.presentation.api.AdminAuthApi;
 import feedzupzup.backend.auth.application.AuthService;
 import feedzupzup.backend.auth.dto.AdminLoginResponse;
 import feedzupzup.backend.auth.dto.LoginRequest;
 import feedzupzup.backend.auth.dto.SignUpRequest;
 import feedzupzup.backend.auth.dto.SignUpResponse;
-import feedzupzup.backend.auth.session.HttpSessionManager;
+import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import feedzupzup.backend.global.response.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,6 @@
 package feedzupzup.backend.admin.domain.vo;
 
-import feedzupzup.backend.auth.exception.AuthException;
-import feedzupzup.backend.global.response.ErrorCode;
+import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminNameException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -29,15 +28,12 @@ public class AdminName {
 
     private void validateLength(final String adminName) {
         if(adminName.isEmpty() || adminName.length() > MAX_LENGTH)
-            throw new AuthException(ErrorCode.INVALID_ADMIN_NAME_FORMAT, "adminName = " + adminName + " length = " + adminName.length());
+            throw new InvalidAdminNameException("adminName = " + adminName + " length = " + adminName.length());
     }
 
     private void validateFormat(final String adminName) {
         if (!ALLOWED_NAME_PATTERN.matcher(adminName).matches()) {
-            throw new AuthException(
-                    ErrorCode.INVALID_ADMIN_NAME_FORMAT,
-                    "adminName = " + adminName + " 은(는) 영어, 숫자, 한글만 포함해야 합니다."
-            );
+            throw new InvalidAdminNameException("adminName = " + adminName + " 은(는) 영어, 숫자, 한글만 포함해야 합니다.");
         }
     }
 }
