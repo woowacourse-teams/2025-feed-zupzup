@@ -16,6 +16,7 @@ public class Password {
 
     private static final int MIN_LENGTH = 5;
     private static final String BLANK_SPACE = " ";
+    // 영문 숫자와 특수문자만 가능
     private static final Pattern ALLOWED_PASSWORD_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9" +
                     "!@#$%^&*()_+\\-=\\[\\]{}" +

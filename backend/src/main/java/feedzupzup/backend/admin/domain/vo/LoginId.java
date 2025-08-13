@@ -16,7 +16,7 @@ public class LoginId {
 
     private static final int MAX_LENGTH = 10;
     private static final String BLANK_SPACE = " ";
-    private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
+    private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$"); // 영여, 숫자만 가능
 
     private String loginId;
 
