@@ -22,7 +22,7 @@ export const feedbackData: FeedbackType[] = [
     userName: '익명',
     likeCount: 4,
     comment: null,
-    category: '시설',
+    category: '건의',
   },
   {
     feedbackId: 3,
@@ -34,7 +34,7 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 7,
     comment:
       '디자인을 알아봐 주셔서 감사합니다! 더 나은 UX를 위해 계속 개선하겠습니다.',
-    category: '커리큘럼',
+    category: '기타',
   },
   {
     feedbackId: 4,
@@ -45,7 +45,7 @@ export const feedbackData: FeedbackType[] = [
     userName: '박지민',
     likeCount: 9,
     comment: null,
-    category: '행정',
+    category: '기타',
   },
   {
     feedbackId: 5,
@@ -67,7 +67,7 @@ export const feedbackData: FeedbackType[] = [
     userName: '익명',
     likeCount: 2,
     comment: null,
-    category: '시설',
+    category: '건의',
   },
   {
     feedbackId: 7,
@@ -79,7 +79,7 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 6,
     comment:
       '속도 개선을 느껴주셔서 감사합니다! 앞으로도 지속적으로 최적화하겠습니다.',
-    category: '커리큘럼',
+    category: '기타',
   },
   {
     feedbackId: 8,
@@ -90,7 +90,7 @@ export const feedbackData: FeedbackType[] = [
     userName: '정우성',
     likeCount: 3,
     comment: null,
-    category: '행정',
+    category: '기타',
   },
   {
     feedbackId: 9,
@@ -113,6 +113,6 @@ export const feedbackData: FeedbackType[] = [
     userName: '감사합니다',
     likeCount: 10,
     comment: null,
-    category: '시설',
+    category: '건의',
   },
 ];
