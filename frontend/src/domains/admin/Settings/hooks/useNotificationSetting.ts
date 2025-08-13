@@ -1,12 +1,10 @@
 import { useState, useCallback } from 'react';
 import { NotificationService } from '@/services';
 import { useNotifications } from './useNotifications';
-import { useTestNotification } from './useTestNotification';
 
 export const useNotificationSetting = (organizationId: number = 1) => {
   const { fcmStatus, isEnabled, updateState } =
     useNotifications(organizationId);
-  const { sendTest } = useTestNotification(organizationId);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,8 +48,5 @@ export const useNotificationSetting = (organizationId: number = 1) => {
 
     updateNotificationSetting: toggle,
     clearError: () => setError(null),
-
-    sendTestNotification:
-      process.env.NODE_ENV === 'development' ? sendTest : undefined,
   };
 };
