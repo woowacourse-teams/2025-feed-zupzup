@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.application.PasswordEncoder;
@@ -47,7 +48,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("중복된 로그인 ID로 회원가입시 400 에러가 발생한다")
     void signUp_DuplicateLoginId() {
         // Given
-        Admin existingAdmin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("existName"));
+        Admin existingAdmin = new Admin(new LoginId("testId"), new EncodedPassword("password123"), new AdminName("existName"));
         adminRepository.save(existingAdmin);
         
         SignUpRequest request = new SignUpRequest("testId", "password123", "testName");
@@ -145,7 +146,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("정상적인 로그인 요청시 로그인이 성공하고 세션이 생성된다")
     void login_Success() {
         // Given
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
 
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
@@ -188,7 +189,8 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("비밀번호가 일치하지 않으면 400 에러가 발생한다")
     void login_InvalidPassword() {
         // Given
-        Admin admin = new Admin(new LoginId("testId"), new Password("correctPassword123"), new AdminName("testName"));
+        Password password = new Password("correctPassword123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest request = new LoginRequest("testId", "wrongPassword123");
@@ -209,7 +211,8 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("로그인 후 로그아웃이 성공한다")
     void logout_Success() {
         // Given - 먼저 로그인하여 세션 생성
-        Admin admin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
+        Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest loginRequest = new LoginRequest("testId", "password123");
@@ -236,7 +239,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("로그인 후 관리자 정보 조회가 성공한다")
     void getAdminInfo_Success() {
         // Given - 먼저 로그인하여 세션 생성
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         

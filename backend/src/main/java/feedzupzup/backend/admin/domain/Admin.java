@@ -1,6 +1,7 @@
 package feedzupzup.backend.admin.domain;
 
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.global.BaseTimeEntity;
@@ -26,7 +27,7 @@ public class Admin extends BaseTimeEntity {
 
     @Embedded
     @Column(nullable = false)
-    private Password password;
+    private EncodedPassword password;
 
     @Embedded
     @Column(nullable = false)
@@ -36,13 +37,13 @@ public class Admin extends BaseTimeEntity {
     @Column(nullable = false)
     private LoginId loginId;
 
-    public Admin(@NonNull final LoginId loginId, @NonNull Password password, @NonNull final AdminName adminName) {
+    public Admin(@NonNull final LoginId loginId, @NonNull EncodedPassword password, @NonNull final AdminName adminName) {
         this.loginId = loginId;
         this.password = password;
         this.adminName = adminName;
     }
 
     public String getPasswordValue() {
-        return password.getValue();
+        return password.value();
     }
 }

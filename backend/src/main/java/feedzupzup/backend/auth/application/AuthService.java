@@ -2,6 +2,7 @@ package feedzupzup.backend.auth.application;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.admin.dto.AdminSession;
@@ -34,11 +35,8 @@ public class AuthService {
     @Transactional
     public SignUpResponse signUp(final SignUpRequest request) {
         validateDuplicateLoginId(request.toLoginId());
-        final Password password = Password.createPassword(request.password());
-        final Password encodedPassword = passwordEncoder.encode(password);
-
-        final Admin admin = request.toAdmin(encodedPassword);
-        final Admin savedAdmin = adminRepository.save(admin);
+        final EncodedPassword encodedPassword = passwordEncoder.encode(request.toPassword());
+        final Admin savedAdmin = adminRepository.save(request.toAdmin(encodedPassword));
         return SignUpResponse.from(savedAdmin);
     }
 
@@ -53,8 +51,7 @@ public class AuthService {
         final LoginId loginId = new LoginId(request.loginId());
 
         final Admin admin = adminRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "로그인 정보가 올바르지 않습니다"));
+                .orElseThrow(() -> new ResourceNotFoundException("로그인 정보가 올바르지 않습니다"));
 
         if (!passwordEncoder.matches(request.password(), admin.getPasswordValue())) {
             throw new InvalidPasswordException("로그인 정보가 올바르지 않습니다");

@@ -16,7 +16,7 @@ class PasswordTest {
         String shortPassword = "test";
 
         // When & Then
-        assertThatThrownBy(() -> Password.createPassword(shortPassword))
+        assertThatThrownBy(() -> new Password(shortPassword))
                 .isInstanceOf(AdminException.class)
                 .hasMessage("password = test length = 4")
                 .extracting("errorCode")
