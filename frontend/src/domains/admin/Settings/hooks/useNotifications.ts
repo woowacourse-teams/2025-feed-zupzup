@@ -2,12 +2,24 @@ import { useState, useEffect } from 'react';
 import { onMessage, MessagePayload } from 'firebase/messaging';
 import { messaging } from '@/firebase/messaging';
 import { NotificationService } from '@/services';
+import {
+  getStoredNotificationState,
+  setStoredNotificationState,
+} from '@/utils/notificationUtils';
 import type { FCMStatus } from '@/types/notification.types';
 
-export const useNotifications = () => {
+export const useNotifications = (organizationId: number) => {
   const [permission, setPermission] =
     useState<NotificationPermission>('default');
   const [isSupported] = useState(() => NotificationService.isSupported());
+
+  const [isEnabled, setIsEnabled] = useState(() =>
+    getStoredNotificationState(organizationId)
+  );
+
+  useEffect(() => {
+    setIsEnabled(getStoredNotificationState(organizationId));
+  }, [organizationId]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('Notification' in window)) return;
@@ -45,6 +57,11 @@ export const useNotifications = () => {
     }
   }, []);
 
+  const updateState = (enabled: boolean) => {
+    setIsEnabled(enabled);
+    setStoredNotificationState(organizationId, enabled);
+  };
+
   const fcmStatus: FCMStatus = {
     isSupported,
     permission,
@@ -55,5 +72,8 @@ export const useNotifications = () => {
     fcmStatus,
     permission,
     isSupported,
+
+    isEnabled,
+    updateState,
   };
 };

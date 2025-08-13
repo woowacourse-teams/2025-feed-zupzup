@@ -1,12 +1,8 @@
 import { apiClient } from './apiClient';
-
-export interface FCMTokenRequest {
-  token: string;
-}
-
-export interface NotificationSettingRequest {
-  enabled: boolean;
-}
+import type {
+  FCMTokenRequest,
+  NotificationSettingRequest,
+} from '@/types/notification.types';
 
 export interface ApiResponse<T = null> {
   data: T;
