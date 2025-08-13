@@ -3,9 +3,11 @@ package feedzupzup.backend.organizer.domain;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.global.BaseTimeEntity;
 import feedzupzup.backend.organization.domain.Organization;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,13 +25,14 @@ public class Organizer extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Organization organization;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Admin admin;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrganizerRole role;
 
 }
