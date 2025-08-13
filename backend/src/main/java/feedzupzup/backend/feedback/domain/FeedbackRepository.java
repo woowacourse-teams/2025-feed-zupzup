@@ -61,6 +61,8 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     List<Feedback> findByIdIn(Collection<Long> ids);
 
+    List<Feedback> findByOrganizationIdAndIdIn(Long organizationId, List<Long> ids);
+
     @Query("""
             SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
               COUNT(f),

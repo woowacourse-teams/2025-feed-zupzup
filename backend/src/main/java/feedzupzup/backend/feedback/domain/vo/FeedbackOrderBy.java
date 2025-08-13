@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.application;
+package feedzupzup.backend.feedback.domain.vo;
 
 public enum FeedbackOrderBy {
     LATEST,
