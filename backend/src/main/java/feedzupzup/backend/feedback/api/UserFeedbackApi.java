@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
-import feedzupzup.backend.feedback.application.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
@@ -62,6 +62,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound"),
             @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
     })
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/feedbacks/{feedbackId}/like")
     SuccessResponse<LikeResponse> like(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
@@ -73,6 +74,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound"),
             @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
     })
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/feedbacks/{feedbackId}/like")
     SuccessResponse<LikeResponse> unlike(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
@@ -83,6 +85,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/organizations/{organizationId}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
             @Parameter(description = "조직 ID", example = "1") @PathVariable("organizationId") final Long organizationId

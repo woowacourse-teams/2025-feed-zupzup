@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
-import feedzupzup.backend.feedback.application.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;

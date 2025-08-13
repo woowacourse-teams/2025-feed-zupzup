@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
-import feedzupzup.backend.feedback.application.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;

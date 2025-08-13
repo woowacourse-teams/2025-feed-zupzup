@@ -4,6 +4,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;

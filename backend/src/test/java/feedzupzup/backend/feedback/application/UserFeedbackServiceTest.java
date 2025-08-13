@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.FACILITY;
-import static feedzupzup.backend.feedback.application.FeedbackOrderBy.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy.LATEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,6 +15,7 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
