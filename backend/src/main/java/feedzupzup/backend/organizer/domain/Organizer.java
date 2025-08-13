@@ -1,0 +1,35 @@
+package feedzupzup.backend.organizer.domain;
+
+import feedzupzup.backend.admin.domain.Admin;
+import feedzupzup.backend.global.BaseTimeEntity;
+import feedzupzup.backend.organization.domain.Organization;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Organizer extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(optional = false)
+    private Organization organization;
+
+    @ManyToOne(optional = false)
+    private Admin admin;
+
+    @Enumerated(EnumType.STRING)
+    private OrganizerRole role;
+
+}
