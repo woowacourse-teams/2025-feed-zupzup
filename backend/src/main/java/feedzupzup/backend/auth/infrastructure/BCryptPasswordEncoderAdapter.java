@@ -13,13 +13,13 @@ public class BCryptPasswordEncoderAdapter implements PasswordEncoder {
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public EncodedPassword encode(Password password) {
+    public EncodedPassword encode(final Password password) {
         final String encoded = bCryptPasswordEncoder.encode(password.value());
         return new EncodedPassword(encoded);
     }
 
     @Override
-    public boolean matches(String rawPassword, String encodedPassword) {
+    public boolean matches(final String rawPassword, final String encodedPassword) {
         return bCryptPasswordEncoder.matches(rawPassword, encodedPassword);
     }
 }
