@@ -45,9 +45,9 @@ export const useNotifications = (): UseNotificationsReturn => {
       if (existing) {
         return existing;
       }
-      const registration = await navigator.serviceWorker.register(
-        '/firebase-messaging-sw.js'
-      );
+
+      const registration =
+        await navigator.serviceWorker.register('/service-worker.js');
       return registration;
     }, []);
 
@@ -77,24 +77,29 @@ export const useNotifications = (): UseNotificationsReturn => {
     }
     setLoading(true);
 
-    const registration =
-      (await navigator.serviceWorker.getRegistration()) ??
-      (await registerServiceWorker());
+    try {
+      const registration =
+        (await navigator.serviceWorker.getRegistration()) ??
+        (await registerServiceWorker());
 
-    if (permission !== 'granted') {
-      await requestPermission();
+      if (permission !== 'granted') {
+        await requestPermission();
+      }
+
+      const currentToken = await getToken(messaging, {
+        vapidKey: VAPID_KEY,
+        serviceWorkerRegistration: registration,
+      });
+
+      if (!currentToken) {
+        throw new Error('FCM 토큰 생성에 실패했습니다.');
+      }
+
+      setToken(currentToken);
+      return currentToken;
+    } finally {
+      setLoading(false);
     }
-
-    const currentToken = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: registration, // 핵심
-    });
-
-    if (!currentToken) {
-      throw new Error('FCM 토큰 생성에 실패했습니다.');
-    }
-    setToken(currentToken);
-    return currentToken;
   }, [permission, registerServiceWorker, requestPermission]);
 
   useEffect(() => {
@@ -124,21 +129,13 @@ export const useNotifications = (): UseNotificationsReturn => {
   useEffect(() => {
     if (typeof window !== 'undefined' && 'Notification' in window) {
       setPermission(Notification.permission);
-    }
-  }, []);
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || !('Notification' in window)) return;
-
-    const interval = setInterval(() => {
-      try {
+      const interval = setInterval(() => {
         setPermission(Notification.permission);
-      } catch (error) {
-        console.error('[FCM Hook] 권한 상태 확인 중 오류:', error);
-      }
-    }, 1000);
+      }, 1000);
 
-    return () => clearInterval(interval);
+      return () => clearInterval(interval);
+    }
   }, []);
 
   return {
