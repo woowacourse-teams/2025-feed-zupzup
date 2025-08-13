@@ -61,7 +61,9 @@ export default function Login() {
           <p>비밀번호를 잊으셨나요?</p>
           <p>
             계정이 없으신가요?
-            <strong onClick={() => navigate(ROUTES.LOGIN)}>회원가입하기</strong>
+            <strong onClick={() => navigate(ROUTES.SIGN_UP)}>
+              회원가입하기
+            </strong>
           </p>
         </div>
       </form>
