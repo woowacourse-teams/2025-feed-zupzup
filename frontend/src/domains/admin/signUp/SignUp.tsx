@@ -1,13 +1,9 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import {
-  validateId,
-  validateName,
-  validatePassword,
-} from '@/utils/authValidations';
-import {
   SignUpField,
   signUpFields,
 } from '@/domains/admin/signUp/constants/signUpFields';
+import useConfirmPassword from '@/domains/admin/signUp/hooks/useConfirmPassword';
 import {
   fieldContainer,
   signUpCaptionContainer,
@@ -15,8 +11,13 @@ import {
 } from '@/domains/admin/signUp/SignUp.style';
 import AuthLayout from '@/domains/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/components/FormField/FormField';
-import { useAppTheme } from '@/hooks/useAppTheme';
 import useAuthForm from '@/domains/hooks/useAuthForm';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import {
+  validateId,
+  validateName,
+  validatePassword,
+} from '@/utils/authValidations';
 import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {
@@ -27,11 +28,10 @@ export default function SignUp() {
     name: validateName,
     id: validateId,
     password: validatePassword,
-    passwordConfirm: validatePassword,
   };
 
   const {
-    value: signUpValue,
+    authValue: signUpValue,
     handleChangeForm,
     errors,
   } = useAuthForm({
@@ -39,9 +39,16 @@ export default function SignUp() {
       name: '',
       id: '',
       password: '',
-      passwordConfirm: '',
     },
     validators: signUpValidators,
+  });
+
+  const {
+    authValue: confirmPasswordValue,
+    handleChangeConfirmPassword,
+    errors: confirmPasswordErrors,
+  } = useConfirmPassword({
+    initValues: { confirmPassword: '', password: signUpValue.password },
   });
 
   return (
@@ -54,12 +61,24 @@ export default function SignUp() {
               key={field.name}
               id={field.name}
               label={field.labelKey}
-              value={signUpValue[field.name]}
-              onChange={handleChangeForm}
+              value={
+                field.name === 'passwordConfirm'
+                  ? confirmPasswordValue.confirmPassword
+                  : signUpValue[field.name]
+              }
+              onChange={
+                field.name === 'passwordConfirm'
+                  ? handleChangeConfirmPassword
+                  : handleChangeForm
+              }
               maxLength={field.maxLength}
               minLength={field.minLength}
               placeholder={field.placeholder}
-              errorMessage={errors[field.name] || ''}
+              errorMessage={
+                field.name === 'passwordConfirm'
+                  ? confirmPasswordErrors || ''
+                  : errors[field.name] || ''
+              }
             />
           ))}
         </div>

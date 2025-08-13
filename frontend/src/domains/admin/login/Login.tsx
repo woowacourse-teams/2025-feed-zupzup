@@ -25,7 +25,7 @@ export default function Login() {
   };
 
   const {
-    value: loginValue,
+    authValue: loginValue,
     handleChangeForm,
     errors,
   } = useAuthForm({

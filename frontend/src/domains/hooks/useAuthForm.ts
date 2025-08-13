@@ -12,7 +12,7 @@ export default function useAuthForm<T extends Record<string, string>>({
   initValues,
   validators,
 }: FormFieldProps<T>) {
-  const [value, setValue] = useState<T>(initValues);
+  const [authValue, setAuthValue] = useState<T>(initValues);
 
   const [errors, setErrors] = useState<{ [K in keyof T]?: string }>({});
 
@@ -21,7 +21,7 @@ export default function useAuthForm<T extends Record<string, string>>({
       const name = e.currentTarget.name as keyof T;
       const value = e.currentTarget.value as T[keyof T];
 
-      setValue((prev) => ({
+      setAuthValue((prev) => ({
         ...prev,
         [name]: value,
       }));
@@ -42,7 +42,7 @@ export default function useAuthForm<T extends Record<string, string>>({
   );
 
   return {
-    value,
+    authValue,
     handleChangeForm,
     errors,
   };

@@ -54,6 +54,16 @@ export const validatePassword = (value: string): ValidationState => {
   return { ok: true };
 };
 
+export const validatePasswordConfirm = (
+  value: string,
+  password: string
+): ValidationState => {
+  if (password && value !== password) {
+    return { ok: false, message: '비밀번호가 일치하지 않습니다.' };
+  }
+  return { ok: true };
+};
+
 export const validateName = (value: string): ValidationState => {
   const min = 1;
   const max = 10;
