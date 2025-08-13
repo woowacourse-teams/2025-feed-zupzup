@@ -13,7 +13,7 @@ export function useCategorySelection() {
   >([]);
 
   const handleCategoryClick = useCallback(
-    (icon: React.ReactNode, category: CategoryListType) => {
+    (icon: React.ReactNode | string, category: CategoryListType) => {
       setSelectedCategories((prev) => {
         const exists = prev.some((item) => item.category === category);
 
