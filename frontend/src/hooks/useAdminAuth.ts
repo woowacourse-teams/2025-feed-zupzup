@@ -23,9 +23,6 @@ export const useAdminAuth = () => {
         navigate('/', { replace: true });
         return;
       }
-      if (location.pathname !== '/admin/login') {
-        navigate('/admin/login', { replace: true });
-      }
 
       setIsCheckingAuth(false);
     };

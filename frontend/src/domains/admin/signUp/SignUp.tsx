@@ -1,4 +1,5 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
+import { ROUTES } from '@/constants';
 import {
   SignUpField,
   signUpFields,
@@ -86,7 +87,7 @@ export default function SignUp() {
         <div css={signUpCaptionContainer(theme)}>
           <p>
             이미 계정이 있으신가요?
-            <strong onClick={() => navigate('/login')}>로그인하기</strong>
+            <strong onClick={() => navigate(ROUTES.LOGIN)}>로그인하기</strong>
           </p>
         </div>
       </form>

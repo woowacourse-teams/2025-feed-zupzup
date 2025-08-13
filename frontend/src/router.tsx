@@ -23,11 +23,11 @@ export const router = createBrowserRouter([
         element: <AdminDashboard />,
       },
       {
-        path: '/login',
+        path: ROUTES.LOGIN,
         element: <Login />,
       },
       {
-        path: '/signup',
+        path: ROUTES.SIGN_UP,
         element: <SignUp />,
       },
       {
