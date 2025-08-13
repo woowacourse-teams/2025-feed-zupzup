@@ -37,7 +37,7 @@ public class Admin extends BaseTimeEntity {
     @Column(nullable = false)
     private LoginId loginId;
 
-    public Admin(@NonNull final LoginId loginId, @NonNull EncodedPassword password, @NonNull final AdminName adminName) {
+    public Admin(@NonNull final LoginId loginId, @NonNull final EncodedPassword password, @NonNull final AdminName adminName) {
         this.loginId = loginId;
         this.password = password;
         this.adminName = adminName;
