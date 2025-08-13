@@ -1,5 +1,9 @@
 package feedzupzup.backend.auth.dto;
 
+import feedzupzup.backend.admin.domain.Admin;
+import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.LoginId;
+import feedzupzup.backend.admin.domain.vo.Password;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
@@ -21,4 +25,7 @@ public record SignUpRequest(
         @NotBlank(message = "관리자 이름은 필수입니다")
         String adminName
 ) {
+    public Admin toAdmin(final Password password) {
+        return new Admin(new LoginId(this.loginId), password, new AdminName(this.adminName));
+    }
 }

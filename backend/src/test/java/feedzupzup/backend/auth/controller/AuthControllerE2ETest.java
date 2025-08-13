@@ -11,6 +11,7 @@ import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.dto.LoginRequest;
 import feedzupzup.backend.auth.dto.SignUpRequest;
+import feedzupzup.backend.auth.encoder.PasswordEncoder;
 import feedzupzup.backend.config.E2EHelper;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,9 @@ class AuthControllerE2ETest extends E2EHelper {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("정상적인 회원가입 요청시 회원가입이 성공하고 세션이 생성된다")
@@ -158,7 +162,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("정상적인 로그인 요청시 로그인이 성공하고 세션이 생성된다")
     void login_Success() {
         // Given
-        Admin admin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
+        Admin admin = new Admin(new LoginId("testId"), Password.createEncodedPassword("password123", passwordEncoder), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest request = new LoginRequest("testId", "password123");
@@ -247,7 +251,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("로그인 후 관리자 정보 조회가 성공한다")
     void getAdminInfo_Success() {
         // Given - 먼저 로그인하여 세션 생성
-        Admin admin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
+        Admin admin = new Admin(new LoginId("testId"), Password.createEncodedPassword("password123", passwordEncoder), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest loginRequest = new LoginRequest("testId", "password123");

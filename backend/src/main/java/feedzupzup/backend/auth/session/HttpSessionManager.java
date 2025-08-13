@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class HttpSessionManager implements SessionManager {
+public class HttpSessionManager {
 
     private final String adminIdSessionKey;
 
@@ -17,7 +17,6 @@ public class HttpSessionManager implements SessionManager {
         this.adminIdSessionKey = adminIdSessionKey;
     }
 
-    @Override
     public AdminSession getAdminSession(final HttpServletRequest request) {
         final HttpSession session = getExistingSession(request);
         final Long adminId = getAdminIdFromSession(session);
@@ -25,13 +24,11 @@ public class HttpSessionManager implements SessionManager {
         return new AdminSession(adminId);
     }
 
-    @Override
     public void createAdminSession(final HttpServletRequest request, final Long adminId) {
         final HttpSession session = request.getSession(true);
         session.setAttribute(adminIdSessionKey, adminId);
     }
 
-    @Override
     public void removeAdminSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(false);
         if (session != null) {

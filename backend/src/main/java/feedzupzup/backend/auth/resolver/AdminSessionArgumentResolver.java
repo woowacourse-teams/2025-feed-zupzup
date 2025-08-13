@@ -1,8 +1,8 @@
 package feedzupzup.backend.auth.resolver;
 
-import feedzupzup.backend.auth.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.session.SessionManager;
+import feedzupzup.backend.auth.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -16,7 +16,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final SessionManager sessionManager;
+    private final HttpSessionManager sessionManager;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {

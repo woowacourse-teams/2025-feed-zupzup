@@ -1,5 +1,6 @@
 package feedzupzup.backend.admin.domain.vo;
 
+import feedzupzup.backend.auth.encoder.PasswordEncoder;
 import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Embeddable;
@@ -26,13 +27,22 @@ public class Password {
 
     private String password;
 
-    public Password(final String password) {
-        validateLength(password);
-        validateFormat(password);
+    public Password(String password) {
         this.password = password;
     }
 
-    private void validateLength(final String password) {
+    public static Password createEncodedPassword(final String rawPassword, final PasswordEncoder passwordEncoder) {
+        validateLength(rawPassword);
+        validateFormat(rawPassword);
+        final String encodedPassword = passwordEncoder.encode(rawPassword);
+        return new Password(encodedPassword);
+    }
+
+    public boolean matches(final String rawPassword, final PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(rawPassword, this.password);
+    }
+
+    private static void validateLength(final String password) {
         if (password.length() < MIN_LENGTH) {
             throw new AuthException(
                     ErrorCode.INVALID_PASSWORD_FORMAT,
@@ -41,7 +51,7 @@ public class Password {
         }
     }
 
-    private void validateFormat(final String password) {
+    private static void validateFormat(final String password) {
         if (password.contains(BLANK_SPACE)) {
             throw new AuthException(
                     ErrorCode.INVALID_PASSWORD_FORMAT,
@@ -54,9 +64,5 @@ public class Password {
                     "password = " + password + " 은(는) 영어, 숫자, 특수문자만 포함해야 합니다."
             );
         }
-    }
-
-    public boolean matches(final String rawPassword) {
-        return this.password.equals(rawPassword);
     }
 }

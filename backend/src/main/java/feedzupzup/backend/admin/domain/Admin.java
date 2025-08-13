@@ -36,8 +36,4 @@ public class Admin extends BaseTimeEntity {
         this.password = password;
         this.adminName = adminName;
     }
-
-    public boolean isPasswordMatched(final String rawPassword) {
-        return this.password.matches(rawPassword);
-    }
 }
