@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 
 interface FormFieldProps<T> {
   initValues: T;
-  validators?: {
+  validators: {
     [K in keyof T]?: (value: T[K]) => ValidationState;
   };
 }
@@ -26,7 +26,7 @@ export default function useAuthForm<T extends Record<string, string>>({
         [name]: value,
       }));
 
-      if (!validators || !validators[name]) return;
+      if (!validators[name]) return;
 
       const validate = validators[name];
       if (validate) {
