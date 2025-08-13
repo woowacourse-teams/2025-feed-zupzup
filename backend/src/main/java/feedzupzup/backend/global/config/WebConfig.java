@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-public class CorsConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     private final AdminSessionArgumentResolver adminSessionArgumentResolver;
 
