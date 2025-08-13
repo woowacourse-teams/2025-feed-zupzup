@@ -16,7 +16,7 @@ interface FormFieldProps extends React.ComponentPropsWithoutRef<'input'> {
   maxLength: number;
   minLength: number;
   placeholder: string;
-  errorMessage?: string;
+  errorMessage: string;
 }
 
 export default memo(function FormField({
@@ -28,7 +28,7 @@ export default memo(function FormField({
   maxLength,
   minLength,
   placeholder,
-  errorMessage = '',
+  errorMessage,
 }: FormFieldProps) {
   const theme = useAppTheme();
 
@@ -49,7 +49,7 @@ export default memo(function FormField({
         minLength={minLength}
         customCSS={inputFormField(theme, isValidForUI)}
       />
-      <p css={errorMessageStyle(theme)}>{errorMessage} </p>
+      <p css={errorMessageStyle(theme)}>{errorMessage}</p>
     </div>
   );
 });
