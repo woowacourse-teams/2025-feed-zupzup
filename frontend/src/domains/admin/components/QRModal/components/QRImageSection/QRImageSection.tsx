@@ -4,8 +4,8 @@ import {
   QRCodeContainer,
   QRImageContainer,
   QRTitle,
-  QRText,
-} from '@/domains/admin/components/QRModal/QRModal.styles';
+} from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection.styles';
+import { QRText } from '@/domains/admin/components/QRModal/QRModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 type QRImageSectionProps = {

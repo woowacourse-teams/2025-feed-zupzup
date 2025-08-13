@@ -2,11 +2,11 @@ import BasicButton from '@/components/BasicButton/BasicButton';
 import CopyIcon from '@/components/icons/CopyIcon';
 import {
   copyButton,
-  QRText,
   QRURLContainer,
   URLBox,
   URLContainer,
-} from '@/domains/admin/components/QRModal/QRModal.styles';
+} from '@/domains/admin/components/QRModal/components/QRUrlSection/QRUrlsection.styles';
+import { QRText } from '@/domains/admin/components/QRModal/QRModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 type QRUrlSectionProps = {

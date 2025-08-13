@@ -1,7 +1,7 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import Modal from '@/components/Modal/Modal';
-import QRImageSection from '@/domains/admin/components/QRModal/components/QRImageSection';
-import QRUrlSection from '@/domains/admin/components/QRModal/components/QRUrlSection';
+import QRImageSection from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection';
+import QRUrlSection from '@/domains/admin/components/QRModal/components/QRUrlSection/QRUrlSection';
 
 export default function QRModal() {
   return (
