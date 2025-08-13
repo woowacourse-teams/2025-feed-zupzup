@@ -11,52 +11,55 @@ import org.springframework.data.repository.query.Param;
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("""
-    SELECT f
-    FROM Feedback f
-    WHERE f.organization.id = :organizationId
-    AND (:status IS NULL OR f.status = :status)
-    AND (:cursorId IS NULL OR f.id < :cursorId)
-    ORDER BY f.id DESC
-    """)
+            SELECT f
+            FROM Feedback f
+            WHERE f.organization.id = :organizationId
+            AND (:status IS NULL OR f.status = :status)
+            AND (:cursorId IS NULL OR f.id < :cursorId)
+            AND f.deletedAt IS NULL
+            ORDER BY f.id DESC
+            """)
     List<Feedback> findByLatest(
-        @Param("organizationId") Long organizationId,
-        @Param("status") ProcessStatus status,
-        @Param("cursorId") Long cursorId,
-        Pageable pageable
+            @Param("organizationId") Long organizationId,
+            @Param("status") ProcessStatus status,
+            @Param("cursorId") Long cursorId,
+            Pageable pageable
     );
 
     @Query("""
-    SELECT f
-    FROM Feedback f
-    WHERE f.organization.id = :organizationId
-    AND (:status IS NULL OR f.status = :status)
-    AND (:cursorId IS NULL OR f.id > :cursorId)
-    ORDER BY f.id ASC
-    """)
+            SELECT f
+            FROM Feedback f
+            WHERE f.organization.id = :organizationId
+            AND (:status IS NULL OR f.status = :status)
+            AND (:cursorId IS NULL OR f.id > :cursorId)
+            AND f.deletedAt IS NULL
+            ORDER BY f.id ASC
+            """)
     List<Feedback> findByOldest(
-        @Param("organizationId") Long organizationId,
-        @Param("status") ProcessStatus status,
-        @Param("cursorId") Long cursorId,
-        Pageable pageable
+            @Param("organizationId") Long organizationId,
+            @Param("status") ProcessStatus status,
+            @Param("cursorId") Long cursorId,
+            Pageable pageable
     );
 
     @Query("""
-    SELECT f
-    FROM Feedback f
-    WHERE f.organization.id = :organizationId
-    AND (:status IS NULL OR f.status = :status)
-    AND (
-        :cursorId IS NULL OR 
-        f.likeCount < (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) OR 
-        (f.likeCount = (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) AND f.id < :cursorId)
-    )
-    ORDER BY f.likeCount DESC, f.id ASC
-    """)
+            SELECT f
+            FROM Feedback f
+            WHERE f.organization.id = :organizationId
+            AND (:status IS NULL OR f.status = :status)
+            AND (
+                :cursorId IS NULL OR 
+                f.likeCount < (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) OR 
+                (f.likeCount = (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) AND f.id < :cursorId)
+            )
+            AND f.deletedAt IS NULL
+            ORDER BY f.likeCount DESC, f.id ASC
+            """)
     List<Feedback> findByLikes(
-        @Param("organizationId") Long organizationId,
-        @Param("status") ProcessStatus status,
-        @Param("cursorId") Long cursorId,
-        Pageable pageable
+            @Param("organizationId") Long organizationId,
+            @Param("status") ProcessStatus status,
+            @Param("cursorId") Long cursorId,
+            Pageable pageable
     );
 
     List<Feedback> findByIdIn(Collection<Long> ids);
@@ -71,6 +74,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             )
             FROM Feedback f
             WHERE f.organization.id = :organizationId
+            AND f.deletedAt IS NULL
             """)
     FeedbackAmount countFeedbackByOrganizationIdAndProcessStatus(final Long organizationId);
 }

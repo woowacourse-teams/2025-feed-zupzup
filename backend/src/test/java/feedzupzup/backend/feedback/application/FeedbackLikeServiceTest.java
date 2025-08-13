@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -59,7 +59,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 

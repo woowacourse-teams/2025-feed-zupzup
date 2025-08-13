@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -44,7 +44,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -98,7 +98,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
             organizationRepository.save(otherOrganization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -130,7 +130,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             Organization savedOrganization = organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
