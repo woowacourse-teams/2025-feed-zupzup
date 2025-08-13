@@ -2,10 +2,10 @@ package feedzupzup.backend.auth.presentation.api;
 
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
-import feedzupzup.backend.auth.dto.AdminLoginResponse;
-import feedzupzup.backend.auth.dto.LoginRequest;
-import feedzupzup.backend.auth.dto.SignUpRequest;
-import feedzupzup.backend.auth.dto.SignUpResponse;
+import feedzupzup.backend.auth.dto.response.LoginResponse;
+import feedzupzup.backend.auth.dto.request.LoginRequest;
+import feedzupzup.backend.auth.dto.request.SignUpRequest;
+import feedzupzup.backend.auth.dto.response.SignUpResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,7 +38,7 @@ public interface AdminAuthApi {
             @ApiResponse(responseCode = "400", description = "로그인 정보가 올바르지 않음")
     })
     @PostMapping("/admin/login")
-    SuccessResponse<AdminLoginResponse> login(
+    SuccessResponse<LoginResponse> login(
             @RequestBody @Valid LoginRequest request,
             @Parameter(hidden = true) HttpServletRequest httpRequest
     );
@@ -58,7 +58,7 @@ public interface AdminAuthApi {
             @ApiResponse(responseCode = "400", description = "로그인되지 않은 상태")
     })
     @GetMapping("/admin/me")
-    SuccessResponse<AdminLoginResponse> getAdminLoginStatus(
+    SuccessResponse<LoginResponse> getAdminLoginStatus(
             @Parameter(hidden = true) @AdminAuthenticationPrincipal AdminSession adminSession
     );
 }

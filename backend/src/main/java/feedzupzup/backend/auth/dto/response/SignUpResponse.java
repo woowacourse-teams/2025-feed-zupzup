@@ -1,4 +1,4 @@
-package feedzupzup.backend.auth.dto;
+package feedzupzup.backend.auth.dto.response;
 
 import feedzupzup.backend.admin.domain.Admin;
 import io.swagger.v3.oas.annotations.media.Schema;

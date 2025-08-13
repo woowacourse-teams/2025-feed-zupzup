@@ -20,7 +20,7 @@ public class LoginId {
     private static final String BLANK_SPACE = " ";
     private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$"); // 영여, 숫자만 가능
 
-    @Column(name = "login_id", nullable = false)
+    @Column(name = "login_id", nullable = false, unique = true)
     private String value;
 
     public LoginId(final String value) {

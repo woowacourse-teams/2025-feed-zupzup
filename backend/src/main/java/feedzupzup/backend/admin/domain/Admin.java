@@ -41,4 +41,8 @@ public class Admin extends BaseTimeEntity {
         this.password = password;
         this.adminName = adminName;
     }
+
+    public String getPasswordValue() {
+        return password.getValue();
+    }
 }

@@ -26,13 +26,4 @@ public class AuthException extends DomainException {
             super(errorCode, message);
         }
     }
-
-    public static final class PasswordNotMatchException extends AuthException {
-
-        private static final ErrorCode errorCode = ErrorCode.PASSWORD_NOT_MATCH;
-
-        public PasswordNotMatchException(String message) {
-            super(errorCode, message);
-        }
-    }
 }

@@ -1,10 +1,10 @@
-package feedzupzup.backend.auth.dto;
+package feedzupzup.backend.auth.dto.response;
 
 import feedzupzup.backend.admin.domain.Admin;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "관리자 로그인 정보 응답")
-public record AdminLoginResponse(
+public record LoginResponse(
         @Schema(description = "로그인 ID", example = "admin123")
         String loginId,
         
@@ -15,8 +15,8 @@ public record AdminLoginResponse(
         Long adminId
 ) {
     
-    public static AdminLoginResponse from(final Admin admin) {
-        return new AdminLoginResponse(
+    public static LoginResponse from(final Admin admin) {
+        return new LoginResponse(
                 admin.getLoginId().getValue(),
                 admin.getAdminName().getValue(),
                 admin.getId()

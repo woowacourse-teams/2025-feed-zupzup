@@ -1,7 +1,6 @@
 package feedzupzup.backend.admin.domain.vo;
 
 import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminPasswordException;
-import feedzupzup.backend.auth.encoder.PasswordEncoder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -32,15 +31,10 @@ public class Password {
         this.value = value;
     }
 
-    public static Password createEncodedPassword(final String rawPassword, final PasswordEncoder passwordEncoder) {
+    public static Password createPassword(final String rawPassword) {
         validateLength(rawPassword);
         validateFormat(rawPassword);
-        final String encodedPassword = passwordEncoder.encode(rawPassword);
-        return new Password(encodedPassword);
-    }
-
-    public boolean matches(final String rawPassword, final PasswordEncoder passwordEncoder) {
-        return passwordEncoder.matches(rawPassword, this.value);
+        return new Password(rawPassword);
     }
 
     private static void validateLength(final String password) {

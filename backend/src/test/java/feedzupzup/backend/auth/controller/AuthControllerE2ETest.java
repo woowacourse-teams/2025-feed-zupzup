@@ -9,9 +9,9 @@ import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
-import feedzupzup.backend.auth.dto.LoginRequest;
-import feedzupzup.backend.auth.dto.SignUpRequest;
-import feedzupzup.backend.auth.encoder.PasswordEncoder;
+import feedzupzup.backend.auth.application.PasswordEncoder;
+import feedzupzup.backend.auth.dto.request.LoginRequest;
+import feedzupzup.backend.auth.dto.request.SignUpRequest;
 import feedzupzup.backend.config.E2EHelper;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("정상적인 회원가입 요청시 회원가입이 성공하고 세션이 생성된다")
     void signUp_Success() {
         // Given
-        SignUpRequest request = new SignUpRequest("testId", "password123", "password123", "testName");
+        SignUpRequest request = new SignUpRequest("testId", "password123", "testName");
 
         // When & Then
         given()
@@ -44,30 +44,13 @@ class AuthControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("비밀번호와 비밀번호 확인이 일치하지 않으면 400 에러가 발생한다")
-    void signUp_PasswordNotMatch() {
-        // Given
-        SignUpRequest request = new SignUpRequest("testId", "password123", "differentPassword123", "testName");
-
-        // When & Then
-        given()
-                .contentType(ContentType.JSON)
-                .body(request)
-        .when()
-                .post("/admin/sign-up")
-        .then()
-                .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
     @DisplayName("중복된 로그인 ID로 회원가입시 400 에러가 발생한다")
     void signUp_DuplicateLoginId() {
         // Given
         Admin existingAdmin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("existName"));
         adminRepository.save(existingAdmin);
         
-        SignUpRequest request = new SignUpRequest("testId", "password123", "password123", "testName");
+        SignUpRequest request = new SignUpRequest("testId", "password123", "testName");
 
         // When & Then
         given()
@@ -87,7 +70,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("유효하지 않은 비밀번호 형식으로 회원가입시 400 에러가 발생한다")
     void signUp_InvalidPasswordFormat() {
         // Given
-        SignUpRequest request = new SignUpRequest("testId", "password한글", "password한글", "testName");
+        SignUpRequest request = new SignUpRequest("testId", "password한글", "testName");
 
         // When & Then
         given()
@@ -107,7 +90,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("짧은 비밀번호로 회원가입시 400 에러가 발생한다")
     void signUp_ShortPassword() {
         // Given
-        SignUpRequest request = new SignUpRequest("testId", "test", "test", "testName");
+        SignUpRequest request = new SignUpRequest("testId", "test", "testName");
 
         // When & Then
         given()
@@ -126,7 +109,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("유효하지 않은 로그인 ID 형식으로 회원가입시 400 에러가 발생한다")
     void signUp_InvalidLoginIdFormat() {
         // Given
-        SignUpRequest request = new SignUpRequest("test@#", "password123", "password123", "testName");
+        SignUpRequest request = new SignUpRequest("test@#", "password123", "testName");
 
         // When & Then
         given()
@@ -144,7 +127,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("유효하지 않은 관리자 이름 형식으로 회원가입시 400 에러가 발생한다")
     void signUp_InvalidAdminNameFormat() {
         // Given
-        SignUpRequest request = new SignUpRequest("testId", "password123", "password123", "test@#");
+        SignUpRequest request = new SignUpRequest("testId", "password123", "test@#");
 
         // When & Then
         given()
@@ -162,7 +145,9 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("정상적인 로그인 요청시 로그인이 성공하고 세션이 생성된다")
     void login_Success() {
         // Given
-        Admin admin = new Admin(new LoginId("testId"), Password.createEncodedPassword("password123", passwordEncoder), new AdminName("testName"));
+        final Password password = Password.createPassword("password123");
+
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest request = new LoginRequest("testId", "password123");
@@ -182,7 +167,7 @@ class AuthControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("존재하지 않는 로그인 ID로 로그인시 400 에러가 발생한다")
+    @DisplayName("존재하지 않는 로그인 ID로 로그인시 404 에러가 발생한다")
     void login_LoginIdNotFound() {
         // Given
         LoginRequest request = new LoginRequest("noExistId", "password");
@@ -194,9 +179,9 @@ class AuthControllerE2ETest extends E2EHelper {
         .when()
                 .post("/admin/login")
         .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("status", equalTo(400))
-                .body("code", equalTo("A06"));
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("status", equalTo(404))
+                .body("code", equalTo("G01"));
     }
 
     @Test
@@ -251,7 +236,8 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("로그인 후 관리자 정보 조회가 성공한다")
     void getAdminInfo_Success() {
         // Given - 먼저 로그인하여 세션 생성
-        Admin admin = new Admin(new LoginId("testId"), Password.createEncodedPassword("password123", passwordEncoder), new AdminName("testName"));
+        final Password password = Password.createPassword("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest loginRequest = new LoginRequest("testId", "password123");

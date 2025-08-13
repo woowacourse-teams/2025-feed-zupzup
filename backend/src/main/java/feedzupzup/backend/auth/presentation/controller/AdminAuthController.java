@@ -3,10 +3,10 @@ package feedzupzup.backend.auth.presentation.controller;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.api.AdminAuthApi;
 import feedzupzup.backend.auth.application.AuthService;
-import feedzupzup.backend.auth.dto.AdminLoginResponse;
-import feedzupzup.backend.auth.dto.LoginRequest;
-import feedzupzup.backend.auth.dto.SignUpRequest;
-import feedzupzup.backend.auth.dto.SignUpResponse;
+import feedzupzup.backend.auth.dto.response.LoginResponse;
+import feedzupzup.backend.auth.dto.request.LoginRequest;
+import feedzupzup.backend.auth.dto.request.SignUpRequest;
+import feedzupzup.backend.auth.dto.response.SignUpResponse;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import feedzupzup.backend.global.response.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,9 +29,9 @@ public class AdminAuthController implements AdminAuthApi {
     }
 
     @Override
-    public SuccessResponse<AdminLoginResponse> login(final LoginRequest request,
+    public SuccessResponse<LoginResponse> login(final LoginRequest request,
                                                      final HttpServletRequest httpRequest) {
-        final AdminLoginResponse response = authService.login(request);
+        final LoginResponse response = authService.login(request);
         httpSessionManager.createAdminSession(httpRequest, response.adminId());
         return SuccessResponse.success(HttpStatus.OK, response);
     }
@@ -43,8 +43,8 @@ public class AdminAuthController implements AdminAuthApi {
     }
 
     @Override
-    public SuccessResponse<AdminLoginResponse> getAdminLoginStatus(final AdminSession adminSession) {
-        final AdminLoginResponse response = authService.getAdminLoginInfo(adminSession);
+    public SuccessResponse<LoginResponse> getAdminLoginStatus(final AdminSession adminSession) {
+        final LoginResponse response = authService.getAdminLoginInfo(adminSession);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }
