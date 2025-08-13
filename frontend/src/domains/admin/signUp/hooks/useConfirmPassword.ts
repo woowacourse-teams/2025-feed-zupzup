@@ -1,4 +1,4 @@
-import { validatePasswordConfirm } from '@/utils/authValidations';
+import { validatePasswordConfirm } from '@/domains/admin/utils/authValidations';
 import { useEffect, useState } from 'react';
 
 interface UseConfirmPassword {

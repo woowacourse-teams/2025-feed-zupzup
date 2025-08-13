@@ -12,13 +12,13 @@ import {
   signUpCaptionContainer,
   signUpForm,
 } from '@/domains/admin/SignUp/SignUp.style';
-import useAuthForm from '@/domains/hooks/useAuthForm';
+import useAuthForm from '@/domains/admin/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
   validateId,
   validateName,
   validatePassword,
-} from '@/utils/authValidations';
+} from '@/domains/admin/utils/authValidations';
 import { useNavigate } from 'react-router-dom';
 
 export default function SignUp() {

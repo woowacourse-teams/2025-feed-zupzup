@@ -13,6 +13,12 @@ const REGEX = {
   SPACE: /\s/,
 };
 
+export const VALIDATION_RULES = {
+  ID: { min: 5, max: 10 },
+  PASSWORD: { min: 5 },
+  NAME: { min: 1, max: 10 },
+};
+
 export const validateId = (value: string): ValidationState => {
   const min = 5;
   const max = 10;

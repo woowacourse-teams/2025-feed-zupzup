@@ -11,9 +11,12 @@ import {
   loginCaptionContainer,
   loginForm,
 } from '@/domains/admin/Login/Login.style';
-import useAuthForm from '@/domains/hooks/useAuthForm';
+import useAuthForm from '@/domains/admin/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { validateId, validatePassword } from '@/utils/authValidations';
+import {
+  validateId,
+  validatePassword,
+} from '@/domains/admin/utils/authValidations';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
