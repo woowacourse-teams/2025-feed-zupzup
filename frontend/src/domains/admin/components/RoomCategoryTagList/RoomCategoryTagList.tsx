@@ -32,7 +32,7 @@ export default function RoomCategoryTagList({
             onDeleteClick={() => {
               handleCategoryTagClick(item.category);
             }}
-          ></RoomCategoryTag>
+          />
         ))}
       </div>
     </div>
