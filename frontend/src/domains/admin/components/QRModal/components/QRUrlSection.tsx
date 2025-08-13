@@ -11,7 +11,6 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 
 type QRUrlSectionProps = {
   url: string;
-  helpText?: string;
 };
 
 export default function QRUrlSection({ url }: QRUrlSectionProps) {

@@ -9,9 +9,7 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 type QRImageSectionProps = {
-  url: string; // base64 data URL
-  title?: string;
-  description?: string;
+  url: string;
 };
 
 export default function QRImageSection({ url }: QRImageSectionProps) {
