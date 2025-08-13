@@ -31,7 +31,6 @@ export default function BasicButton({
 }: BasicButtonProps) {
   const theme = useAppTheme();
 
-  console.log(padding);
   return (
     <Button
       css={basicButton(theme, width, variant, height, gap, padding)}
