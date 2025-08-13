@@ -1,11 +1,14 @@
 package feedzupzup.backend.organization.application;
 
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;
 import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

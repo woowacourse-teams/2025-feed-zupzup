@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Getter
@@ -35,4 +36,13 @@ public class Organizer extends BaseTimeEntity {
     @Column(nullable = false)
     private OrganizerRole role;
 
+    public Organizer(
+            final @NonNull Organization organization,
+            final @NonNull Admin admin,
+            final @NonNull OrganizerRole role
+    ) {
+        this.organization = organization;
+        this.admin = admin;
+        this.role = role;
+    }
 }
