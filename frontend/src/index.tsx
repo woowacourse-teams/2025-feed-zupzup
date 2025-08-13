@@ -14,6 +14,25 @@ declare global {
   }
 }
 
+if (process.env.NODE_ENV === 'development') {
+  (async () => {
+    const { worker } = await import('./mocks/browser');
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: { url: '/service-worker.js' },
+    });
+  })();
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((reg) => console.log('Service Worker registered:', reg))
+      .catch((err) => console.log('Service Worker registration failed:', err));
+  });
+}
+
 Sentry.init({
   dsn: 'https://d078b25843b4ef88ed75b287a7ab8a4b@o4509750841245696.ingest.us.sentry.io/4509750843342849',
   integrations: [
@@ -38,41 +57,15 @@ Sentry.init({
   sendDefaultPii: true,
 });
 
+window.Sentry = Sentry;
+
 const root = createRoot(document.getElementById('root')!);
 root.render(
-  <Sentry.ErrorBoundary fallback={<div>에러</div>}>
+  <ErrorModalProvider>
     <ThemeProvider theme={theme}>
-      <ErrorModalProvider>
+      <Sentry.ErrorBoundary>
         <RouterProvider router={router} />
-      </ErrorModalProvider>
+      </Sentry.ErrorBoundary>
     </ThemeProvider>
-  </Sentry.ErrorBoundary>
+  </ErrorModalProvider>
 );
-
-if ('serviceWorker' in navigator) {
-  (async () => {
-    try {
-      const existing = await navigator.serviceWorker.getRegistration();
-      if (existing) {
-        console.log('SW 재사용:', existing.scope);
-      } else {
-        const reg = await navigator.serviceWorker.register(
-          '/firebase-messaging-sw.js'
-        );
-        console.log('SW 등록:', reg.scope);
-      }
-    } catch (err) {
-      console.error('SW 등록 실패:', err);
-    }
-  })();
-}
-
-if (process.env.NODE_ENV === 'development') {
-  (async () => {
-    const { worker } = await import('./mocks/browser');
-    await worker.start({
-      onUnhandledRequest: 'bypass',
-      serviceWorker: { url: '/firebase-messaging-sw.js' },
-    });
-  })();
-}
