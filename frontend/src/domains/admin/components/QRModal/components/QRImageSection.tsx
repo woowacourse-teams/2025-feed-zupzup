@@ -9,12 +9,12 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 type QRImageSectionProps = {
-  dataUrl: string; // base64 data URL
+  url: string; // base64 data URL
   title?: string;
   description?: string;
 };
 
-export default function QRImageSection({ dataUrl }: QRImageSectionProps) {
+export default function QRImageSection({ url }: QRImageSectionProps) {
   const theme = useAppTheme();
 
   const handleDownload = () => {
@@ -26,7 +26,7 @@ export default function QRImageSection({ dataUrl }: QRImageSectionProps) {
       <p css={QRTitle(theme)}>QR 코드 & URL 공유</p>
 
       <div css={QRImageContainer}>
-        <img src={dataUrl} alt='피드백 페이지로 이동하는 QR 코드' />
+        <img src={url} alt='피드백 페이지로 이동하는 QR 코드' />
       </div>
 
       <p css={QRText(theme)}>
