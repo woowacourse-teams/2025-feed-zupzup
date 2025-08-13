@@ -18,8 +18,8 @@ public record SignUpResponse(
     public static SignUpResponse from(final Admin admin) {
         return new SignUpResponse(
                 admin.getId(),
-                admin.getLoginId().getLoginId(),
-                admin.getAdminName().getAdminName()
+                admin.getLoginId().getValue(),
+                admin.getAdminName().getValue()
         );
     }
 }

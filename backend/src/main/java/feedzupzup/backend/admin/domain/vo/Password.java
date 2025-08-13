@@ -3,6 +3,7 @@ package feedzupzup.backend.admin.domain.vo;
 import feedzupzup.backend.auth.encoder.PasswordEncoder;
 import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorCode;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,10 +26,11 @@ public class Password {
                     "]+$"
     );
 
-    private String password;
+    @Column(name = "password", nullable = false)
+    private String value;
 
-    public Password(String password) {
-        this.password = password;
+    public Password(String value) {
+        this.value = value;
     }
 
     public static Password createEncodedPassword(final String rawPassword, final PasswordEncoder passwordEncoder) {
@@ -39,7 +41,7 @@ public class Password {
     }
 
     public boolean matches(final String rawPassword, final PasswordEncoder passwordEncoder) {
-        return passwordEncoder.matches(rawPassword, this.password);
+        return passwordEncoder.matches(rawPassword, this.value);
     }
 
     private static void validateLength(final String password) {

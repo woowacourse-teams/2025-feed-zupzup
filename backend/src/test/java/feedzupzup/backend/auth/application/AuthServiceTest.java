@@ -52,8 +52,8 @@ class AuthServiceTest extends ServiceIntegrationHelper {
         
         // Admin이 실제로 저장되었는지 확인
         Admin savedAdmin = adminRepository.findByLoginId(new LoginId("testId")).orElseThrow();
-        assertThat(savedAdmin.getLoginId().getLoginId()).isEqualTo("testId");
-        assertThat(savedAdmin.getAdminName().getAdminName()).isEqualTo("testName");
+        assertThat(savedAdmin.getLoginId().getValue()).isEqualTo("testId");
+        assertThat(savedAdmin.getAdminName().getValue()).isEqualTo("testName");
     }
 
     @Test

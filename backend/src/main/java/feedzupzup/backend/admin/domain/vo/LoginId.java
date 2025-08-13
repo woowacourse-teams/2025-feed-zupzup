@@ -2,6 +2,7 @@ package feedzupzup.backend.admin.domain.vo;
 
 import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorCode;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,12 +19,13 @@ public class LoginId {
     private static final String BLANK_SPACE = " ";
     private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$"); // 영여, 숫자만 가능
 
-    private String loginId;
+    @Column(name = "login_id", nullable = false)
+    private String value;
 
-    public LoginId(final String loginId) {
-        validateLength(loginId);
-        validateFormat(loginId);
-        this.loginId = loginId;
+    public LoginId(final String value) {
+        validateLength(value);
+        validateFormat(value);
+        this.value = value;
     }
 
     private void validateLength(final String loginId) {
