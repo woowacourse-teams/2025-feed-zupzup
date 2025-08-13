@@ -1,6 +1,6 @@
-package feedzupzup.backend.admin.controller;
+package feedzupzup.backend.auth.presentation.controller;
 
-import feedzupzup.backend.admin.domain.exception.AdminException;
+import feedzupzup.backend.auth.exception.AuthException;
 import feedzupzup.backend.global.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class AdminExceptionHandler {
+public class AuthExceptionHandler {
 
-    @ExceptionHandler(AdminException.class)
-    public ResponseEntity<ErrorResponse> handleOrganizationException(AdminException e) {
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorResponse> handleOrganizationException(AuthException e) {
         log.warn(e.getMessage(), e);
         final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
         return ResponseEntity.status(httpStatus)
