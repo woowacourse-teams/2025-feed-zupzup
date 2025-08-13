@@ -3,7 +3,7 @@ import {
   authLayout,
   authTitle,
   titleContainer,
-} from '@/domains/components/AuthLayout/AuthLayout.style';
+} from '@/domains/admin/components/AuthLayout/AuthLayout.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface AuthLayoutProps {

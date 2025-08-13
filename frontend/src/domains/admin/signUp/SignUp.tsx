@@ -1,5 +1,7 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { ROUTES } from '@/constants';
+import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
+import FormField from '@/domains/admin/components/FormField/FormField';
 import {
   SignUpField,
   signUpFields,
@@ -10,8 +12,7 @@ import {
   signUpCaptionContainer,
   signUpForm,
 } from '@/domains/admin/signUp/SignUp.style';
-import AuthLayout from '@/domains/components/AuthLayout/AuthLayout';
-import FormField from '@/domains/components/FormField/FormField';
+
 import useAuthForm from '@/domains/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
