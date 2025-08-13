@@ -6,10 +6,13 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
+import java.util.Comparator;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
@@ -52,7 +55,7 @@ public class UserFeedbackService {
             final ProcessStatus status,
             final FeedbackOrderBy orderBy
     ) {
-        final Pageable pageable = Pageable.ofSize(size + 1);
+        final Pageable pageable = createPageable(size);
 
         feedbackLikeService.flushLikeCountBuffer();
 
@@ -62,7 +65,7 @@ public class UserFeedbackService {
             case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
         };
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage);
+        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
         return UserFeedbackListResponse.of(
                 feedbackPage.getFeedbacks(),
                 feedbackPage.isHasNext(),
@@ -70,8 +73,48 @@ public class UserFeedbackService {
         );
     }
 
+    public MyFeedbackListResponse getMyFeedbackPage(
+            final Long organizationId,
+            final FeedbackOrderBy orderBy,
+            final List<Long> myFeedbackIds
+    ) {
+        feedbackLikeService.flushLikeCountBuffer();
+
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdIn(
+                organizationId, myFeedbackIds);
+
+        final List<Feedback> sortedFeedbacks = sortFeedbacksByOrderBy(feedbacks, orderBy);
+        
+        feedbackLikeCounter.applyBufferedLikeCount(sortedFeedbacks);
+        return MyFeedbackListResponse.of(sortedFeedbacks);
+    }
+
     private Organization findOrganizationBy(final Long organizationId) {
         return organizationRepository.findById(organizationId)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
+    }
+
+    private Pageable createPageable(int size) {
+        final Pageable pageable = Pageable.ofSize(size + 1);
+        return pageable;
+    }
+
+    private List<Feedback> sortFeedbacksByOrderBy(final List<Feedback> feedbacks, final FeedbackOrderBy orderBy) {
+        if (orderBy == FeedbackOrderBy.LATEST) {
+            return feedbacks.stream()
+                    .sorted(Comparator.comparing(Feedback::getId).reversed())
+                    .toList();
+        }
+        
+        if (orderBy == FeedbackOrderBy.OLDEST) {
+            return feedbacks.stream()
+                    .sorted(Comparator.comparing(Feedback::getId))
+                    .toList();
+        }
+        
+        return feedbacks.stream()
+                .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
+                        .thenComparing(Feedback::getId))
+                .toList();
     }
 }
