@@ -60,7 +60,7 @@ export default function Login() {
         <div css={loginCaptionContainer(theme)}>
           <p>비밀번호를 잊으셨나요?</p>
           <p>
-            계정이 없으신가요?{' '}
+            계정이 없으신가요?
             <strong onClick={() => navigate(ROUTES.LOGIN)}>회원가입하기</strong>
           </p>
         </div>
