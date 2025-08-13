@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.application.FeedbackOrderBy.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy.LATEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,10 +15,11 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse.UserFeedbackItem;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -310,7 +311,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(response.feedbacks()).hasSize(2),
                 () -> assertThat(response.feedbacks())
-                        .extracting(UserFeedbackListResponse.UserFeedbackItem::feedbackId)
+                        .extracting(FeedbackItem::feedbackId)
                         .doesNotContain(otherFeedback.getId()),
                 () -> assertThat(response.hasNext()).isFalse()
         );
@@ -528,7 +529,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organization.getId(), size, null, null, LATEST);
-        final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
+        final FeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 인메모리 좋아요 수만 반영되는지 확인
         assertAll(
@@ -566,7 +567,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organization.getId(), size, null, null, LATEST);
-        final UserFeedbackItem userFeedbackItem = response.feedbacks().getFirst();
+        final FeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인
         assertAll(
