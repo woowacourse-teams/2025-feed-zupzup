@@ -1,6 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import Modal from '@/components/Modal/Modal';
-import { buttonContainer } from '@/components/Modal/Modal.styles';
+import { buttonContainer } from '@/domains/admin/CreateRoomModal/CreateRoomModal.styles';
 import RoomCategoryList from '@/domains/admin/components/RoomCategoryList/RoomCategoryList';
 import RoomCategoryTagList from '@/domains/admin/components/RoomCategoryTagList/RoomCategoryTagList';
 import {
@@ -8,6 +8,7 @@ import {
   roomModalTitle,
 } from '@/domains/admin/CreateRoomModal/CreateRoomModal.styles';
 import { useCategorySelection } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
 
 interface CreateRoomModalProps {
@@ -19,6 +20,7 @@ export default function CreateRoomModal({
   isOpen,
   onClose,
 }: CreateRoomModalProps) {
+  const theme = useAppTheme();
   const [roomName, setRoomName] = useState('');
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
@@ -43,7 +45,7 @@ export default function CreateRoomModal({
           handleCategoryTagClick={handleCategoryTagClick}
         />
       </section>
-      <div css={buttonContainer}>
+      <div css={buttonContainer(theme)}>
         <BasicButton variant='secondary' width={'48%'}>
           취소
         </BasicButton>

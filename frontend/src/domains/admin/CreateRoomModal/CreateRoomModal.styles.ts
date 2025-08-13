@@ -1,3 +1,4 @@
+import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
 export const roomModalContainer = css`
@@ -10,8 +11,9 @@ export const roomModalTitle = css`
   text-align: center;
 `;
 
-export const buttonContainer = css`
+export const buttonContainer = (theme: Theme) => css`
   display: flex;
   gap: 10px;
-  font-size: 16px;
+
+  ${theme.typography.pretendard.caption}
 `;
