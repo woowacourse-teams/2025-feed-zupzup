@@ -1,7 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.application.FeedbackOrderBy.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy.LATEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,10 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
@@ -56,7 +57,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -92,7 +93,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationRepository.save(organization);
             organizationCategoryRepository.save(organizationCategory);
@@ -136,7 +137,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -180,7 +181,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -219,7 +220,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -278,11 +279,11 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(targetOrganization);
             organizationRepository.save(otherOrganization);
 
-            final OrganizationCategory organizationCategory1 = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory1 = OrganizationCategoryFixture.createOrganizationCategory(
                     targetOrganization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory1);
 
-            final OrganizationCategory organizationCategory2 = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
                     targetOrganization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory2);
 
@@ -317,7 +318,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -356,7 +357,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -381,7 +382,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -423,7 +424,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -451,7 +452,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -483,7 +484,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -519,7 +520,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
@@ -555,7 +556,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 

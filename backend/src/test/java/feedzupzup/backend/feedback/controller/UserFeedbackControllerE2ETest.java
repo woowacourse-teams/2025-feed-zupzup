@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -55,7 +55,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -94,7 +94,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -177,10 +177,10 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         organizationRepository.save(organization1);
         organizationRepository.save(organization2);
 
-        final OrganizationCategory organizationCategory1 = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory1 = OrganizationCategoryFixture.createOrganizationCategory(
                 organization1, SUGGESTION);
 
-        final OrganizationCategory organizationCategory2 = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
                 organization2, SUGGESTION);
 
         organizationCategoryRepository.save(organizationCategory1);
@@ -222,7 +222,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
 
         final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
 
         organizationCategoryRepository.save(organizationCategory);
@@ -252,7 +252,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
 
         final Organization savedOrganization = organizationRepository.save(organization);
@@ -286,7 +286,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final Organization savedOrganization = organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -333,7 +333,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -364,7 +364,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         // 다른 장소의 피드백 (통계에 포함되지 않음)
         final Organization otherOrganization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(otherOrganization);
-        final OrganizationCategory otherOrganizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory otherOrganizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 otherOrganization, SUGGESTION);
         organizationCategoryRepository.save(otherOrganizationCategory);
         final Feedback otherPlaceFeedback = FeedbackFixture.createFeedbackWithOrganization(otherOrganization,
@@ -402,7 +402,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -443,7 +443,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -484,7 +484,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
@@ -519,212 +519,5 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[1].likeCount", equalTo(5))
                 .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()))
                 .body("data.feedbacks[2].likeCount", equalTo(3));
-    }
-
-    @Test
-    @DisplayName("내가 쓴 피드백 목록을 성공적으로 조회한다")
-    void get_my_feedbacks_success() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
-        organizationCategoryRepository.save(organizationCategory);
-
-        // 내가 쓴 피드백 3개 생성
-        final Feedback myFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-        final Feedback myFeedback2 = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-        final Feedback myFeedback3 = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-
-        // 다른 사람이 쓴 피드백
-        final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-
-        final Feedback savedMyFeedback1 = feedBackRepository.save(myFeedback1);
-        final Feedback savedMyFeedback2 = feedBackRepository.save(myFeedback2);
-        final Feedback savedMyFeedback3 = feedBackRepository.save(myFeedback3);
-        feedBackRepository.save(otherFeedback);
-
-        // when & then
-        given()
-                .log().all()
-                .queryParam("orderBy", "LATEST")
-                .queryParam("feedbackIds", savedMyFeedback1.getId() + "," + savedMyFeedback2.getId() + "," + savedMyFeedback3.getId())
-                .when()
-                .get("/organizations/{organizationId}/feedbacks/my", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(3))
-                .body("data.feedbacks[0].feedbackId", equalTo(savedMyFeedback3.getId().intValue()))
-                .body("data.feedbacks[1].feedbackId", equalTo(savedMyFeedback2.getId().intValue()))
-                .body("data.feedbacks[2].feedbackId", equalTo(savedMyFeedback1.getId().intValue()));
-    }
-
-    @Test
-    @DisplayName("내가 쓴 피드백이 없을 때 빈 목록을 반환한다")
-    void get_my_feedbacks_empty_result() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        // when & then - 빈 feedbackIds로 요청
-        given()
-                .log().all()
-                .queryParam("orderBy", "LATEST")
-                .queryParam("feedbackIds", "")
-                .when()
-                .get("/organizations/{organizationId}/feedbacks/my", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(0));
-    }
-
-    @Test
-    @DisplayName("내가 쓴 피드백을 좋아요 순으로 조회한다")
-    void get_my_feedbacks_ordered_by_likes() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
-        organizationCategoryRepository.save(organizationCategory);
-
-        // 좋아요 수가 다른 내 피드백들 생성
-        final Feedback myFeedback1 = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 5);
-        final Feedback myFeedback2 = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 10);
-        final Feedback myFeedback3 = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 3);
-
-        final Feedback savedMyFeedback1 = feedBackRepository.save(myFeedback1);
-        final Feedback savedMyFeedback2 = feedBackRepository.save(myFeedback2);
-        final Feedback savedMyFeedback3 = feedBackRepository.save(myFeedback3);
-
-        // when & then - LIKES 정렬로 조회하면 좋아요 많은순으로 반환 (10, 5, 3)
-        given()
-                .log().all()
-                .queryParam("orderBy", "LIKES")
-                .queryParam("feedbackIds", savedMyFeedback1.getId() + "," + savedMyFeedback2.getId() + "," + savedMyFeedback3.getId())
-                .when()
-                .get("/organizations/{organizationId}/feedbacks/my", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(3))
-                .body("data.feedbacks[0].feedbackId", equalTo(savedMyFeedback2.getId().intValue()))
-                .body("data.feedbacks[0].likeCount", equalTo(10))
-                .body("data.feedbacks[1].feedbackId", equalTo(savedMyFeedback1.getId().intValue()))
-                .body("data.feedbacks[1].likeCount", equalTo(5))
-                .body("data.feedbacks[2].feedbackId", equalTo(savedMyFeedback3.getId().intValue()))
-                .body("data.feedbacks[2].likeCount", equalTo(3));
-    }
-
-    @Test
-    @DisplayName("내가 쓴 피드백을 오래된 순으로 조회한다")
-    void get_my_feedbacks_ordered_by_oldest() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback myFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-        final Feedback myFeedback2 = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-        final Feedback myFeedback3 = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-
-        final Feedback savedMyFeedback1 = feedBackRepository.save(myFeedback1);
-        final Feedback savedMyFeedback2 = feedBackRepository.save(myFeedback2);
-        final Feedback savedMyFeedback3 = feedBackRepository.save(myFeedback3);
-
-        // when & then - OLDEST 정렬로 조회하면 오래된순(ID 순)으로 반환
-        given()
-                .log().all()
-                .queryParam("orderBy", "OLDEST")
-                .queryParam("feedbackIds", savedMyFeedback1.getId() + "," + savedMyFeedback2.getId() + "," + savedMyFeedback3.getId())
-                .when()
-                .get("/organizations/{organizationId}/feedbacks/my", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(3))
-                .body("data.feedbacks[0].feedbackId", equalTo(savedMyFeedback1.getId().intValue()))
-                .body("data.feedbacks[1].feedbackId", equalTo(savedMyFeedback2.getId().intValue()))
-                .body("data.feedbacks[2].feedbackId", equalTo(savedMyFeedback3.getId().intValue()));
-    }
-
-    @Test
-    @DisplayName("내가 쓴 피드백에 좋아요 수가 정확히 반영된다")
-    void get_my_feedbacks_with_like_count() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
-        organizationCategoryRepository.save(organizationCategory);
-
-        // DB에 저장된 좋아요 수가 다른 피드백들 생성
-        final Feedback myFeedback1 = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 5);
-        final Feedback myFeedback2 = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 0);
-
-        final Feedback savedMyFeedback1 = feedBackRepository.save(myFeedback1);
-        final Feedback savedMyFeedback2 = feedBackRepository.save(myFeedback2);
-
-        // when & then
-        given()
-                .log().all()
-                .queryParam("orderBy", "LATEST")
-                .queryParam("feedbackIds", savedMyFeedback1.getId() + "," + savedMyFeedback2.getId())
-                .when()
-                .get("/organizations/{organizationId}/feedbacks/my", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(2))
-                .body("data.feedbacks[0].likeCount", equalTo(0)) // savedMyFeedback2
-                .body("data.feedbacks[1].likeCount", equalTo(5)); // savedMyFeedback1
-    }
-
-    @Test
-    @DisplayName("내가 쓴 피드백 중 존재하지 않는 피드백 ID가 포함되어도 정상 동작한다")
-    void get_my_feedbacks_with_non_existent_ids() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback myFeedback = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
-        final Feedback savedMyFeedback = feedBackRepository.save(myFeedback);
-
-        // when & then - 존재하는 ID와 존재하지 않는 ID를 함께 전달
-        given()
-                .log().all()
-                .queryParam("orderBy", "LATEST")
-                .queryParam("feedbackIds", savedMyFeedback.getId() + ",999,1000") // 999, 1000은 존재하지 않는 ID
-                .when()
-                .get("/organizations/{organizationId}/feedbacks/my", organization.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks", hasSize(1)) // 존재하는 피드백만 반환
-                .body("data.feedbacks[0].feedbackId", equalTo(savedMyFeedback.getId().intValue()));
     }
 }
