@@ -20,14 +20,11 @@ export const VALIDATION_RULES = {
 };
 
 export const validateId = (value: string): ValidationState => {
-  const min = 5;
-  const max = 10;
-
   const rules = [
     lengthBetween(
-      min,
-      max,
-      `아이디는 ${min}자 이상 ${max}글자 이하로 작성해주세요`
+      VALIDATION_RULES.ID.min,
+      VALIDATION_RULES.ID.max,
+      `아이디는 ${VALIDATION_RULES.ID.min}자 이상 ${VALIDATION_RULES.ID.max}글자 이하로 작성해주세요`
     ),
     mustMatch(
       REGEX.ONLY_ALNUM,
@@ -44,10 +41,11 @@ export const validateId = (value: string): ValidationState => {
 };
 
 export const validatePassword = (value: string): ValidationState => {
-  const min = 5;
-
   const rules = [
-    lengthAtLeast(5, `비밀번호는 ${min}자 이상으로 작성해주세요`),
+    lengthAtLeast(
+      VALIDATION_RULES.PASSWORD.min,
+      `비밀번호는 ${VALIDATION_RULES.PASSWORD.min}자 이상으로 작성해주세요`
+    ),
     mustMatch(REGEX.ALPHA, '비밀번호는 영문 대소문자만 사용할 수 있습니다.'),
     mustNotMatch(REGEX.SPACE, '비밀번호에 공백을 포함할 수 없습니다.'),
   ];
@@ -70,14 +68,11 @@ export const validatePasswordConfirm = (
 };
 
 export const validateName = (value: string): ValidationState => {
-  const min = 1;
-  const max = 10;
-
   const rules = [
     lengthBetween(
-      min,
-      max,
-      `이름은 ${min}자 이상 ${max}글자 이하로 작성해주세요`
+      VALIDATION_RULES.NAME.min,
+      VALIDATION_RULES.NAME.max,
+      `이름은 ${VALIDATION_RULES.NAME.min}자 이상 ${VALIDATION_RULES.NAME.max}글자 이하로 작성해주세요`
     ),
     mustMatch(REGEX.KOREAN_ENGLISH, '이름은 한글과 영문만 사용할 수 있습니다.'),
     mustNotMatch(REGEX.SPACE, '이름에 공백을 포함할 수 없습니다.'),
