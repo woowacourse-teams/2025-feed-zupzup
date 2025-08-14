@@ -1,14 +1,13 @@
 import {
   fillStyle,
   overlayStyle,
-  wrapperStyle,
   trackStyle,
+  wrapperStyle,
 } from '@/domains/admin/AdminHome/components/StatusBar/StatusBar.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useMemo } from 'react';
 
 export default function StatusBar({ status }: { status: number }) {
-  const clamped = useMemo(() => Math.max(0, Math.min(100, status)), [status]);
+  const clamped = Math.max(0, Math.min(100, status));
 
   const theme = useAppTheme();
 
