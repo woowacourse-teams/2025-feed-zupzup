@@ -1,6 +1,7 @@
 package feedzupzup.backend.organization.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.admin.domain.Admin;
@@ -11,7 +12,13 @@ import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.application.PasswordEncoder;
 import feedzupzup.backend.auth.dto.request.LoginRequest;
 import feedzupzup.backend.config.E2EHelper;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +30,12 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
 
     @Autowired
     private AdminRepository adminRepository;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private OrganizerRepository organizerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -75,4 +88,82 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .then()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
+
+    @Test
+    @DisplayName("정상적인 조직 조회 요청시 조직 조회가 성공한다")
+    void getOrganizations_Success() {
+        // given
+        final Password password = Password.createPassword("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+
+        Organization organization1 = organizationRepository.save(Organization.builder().name(new feedzupzup.backend.organization.domain.vo.Name("org1")).cheeringCount(new CheeringCount(0)).build());
+        Organization organization2 = organizationRepository.save(Organization.builder().name(new feedzupzup.backend.organization.domain.vo.Name("org2")).cheeringCount(new CheeringCount(0)).build());
+        organizerRepository.save(new Organizer(organization1, admin, OrganizerRole.OWNER));
+        organizerRepository.save(new Organizer(organization2, admin, OrganizerRole.OWNER));
+
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie("JSESSIONID");
+
+        // When & Then
+        given()
+                .contentType(ContentType.JSON)
+                .cookie("JSESSIONID", sessionCookie)
+                .when()
+                .get("/admin/organizations")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+                .body("data.size()", equalTo(2));
+    }
+
+    @Test
+    @DisplayName("소속된 조직이 없는 경우, 빈 리스트를 반환한다.")
+    void getOrganizations_Success_Empty() {
+        // given
+        final Password password = Password.createPassword("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie("JSESSIONID");
+
+        // When & Then
+        given()
+                .contentType(ContentType.JSON)
+                .cookie("JSESSIONID", sessionCookie)
+                .when()
+                .get("/admin/organizations")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+                .body("data.size()", equalTo(0));
+    }
+
+    @Test
+    @DisplayName("admin 권한 없이 조직 조회 요청이 올 경우, 권한 오류가 발생해야 한다.")
+    void getOrganizations_Fail_Unauthorized() {
+        // When & Then
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/admin/organizations")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }
