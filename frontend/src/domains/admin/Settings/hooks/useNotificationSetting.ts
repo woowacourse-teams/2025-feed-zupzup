@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { NotificationService } from '@/services';
+import { NotificationService } from '@/services/notificationService';
 import { useNotifications } from './useNotifications';
 
 export const useNotificationSetting = (organizationId: number = 1) => {

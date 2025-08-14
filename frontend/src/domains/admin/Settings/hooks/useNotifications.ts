@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { onMessage, MessagePayload } from 'firebase/messaging';
 import { messaging } from '@/firebase/messaging';
-import { NotificationService } from '@/services';
+import { NotificationService } from '@/services/notificationService';
 import {
   getStoredNotificationState,
   setStoredNotificationState,
