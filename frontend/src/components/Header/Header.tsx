@@ -53,11 +53,9 @@ export default function Header() {
           css={moreMenuContainer}
           ref={moreButtonRef as React.RefObject<HTMLDivElement>}
         >
-          <div>
-            <Button onClick={toggleMoreMenu}>
-              <MoreVerticalIcon />
-            </Button>
-          </div>
+          <Button onClick={toggleMoreMenu}>
+            <MoreVerticalIcon />
+          </Button>
           {isOpenMoreMenu && (
             <div css={moreMenu}>
               <MoreMenu closeMoreMenu={closeMoreMenu} />
