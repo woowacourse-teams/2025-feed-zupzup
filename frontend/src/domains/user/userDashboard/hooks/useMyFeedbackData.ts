@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { FeedbackType } from '@/types/feedback.types';
+import { FeedbackType, SortType } from '@/types/feedback.types';
 import { getMyFeedbacks } from '@/apis/userFeedback.api';
 import { getLocalStorage } from '@/utils/localStorage';
 
-export function useMyFeedbackData() {
+export function useMyFeedbackData(selectedSort: SortType) {
   const [myFeedbacks, setMyFeedbacks] = useState<FeedbackType[]>([]);
 
   useEffect(() => {
@@ -14,6 +14,7 @@ export function useMyFeedbackData() {
       const response = await getMyFeedbacks({
         organizationId: 1,
         feedbackIds: myFeedbackIds,
+        orderBy: selectedSort,
       });
 
       if (response?.data?.feedbacks) {
@@ -22,7 +23,7 @@ export function useMyFeedbackData() {
     };
 
     fetchMyFeedbacks();
-  }, []);
+  }, [selectedSort]);
 
   return { myFeedbacks };
 }

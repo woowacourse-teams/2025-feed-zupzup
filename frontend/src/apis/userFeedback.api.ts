@@ -1,6 +1,6 @@
 import { CategoryType } from '@/analytics/types';
 import { apiClient } from '@/apis/apiClient';
-import { SuggestionFeedback } from '@/types/feedback.types';
+import { SortType, SuggestionFeedback } from '@/types/feedback.types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 interface UserFeedbackParams {
@@ -85,15 +85,29 @@ export interface MyFeedbackResponse {
 interface GetMyFeedbacksParams {
   organizationId: number;
   feedbackIds?: number[];
+  orderBy?: SortType;
 }
 
 export async function getMyFeedbacks({
   organizationId,
   feedbackIds,
+  orderBy,
 }: GetMyFeedbacksParams) {
-  const queryParams = feedbackIds ? `?feedbackIds=${feedbackIds}` : '';
+  const queryParams = new URLSearchParams();
+
+  if (feedbackIds) {
+    queryParams.append('feedbackIds', feedbackIds.join(','));
+  }
+
+  if (orderBy) {
+    queryParams.append('orderBy', orderBy);
+  }
+
+  const queryString = queryParams.toString();
+  const url = `/organizations/${organizationId}/feedbacks/my${queryString ? `?${queryString}` : ''}`;
+
   const response = await apiClient.get<{
     data: { feedbacks: MyFeedbackResponse[] };
-  }>(`/organizations/${organizationId}/feedbacks/my${queryParams}`);
+  }>(url);
   return response;
 }

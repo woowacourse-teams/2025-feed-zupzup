@@ -11,7 +11,8 @@ export default function useFeedbackFilterSort() {
   const [selectedFilter, setSelectedFilter] =
     useState<FeedbackFilterType | null>(null);
   const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
-  const { myFeedbacks } = useMyFeedbackData();
+
+  const { myFeedbacks } = useMyFeedbackData(selectedSort);
 
   const handleFilterChange = useCallback(
     (newFilter: FeedbackFilterType | null) => {
