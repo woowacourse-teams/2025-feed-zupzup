@@ -48,10 +48,22 @@ export default function CreateRoomModal({
         />
       </section>
       <div css={buttonContainer(theme)}>
-        <BasicButton variant='secondary' width={'48%'}>
+        <BasicButton
+          variant='secondary'
+          width={'48%'}
+          padding={'8px 8px'}
+          height={'40px'}
+          fontSize={'16px'}
+        >
           취소
         </BasicButton>
-        <BasicButton variant='primary' width={'48%'}>
+        <BasicButton
+          variant='primary'
+          width={'48%'}
+          padding={'8px 8px'}
+          height={'40px'}
+          fontSize={'16px'}
+        >
           방 만들기
         </BasicButton>
       </div>
