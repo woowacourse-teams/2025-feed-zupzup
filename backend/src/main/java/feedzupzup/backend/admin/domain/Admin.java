@@ -56,4 +56,8 @@ public class Admin extends BaseTimeEntity {
     public String getPasswordValue() {
         return password.getValue();
     }
+
+    public void updateAlertsSetting(boolean alertsOn) {
+        this.alertsOn = alertsOn;
+    }
 }
