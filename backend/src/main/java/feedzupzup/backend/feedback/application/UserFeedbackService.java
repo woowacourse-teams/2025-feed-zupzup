@@ -15,10 +15,15 @@ import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import java.util.Comparator;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.notification.event.NotificationEvent;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +31,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
     private final OrganizationRepository organizationRepository;
     private final FeedbackLikeService feedbackLikeService;
+    private final OrganizerRepository organizerRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @BusinessActionLog
@@ -45,6 +53,9 @@ public class UserFeedbackService {
                 category);
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
+        
+        // 새로운 피드백이 생성되면 해당 조직의 관리자들에게 알림 전송
+        publishNotificationToOrganizers(organization);
 
         return CreateFeedbackResponse.from(savedFeedback);
     }
@@ -117,5 +128,17 @@ public class UserFeedbackService {
                 .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
                         .thenComparing(Feedback::getId))
                 .toList();
+    }
+    
+    private void publishNotificationToOrganizers(Organization organization) {
+        List<Organizer> organizers = organizerRepository.findByOrganizationId(organization.getId());
+        
+        String organizationName = organization.getName().getValue();
+        List<Long> adminIds = organizers.stream()
+                .map(organizer -> organizer.getAdmin().getId())
+                .toList();
+        
+        NotificationEvent event = new NotificationEvent(adminIds, "피드줍줍", organizationName);
+        eventPublisher.publishEvent(event);
     }
 }
