@@ -1,7 +1,9 @@
 package feedzupzup.backend.notification.event;
 
+import java.util.List;
+
 public record NotificationEvent(
-        Long adminId,
+        List<Long> adminIds,
         String title,
         String organizationName
 ) {
