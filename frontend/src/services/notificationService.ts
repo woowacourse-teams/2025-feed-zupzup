@@ -123,7 +123,7 @@ export class NotificationService {
     return Notification.permission;
   }
 
-  static isSupported(): boolean {
+  static checkIsSupported(): boolean {
     return isNotificationSupported() && !!messaging && !!VAPID_KEY;
   }
 }
