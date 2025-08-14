@@ -34,7 +34,7 @@ export const useNotifications = (organizationId: number) => {
   }, []);
 
   useEffect(() => {
-    if (!messaging) return;
+    if (!messaging) return () => {};
 
     try {
       const unsubscribe = onMessage(messaging, (payload: MessagePayload) => {
@@ -54,6 +54,7 @@ export const useNotifications = (organizationId: number) => {
       return () => unsubscribe();
     } catch (error) {
       console.error('[FCM Hook] 포그라운드 메시지 수신 설정 중 오류:', error);
+      return () => {};
     }
   }, []);
 
