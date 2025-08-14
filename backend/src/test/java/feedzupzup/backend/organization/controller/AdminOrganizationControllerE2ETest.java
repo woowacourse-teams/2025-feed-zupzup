@@ -43,8 +43,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
     @Test
     @DisplayName("정상적인 조직 생성 요청시 조직 생성이 성공한다")
     void createOrganization_Success() {
-        // given
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
 
@@ -93,7 +92,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("정상적인 조직 조회 요청시 조직 조회가 성공한다")
     void getOrganizations_Success() {
         // given
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
 
@@ -128,7 +127,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("소속된 조직이 없는 경우, 빈 리스트를 반환한다.")
     void getOrganizations_Success_Empty() {
         // given
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
 
