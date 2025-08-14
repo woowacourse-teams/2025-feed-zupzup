@@ -109,6 +109,12 @@ const typography = {
       fontSize: 14,
       letterSpacing: 0,
     },
+    micro: {
+      fontFamily: 'Pretendard, sans-serif',
+      fontWeight: 400,
+      fontSize: 12,
+      letterSpacing: 0,
+    },
   },
   BMHANNAAir: {
     bodyBold: {
