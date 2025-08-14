@@ -85,12 +85,16 @@ class OrganizationRepositoryTest extends RepositoryHelper {
         @DisplayName("피드백이 있는 경우 피드백 정보와 함께 단체 정보를 조회한다.")
         void getAdminOrganizationInfos_WithFeedback() {
             // given
-            Feedback feedback1 = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithStatus(organization1, WAITING,
-                            organizationCategory1));
-            Feedback feedback2 = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithStatus(organization2, WAITING,
-                            organizationCategory2));
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(organization1,
+                    WAITING,
+                    organizationCategory1);
+            feedbackRepository.save(feedback1);
+
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithStatus(organization2,
+                    WAITING,
+                    organizationCategory2);
+            feedbackRepository.save(feedback2);
 
             AdminOrganizationInfo expected1 = new AdminOrganizationInfo(
                     organization1.getName().getValue(),
