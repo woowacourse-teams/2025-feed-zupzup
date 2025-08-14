@@ -5,12 +5,12 @@ import FormField from '@/domains/admin/components/FormField/FormField';
 import {
   LoginField,
   loginFields,
-} from '@/domains/admin/Login/constants/loginFields';
+} from '@/domains/admin/Logins/constants/loginFields';
 import {
   fieldContainer,
   loginCaptionContainer,
   loginForm,
-} from '@/domains/admin/Login/Login.style';
+} from '@/domains/admin/Logins/Login.style';
 import useAuthForm from '@/domains/admin/hooks/useAuthForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
