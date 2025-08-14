@@ -18,15 +18,13 @@ public class NotificationEventListener {
 
     @EventListener
     public void handleNotificationEvent(NotificationEvent event) {
-        log.info("알림 이벤트 수신: adminCount={}, organizationName={}", 
-                event.adminIds().size(), event.organizationName());
-
-        List<NotificationPayload> payloads = event.adminIds().stream()
-                .map(adminId -> new NotificationPayload(adminId, event.title(), event.organizationName()))
-                .toList();
-
-        pushNotifier.sendBatchMessage(payloads);
-        
-        log.info("배치 알림 처리 요청 완료: {}명의 관리자에게 발송 요청", event.adminIds().size());
+        try {
+            List<NotificationPayload> payloads = event.adminIds().stream()
+                    .map(adminId -> new NotificationPayload(adminId, event.title(), event.organizationName()))
+                    .toList();
+            pushNotifier.sendBatchMessage(payloads);
+        } catch (Exception e) {
+            log.error("알림 전송 중 오류 발생: {}", e.getMessage(), e);
+        }
     }
 }
