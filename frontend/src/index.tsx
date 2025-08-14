@@ -14,21 +14,21 @@ declare global {
   }
 }
 
-// if (process.env.NODE_ENV === 'development') {
-//   const { worker } = await import('./mocks/browser');
-//   await worker.start({
-//     onUnhandledRequest: 'bypass',
-//   });
-// }
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = await import('./mocks/browser');
+  await worker.start({
+    onUnhandledRequest: 'bypass',
+  });
+}
 
-// if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker
-//       .register('/service-worker.js')
-//       .then((reg) => console.log('Service Worker registered:', reg))
-//       .catch((err) => console.log('Service Worker registration failed:', err));
-//   });
-// }
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((reg) => console.log('Service Worker registered:', reg))
+      .catch((err) => console.log('Service Worker registration failed:', err));
+  });
+}
 
 Sentry.init({
   dsn: 'https://d078b25843b4ef88ed75b287a7ab8a4b@o4509750841245696.ingest.us.sentry.io/4509750843342849',
