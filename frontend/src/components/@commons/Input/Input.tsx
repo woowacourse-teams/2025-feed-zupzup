@@ -13,6 +13,7 @@ export interface InputProps extends React.ComponentProps<'input'> {
 export default function Input({
   name,
   value,
+  type = 'text',
   onChange,
   onFocus,
   placeholder,
@@ -22,6 +23,7 @@ export default function Input({
 }: InputProps) {
   return (
     <input
+      type={type}
       name={name}
       css={customCSS}
       maxLength={maxLength}
