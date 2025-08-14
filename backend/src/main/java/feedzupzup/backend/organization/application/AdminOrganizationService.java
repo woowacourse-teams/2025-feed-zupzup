@@ -9,6 +9,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
@@ -28,7 +29,7 @@ public class AdminOrganizationService {
     private final OrganizationCategoryRepository organizationCategoryRepository;
 
     @Transactional
-    public void saveOrganization(final CreateOrganizationRequest request, final Long adminId) {
+    public AdminCreateOrganizationResponse saveOrganization(final CreateOrganizationRequest request, final Long adminId) {
         final Organization organization = request.toOrganization();
         final List<String> categories = request.categories();
 
@@ -41,8 +42,9 @@ public class AdminOrganizationService {
                 OrganizerRole.OWNER
         );
 
-        organizationRepository.save(organization);
+        final Organization savedOrganization = organizationRepository.save(organization);
         organizerRepository.save(organizer);
+        return AdminCreateOrganizationResponse.from(savedOrganization);
     }
 
     private Admin findAdminBy(final Long adminId) {

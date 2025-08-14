@@ -4,8 +4,8 @@ import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public interface AdminOrganizationApi {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/admin/organizations")
-    SuccessResponse<Void> createOrganization(
+    SuccessResponse<AdminCreateOrganizationResponse> createOrganization(
             @AdminAuthenticationPrincipal final AdminSession adminSession,
             @RequestBody final CreateOrganizationRequest createOrganizationRequest
     );

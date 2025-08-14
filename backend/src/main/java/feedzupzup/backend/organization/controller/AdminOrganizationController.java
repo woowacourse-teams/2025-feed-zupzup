@@ -6,6 +6,7 @@ import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.api.AdminOrganizationApi;
 import feedzupzup.backend.organization.application.AdminOrganizationService;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +18,12 @@ public class AdminOrganizationController implements AdminOrganizationApi {
     private final AdminOrganizationService adminOrganizationService;
 
     @Override
-    public SuccessResponse<Void> createOrganization(
+    public SuccessResponse<AdminCreateOrganizationResponse> createOrganization(
             @AdminAuthenticationPrincipal final AdminSession adminSession,
             final CreateOrganizationRequest request
     ) {
-        adminOrganizationService.saveOrganization(request, adminSession.adminId());
-        return SuccessResponse.success(HttpStatus.CREATED);
+        final AdminCreateOrganizationResponse response = adminOrganizationService.saveOrganization(
+                request, adminSession.adminId());
+        return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 }
