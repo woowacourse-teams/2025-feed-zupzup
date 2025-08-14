@@ -98,16 +98,21 @@ class OrganizationRepositoryTest extends RepositoryHelper {
             // then
             assertAll(
                     () -> assertThat(adminOrganizationInfos).hasSize(2),
-                    () -> assertThat(adminOrganizationInfos.get(0).organizationName()).isEqualTo(
-                            organization2.getName().getValue()),
-                    () -> assertThat(adminOrganizationInfos.get(0).waitingCount()).isEqualTo(1L),
-                    () -> assertThat(adminOrganizationInfos.get(0).postedAt()).isEqualTo(
-                            feedback2.getPostedAt().getPostedAt()),
-                    () -> assertThat(adminOrganizationInfos.get(1).organizationName()).isEqualTo(
-                            organization1.getName().getValue()),
-                    () -> assertThat(adminOrganizationInfos.get(1).waitingCount()).isEqualTo(1L),
-                    () -> assertThat(adminOrganizationInfos.get(1).postedAt()).isEqualTo(
-                            feedback1.getPostedAt().getPostedAt())
+                    () -> assertThat(adminOrganizationInfos)
+                            .extracting(AdminOrganizationInfo::organizationName)
+                            .containsExactlyInAnyOrder(
+                                    organization1.getName().getValue(),
+                                    organization2.getName().getValue()
+                            ),
+                    () -> assertThat(adminOrganizationInfos)
+                            .extracting(AdminOrganizationInfo::waitingCount)
+                            .containsExactlyInAnyOrder(1L, 1L),
+                    () -> assertThat(adminOrganizationInfos)
+                            .extracting(AdminOrganizationInfo::postedAt)
+                            .containsExactlyInAnyOrder(
+                                    feedback1.getPostedAt().getPostedAt(),
+                                    feedback2.getPostedAt().getPostedAt()
+                            )
             );
         }
 
