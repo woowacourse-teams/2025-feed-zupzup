@@ -21,6 +21,7 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .extract()
                 .cookie("JSESSIONID");
 
-        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", List.of("신고", "건의"));
+        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", Set.of("신고", "건의"));
 
         // When & Then
         given()
@@ -76,7 +77,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("admin 권한 없이 요청이 올 경우, 권한 오류가 발생해야 한다.")
     void not_authorization_case() {
         // given
-        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", List.of("신고", "건의"));
+        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", Set.of("신고", "건의"));
 
         // When & Then
         given()

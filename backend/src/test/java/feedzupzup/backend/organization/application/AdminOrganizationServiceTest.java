@@ -10,7 +10,7 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
-import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        List.of("건의", "신고")
+                        Set.of("건의", "신고")
                 );
 
         final Admin savedAdmin = createAndSaveAdmin();
@@ -46,7 +46,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        List.of("건의", "신고")
+                        Set.of("건의", "신고")
                 );
 
         assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, 999L))
@@ -59,7 +59,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        List.of("크롱크롱", "대나무헬리콥터")
+                        Set.of("크롱크롱", "대나무헬리콥터")
                 );
         final Admin admin = createAndSaveAdmin();
         assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, admin.getId()))
