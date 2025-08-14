@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -12,6 +13,7 @@ public class PostedAt {
 
     private static final String TIME_ZONE_AREA = "Asia/Seoul";
 
+    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     private LocalDateTime postedAt;
 
     private PostedAt(final LocalDateTime postedAt) {
