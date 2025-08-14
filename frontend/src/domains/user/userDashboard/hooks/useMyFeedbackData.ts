@@ -9,11 +9,12 @@ export function useMyFeedbackData(selectedSort: SortType) {
   useEffect(() => {
     const fetchMyFeedbacks = async () => {
       const myFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
-      if (myFeedbackIds.length === 0) return;
+      const uniqueFeedbackIds = [...new Set(myFeedbackIds)];
+      if (uniqueFeedbackIds.length === 0) return;
 
       const response = await getMyFeedbacks({
         organizationId: 1,
-        feedbackIds: myFeedbackIds,
+        feedbackIds: uniqueFeedbackIds,
         orderBy: selectedSort,
       });
 
