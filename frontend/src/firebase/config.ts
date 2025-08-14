@@ -13,4 +13,4 @@ const firebaseConfig: FirebaseOptions = {
 export const firebaseApp = initializeApp(firebaseConfig);
 
 export const VAPID_KEY =
-  'BL1Zim9mODoKpMfozMdTeI8O1sktiawgesxvRwkZz3Y8E8bQrb6NSqwTmD67uEfPJAiuafK5egdywyK8WLDSPNs'; // 실제 VAPID 키로 교체
+  'BL1Zim9mODoKpMfozMdTeI8O1sktiawgesxvRwkZz3Y8E8bQrb6NSqwTmD67uEfPJAiuafK5egdywyK8WLDSPNs';

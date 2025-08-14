@@ -41,9 +41,23 @@ export class NotificationService {
         throw new Error('FCM 토큰 생성에 실패했습니다.');
       }
 
-      await registerFCMToken(token);
+      await new Promise<void>((resolve, reject) => {
+        registerFCMToken({
+          token,
+          onSuccess: () => resolve(),
+          onError: () => reject(new Error('FCM 토큰 등록에 실패했습니다.')),
+        });
+      });
 
-      await updateNotificationSettings(organizationId, true);
+      await new Promise<void>((resolve, reject) => {
+        updateNotificationSettings({
+          organizationId,
+          enabled: true,
+          onSuccess: () => resolve(),
+          onError: () =>
+            reject(new Error('알림 설정 업데이트에 실패했습니다.')),
+        });
+      });
 
       setStoredNotificationState(organizationId, true);
 
@@ -65,7 +79,15 @@ export class NotificationService {
     organizationId: number
   ): Promise<NotificationServiceResult> {
     try {
-      await updateNotificationSettings(organizationId, false);
+      await new Promise<void>((resolve, reject) => {
+        updateNotificationSettings({
+          organizationId,
+          enabled: false,
+          onSuccess: () => resolve(),
+          onError: () =>
+            reject(new Error('알림 설정 업데이트에 실패했습니다.')),
+        });
+      });
 
       setStoredNotificationState(organizationId, false);
 
