@@ -22,7 +22,8 @@ export default function Header() {
   const location = useLocation();
   const theme = useAppTheme();
   const navigate = useNavigate();
-  const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef } =
+
+  const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu } =
     useMoreMenuManager();
 
   const { title, subtitle, hasMoreIcon, showBackButton } =
@@ -48,15 +49,18 @@ export default function Header() {
         </div>
       </div>
       {hasMoreIcon && (
-        <div css={moreMenuContainer}>
-          <div ref={moreButtonRef as React.RefObject<HTMLDivElement>}>
+        <div
+          css={moreMenuContainer}
+          ref={moreButtonRef as React.RefObject<HTMLDivElement>}
+        >
+          <div>
             <Button onClick={toggleMoreMenu}>
               <MoreVerticalIcon />
             </Button>
           </div>
           {isOpenMoreMenu && (
             <div css={moreMenu}>
-              <MoreMenu />
+              <MoreMenu closeMoreMenu={closeMoreMenu} />
             </div>
           )}
         </div>
