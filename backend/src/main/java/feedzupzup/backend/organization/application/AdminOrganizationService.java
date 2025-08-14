@@ -6,14 +6,17 @@ import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
+import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +32,10 @@ public class AdminOrganizationService {
     private final OrganizationCategoryRepository organizationCategoryRepository;
 
     @Transactional
-    public AdminCreateOrganizationResponse saveOrganization(final CreateOrganizationRequest request, final Long adminId) {
+    public AdminCreateOrganizationResponse saveOrganization(
+            final CreateOrganizationRequest request,
+            final Long adminId
+    ) {
         final Organization organization = request.toOrganization();
         final List<String> categories = request.categories();
 
@@ -47,12 +53,23 @@ public class AdminOrganizationService {
         return AdminCreateOrganizationResponse.from(savedOrganization);
     }
 
-    private Admin findAdminBy(final Long adminId) {
-        return adminRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + adminId + ")인 admin을 찾을 수 없습니다."));
+    public List<AdminInquireOrganizationResponse> getOrganizationsInfo(final Long adminId) {
+        final Admin admin = findAdminBy(adminId);
+        final List<AdminOrganizationInfo> adminOrganizationInfos = organizationRepository.getAdminOrganizationInfos(
+                admin.getId());
+        return adminOrganizationInfos.stream()
+                .map(AdminInquireOrganizationResponse::from)
+                .collect(Collectors.toList());
     }
 
-    private void saveOrganizationCategory(final List<String> categories, final Organization organization) {
+    private Admin findAdminBy(final Long adminId) {
+        return adminRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "해당 ID(id = " + adminId + ")인 admin을 찾을 수 없습니다."));
+    }
+
+    private void saveOrganizationCategory(final List<String> categories,
+            final Organization organization) {
         for (String category : categories) {
             final OrganizationCategory organizationCategory = new OrganizationCategory(
                     organization,

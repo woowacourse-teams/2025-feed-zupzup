@@ -5,10 +5,13 @@ import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrinci
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
+import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -28,4 +31,14 @@ public interface AdminOrganizationApi {
             @RequestBody final CreateOrganizationRequest createOrganizationRequest
     );
 
+    @Operation(summary = "조직 조회", description = "본인이 속한 조직을 모두 조회할 수 있습니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations")
+    SuccessResponse<List<AdminInquireOrganizationResponse>> getOrganizations(
+            @AdminAuthenticationPrincipal final AdminSession adminSession
+    );
 }
