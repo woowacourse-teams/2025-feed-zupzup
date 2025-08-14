@@ -59,6 +59,9 @@ dependencies {
     testImplementation 'org.testcontainers:mysql'
 
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
+
+    //firebase
+    implementation 'com.google.firebase:firebase-admin:9.5.0'
 }
 
 tasks.register('copySecret', Copy) {
