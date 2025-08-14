@@ -2,6 +2,8 @@ package feedzupzup.backend.notification.infrastructure;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MessagingErrorCode;
+import feedzupzup.backend.notification.exception.NotificationException;
+import feedzupzup.backend.notification.exception.NotificationException.RetryInterruptedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +61,7 @@ public class FcmRetryHandler {
             Thread.sleep(delayMillis);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RuntimeException("재시도 대기 중 인터럽트 발생", e);
+            throw new RetryInterruptedException("재시도 대기 중 인터럽트 발생");
         }
     }
 

@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface PushNotifier {
 
-    void sendMessage(NotificationPayload notificationPayload);
-    
     void sendBatchMessage(List<NotificationPayload> payloads);
 }

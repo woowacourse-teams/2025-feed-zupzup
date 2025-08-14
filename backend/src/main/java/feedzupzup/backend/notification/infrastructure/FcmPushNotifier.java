@@ -2,7 +2,6 @@ package feedzupzup.backend.notification.infrastructure;
 
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import com.google.firebase.messaging.SendResponse;
@@ -10,14 +9,13 @@ import feedzupzup.backend.notification.application.PushNotifier;
 import feedzupzup.backend.notification.domain.NotificationPayload;
 import feedzupzup.backend.notification.domain.NotificationToken;
 import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
 
 @Component
 @RequiredArgsConstructor
@@ -29,59 +27,6 @@ public class FcmPushNotifier implements PushNotifier {
     private final NotificationTokenRepository notificationTokenRepository;
     private final FirebaseMessaging firebaseMessaging;
     private final FcmRetryHandler retryHandler;
-
-    @Override
-    @Async
-    public void sendMessage(NotificationPayload notificationPayload) {
-        String title = "피드줍줍";
-        String message = String.format("%s에 피드백이 등록되었습니다.", notificationPayload.organizationName());
-        
-        notificationTokenRepository.findByAdminId(notificationPayload.adminId())
-                .ifPresentOrElse(
-                        notificationToken -> sendFcmMessage(notificationToken, title, message),
-                        () -> log.warn("Admin {}에 대한 알림 토큰이 없습니다.", notificationPayload.adminId())
-                );
-    }
-
-    private void sendFcmMessage(NotificationToken notificationToken, String title, String message) {
-        Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(message)
-                .build();
-
-        Message fcmMessage = Message.builder()
-                .setToken(notificationToken.getRegistrationToken())
-                .setNotification(notification)
-                .build();
-
-        sendWithRetry(fcmMessage);
-    }
-
-    private void sendWithRetry(Message fcmMessage) {
-        int attemptCount = 0;
-        Exception lastException = null;
-
-        while (attemptCount < MAX_ATTEMPT_COUNT) {
-            try {
-                String response = firebaseMessaging.send(fcmMessage);
-                log.info("FCM 메시지 전송 성공 (시도 {}): {}", attemptCount + 1, response);
-                return;
-            } catch (Exception e) {
-                lastException = e;
-                retryHandler.logRetryAttempt(attemptCount, e);
-
-                if (retryHandler.shouldRetry(e, attemptCount)) {
-                    retryHandler.waitBeforeRetry(attemptCount);
-                    attemptCount++;
-                } else {
-                    log.error("재시도하지 않는 에러로 전송 중단: {}", e.getMessage());
-                    return;
-                }
-            }
-        }
-
-        retryHandler.logFinalFailure(lastException);
-    }
 
     @Override
     @Async
