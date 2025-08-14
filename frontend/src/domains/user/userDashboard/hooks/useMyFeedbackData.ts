@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { FeedbackType, SortType } from '@/types/feedback.types';
 import { getMyFeedbacks } from '@/apis/userFeedback.api';
 import { getLocalStorage } from '@/utils/localStorage';
@@ -6,15 +6,18 @@ import { getLocalStorage } from '@/utils/localStorage';
 export function useMyFeedbackData(selectedSort: SortType) {
   const [myFeedbacks, setMyFeedbacks] = useState<FeedbackType[]>([]);
 
+  const feedbackIds = useMemo(
+    () => [...new Set(getLocalStorage<number[]>('feedbackIds') || [])],
+    []
+  );
+
   useEffect(() => {
     const fetchMyFeedbacks = async () => {
-      const myFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
-      const uniqueFeedbackIds = [...new Set(myFeedbackIds)];
-      if (uniqueFeedbackIds.length === 0) return;
+      if (feedbackIds.length === 0) return;
 
       const response = await getMyFeedbacks({
         organizationId: 1,
-        feedbackIds: uniqueFeedbackIds,
+        feedbackIds,
         orderBy: selectedSort,
       });
 
@@ -24,7 +27,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
     };
 
     fetchMyFeedbacks();
-  }, [selectedSort]);
+  }, [selectedSort, feedbackIds]);
 
   return { myFeedbacks };
 }
