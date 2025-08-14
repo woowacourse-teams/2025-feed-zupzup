@@ -1,11 +1,17 @@
 import PlusIcon from '@/components/icons/PlusIcon';
-import { PAGE_PADDING_PX } from '@/constants';
+import {
+  addFeedbackRoom,
+  feedbackList,
+  feedbackListContainer,
+  homeLayout,
+  infoContainer,
+  listCaption,
+  listTitle,
+} from '@/domains/admin/AdminHome/AdminHome.style';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import FeedbackRoom from '@/domains/admin/AdminHome/components/FeedbackRoom/FeedbackRoom';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { Theme } from '@/theme';
-import { css } from '@emotion/react';
 
 export default function AdminHome() {
   const theme = useAppTheme();
@@ -31,7 +37,7 @@ export default function AdminHome() {
             feedbackHoursAgo={2}
             onClick={() => console.log('피드백 방 1 클릭')}
           />
-          {/* <FeedbackRoom
+          <FeedbackRoom
             roomName='피드백 방 1'
             pendingCount={3}
             feedbackHoursAgo={2}
@@ -42,7 +48,7 @@ export default function AdminHome() {
             pendingCount={3}
             feedbackHoursAgo={2}
             onClick={() => console.log('피드백 방 1 클릭')}
-          /> */}
+          />
         </div>
       </div>
       <FloatingButton
@@ -54,59 +60,3 @@ export default function AdminHome() {
     </div>
   );
 }
-
-export const homeLayout = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  gap: 36px;
-  width: 100%;
-  max-height: calc(100vh - ${PAGE_PADDING_PX * 2}px);
-  padding: 52px ${PAGE_PADDING_PX / 2}px 0 ${PAGE_PADDING_PX / 2}px;
-`;
-
-export const feedbackListContainer = (theme: Theme) => css`
-  width: calc(100% + ${PAGE_PADDING_PX}px);
-  min-height: calc(100% - ${PAGE_PADDING_PX}px);
-  margin-top: 160px;
-  background-color: ${theme.colors.white[100]};
-`;
-
-export const feedbackList = css`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-`;
-
-export const infoContainer = css`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  gap: 12px;
-`;
-
-export const listTitle = (theme: Theme) => css`
-  font-size: 24px;
-  font-weight: 600;
-  ${theme.typography.pretendard.smallBold}
-`;
-
-export const listCaption = (theme: Theme) => css`
-  margin-bottom: 16px;
-  font-size: 24px;
-  font-weight: 600;
-  color: ${theme.colors.gray[500]};
-  ${theme.typography.pretendard.caption}
-`;
-
-export const addFeedbackRoom = (theme: Theme) => css`
-  width: 60px;
-  min-height: 60px;
-  background-color: ${theme.colors.purple[100]};
-
-  &:hover {
-    background-color: ${theme.colors.purple[100]}aa;
-  }
-`;
