@@ -12,6 +12,10 @@ export const feedbackRoomContainer = (theme: Theme) => css`
   border-radius: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${theme.colors.gray[100]};
+  }
 `;
 
 export const feedbackTitleContainer = css`

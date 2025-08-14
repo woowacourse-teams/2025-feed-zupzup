@@ -12,16 +12,18 @@ export interface FeedbackRoomProps {
   roomName: string;
   pendingCount: number;
   feedbackHoursAgo: number;
+  onClick: () => void;
 }
 export default function FeedbackRoom({
   roomName,
   pendingCount,
   feedbackHoursAgo,
+  onClick,
 }: FeedbackRoomProps) {
   const theme = useAppTheme();
 
   return (
-    <div css={feedbackRoomContainer(theme)}>
+    <div css={feedbackRoomContainer(theme)} onClick={onClick}>
       <div css={feedbackTitleContainer}>
         <div css={feedbackRoomTitle(theme)}>
           <div css={dot(theme)} />
