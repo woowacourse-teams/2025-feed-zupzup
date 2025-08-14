@@ -14,6 +14,7 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -94,13 +95,13 @@ class OrganizationRepositoryTest extends RepositoryHelper {
             AdminOrganizationInfo expected1 = new AdminOrganizationInfo(
                     organization1.getName().getValue(),
                     1L,
-                    feedback1.getPostedAt().getValue()
+                    feedback1.getPostedAt().getValue().truncatedTo(ChronoUnit.MICROS)
             );
 
             AdminOrganizationInfo expected2 = new AdminOrganizationInfo(
                     organization2.getName().getValue(),
                     1L,
-                    feedback2.getPostedAt().getValue()
+                    feedback2.getPostedAt().getValue().truncatedTo(ChronoUnit.MICROS)
             );
 
             // when
