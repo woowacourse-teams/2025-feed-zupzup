@@ -1,4 +1,3 @@
-// src/firebase/config.ts
 import { initializeApp, FirebaseOptions } from 'firebase/app';
 
 const firebaseConfig: FirebaseOptions = {

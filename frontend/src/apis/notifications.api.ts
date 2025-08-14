@@ -5,40 +5,27 @@ import type {
   ApiResponse,
 } from '@/types/notification.types';
 
-interface RegisterFCMTokenParams {
-  token: string;
-  onSuccess: (data: ApiResponse) => void;
-  onError: () => void;
-}
+export const registerFCMToken = async (token: string): Promise<ApiResponse> => {
+  const response = await apiClient.post<ApiResponse, FCMTokenRequest>(
+    '/admin/notifications/tokens',
+    { token }
+  );
+  return response as ApiResponse;
+};
 
 interface UpdateNotificationSettingsParams {
   organizationId: number;
   enabled: boolean;
-  onSuccess: (data: ApiResponse) => void;
-  onError: () => void;
 }
 
-export async function registerFCMToken({
-  token,
-  onSuccess,
-  onError,
-}: RegisterFCMTokenParams) {
-  await apiClient.post<ApiResponse, FCMTokenRequest>(
-    '/admin/notifications/tokens',
-    { token },
-    { onError, onSuccess }
-  );
-}
-
-export async function updateNotificationSettings({
+export const updateNotificationSettings = async ({
   organizationId,
   enabled,
-  onSuccess,
-  onError,
-}: UpdateNotificationSettingsParams) {
-  await apiClient.put<ApiResponse, NotificationSettingRequest>(
+}: UpdateNotificationSettingsParams): Promise<ApiResponse> => {
+  const response = await apiClient.put<ApiResponse, NotificationSettingRequest>(
     `/admin/organizations/${organizationId}/notifications`,
-    { enabled },
-    { onError, onSuccess }
+    { enabled }
   );
-}
+
+  return response as ApiResponse;
+};
