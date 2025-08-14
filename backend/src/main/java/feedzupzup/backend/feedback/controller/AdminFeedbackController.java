@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
@@ -28,14 +28,14 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackOrderBy orderBy
+            final FeedbackSortBy sortBy
     ) {
         return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
                 organizationId,
                 size,
                 cursorId,
                 status,
-                orderBy
+                sortBy
         ));
     }
 

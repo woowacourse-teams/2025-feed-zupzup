@@ -6,13 +6,14 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
+import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
-import java.util.Comparator;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
@@ -30,6 +31,7 @@ public class UserFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
     private final FeedbackLikeCounter feedbackLikeCounter;
+    private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
     private final FeedbackLikeService feedbackLikeService;
 
@@ -53,19 +55,17 @@ public class UserFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackOrderBy orderBy
+            final FeedbackSortBy sortBy
     ) {
-        final Pageable pageable = createPageable(size);
-
         feedbackLikeService.flushLikeCountBuffer();
 
-        final List<Feedback> feedbacks = switch (orderBy) {
-            case LATEST -> feedBackRepository.findByLatest(organizationId, status, cursorId, pageable);
-            case OLDEST -> feedBackRepository.findByOldest(organizationId, status, cursorId, pageable);
-            case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
-        };
+        final Pageable pageable = createPageable(size);
+        FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
+        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationId, status, cursorId, pageable);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
+
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
+
         return UserFeedbackListResponse.of(
                 feedbackPage.getFeedbacks(),
                 feedbackPage.isHasNext(),
@@ -75,7 +75,7 @@ public class UserFeedbackService {
 
     public MyFeedbackListResponse getMyFeedbackPage(
             final Long organizationId,
-            final FeedbackOrderBy orderBy,
+            final FeedbackSortBy sortBy,
             final List<Long> myFeedbackIds
     ) {
         feedbackLikeService.flushLikeCountBuffer();
@@ -83,7 +83,8 @@ public class UserFeedbackService {
         final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdIn(
                 organizationId, myFeedbackIds);
 
-        final List<Feedback> sortedFeedbacks = sortFeedbacksByOrderBy(feedbacks, orderBy);
+        FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
+        final List<Feedback> sortedFeedbacks = feedbackSortStrategy.sort(feedbacks);
         
         feedbackLikeCounter.applyBufferedLikeCount(sortedFeedbacks);
         return MyFeedbackListResponse.of(sortedFeedbacks);
@@ -97,24 +98,5 @@ public class UserFeedbackService {
     private Pageable createPageable(int size) {
         final Pageable pageable = Pageable.ofSize(size + 1);
         return pageable;
-    }
-
-    private List<Feedback> sortFeedbacksByOrderBy(final List<Feedback> feedbacks, final FeedbackOrderBy orderBy) {
-        if (orderBy == FeedbackOrderBy.LATEST) {
-            return feedbacks.stream()
-                    .sorted(Comparator.comparing(Feedback::getId).reversed())
-                    .toList();
-        }
-        
-        if (orderBy == FeedbackOrderBy.OLDEST) {
-            return feedbacks.stream()
-                    .sorted(Comparator.comparing(Feedback::getId))
-                    .toList();
-        }
-        
-        return feedbacks.stream()
-                .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
-                        .thenComparing(Feedback::getId))
-                .toList();
     }
 }

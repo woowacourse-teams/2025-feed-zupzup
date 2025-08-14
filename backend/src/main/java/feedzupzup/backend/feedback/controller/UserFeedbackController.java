@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
@@ -32,14 +32,14 @@ public class UserFeedbackController implements UserFeedbackApi {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackOrderBy orderBy
+            final FeedbackSortBy sortBy
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organizationId,
                 size,
                 cursorId,
                 status,
-                orderBy
+                sortBy
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
@@ -74,12 +74,12 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             final Long organizationId,
-            final FeedbackOrderBy orderBy,
+            final FeedbackSortBy sortBy,
             final List<Long> feedbackIds
     ) {
         final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
                 organizationId,
-                orderBy,
+                sortBy,
                 feedbackIds
         );
         return SuccessResponse.success(HttpStatus.OK, response);
