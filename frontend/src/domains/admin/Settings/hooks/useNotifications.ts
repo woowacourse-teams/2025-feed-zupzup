@@ -11,7 +11,7 @@ import type { FCMStatus } from '@/types/notification.types';
 export const useNotifications = (organizationId: number) => {
   const [permission, setPermission] =
     useState<NotificationPermission>('default');
-  const [isSupported] = useState(() => NotificationService.isSupported());
+  const isSupported = NotificationService.isSupported();
 
   const [isEnabled, setIsEnabled] = useState(() =>
     getStoredNotificationState(organizationId)
