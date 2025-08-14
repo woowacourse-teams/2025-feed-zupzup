@@ -5,7 +5,6 @@ import {
   SortType,
   SuggestionFeedback,
 } from '@/types/feedback.types';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 interface UserFeedbackParams {
   organizationId: number;

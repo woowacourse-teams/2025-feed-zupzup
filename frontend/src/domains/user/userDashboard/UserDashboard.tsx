@@ -74,12 +74,7 @@ export default function UserDashboard() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const filteredAndSortedFeedbacks = () => {
-    if (selectedFilter === 'MINE') {
-      return myFeedbacks;
-    }
-    return feedbacks;
-  };
+  const displayFeedbacks = selectedFilter === 'MINE' ? myFeedbacks : feedbacks;
 
   const { highlightedId } = useHighLighted();
   const { showButton, scrollToTop } = useScrollUp();
@@ -105,7 +100,7 @@ export default function UserDashboard() {
       />
       <div>
         <FeedbackBoxList>
-          {filteredAndSortedFeedbacks().map((feedback: FeedbackType) => (
+          {displayFeedbacks.map((feedback: FeedbackType) => (
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
@@ -126,13 +121,12 @@ export default function UserDashboard() {
               category={feedback.category}
             />
           ))}
-          {/* {loading && <div>로딩중...</div>} */}
         </FeedbackBoxList>
         <FeedbackStatusMessage
           loading={loading}
           filterType={selectedFilter as FeedbackFilterType}
           hasNext={hasNext}
-          feedbackCount={filteredAndSortedFeedbacks.length}
+          feedbackCount={displayFeedbacks.length}
         />
       </div>
       <FloatingButton
