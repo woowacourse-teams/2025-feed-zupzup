@@ -74,12 +74,12 @@ export default function UserDashboard() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const filteredAndSortedFeedbacks = useMemo(() => {
+  const filteredAndSortedFeedbacks = () => {
     if (selectedFilter === 'MINE') {
       return myFeedbacks;
     }
     return feedbacks;
-  }, [selectedFilter, myFeedbacks, feedbacks]);
+  };
 
   const { highlightedId } = useHighLighted();
   const { showButton, scrollToTop } = useScrollUp();
@@ -105,7 +105,7 @@ export default function UserDashboard() {
       />
       <div>
         <FeedbackBoxList>
-          {filteredAndSortedFeedbacks.map((feedback: FeedbackType) => (
+          {filteredAndSortedFeedbacks().map((feedback: FeedbackType) => (
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
