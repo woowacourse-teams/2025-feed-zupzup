@@ -29,7 +29,7 @@ public interface NotificationApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/token")
+    @PostMapping("/admin/notifications/token")
     SuccessResponse<Void> registerNotificationToken(
             @RequestBody @Valid final NotificationTokenRequest request,
             @AdminAuthenticationPrincipal final AdminSession adminSession
@@ -42,7 +42,7 @@ public interface NotificationApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
-    @GetMapping("/settings")
+    @GetMapping("/admin/notifications/settings")
     SuccessResponse<AlertsSettingResponse> getAlertsSetting(
             @AdminAuthenticationPrincipal final AdminSession adminSession
     );
@@ -55,7 +55,7 @@ public interface NotificationApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
-    @PatchMapping("/settings")
+    @PatchMapping("/admin/notifications/settings")
     SuccessResponse<Void> updateAlertsSetting(
             @RequestBody @Valid final UpdateAlertsSettingRequest request,
             @AdminAuthenticationPrincipal final AdminSession adminSession
