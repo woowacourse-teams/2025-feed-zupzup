@@ -5,10 +5,7 @@ const meta: Meta<typeof MoreMenu> = {
   title: 'Components/MoreMenu',
   component: MoreMenu,
   tags: ['autodocs'],
-  argTypes: {
-    icon: { control: 'text' },
-    menu: { control: 'text' },
-  },
+  argTypes: {},
   decorators: [
     (Story) => (
       <div style={{ padding: '20px', backgroundColor: 'black' }}>
@@ -24,7 +21,6 @@ type Story = StoryObj<typeof MoreMenu>;
 
 export const Default: Story = {
   args: {
-    icon: '👍',
-    menu: '기본 메뉴',
+    closeMoreMenu: () => {},
   },
 };
