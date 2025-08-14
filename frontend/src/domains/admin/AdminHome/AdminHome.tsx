@@ -9,6 +9,12 @@ export default function AdminHome() {
   return (
     <div css={homeLayout(theme)}>
       <AdminHomeHeader />
+      <div css={feedbackListContainer(theme)}>
+        <div css={infoContainer}>
+          <p css={listTitle(theme)}>피드백 방 목록</p>
+          <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -26,4 +32,34 @@ export const homeLayout = (theme: Theme) => css`
   height: 100%;
   padding: 52px ${PAGE_PADDING_PX / 2}px 0 ${PAGE_PADDING_PX / 2}px;
   background-color: ${theme.colors.blue[100]};
+`;
+
+export const feedbackListContainer = (theme: Theme) => css`
+  width: calc(100% + ${PAGE_PADDING_PX * 2}px);
+  max-width: 1200px;
+  height: 100%;
+  padding: ${PAGE_PADDING_PX}px;
+  background-color: ${theme.colors.white[100]};
+  border-radius: 8px;
+`;
+
+export const infoContainer = css`
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 12px;
+`;
+
+export const listTitle = (theme: Theme) => css`
+  font-size: 24px;
+  font-weight: 600;
+  ${theme.typography.pretendard.smallBold}
+`;
+
+export const listCaption = (theme: Theme) => css`
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 600;
+  color: ${theme.colors.gray[500]};
+  ${theme.typography.pretendard.caption}
 `;

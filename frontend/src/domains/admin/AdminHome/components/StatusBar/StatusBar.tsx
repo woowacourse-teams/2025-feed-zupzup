@@ -1,13 +1,14 @@
+import {
+  fillStyle,
+  overlayStyle,
+  wrapperStyle,
+  trackStyle,
+} from '@/domains/admin/AdminHome/components/StatusBar/StatusBar.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { Theme } from '@/theme';
-import { css } from '@emotion/react';
 import { useMemo } from 'react';
 
-/**
- * StatusBar (Emotion/css)
- */
 export default function StatusBar({ status }: { status: number }) {
-  const clamped = useMemo(() => Math.max(0, Math.min(100, status)), [status]);
+  const clamped = useMemo(() => Math.max(0, Math.min(100, status)), [status]); //100을 초과하지 않도록 클램핑
 
   const theme = useAppTheme();
 
@@ -23,32 +24,6 @@ export default function StatusBar({ status }: { status: number }) {
         <div css={fillStyle(clamped)} />
         <div css={overlayStyle} />
       </div>
-      {/* {showLabel && (
-        <div css={labelStyle}>{label ?? `${Math.round(clamped)}%`}</div>
-      )} */}
     </div>
   );
 }
-
-const wrapperStyle = css`
-  width: 100%;
-`;
-
-const trackStyle = (theme: Theme) => css`
-  position: relative;
-  width: 100%;
-  height: 12px;
-  background-color: ${theme.colors.white[100]}33;
-  border-radius: 999px;
-`;
-
-const fillStyle = (clamped: number) => css`
-  width: ${clamped}%;
-  height: 100%;
-  background-color: white;
-  border-radius: 999px;
-`;
-
-const overlayStyle = css`
-  border-radius: 999px;
-`;
