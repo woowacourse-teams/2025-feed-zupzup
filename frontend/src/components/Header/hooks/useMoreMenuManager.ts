@@ -11,6 +11,7 @@ export default function useMoreMenuManager() {
       const target = e.target as Node;
 
       if (moreButtonRef.current && moreButtonRef.current.contains(target)) {
+        window.removeEventListener('pointerdown', onPointerDown);
         return;
       }
 
@@ -27,5 +28,9 @@ export default function useMoreMenuManager() {
     setIsOpenMoreMenu((prev) => !prev);
   };
 
-  return { isOpenMoreMenu, toggleMoreMenu, moreButtonRef };
+  const closeMoreMenu = () => {
+    setIsOpenMoreMenu(false);
+  };
+
+  return { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu };
 }
