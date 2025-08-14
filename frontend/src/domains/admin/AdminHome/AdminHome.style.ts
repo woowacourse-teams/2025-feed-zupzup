@@ -20,13 +20,6 @@ export const feedbackListContainer = (theme: Theme) => css`
   background-color: ${theme.colors.white[100]};
 `;
 
-export const feedbackList = css`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-`;
-
 export const infoContainer = css`
   display: flex;
   flex-direction: column;

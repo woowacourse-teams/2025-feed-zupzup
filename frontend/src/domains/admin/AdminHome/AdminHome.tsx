@@ -1,7 +1,6 @@
 import PlusIcon from '@/components/icons/PlusIcon';
 import {
   addFeedbackRoom,
-  feedbackList,
   feedbackListContainer,
   homeLayout,
   infoContainer,
@@ -9,7 +8,7 @@ import {
   listTitle,
 } from '@/domains/admin/AdminHome/AdminHome.style';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
-import FeedbackRoom from '@/domains/admin/AdminHome/components/FeedbackRoom/FeedbackRoom';
+import FeedbackRoomList from '@/domains/admin/AdminHome/components/FeedbackRoomList/FeedbackRoomList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
@@ -24,32 +23,7 @@ export default function AdminHome() {
           <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
         </div>
 
-        <div css={feedbackList}>
-          <FeedbackRoom
-            roomName='피드백 방 1'
-            pendingCount={3}
-            feedbackHoursAgo={2}
-            onClick={() => console.log('피드백 방 1 클릭')}
-          />
-          <FeedbackRoom
-            roomName='피드백 방 1'
-            pendingCount={3}
-            feedbackHoursAgo={2}
-            onClick={() => console.log('피드백 방 1 클릭')}
-          />
-          <FeedbackRoom
-            roomName='피드백 방 1'
-            pendingCount={3}
-            feedbackHoursAgo={2}
-            onClick={() => console.log('피드백 방 1 클릭')}
-          />
-          <FeedbackRoom
-            roomName='피드백 방 1'
-            pendingCount={3}
-            feedbackHoursAgo={2}
-            onClick={() => console.log('피드백 방 1 클릭')}
-          />
-        </div>
+        <FeedbackRoomList />
       </div>
       <FloatingButton
         icon={<PlusIcon color='white' width='24' height='24' />}
