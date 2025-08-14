@@ -1,13 +1,13 @@
 import { createContext, useCallback, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-interface ErrorModalContextProps {
+interface ModalContextProps {
   openModal: (content: React.ReactNode) => void;
   closeModal: () => void;
   isOpen: boolean;
 }
 
-const ModalContext = createContext<ErrorModalContextProps>({
+const ModalContext = createContext<ModalContextProps>({
   openModal: () => {},
   closeModal: () => {},
   isOpen: false,
