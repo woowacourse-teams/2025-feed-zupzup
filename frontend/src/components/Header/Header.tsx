@@ -7,27 +7,29 @@ import {
   headerSection,
   headerSubtitle,
   headerTitle,
+  moreMenu,
+  moreMenuContainer,
 } from './Header.style';
 import { useLocation } from 'react-router-dom';
 import Button from '../@commons/Button/Button';
 import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
 import { useNavigate } from 'react-router-dom';
+import MoreMenu from '@/components/Header/MoreMenu/MoreMenu';
+import useMoreMenuManager from '@/components/Header/hooks/useMoreMenuManager';
 
 export default function Header() {
   const location = useLocation();
   const theme = useAppTheme();
   const navigate = useNavigate();
+  const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef } =
+    useMoreMenuManager();
 
-  const { title, subtitle, showMoreIcon, showBackButton } =
+  const { title, subtitle, hasMoreIcon, showBackButton } =
     LAYOUT_CONFIGS[location.pathname].header;
 
   const handleBackButtonClick = () => {
     navigate(-1);
-  };
-
-  const handleMoreButtonClick = () => {
-    // TODO: 더보기 메뉴 로직 구현 여기서 하심 됩니당.
   };
 
   return (
@@ -45,10 +47,19 @@ export default function Header() {
           </div>
         </div>
       </div>
-      {showMoreIcon && (
-        <Button onClick={handleMoreButtonClick}>
-          <MoreVerticalIcon />
-        </Button>
+      {hasMoreIcon && (
+        <div css={moreMenuContainer}>
+          <div ref={moreButtonRef as React.RefObject<HTMLDivElement>}>
+            <Button onClick={toggleMoreMenu}>
+              <MoreVerticalIcon />
+            </Button>
+          </div>
+          {isOpenMoreMenu && (
+            <div css={moreMenu}>
+              <MoreMenu />
+            </div>
+          )}
+        </div>
       )}
     </header>
   );
