@@ -12,11 +12,19 @@ import FeedbackRoomList from '@/domains/admin/AdminHome/components/FeedbackRoomL
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
+const ADMIN = '관리자1';
+const COMPLETED_COUNT = 17;
+const TOTAL_COUNT = 29;
+
 export default function AdminHome() {
   const theme = useAppTheme();
   return (
     <div css={homeLayout}>
-      <AdminHomeHeader />
+      <AdminHomeHeader
+        adminName={ADMIN}
+        completedCount={COMPLETED_COUNT}
+        totalCount={TOTAL_COUNT}
+      />
       <div css={feedbackListContainer(theme)}>
         <div css={infoContainer}>
           <p css={listTitle(theme)}>피드백 방 목록</p>

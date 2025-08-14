@@ -11,31 +11,36 @@ import {
 import StatusBar from '@/domains/admin/AdminHome/components/StatusBar/StatusBar';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-const ADMIN = '관리자1';
-const COMPLETED_COUNT = 17;
-const TOTAL_COUNT = 29;
-// 나중에 api 조회로 바꿀 값
+interface AdminHomeHeaderProps {
+  adminName: string;
+  completedCount: number;
+  totalCount: number;
+}
 
-export default function AdminHomeHeader() {
+export default function AdminHomeHeader({
+  adminName,
+  completedCount,
+  totalCount,
+}: AdminHomeHeaderProps) {
   const theme = useAppTheme();
 
   const completeStatus = Number(
-    ((COMPLETED_COUNT / TOTAL_COUNT) * 100).toFixed(1)
+    ((completedCount / totalCount) * 100).toFixed(1)
   );
-  const remainingCount = TOTAL_COUNT - COMPLETED_COUNT;
+  const remainingCount = totalCount - completedCount;
 
   return (
     <div css={headerLayout(theme)}>
       <div css={homeCaptionContainer(theme)}>
         <p css={homeTitle(theme)}>피드줍줍</p>
-        <Tag customCSS={homeTag(theme)}>{ADMIN}</Tag>
+        <Tag customCSS={homeTag(theme)}>{adminName}</Tag>
       </div>
 
       <div css={feedbackProgressStatus(theme)}>
         <div css={progressStatus(theme)}>
           <p>전체 처리 현황</p>
           <p>
-            {COMPLETED_COUNT} / {TOTAL_COUNT}
+            {completedCount} / {totalCount}
           </p>
         </div>
         <StatusBar status={completeStatus} />
