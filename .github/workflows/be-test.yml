@@ -39,3 +39,10 @@ jobs:
       - name: Gradle Wrapper로 빌드 및 테스트 실행
         run: ./gradlew clean test
         working-directory: ./backend
+
+      - name: Upload Test Report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: backend/build/reports/tests/test/
