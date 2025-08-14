@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 
 class AuthControllerE2ETest extends E2EHelper {
 
+    private static final String SESSION_ID = "JSESSIONID";
+
     @Autowired
     private AdminRepository adminRepository;
 
@@ -161,7 +163,7 @@ class AuthControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
         .then()
                 .statusCode(HttpStatus.OK.value())
-                .cookie("JSESSIONID", notNullValue())
+                .cookie(SESSION_ID, notNullValue())
                 .body("data.loginId", equalTo("testId"))
                 .body("data.adminName", equalTo("testName"))
                 .body("data.adminId", notNullValue());
@@ -223,11 +225,11 @@ class AuthControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
         .then()
                 .extract()
-                .cookie("JSESSIONID");
+                .cookie(SESSION_ID);
 
         // When & Then
         given()
-                .cookie("JSESSIONID", sessionCookie)
+                .cookie(SESSION_ID, sessionCookie)
         .when()
                 .post("/admin/logout")
         .then()
@@ -251,11 +253,11 @@ class AuthControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
         .then()
                 .extract()
-                .cookie("JSESSIONID");
+                .cookie(SESSION_ID);
 
         // When & Then
         given()
-                .cookie("JSESSIONID", sessionCookie)
+                .cookie(SESSION_ID, sessionCookie)
         .when()
                 .get("/admin/me")
         .then()

@@ -20,7 +20,6 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
-import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 class AdminOrganizationControllerE2ETest extends E2EHelper {
+
+    private static final String SESSION_ID = "JSESSIONID";
 
     @Autowired
     private AdminRepository adminRepository;
@@ -56,14 +57,14 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
                 .then()
                 .extract()
-                .cookie("JSESSIONID");
+                .cookie(SESSION_ID);
 
         CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", Set.of("신고", "건의"));
 
         // When & Then
         given()
                 .contentType(ContentType.JSON)
-                .cookie("JSESSIONID", sessionCookie)
+                .cookie(SESSION_ID, sessionCookie)
                 .body(request)
         .when()
                 .post("/admin/organizations")
@@ -110,12 +111,12 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
                 .then()
                 .extract()
-                .cookie("JSESSIONID");
+                .cookie(SESSION_ID);
 
         // When & Then
         given()
                 .contentType(ContentType.JSON)
-                .cookie("JSESSIONID", sessionCookie)
+                .cookie(SESSION_ID, sessionCookie)
                 .when()
                 .get("/admin/organizations")
                 .then()
@@ -140,12 +141,12 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
                 .then()
                 .extract()
-                .cookie("JSESSIONID");
+                .cookie(SESSION_ID);
 
         // When & Then
         given()
                 .contentType(ContentType.JSON)
-                .cookie("JSESSIONID", sessionCookie)
+                .cookie(SESSION_ID, sessionCookie)
                 .when()
                 .get("/admin/organizations")
                 .then()
