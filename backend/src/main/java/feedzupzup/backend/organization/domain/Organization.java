@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -72,7 +73,7 @@ public class Organization extends BaseTimeEntity {
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
     }
 
-    public void addOrganizationCategory(final OrganizationCategory organizationCategory) {
-        this.organizationCategories.add(organizationCategory);
+    public void addOrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
+        this.organizationCategories.addAll(organizationCategories);
     }
 }

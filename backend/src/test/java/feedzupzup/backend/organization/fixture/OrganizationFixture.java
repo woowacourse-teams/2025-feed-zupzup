@@ -13,6 +13,13 @@ public class OrganizationFixture {
                 .build();
     }
 
+    public static Organization createByName(final String name) {
+        return Organization.builder()
+                .name(new Name(name))
+                .cheeringCount(new CheeringCount(0))
+                .build();
+    }
+
     public static Organization create(final int originCount) {
         return Organization.builder()
                 .name(new Name("테스트장소"))
