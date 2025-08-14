@@ -52,15 +52,16 @@ class AuthServiceTest extends ServiceIntegrationHelper {
         
         // Admin이 실제로 저장되었는지 확인
         Admin savedAdmin = adminRepository.findByLoginId(new LoginId("testId")).orElseThrow();
-        assertThat(savedAdmin.getLoginId().getValue()).isEqualTo("testId");
-        assertThat(savedAdmin.getAdminName().getValue()).isEqualTo("testName");
+        assertThat(savedAdmin.getLoginId().value()).isEqualTo("testId");
+        assertThat(savedAdmin.getAdminName().value()).isEqualTo("testName");
     }
 
     @Test
     @DisplayName("중복된 로그인 ID가 존재하면 예외가 발생한다")
     void signUp_DuplicateLoginId() {
         // Given
-        Admin existingAdmin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("existName"));
+        Password password = new Password("password123");
+        Admin existingAdmin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("existName"));
         adminRepository.save(existingAdmin);
         
         SignUpRequest request = new SignUpRequest("testId", "password123", "testName");
@@ -97,7 +98,7 @@ class AuthServiceTest extends ServiceIntegrationHelper {
     @DisplayName("정상적인 로그인 요청시 로그인이 성공한다")
     void login_Success() {
         // Given
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("loginId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
@@ -128,7 +129,8 @@ class AuthServiceTest extends ServiceIntegrationHelper {
     @DisplayName("비밀번호가 일치하지 않으면 예외가 발생한다")
     void login_InvalidPassword() {
         // Given
-        Admin admin = new Admin(new LoginId("loginId2"), new Password("correctPassword123"), new AdminName("testName"));
+        Password password = new Password("correctPassword123");
+        Admin admin = new Admin(new LoginId("loginId2"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest request = new LoginRequest("loginId2", "wrongPassword123");
@@ -144,7 +146,8 @@ class AuthServiceTest extends ServiceIntegrationHelper {
     @DisplayName("로그인된 관리자 정보 조회가 성공한다")
     void getAdminLoginInfo_Success() {
         // Given
-        Admin admin = new Admin(new LoginId("adminId"), new Password("password123"), new AdminName("testName"));
+        Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("adminId"), passwordEncoder.encode(password), new AdminName("testName"));
         Admin savedAdmin = adminRepository.save(admin);
         
         AdminSession adminSession = new AdminSession(savedAdmin.getId());

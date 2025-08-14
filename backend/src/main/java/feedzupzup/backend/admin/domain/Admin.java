@@ -1,8 +1,8 @@
 package feedzupzup.backend.admin.domain;
 
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
-import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -26,7 +26,7 @@ public class Admin extends BaseTimeEntity {
 
     @Embedded
     @Column(nullable = false)
-    private Password password;
+    private EncodedPassword password;
 
     @Embedded
     @Column(nullable = false)
@@ -36,25 +36,17 @@ public class Admin extends BaseTimeEntity {
     @Column(nullable = false)
     private LoginId loginId;
 
-    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    @Column(nullable = false)
     private boolean alertsOn = true;
 
-    public Admin(@NonNull final LoginId loginId, @NonNull Password password, @NonNull final AdminName adminName) {
+    public Admin(@NonNull final LoginId loginId, @NonNull final EncodedPassword password, @NonNull final AdminName adminName) {
         this.loginId = loginId;
         this.password = password;
         this.adminName = adminName;
-        this.alertsOn = true;
-    }
-
-    public Admin(@NonNull final LoginId loginId, @NonNull Password password, @NonNull final AdminName adminName, boolean alertsOn) {
-        this.loginId = loginId;
-        this.password = password;
-        this.adminName = adminName;
-        this.alertsOn = alertsOn;
     }
 
     public String getPasswordValue() {
-        return password.getValue();
+        return password.value();
     }
 
     public void updateAlertsSetting(boolean alertsOn) {

@@ -2,6 +2,7 @@ package feedzupzup.backend.auth.dto.request;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,11 +22,15 @@ public record SignUpRequest(
         @NotBlank(message = "관리자 이름은 필수입니다")
         String adminName
 ) {
-    public Admin toAdmin(final Password password) {
-        return new Admin(new LoginId(this.loginId), password, new AdminName(this.adminName));
+    public Admin toAdmin(final EncodedPassword encodedPassword) {
+        return new Admin(new LoginId(this.loginId), encodedPassword, new AdminName(this.adminName));
     }
 
     public LoginId toLoginId() {
         return new LoginId(this.loginId);
+    }
+
+    public Password toPassword() {
+        return new Password(this.password);
     }
 }

@@ -11,8 +11,8 @@ import com.google.firebase.messaging.SendResponse;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
-import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.notification.domain.NotificationToken;
 import feedzupzup.backend.notification.domain.NotificationTokenRepository;
@@ -86,7 +86,7 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
     private Admin createAndSaveAdmin(String adminName, String loginId) {
         Admin admin = new Admin(
                 new LoginId(loginId),
-                new Password("password123"),
+                new EncodedPassword("password123"),
                 new AdminName(adminName)
         );
         return adminRepository.save(admin);

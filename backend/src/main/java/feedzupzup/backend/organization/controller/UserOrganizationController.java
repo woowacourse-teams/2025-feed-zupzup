@@ -30,5 +30,4 @@ public class UserOrganizationController implements UserOrganizationApi {
         CheeringResponse response = userOrganizationService.cheer(request, organizationId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
-
 }

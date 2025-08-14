@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.application.PasswordEncoder;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 class AuthControllerE2ETest extends E2EHelper {
+
+    private static final String SESSION_ID = "JSESSIONID";
 
     @Autowired
     private AdminRepository adminRepository;
@@ -47,7 +50,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("중복된 로그인 ID로 회원가입시 400 에러가 발생한다")
     void signUp_DuplicateLoginId() {
         // Given
-        Admin existingAdmin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("existName"));
+        Admin existingAdmin = new Admin(new LoginId("testId"), new EncodedPassword("password123"), new AdminName("existName"));
         adminRepository.save(existingAdmin);
         
         SignUpRequest request = new SignUpRequest("testId", "password123", "testName");
@@ -145,7 +148,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("정상적인 로그인 요청시 로그인이 성공하고 세션이 생성된다")
     void login_Success() {
         // Given
-        final Password password = Password.createPassword("password123");
+        final Password password = new Password("password123");
 
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
@@ -160,7 +163,7 @@ class AuthControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
         .then()
                 .statusCode(HttpStatus.OK.value())
-                .cookie("JSESSIONID", notNullValue())
+                .cookie(SESSION_ID, notNullValue())
                 .body("data.loginId", equalTo("testId"))
                 .body("data.adminName", equalTo("testName"))
                 .body("data.adminId", notNullValue());
@@ -188,7 +191,8 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("비밀번호가 일치하지 않으면 400 에러가 발생한다")
     void login_InvalidPassword() {
         // Given
-        Admin admin = new Admin(new LoginId("testId"), new Password("correctPassword123"), new AdminName("testName"));
+        Password password = new Password("correctPassword123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
         LoginRequest request = new LoginRequest("testId", "wrongPassword123");
@@ -209,34 +213,7 @@ class AuthControllerE2ETest extends E2EHelper {
     @DisplayName("로그인 후 로그아웃이 성공한다")
     void logout_Success() {
         // Given - 먼저 로그인하여 세션 생성
-        Admin admin = new Admin(new LoginId("testId"), new Password("password123"), new AdminName("testName"));
-        adminRepository.save(admin);
-        
-        LoginRequest loginRequest = new LoginRequest("testId", "password123");
-        String sessionCookie = given()
-                .contentType(ContentType.JSON)
-                .body(loginRequest)
-        .when()
-                .post("/admin/login")
-        .then()
-                .extract()
-                .cookie("JSESSIONID");
-
-        // When & Then
-        given()
-                .cookie("JSESSIONID", sessionCookie)
-        .when()
-                .post("/admin/logout")
-        .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("data", equalTo("로그아웃이 완료되었습니다."));
-    }
-
-    @Test
-    @DisplayName("로그인 후 관리자 정보 조회가 성공한다")
-    void getAdminInfo_Success() {
-        // Given - 먼저 로그인하여 세션 생성
-        final Password password = Password.createPassword("password123");
+        Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
         
@@ -248,11 +225,39 @@ class AuthControllerE2ETest extends E2EHelper {
                 .post("/admin/login")
         .then()
                 .extract()
-                .cookie("JSESSIONID");
+                .cookie(SESSION_ID);
 
         // When & Then
         given()
-                .cookie("JSESSIONID", sessionCookie)
+                .cookie(SESSION_ID, sessionCookie)
+        .when()
+                .post("/admin/logout")
+        .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("data", equalTo("로그아웃이 완료되었습니다."));
+    }
+
+    @Test
+    @DisplayName("로그인 후 관리자 정보 조회가 성공한다")
+    void getAdminInfo_Success() {
+        // Given - 먼저 로그인하여 세션 생성
+        final Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+        
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+        .when()
+                .post("/admin/login")
+        .then()
+                .extract()
+                .cookie(SESSION_ID);
+
+        // When & Then
+        given()
+                .cookie(SESSION_ID, sessionCookie)
         .when()
                 .get("/admin/me")
         .then()
@@ -263,15 +268,15 @@ class AuthControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("로그인하지 않은 상태에서 관리자 정보 조회시 400 에러가 발생한다")
+    @DisplayName("로그인하지 않은 상태에서 관리자 정보 조회시 401 에러가 발생한다")
     void getAdminInfo_NotLoggedIn() {
         // When & Then
         given()
         .when()
                 .get("/admin/me")
         .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("status", equalTo(400))
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("status", equalTo(401))
                 .body("code", equalTo("A04"));
     }
 }

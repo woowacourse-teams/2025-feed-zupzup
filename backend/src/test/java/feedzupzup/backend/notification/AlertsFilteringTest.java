@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
-import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +22,10 @@ class AlertsFilteringTest extends ServiceIntegrationHelper {
     @DisplayName("알림 설정이 켜진 관리자만 필터링된다")
     void filterOnlyAlertsEnabledAdmins() {
         // given
-        Admin adminWithAlertsOn = createAndSaveAdmin("admin1", "login1", true);
-        Admin adminWithAlertsOff = createAndSaveAdmin("admin2", "login2", false);
-        Admin anotherAdminWithAlertsOn = createAndSaveAdmin("admin3", "login3", true);
+        Admin adminWithAlertsOn = createAndSaveAdmin("admin1", "login1");
+        Admin adminWithAlertsOff = createAndSaveAdmin("admin2", "login2");
+        adminWithAlertsOff.updateAlertsSetting(false);
+        Admin anotherAdminWithAlertsOn = createAndSaveAdmin("admin3", "login3");
         
         
         // when - 관리자들을 직접 필터링 (실제로는 UserFeedbackService에서 Organizer를 통해 필터링)
@@ -47,8 +48,10 @@ class AlertsFilteringTest extends ServiceIntegrationHelper {
     @DisplayName("모든 관리자가 알림을 끈 경우 빈 목록이 반환된다")
     void emptyListWhenAllAlertsOff() {
         // given
-        Admin admin1 = createAndSaveAdmin("admin4", "login4", false);
-        Admin admin2 = createAndSaveAdmin("admin5", "login5", false);
+        Admin admin1 = createAndSaveAdmin("admin4", "login4");
+        admin1.updateAlertsSetting(false);
+        Admin admin2 = createAndSaveAdmin("admin5", "login5");
+        admin2.updateAlertsSetting(false);
         
         
         // when
@@ -62,12 +65,11 @@ class AlertsFilteringTest extends ServiceIntegrationHelper {
         assertThat(filteredAdminIds).isEmpty();
     }
 
-    private Admin createAndSaveAdmin(String adminName, String loginId, boolean alertsOn) {
+    private Admin createAndSaveAdmin(String adminName, String loginId) {
         Admin admin = new Admin(
                 new LoginId(loginId),
-                new Password("password123"),
-                new AdminName(adminName),
-                alertsOn
+                new EncodedPassword("password123"),
+                new AdminName(adminName)
         );
         return adminRepository.save(admin);
     }

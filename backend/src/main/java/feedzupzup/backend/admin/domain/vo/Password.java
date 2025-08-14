@@ -1,18 +1,11 @@
 package feedzupzup.backend.admin.domain.vo;
 
 import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminPasswordException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.regex.Pattern;
 
-@Embeddable
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Password {
+public record Password(
+        String value
+) {
 
     private static final int MIN_LENGTH = 5;
     private static final String BLANK_SPACE = " ";
@@ -24,17 +17,9 @@ public class Password {
                     "]+$"
     );
 
-    @Column(name = "password", nullable = false)
-    private String value;
-
-    public Password(String value) {
-        this.value = value;
-    }
-
-    public static Password createPassword(final String rawPassword) {
-        validateLength(rawPassword);
-        validateFormat(rawPassword);
-        return new Password(rawPassword);
+    public Password {
+        validateLength(value);
+        validateFormat(value);
     }
 
     private static void validateLength(final String password) {

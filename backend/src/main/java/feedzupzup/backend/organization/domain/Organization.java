@@ -72,7 +72,7 @@ public class Organization extends BaseTimeEntity {
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
     }
 
-    public void addOrganizationCategory(final OrganizationCategory organizationCategory) {
-        this.organizationCategories.add(organizationCategory);
+    public void addOrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
+        this.organizationCategories.addAll(organizationCategories);
     }
 }
