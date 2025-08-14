@@ -10,9 +10,9 @@ export default function ArrowRightIcon() {
       <path
         d='M6 11L9.5 7.5L6 4'
         stroke='#99A1AF'
-        stroke-width='1.16667'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.16667'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );
