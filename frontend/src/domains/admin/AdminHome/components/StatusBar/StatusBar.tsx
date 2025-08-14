@@ -8,7 +8,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useMemo } from 'react';
 
 export default function StatusBar({ status }: { status: number }) {
-  const clamped = useMemo(() => Math.max(0, Math.min(100, status)), [status]); //100을 초과하지 않도록 클램핑
+  const clamped = useMemo(() => Math.max(0, Math.min(100, status)), [status]);
 
   const theme = useAppTheme();
 
