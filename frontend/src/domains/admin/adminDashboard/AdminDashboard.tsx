@@ -27,7 +27,7 @@ export default function AdminDashboard() {
     selectedSort,
     handleFilterChange,
     handleSortChange,
-    getFilteredFeedbacks,
+    myFeedbacks,
   } = useFeedbackFilterSort();
 
   const apiUrl = useMemo(() => {
@@ -67,7 +67,7 @@ export default function AdminDashboard() {
     originalFeedbacks,
   });
 
-  const feedbacks = getFilteredFeedbacks(managedFeedbacks);
+  const feedbacks = selectedFilter === 'MINE' ? myFeedbacks : managedFeedbacks;
 
   const {
     modalState,
