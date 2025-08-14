@@ -1,5 +1,7 @@
 import App from './App';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
+import Login from '@/domains/admin/Login/Logins';
+import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import { createBrowserRouter } from 'react-router-dom';
@@ -19,6 +21,14 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.ADMIN,
         element: <AdminDashboard />,
+      },
+      {
+        path: ROUTES.LOGIN,
+        element: <Login />,
+      },
+      {
+        path: ROUTES.SIGN_UP,
+        element: <SignUp />,
       },
       {
         path: ROUTES.USER_DASHBOARD,
