@@ -10,7 +10,7 @@ export const homeLayout = css`
   gap: 36px;
   width: 100%;
   max-height: calc(100vh - ${PAGE_PADDING_PX * 2}px);
-  padding: 52px ${PAGE_PADDING_PX / 2}px 0 ${PAGE_PADDING_PX / 2}px;
+  padding: 52px 16px 0;
 `;
 
 export const feedbackListContainer = (theme: Theme) => css`
