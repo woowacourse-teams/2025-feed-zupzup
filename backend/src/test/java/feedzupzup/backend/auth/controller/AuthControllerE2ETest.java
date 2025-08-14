@@ -263,15 +263,15 @@ class AuthControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("로그인하지 않은 상태에서 관리자 정보 조회시 400 에러가 발생한다")
+    @DisplayName("로그인하지 않은 상태에서 관리자 정보 조회시 401 에러가 발생한다")
     void getAdminInfo_NotLoggedIn() {
         // When & Then
         given()
         .when()
                 .get("/admin/me")
         .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("status", equalTo(400))
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("status", equalTo(401))
                 .body("code", equalTo("A04"));
     }
 }

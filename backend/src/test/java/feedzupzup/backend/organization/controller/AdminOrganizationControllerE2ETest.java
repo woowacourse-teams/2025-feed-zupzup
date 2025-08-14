@@ -73,6 +73,6 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .when()
                 .post("/admin/organizations")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
