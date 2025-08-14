@@ -1,9 +1,10 @@
 package feedzupzup.backend.feedback.domain.vo;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +14,6 @@ public class PostedAt {
 
     private static final String TIME_ZONE_AREA = "Asia/Seoul";
 
-    @Column(nullable = false, columnDefinition = "DATETIME(6)")
     private LocalDateTime postedAt;
 
     private PostedAt(final LocalDateTime postedAt) {
@@ -33,5 +33,18 @@ public class PostedAt {
 
     public LocalDateTime getValue() {
         return postedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PostedAt postedAt1 = (PostedAt) o;
+        return Objects.equals(postedAt.truncatedTo(ChronoUnit.MICROS), postedAt1.postedAt.truncatedTo(ChronoUnit.MICROS));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(postedAt.truncatedTo(ChronoUnit.MICROS));
     }
 }
