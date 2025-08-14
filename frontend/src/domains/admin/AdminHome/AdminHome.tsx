@@ -1,5 +1,6 @@
 import { PAGE_PADDING_PX } from '@/constants';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
+import FeedbackRoom from '@/domains/admin/AdminHome/components/FeedbackRoom/FeedbackRoom';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
@@ -14,6 +15,11 @@ export default function AdminHome() {
           <p css={listTitle(theme)}>피드백 방 목록</p>
           <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
         </div>
+        <FeedbackRoom
+          roomName='피드백 방 1'
+          pendingCount={3}
+          feedbackHoursAgo={2}
+        />
       </div>
     </div>
   );
