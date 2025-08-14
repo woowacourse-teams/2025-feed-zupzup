@@ -21,7 +21,7 @@ public class PostedAt {
     }
 
     public static PostedAt createTimeInSeoul() {
-        return new PostedAt(LocalDateTime.now(ZoneId.of(TIME_ZONE_AREA)));
+        return new PostedAt(LocalDateTime.now(ZoneId.of(TIME_ZONE_AREA)).truncatedTo(ChronoUnit.MICROS));
     }
 
     /**
