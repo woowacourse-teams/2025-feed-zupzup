@@ -4,13 +4,14 @@ import {
   FeedbackType,
   SortType,
 } from '@/types/feedback.types';
-import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
+
+import { useMyFeedbackData } from '../user/userDashboard/hooks/useMyFeedbackData';
 
 export default function useFeedbackFilterSort() {
   const [selectedFilter, setSelectedFilter] =
     useState<FeedbackFilterType | null>(null);
   const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
-  const { getIsMyFeedback } = useMyFeedbacks();
+  const { myFeedbacks } = useMyFeedbackData();
 
   const handleFilterChange = useCallback(
     (newFilter: FeedbackFilterType | null) => {
@@ -29,15 +30,14 @@ export default function useFeedbackFilterSort() {
         (feedback, index, arr) =>
           arr.findIndex((f) => f.feedbackId === feedback.feedbackId) === index
       );
+
       if (selectedFilter === 'MINE') {
-        return uniqueFeedbacks.filter((feedback) =>
-          getIsMyFeedback(feedback.feedbackId)
-        );
+        return myFeedbacks;
       }
 
       return uniqueFeedbacks;
     },
-    [selectedFilter, getIsMyFeedback]
+    [selectedFilter, myFeedbacks]
   );
 
   return {
@@ -46,5 +46,6 @@ export default function useFeedbackFilterSort() {
     handleFilterChange,
     handleSortChange,
     getFilteredFeedbacks,
+    myFeedbacks,
   };
 }

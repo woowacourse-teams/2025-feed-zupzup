@@ -9,7 +9,7 @@ import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
-import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
+
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
 import {
   dashboardLayout,
@@ -30,6 +30,7 @@ import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackSt
 import { useMemo } from 'react';
 
 export default function UserDashboard() {
+  const organizationId = 1;
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
@@ -39,11 +40,11 @@ export default function UserDashboard() {
     selectedSort,
     handleFilterChange,
     handleSortChange,
-    getFilteredFeedbacks,
+    myFeedbacks,
   } = useFeedbackFilterSort();
 
   const apiUrl = useMemo(() => {
-    const baseUrl = '/organizations/1/feedbacks';
+    const baseUrl = `/organizations/${organizationId}/feedbacks`;
     const params = new URLSearchParams();
 
     params.append('orderBy', selectedSort);
@@ -73,10 +74,14 @@ export default function UserDashboard() {
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const filteredAndSortedFeedbacks = getFilteredFeedbacks(feedbacks);
+  const filteredAndSortedFeedbacks = useMemo(() => {
+    if (selectedFilter === 'MINE') {
+      return myFeedbacks;
+    }
+    return feedbacks;
+  }, [selectedFilter, myFeedbacks, feedbacks]);
 
   const { highlightedId } = useHighLighted();
-  const { getIsMyFeedback } = useMyFeedbacks();
   const { showButton, scrollToTop } = useScrollUp();
 
   const handleNavigateToOnboarding = () => {
@@ -100,7 +105,7 @@ export default function UserDashboard() {
       />
       <div>
         <FeedbackBoxList>
-          {filteredAndSortedFeedbacks.map((feedback) => (
+          {filteredAndSortedFeedbacks.map((feedback: FeedbackType) => (
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
@@ -112,7 +117,9 @@ export default function UserDashboard() {
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
               comment={feedback.comment}
-              isMyFeedback={getIsMyFeedback(feedback.feedbackId)}
+              isMyFeedback={myFeedbacks.some(
+                (myFeedback) => myFeedback.feedbackId === feedback.feedbackId
+              )}
               customCSS={[
                 feedback.feedbackId === highlightedId ? highlightStyle : null,
               ]}
