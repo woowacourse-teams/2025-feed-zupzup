@@ -2,6 +2,7 @@ package feedzupzup.backend.organization.domain;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.domain.fixture.AdminFixture;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
@@ -21,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static feedzupzup.backend.admin.domain.fixture.AdminFixture.create;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +56,7 @@ class OrganizationRepositoryTest extends RepositoryHelper {
 
         @BeforeEach
         void setUp() {
-            admin = adminRepository.save(create());
+            admin = adminRepository.save(AdminFixture.create());
             organization1 = organizationRepository.save(OrganizationFixture.createAllBlackBox());
             organization2 = organizationRepository.save(OrganizationFixture.createAllBlackBox());
 
@@ -91,6 +91,18 @@ class OrganizationRepositoryTest extends RepositoryHelper {
                     FeedbackFixture.createFeedbackWithStatus(organization2, WAITING,
                             organizationCategory2));
 
+            AdminOrganizationInfo expected1 = new AdminOrganizationInfo(
+                    organization1.getName().getValue(),
+                    1L,
+                    feedback1.getPostedAt().getValue()
+            );
+
+            AdminOrganizationInfo expected2 = new AdminOrganizationInfo(
+                    organization2.getName().getValue(),
+                    1L,
+                    feedback2.getPostedAt().getValue()
+            );
+
             // when
             List<AdminOrganizationInfo> adminOrganizationInfos = organizationRepository.getAdminOrganizationInfos(
                     admin.getId());
@@ -98,21 +110,8 @@ class OrganizationRepositoryTest extends RepositoryHelper {
             // then
             assertAll(
                     () -> assertThat(adminOrganizationInfos).hasSize(2),
-                    () -> assertThat(adminOrganizationInfos)
-                            .extracting(AdminOrganizationInfo::organizationName)
-                            .containsExactlyInAnyOrder(
-                                    organization1.getName().getValue(),
-                                    organization2.getName().getValue()
-                            ),
-                    () -> assertThat(adminOrganizationInfos)
-                            .extracting(AdminOrganizationInfo::waitingCount)
-                            .containsExactlyInAnyOrder(1L, 1L),
-                    () -> assertThat(adminOrganizationInfos)
-                            .extracting(AdminOrganizationInfo::postedAt)
-                            .containsExactlyInAnyOrder(
-                                    feedback1.getPostedAt().getPostedAt(),
-                                    feedback2.getPostedAt().getPostedAt()
-                            )
+                    () -> assertThat(adminOrganizationInfos).contains(expected1),
+                    () -> assertThat(adminOrganizationInfos).contains(expected2)
             );
         }
 

@@ -29,7 +29,7 @@ public class PostedAt {
         return new PostedAt(postedAt);
     }
 
-    public LocalDateTime getPostedAt() {
+    public LocalDateTime getValue() {
         return postedAt;
     }
 }
