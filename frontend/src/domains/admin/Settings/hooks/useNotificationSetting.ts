@@ -1,26 +1,52 @@
-import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import { NotificationService } from '@/services/notificationService';
+import { useNotifications } from './useNotifications';
 
-export function useNotificationSetting() {
-  const { showErrorModal } = useErrorModalContext();
-  const [isToggleEnabled, setIsToggleEnabled] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+export const useNotificationSetting = (organizationId: number = 1) => {
+  const { fcmStatus, isEnabled, updateState } =
+    useNotifications(organizationId);
 
-  const updateNotificationSetting = async (enabled: boolean) => {
-    setIsLoading(true);
-    try {
-      // 요기서 API 호출 예정
-      setIsToggleEnabled(enabled);
-    } catch (e) {
-      showErrorModal(e, '에러');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const toggle = useCallback(
+    async (enabled: boolean) => {
+      if (loading) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        if (enabled) {
+          await NotificationService.enable(organizationId);
+        } else {
+          await NotificationService.disable(organizationId);
+        }
+
+        updateState(enabled);
+        console.log(
+          `[FCM] 알림이 ${enabled ? '활성화' : '비활성화'}되었습니다.`
+        );
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : '알림 설정 변경에 실패했습니다.';
+        setError(errorMessage);
+        updateState(!enabled);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, organizationId, updateState]
+  );
 
   return {
-    isToggleEnabled,
-    isLoading,
-    updateNotificationSetting,
+    isToggleEnabled: isEnabled,
+    isLoading: loading,
+    error,
+    fcmStatus,
+
+    updateNotificationSetting: toggle,
+    clearError: () => setError(null),
   };
-}
+};

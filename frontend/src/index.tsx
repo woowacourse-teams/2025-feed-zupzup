@@ -14,12 +14,15 @@ declare global {
   }
 }
 
-// if (process.env.NODE_ENV === 'development') {
-//   const { worker } = await import('./mocks/browser');
-//   await worker.start({
-//     onUnhandledRequest: 'bypass',
-//   });
-// }
+if (process.env.NODE_ENV === 'development') {
+  (async () => {
+    const { worker } = await import('./mocks/browser');
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: { url: '/service-worker.js' },
+    });
+  })();
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
