@@ -45,3 +45,6 @@ src/test/resources/*.yml
 
 ### alloy ###
 config.alloy
+
+### firebase ###
+/src/main/resources/firebase/service_account_key.json

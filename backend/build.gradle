@@ -84,10 +84,18 @@ tasks.register('copySecretAlloy', Copy) {
     into '.'
 }
 
-compileJava.dependsOn copySecret, copySecretTest, copySecretAlloy
-processResources.dependsOn copySecret, copySecretAlloy
+tasks.register('copyFirebaseServiceKey', Copy) {
+    mustRunAfter copySecretAlloy
+    from file('./backend-submodule/firebase')
+    include 'service_account_key.json'
+    into 'src/main/resources/firebase'
+}
+
+compileJava.dependsOn copySecret, copySecretTest, copySecretAlloy, copyFirebaseServiceKey
+processResources.dependsOn copySecret, copySecretAlloy, copyFirebaseServiceKey
 processTestResources.dependsOn copySecretTest
 
 test {
     useJUnitPlatform()
+    dependsOn copySecretTest, copyFirebaseServiceKey
 }
