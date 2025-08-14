@@ -135,10 +135,13 @@ public class UserFeedbackService {
         
         String organizationName = organization.getName().getValue();
         List<Long> adminIds = organizers.stream()
+                .filter(organizer -> organizer.getAdmin().isAlertsOn())
                 .map(organizer -> organizer.getAdmin().getId())
                 .toList();
         
-        NotificationEvent event = new NotificationEvent(adminIds, "피드줍줍", organizationName);
-        eventPublisher.publishEvent(event);
+        if (!adminIds.isEmpty()) {
+            NotificationEvent event = new NotificationEvent(adminIds, "피드줍줍", organizationName);
+            eventPublisher.publishEvent(event);
+        }
     }
 }

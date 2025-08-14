@@ -36,10 +36,21 @@ public class Admin extends BaseTimeEntity {
     @Column(nullable = false)
     private LoginId loginId;
 
+    @Column(nullable = false, columnDefinition = "TINYINT(1) DEFAULT 1")
+    private boolean alertsOn = true;
+
     public Admin(@NonNull final LoginId loginId, @NonNull Password password, @NonNull final AdminName adminName) {
         this.loginId = loginId;
         this.password = password;
         this.adminName = adminName;
+        this.alertsOn = true;
+    }
+
+    public Admin(@NonNull final LoginId loginId, @NonNull Password password, @NonNull final AdminName adminName, boolean alertsOn) {
+        this.loginId = loginId;
+        this.password = password;
+        this.adminName = adminName;
+        this.alertsOn = alertsOn;
     }
 
     public String getPasswordValue() {
