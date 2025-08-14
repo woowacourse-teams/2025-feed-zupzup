@@ -1,6 +1,10 @@
 import { CategoryType } from '@/analytics/types';
 import { apiClient } from '@/apis/apiClient';
-import { SortType, SuggestionFeedback } from '@/types/feedback.types';
+import {
+  FeedbackType,
+  SortType,
+  SuggestionFeedback,
+} from '@/types/feedback.types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 
 interface UserFeedbackParams {
@@ -70,18 +74,6 @@ export async function deleteLike({
   return response;
 }
 
-export interface MyFeedbackResponse {
-  feedbackId: number;
-  content: string;
-  status: FeedbackStatusType;
-  isSecret: boolean;
-  likeCount: number;
-  userName: string;
-  postedAt: string;
-  category: CategoryType;
-  comment: string | null;
-}
-
 interface GetMyFeedbacksParams {
   organizationId: number;
   feedbackIds?: number[];
@@ -107,7 +99,7 @@ export async function getMyFeedbacks({
   const url = `/organizations/${organizationId}/feedbacks/my${queryString ? `?${queryString}` : ''}`;
 
   const response = await apiClient.get<{
-    data: { feedbacks: MyFeedbackResponse[] };
+    data: { feedbacks: FeedbackType[] };
   }>(url);
   return response;
 }
