@@ -9,11 +9,11 @@ public class NotificationException extends DomainException {
         super(errorCode, message);
     }
 
-    public static final class RetryInterruptedException extends NotificationException {
+    public static final class FirebaseInitializationFailedException extends NotificationException {
 
-        private static final ErrorCode errorCode = ErrorCode.NOTIFICATION_RETRY_INTERRUPTED;
+        private static final ErrorCode errorCode = ErrorCode.FIREBASE_INITIALIZATION_FAILED;
 
-        public RetryInterruptedException(String message) {
+        public FirebaseInitializationFailedException(String message) {
             super(errorCode, message);
         }
     }

@@ -4,6 +4,8 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import feedzupzup.backend.notification.exception.NotificationException;
+import feedzupzup.backend.notification.exception.NotificationException.FirebaseInitializationFailedException;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +28,7 @@ public class FirebaseConfig {
                 FirebaseApp.initializeApp(options);
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Firebase를 초기화할 수 없습니다.", e);
+            throw new FirebaseInitializationFailedException("Firebase를 초기화할 수 없습니다.");
         }
     }
 
