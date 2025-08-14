@@ -1,12 +1,18 @@
+import { PAGE_PADDING_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
 export const headerLayout = (theme: Theme) => css`
+  position: absolute;
+  top: -${PAGE_PADDING_PX}px;
+  left: 0;
   display: flex;
   flex-direction: column;
+  justify-content: start;
   align-items: center;
   gap: 24px;
   width: 100%;
+  padding: 52px ${PAGE_PADDING_PX / 2}px 32px ${PAGE_PADDING_PX / 2}px;
   background-color: ${theme.colors.blue[100]};
 `;
 

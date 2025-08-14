@@ -10,7 +10,7 @@ import { css } from '@emotion/react';
 export default function AdminHome() {
   const theme = useAppTheme();
   return (
-    <div css={homeLayout(theme)}>
+    <div css={homeLayout}>
       <AdminHomeHeader />
       <div css={feedbackListContainer(theme)}>
         <div css={infoContainer}>
@@ -31,47 +31,46 @@ export default function AdminHome() {
             feedbackHoursAgo={2}
             onClick={() => console.log('피드백 방 1 클릭')}
           />
-          <FeedbackRoom
+          {/* <FeedbackRoom
             roomName='피드백 방 1'
             pendingCount={3}
             feedbackHoursAgo={2}
             onClick={() => console.log('피드백 방 1 클릭')}
           />
+          <FeedbackRoom
+            roomName='피드백 방 1'
+            pendingCount={3}
+            feedbackHoursAgo={2}
+            onClick={() => console.log('피드백 방 1 클릭')}
+          /> */}
         </div>
       </div>
       <FloatingButton
         icon={<PlusIcon color='white' width='24' height='24' />}
         onClick={() => window.alert('피드백 방 추가')}
-        inset={{ bottom: '100px', left: '100%' }}
+        inset={{ bottom: '80px', left: '100%' }}
         customCSS={addFeedbackRoom(theme)}
       />
     </div>
   );
 }
 
-export const homeLayout = (theme: Theme) => css`
-  position: absolute;
-  top: -${PAGE_PADDING_PX}px;
-  left: 0;
+export const homeLayout = css`
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
   gap: 36px;
   width: 100%;
-  height: 100%;
+  max-height: calc(100vh - ${PAGE_PADDING_PX * 2}px);
   padding: 52px ${PAGE_PADDING_PX / 2}px 0 ${PAGE_PADDING_PX / 2}px;
-  background-color: ${theme.colors.blue[100]};
 `;
 
 export const feedbackListContainer = (theme: Theme) => css`
-  position: relative;
-  width: calc(100% + ${PAGE_PADDING_PX * 2}px);
-  max-width: 1200px;
-  height: 100%;
-  padding: ${PAGE_PADDING_PX}px;
+  width: calc(100% + ${PAGE_PADDING_PX}px);
+  min-height: calc(100% - ${PAGE_PADDING_PX}px);
+  margin-top: 160px;
   background-color: ${theme.colors.white[100]};
-  border-radius: 8px;
 `;
 
 export const feedbackList = css`
@@ -79,7 +78,6 @@ export const feedbackList = css`
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  height: 100%;
 `;
 
 export const infoContainer = css`
