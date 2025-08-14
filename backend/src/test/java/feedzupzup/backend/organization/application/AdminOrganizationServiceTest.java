@@ -34,7 +34,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
 
         final Admin savedAdmin = createAndSaveAdmin();
 
-        final AdminCreateOrganizationResponse response = adminOrganizationService.saveOrganization(
+        final AdminCreateOrganizationResponse response = adminOrganizationService.createOrganization(
                 createOrganizationRequest, savedAdmin.getId());
 
         assertThat(response.organizationId()).isNotNull();
@@ -49,7 +49,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
                         List.of("건의", "신고")
                 );
 
-        assertThatThrownBy(() -> adminOrganizationService.saveOrganization(createOrganizationRequest, 999L))
+        assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, 999L))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -62,7 +62,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
                         List.of("크롱크롱", "대나무헬리콥터")
                 );
         final Admin admin = createAndSaveAdmin();
-        assertThatThrownBy(() -> adminOrganizationService.saveOrganization(createOrganizationRequest, admin.getId()))
+        assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, admin.getId()))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 

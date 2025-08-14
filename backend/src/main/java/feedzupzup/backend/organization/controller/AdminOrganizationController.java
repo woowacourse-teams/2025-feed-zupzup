@@ -24,7 +24,7 @@ public class AdminOrganizationController implements AdminOrganizationApi {
             @AdminAuthenticationPrincipal final AdminSession adminSession,
             final CreateOrganizationRequest request
     ) {
-        final AdminCreateOrganizationResponse response = adminOrganizationService.saveOrganization(
+        final AdminCreateOrganizationResponse response = adminOrganizationService.createOrganization(
                 request, adminSession.adminId());
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }

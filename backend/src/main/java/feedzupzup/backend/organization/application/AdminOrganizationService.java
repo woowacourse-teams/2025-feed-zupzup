@@ -32,7 +32,7 @@ public class AdminOrganizationService {
     private final OrganizationCategoryRepository organizationCategoryRepository;
 
     @Transactional
-    public AdminCreateOrganizationResponse saveOrganization(
+    public AdminCreateOrganizationResponse createOrganization(
             final CreateOrganizationRequest request,
             final Long adminId
     ) {
@@ -42,7 +42,7 @@ public class AdminOrganizationService {
         saveOrganizationCategory(categories, organization);
 
         final Admin admin = findAdminBy(adminId);
-        Organizer organizer = new Organizer(
+        final Organizer organizer = new Organizer(
                 organization,
                 admin,
                 OrganizerRole.OWNER
@@ -59,7 +59,7 @@ public class AdminOrganizationService {
                 admin.getId());
         return adminOrganizationInfos.stream()
                 .map(AdminInquireOrganizationResponse::from)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Admin findAdminBy(final Long adminId) {
