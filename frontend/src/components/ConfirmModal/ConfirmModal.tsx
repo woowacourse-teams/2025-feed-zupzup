@@ -9,7 +9,7 @@ import {
 } from '@/components/Modal/Modal.styles';
 
 export interface ConfirmModalProps {
-  isOpen: boolean;
+  isOpen?: boolean;
   onClose: () => void;
   title: string;
   message?: string;
@@ -21,7 +21,7 @@ export interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({
-  isOpen,
+  isOpen = true,
   onClose,
   title: confirmTitle,
   message: confirmMessage,

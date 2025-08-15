@@ -51,7 +51,7 @@ export default function DashboardOverview() {
       <div css={headerContainer}>
         <div css={headerText}>
           <p css={titleText(theme)}>{groupName}</p>
-          <p css={panelCaption(theme)}>일주일 간의 피드백</p>
+          <p css={panelCaption(theme)}>지금까지의 피드백</p>
         </div>
         <div css={headerCheerButton}>
           <div css={cheerButtonLayout}>

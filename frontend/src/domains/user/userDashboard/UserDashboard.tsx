@@ -9,26 +9,54 @@ import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
-import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
+
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
 import {
   dashboardLayout,
   goOnboardButton,
   goTopButton,
   highlightStyle,
-  myFeedbackStyle,
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useInfinityScroll from '@/hooks/useInfinityScroll';
-import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
+import {
+  FeedbackResponse,
+  FeedbackType,
+  FeedbackFilterType,
+} from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
+import { useMemo } from 'react';
 
 export default function UserDashboard() {
+  const organizationId = 1;
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
+
+  const {
+    selectedFilter,
+    selectedSort,
+    handleFilterChange,
+    handleSortChange,
+    myFeedbacks,
+  } = useFeedbackFilterSort();
+
+  const apiUrl = useMemo(() => {
+    const baseUrl = `/organizations/${organizationId}/feedbacks`;
+    const params = new URLSearchParams();
+
+    params.append('orderBy', selectedSort);
+
+    if (selectedFilter === 'CONFIRMED') {
+      params.append('status', 'CONFIRMED');
+    } else if (selectedFilter === 'WAITING') {
+      params.append('status', 'WAITING');
+    }
+
+    return `${baseUrl}?${params.toString()}`;
+  }, [selectedFilter, selectedSort]);
 
   const {
     items: feedbacks,
@@ -40,27 +68,24 @@ export default function UserDashboard() {
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/organizations/1/feedbacks',
+    url: apiUrl,
     key: 'feedbacks',
   });
 
-  const {
-    selectedFilter,
-    selectedSort,
-    handleFilterChange,
-    handleSortChange,
-    filteredAndSortedFeedbacks,
-  } = useFeedbackFilterSort(feedbacks);
-
   useGetFeedback({ fetchMore, hasNext, loading });
 
+  const displayFeedbacks = selectedFilter === 'MINE' ? myFeedbacks : feedbacks;
+
   const { highlightedId } = useHighLighted();
-  const { getIsMyFeedback } = useMyFeedbacks();
   const { showButton, scrollToTop } = useScrollUp();
 
   const handleNavigateToOnboarding = () => {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
     navigate('/');
+  };
+
+  const getFeedbackIsLike = (feedbackId: number) => {
+    return likedFeedbackIds?.includes(feedbackId) || false;
   };
 
   return (
@@ -71,35 +96,37 @@ export default function UserDashboard() {
         onFilterChange={handleFilterChange}
         selectedSort={selectedSort}
         onSortChange={handleSortChange}
+        isAdmin={false}
       />
       <div>
         <FeedbackBoxList>
-          {filteredAndSortedFeedbacks.map((feedback) => (
+          {displayFeedbacks.map((feedback: FeedbackType) => (
             <UserFeedbackBox
               userName={feedback.userName}
               key={feedback.feedbackId}
               type={feedback.status}
               content={feedback.content}
               postedAt={feedback.postedAt}
-              isLiked={getFeedbackIsLike(likedFeedbackIds, feedback.feedbackId)}
+              isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
               isSecret={feedback.isSecret}
               feedbackId={feedback.feedbackId}
               likeCount={feedback.likeCount}
               comment={feedback.comment}
-              isMyFeedback={getIsMyFeedback(feedback.feedbackId)}
+              isMyFeedback={myFeedbacks.some(
+                (myFeedback) => myFeedback.feedbackId === feedback.feedbackId
+              )}
               customCSS={[
-                myFeedbackStyle(theme, getIsMyFeedback(feedback.feedbackId)),
                 feedback.feedbackId === highlightedId ? highlightStyle : null,
               ]}
               category={feedback.category}
             />
           ))}
-          {loading && <div>로딩중...</div>}
         </FeedbackBoxList>
         <FeedbackStatusMessage
           loading={loading}
+          filterType={selectedFilter as FeedbackFilterType}
           hasNext={hasNext}
-          feedbackCount={filteredAndSortedFeedbacks.length}
+          feedbackCount={displayFeedbacks.length}
         />
       </div>
       <FloatingButton
@@ -120,9 +147,4 @@ export default function UserDashboard() {
       {hasNext && <div id='scroll-observer'></div>}
     </div>
   );
-}
-
-function getFeedbackIsLike(likedFeedbackIds: number[], feedbackId: number) {
-  const isLiked = likedFeedbackIds?.includes(feedbackId);
-  return !!isLiked;
 }
