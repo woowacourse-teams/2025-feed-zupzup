@@ -7,6 +7,7 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from '@/router';
 import { ErrorModalProvider } from '@/contexts/useErrorModal';
 import * as Sentry from '@sentry/react';
+import { ModalProvider } from '@/contexts/useModal';
 
 declare global {
   interface Window {
@@ -67,7 +68,9 @@ root.render(
   <ErrorModalProvider>
     <ThemeProvider theme={theme}>
       <Sentry.ErrorBoundary>
-        <RouterProvider router={router} />
+        <ModalProvider>
+          <RouterProvider router={router} />
+        </ModalProvider>
       </Sentry.ErrorBoundary>
     </ThemeProvider>
   </ErrorModalProvider>
