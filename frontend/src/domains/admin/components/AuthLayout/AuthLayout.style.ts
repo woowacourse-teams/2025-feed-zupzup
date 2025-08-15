@@ -13,7 +13,7 @@ export const authLayout = (theme: Theme) => css`
   gap: 36px;
   width: 100%;
   height: 100%;
-  padding: 64px ${PAGE_PADDING_PX * 2}px 0 ${PAGE_PADDING_PX * 2}px;
+  padding: 64px ${PAGE_PADDING_PX / 2}px 0 ${PAGE_PADDING_PX / 2}px;
   background-color: ${theme.colors.blue[100]};
 `;
 
