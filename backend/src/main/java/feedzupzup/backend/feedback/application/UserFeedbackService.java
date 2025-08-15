@@ -15,9 +15,7 @@ import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import java.util.Comparator;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
-import feedzupzup.backend.notification.event.NotificationEvent;
-import feedzupzup.backend.organizer.domain.Organizer;
-import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
@@ -38,7 +36,6 @@ public class UserFeedbackService {
     private final FeedbackLikeCounter feedbackLikeCounter;
     private final OrganizationRepository organizationRepository;
     private final FeedbackLikeService feedbackLikeService;
-    private final OrganizerRepository organizerRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -54,8 +51,8 @@ public class UserFeedbackService {
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
         
-        // 새로운 피드백이 생성되면 해당 조직의 관리자들에게 알림 전송
-        publishNotificationToOrganizers(organization);
+        // 새로운 피드백이 생성되면 이벤트 발행
+        publishFeedbackCreatedEvent(organization);
 
         return CreateFeedbackResponse.from(savedFeedback);
     }
@@ -130,18 +127,8 @@ public class UserFeedbackService {
                 .toList();
     }
     
-    private void publishNotificationToOrganizers(Organization organization) {
-        List<Organizer> organizers = organizerRepository.findByOrganizationId(organization.getId());
-        
-        String organizationName = organization.getName().getValue();
-        List<Long> adminIds = organizers.stream()
-                .filter(organizer -> organizer.getAdmin().isAlertsOn())
-                .map(organizer -> organizer.getAdmin().getId())
-                .toList();
-        
-        if (!adminIds.isEmpty()) {
-            NotificationEvent event = new NotificationEvent(adminIds, "피드줍줍", organizationName);
-            eventPublisher.publishEvent(event);
-        }
+    private void publishFeedbackCreatedEvent(Organization organization) {
+        FeedbackCreatedEvent event = new FeedbackCreatedEvent(organization.getId(), "피드줍줍");
+        eventPublisher.publishEvent(event);
     }
 }
