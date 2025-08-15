@@ -10,7 +10,6 @@ import {
   FeedbackType,
   FeedbackFilterType,
 } from '@/types/feedback.types';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import FilterSection from '@/domains/components/FilterSection/FilterSection';
@@ -19,8 +18,6 @@ import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 
 export default function AdminDashboard() {
-  const { isAuthorized, isCheckingAuth } = useAdminAuth();
-
   const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
     useFeedbackFilterSort();
 
@@ -44,7 +41,6 @@ export default function AdminDashboard() {
     url: apiUrl,
     key: 'feedbacks',
     size: 10,
-    enabled: isAuthorized && !isCheckingAuth,
   });
 
   const {
@@ -57,14 +53,6 @@ export default function AdminDashboard() {
   } = useAdminModal({ organizationId: 1 });
 
   useGetFeedback({ fetchMore, hasNext, loading });
-
-  if (isCheckingAuth) {
-    return <div>로딩중...</div>;
-  }
-
-  if (!isAuthorized) {
-    return null;
-  }
 
   return (
     <section css={dashboardLayout}>
