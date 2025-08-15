@@ -1,3 +1,4 @@
+import Button from '@/components/@commons/Button/Button';
 import {
   moreMenuItemContainer,
   moreMenuItemText,
@@ -18,9 +19,9 @@ export default function MoreMenuItem({
   const theme = useAppTheme();
 
   return (
-    <div css={moreMenuItemContainer} onClick={onClick} role='button'>
+    <Button css={moreMenuItemContainer} onClick={onClick} role='button'>
       <div>{icon}</div>
       <div css={moreMenuItemText(theme)}>{menu}</div>
-    </div>
+    </Button>
   );
 }
