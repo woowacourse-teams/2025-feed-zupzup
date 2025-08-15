@@ -22,7 +22,7 @@ public class FcmPushNotifier implements PushNotifier {
 
     private final NotificationTokenRepository notificationTokenRepository;
     private final FirebaseMessaging firebaseMessaging;
-    private final FcmErrorHandler errorHandler;
+    private final FcmErrorHandler fcmErrorHandler;
 
     @Override
     public void sendBatchMessage(List<NotificationPayload> payloads) {
@@ -81,7 +81,7 @@ public class FcmPushNotifier implements PushNotifier {
                 List<Long> adminIds = payloads.stream()
                         .map(NotificationPayload::adminId)
                         .toList();
-                errorHandler.handleFailures(response, adminIds);
+                fcmErrorHandler.handleFailures(response, adminIds);
             }
 
         } catch (Exception e) {
