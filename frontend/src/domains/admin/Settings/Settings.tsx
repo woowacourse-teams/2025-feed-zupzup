@@ -9,6 +9,7 @@ import { useLogout } from './hooks/useLogout';
 import { useNotificationSetting } from './hooks/useNotificationSetting';
 import { settingsContainer } from './Settings.style';
 
+// CloudFront 캐시 무효화 테스트 - 2025.8.15
 type ModalState = { type: 'logout' } | { type: null };
 
 export default function Settings() {
@@ -67,4 +68,3 @@ export default function Settings() {
     </div>
   );
 }
-//빌드 테스트
