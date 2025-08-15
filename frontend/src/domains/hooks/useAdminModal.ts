@@ -1,6 +1,7 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface ModalState {
   type: 'confirm' | 'delete' | null;
@@ -8,55 +9,68 @@ interface ModalState {
 }
 
 interface UseAdminModalProps {
-  onConfirmFeedback: (feedbackId: number, comment: string) => void;
-  onDeleteFeedback: (feedbackId: number) => void;
+  organizationId?: number;
 }
 
-export const useAdminModal = ({
-  onConfirmFeedback,
-  onDeleteFeedback,
-}: UseAdminModalProps) => {
+export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
+  const queryClient = useQueryClient();
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { showErrorModal } = useErrorModalContext();
 
-  const openFeedbackCompleteModal = (feedbackId: number) => {
+  const openFeedbackCompleteModal = (feedbackId: number) =>
     setModalState({ type: 'confirm', feedbackId });
-  };
 
-  const openFeedbackDeleteModal = (feedbackId: number) => {
+  const openFeedbackDeleteModal = (feedbackId: number) =>
     setModalState({ type: 'delete', feedbackId });
-  };
 
-  const closeModal = () => {
-    setModalState({ type: null });
-  };
+  const closeModal = () => setModalState({ type: null });
+
+  const confirmMutation = useMutation({
+    mutationFn: ({
+      feedbackId,
+      comment,
+    }: {
+      feedbackId: number;
+      comment: string;
+    }) => patchFeedbackStatus({ feedbackId, comment }),
+    onError: (e) => {
+      showErrorModal(e, '에러');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['organizationStatistics', organizationId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: ({ feedbackId }: { feedbackId: number }) =>
+      deleteFeedback({ feedbackId }),
+    onError: (e) => {
+      showErrorModal(e, '에러');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['organizationStatistics', organizationId],
+      });
+      queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
+    },
+  });
 
   const handleConfirmFeedback = async (comment: string) => {
     const { feedbackId } = modalState;
-    if (feedbackId) {
-      onConfirmFeedback?.(feedbackId, comment);
-      try {
-        await patchFeedbackStatus({
-          feedbackId,
-          comment,
-        });
-      } catch (e) {
-        showErrorModal(e, '에러');
-      }
-    }
+    if (!feedbackId) return;
+
+    await confirmMutation.mutateAsync({ feedbackId, comment });
     closeModal();
   };
 
   const handleDeleteFeedback = async () => {
     const { feedbackId } = modalState;
-    if (feedbackId) {
-      onDeleteFeedback?.(feedbackId);
-      try {
-        await deleteFeedback({ feedbackId });
-      } catch (e) {
-        showErrorModal(e, '에러');
-      }
-    }
+    if (!feedbackId) return;
+
+    await deleteMutation.mutateAsync({ feedbackId });
     closeModal();
   };
 
