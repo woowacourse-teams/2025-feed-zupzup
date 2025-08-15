@@ -18,10 +18,14 @@ import {
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
 import { useNavigate } from 'react-router-dom';
+import { postAdminLogin } from '@/apis/admin.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 
 export default function Login() {
   const theme = useAppTheme();
   const navigate = useNavigate();
+
+  const { showErrorModal } = useErrorModalContext();
 
   const loginValidators = {
     id: validateId,
@@ -40,9 +44,26 @@ export default function Login() {
     validators: loginValidators,
   });
 
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await postAdminLogin({
+      id: loginValue.id,
+      password: loginValue.password,
+      onError: () => {
+        showErrorModal(
+          new Error('로그인 실패'),
+          '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.'
+        );
+      },
+      onSuccess: () => {
+        navigate(ROUTES.ADMIN_HOME);
+      },
+    });
+  };
+
   return (
     <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
-      <form css={loginForm(theme)}>
+      <form css={loginForm(theme)} onSubmit={handleSubmit}>
         <div css={fieldContainer}>
           {loginFields.map((field: LoginField) => (
             <FormField
