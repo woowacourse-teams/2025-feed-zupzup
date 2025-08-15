@@ -14,7 +14,10 @@ declare global {
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (
+  process.env.NODE_ENV === 'development' &&
+  window.location.hostname === 'localhost'
+) {
   (async () => {
     const { worker } = await import('./mocks/browser');
     await worker.start({
