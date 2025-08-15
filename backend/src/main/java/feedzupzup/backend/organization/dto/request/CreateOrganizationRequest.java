@@ -5,6 +5,7 @@ import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.domain.vo.Name;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
+import java.util.UUID;
 
 @Schema(description = "조직 저장 요청")
 public record CreateOrganizationRequest(
@@ -16,7 +17,7 @@ public record CreateOrganizationRequest(
 ) {
 
     public Organization toOrganization() {
-        return new Organization(new Name(organizationName), new CheeringCount(0));
+        return new Organization(UUID.randomUUID(), new Name(organizationName), new CheeringCount(0));
     }
 
 }

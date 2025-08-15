@@ -1,9 +1,9 @@
 package feedzupzup.backend.organization.api;
 
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;
 import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
-import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,10 +25,10 @@ public interface UserOrganizationApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/organizations/{organizationId}")
-    SuccessResponse<UserOrganizationResponse> getOrganizationById(
+    @GetMapping("/organizations/{organizationUuid}")
+    SuccessResponse<UserOrganizationResponse> getOrganizationByUuid(
             @Parameter(description = "단체 ID", example = "1")
-            @PathVariable("organizationId") final Long organizationId
+            @PathVariable("organizationUuid") final String organizationUuid
     );
 
     @Operation(summary = "응원하기", description = "사용자는 단체를 응원할 수 있습니다.")
@@ -37,10 +37,10 @@ public interface UserOrganizationApi {
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/organizations/{organizationId}/cheer")
-    SuccessResponse<CheeringResponse> cheerByOrganizationId(
+    @PostMapping("/organizations/{organizationUuid}/cheer")
+    SuccessResponse<CheeringResponse> cheerByOrganizationUuid(
             @Parameter(description = "단체 ID", example = "1")
-            @PathVariable("organizationId") final Long organizationId,
+            @PathVariable("organizationUuid") final String organizationUuid,
             @RequestBody final CheeringRequest request
     );
 }

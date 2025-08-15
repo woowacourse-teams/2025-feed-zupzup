@@ -10,14 +10,15 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
-import java.util.Comparator;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,9 @@ public class UserFeedbackService {
     @BusinessActionLog
     public CreateFeedbackResponse create(
             final CreateFeedbackRequest request,
-            final Long organizationId
+            final String organizationUuid
     ) {
-        final Organization organization = findOrganizationBy(organizationId);
+        final Organization organization = findOrganizationBy(organizationUuid);
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
                 category);
@@ -49,7 +50,7 @@ public class UserFeedbackService {
     }
 
     public UserFeedbackListResponse getFeedbackPage(
-            final Long organizationId,
+            final String organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
@@ -59,10 +60,11 @@ public class UserFeedbackService {
 
         feedbackLikeService.flushLikeCountBuffer();
 
+        final UUID uuid = UUID.fromString(organizationUuid);
         final List<Feedback> feedbacks = switch (orderBy) {
-            case LATEST -> feedBackRepository.findByLatest(organizationId, status, cursorId, pageable);
-            case OLDEST -> feedBackRepository.findByOldest(organizationId, status, cursorId, pageable);
-            case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
+            case LATEST -> feedBackRepository.findByLatest(uuid, status, cursorId, pageable);
+            case OLDEST -> feedBackRepository.findByOldest(uuid, status, cursorId, pageable);
+            case LIKES -> feedBackRepository.findByLikes(uuid, status, cursorId, pageable);
         };
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
@@ -74,23 +76,23 @@ public class UserFeedbackService {
     }
 
     public MyFeedbackListResponse getMyFeedbackPage(
-            final Long organizationId,
+            final String organizationUuid,
             final FeedbackOrderBy orderBy,
             final List<Long> myFeedbackIds
     ) {
         feedbackLikeService.flushLikeCountBuffer();
 
-        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdIn(
-                organizationId, myFeedbackIds);
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationUuidAndIdIn(
+                UUID.fromString(organizationUuid), myFeedbackIds);
 
         final List<Feedback> sortedFeedbacks = sortFeedbacksByOrderBy(feedbacks, orderBy);
-        
+
         feedbackLikeCounter.applyBufferedLikeCount(sortedFeedbacks);
         return MyFeedbackListResponse.of(sortedFeedbacks);
     }
 
-    private Organization findOrganizationBy(final Long organizationId) {
-        return organizationRepository.findById(organizationId)
+    private Organization findOrganizationBy(final String organizationUuid) {
+        return organizationRepository.findByUuid(UUID.fromString(organizationUuid))
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 
@@ -105,13 +107,13 @@ public class UserFeedbackService {
                     .sorted(Comparator.comparing(Feedback::getId).reversed())
                     .toList();
         }
-        
+
         if (orderBy == FeedbackOrderBy.OLDEST) {
             return feedbacks.stream()
                     .sorted(Comparator.comparing(Feedback::getId))
                     .toList();
         }
-        
+
         return feedbacks.stream()
                 .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
                         .thenComparing(Feedback::getId))

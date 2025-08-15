@@ -18,6 +18,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -62,7 +63,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
         // when
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                organization.getId());
+                organization.getUuid().toString());
 
         // then
         assertAll(
@@ -77,10 +78,10 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     @DisplayName("통계 메서드 호출 중 존재하지 않는 place가 주어진다면, 예외가 발생해야 한다.")
     void calculateStatistic_withNoFeedbacks() {
         // given
-        final Long organizationId = 999L; // 존재하지 않는 장소 ID
+        final String organizationUuid = UUID.randomUUID().toString(); // 존재하지 않는 장소 ID
 
         // when & then
-        assertThatThrownBy(() -> feedbackStatisticService.calculateStatistic(organizationId))
+        assertThatThrownBy(() -> feedbackStatisticService.calculateStatistic(organizationUuid))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -112,7 +113,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
             // when
             final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                    otherOrganization.getId());
+                    otherOrganization.getUuid().toString());
 
             // then
             assertAll(
@@ -153,7 +154,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
             // when
             final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                    savedOrganization.getId());
+                    savedOrganization.getUuid().toString());
 
             // then
             assertAll(

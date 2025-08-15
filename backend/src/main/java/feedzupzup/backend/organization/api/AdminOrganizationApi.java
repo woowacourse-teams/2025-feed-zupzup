@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 public interface AdminOrganizationApi {
 
-    @Operation(summary = "조직 저장", description = "조직을 저장할 수 있습니다.")
+    @Operation(summary = "단체 저장", description = "단체을 저장할 수 있습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "저장 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
@@ -31,7 +31,7 @@ public interface AdminOrganizationApi {
             @RequestBody final CreateOrganizationRequest createOrganizationRequest
     );
 
-    @Operation(summary = "조직 조회", description = "본인이 속한 조직을 모두 조회할 수 있습니다.")
+    @Operation(summary = "단체 조회", description = "본인이 속한 단체을 모두 조회할 수 있습니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized")

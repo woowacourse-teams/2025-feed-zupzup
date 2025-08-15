@@ -2,18 +2,18 @@ package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
+import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
-import java.util.List;
 import feedzupzup.backend.global.response.SuccessResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,14 +28,14 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
-            final Long organizationId,
+            final String organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
             final FeedbackOrderBy orderBy
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organizationId,
+                organizationUuid,
                 size,
                 cursorId,
                 status,
@@ -45,9 +45,11 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<CreateFeedbackResponse> create(final Long organizationId,
-            final CreateFeedbackRequest request) {
-        final CreateFeedbackResponse response = userFeedbackService.create(request, organizationId);
+    public SuccessResponse<CreateFeedbackResponse> create(
+            final String organizationUuid,
+            final CreateFeedbackRequest request
+    ) {
+        final CreateFeedbackResponse response = userFeedbackService.create(request, organizationUuid);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 
@@ -64,21 +66,21 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<StatisticResponse> getStatistic(final Long organizationId) {
+    public SuccessResponse<StatisticResponse> getStatistic(final String organizationUuid) {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                organizationId
+                organizationUuid
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
-            final Long organizationId,
+            final String organizationUuid,
             final FeedbackOrderBy orderBy,
             final List<Long> feedbackIds
     ) {
         final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                organizationId,
+                organizationUuid,
                 orderBy,
                 feedbackIds
         );

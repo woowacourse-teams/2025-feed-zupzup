@@ -16,6 +16,7 @@ import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class AdminFeedbackService {
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
-            final Long organizationId,
+            final String organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
@@ -68,11 +69,12 @@ public class AdminFeedbackService {
         final Pageable pageable = Pageable.ofSize(size + 1);
 
         feedbackLikeService.flushLikeCountBuffer();
-        
+
+        final UUID uuid = UUID.fromString(organizationUuid);
         final List<Feedback> feedbacks = switch (orderBy) {
-            case LATEST -> feedBackRepository.findByLatest(organizationId, status, cursorId, pageable);
-            case OLDEST -> feedBackRepository.findByOldest(organizationId, status, cursorId, pageable);
-            case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
+            case LATEST -> feedBackRepository.findByLatest(uuid, status, cursorId, pageable);
+            case OLDEST -> feedBackRepository.findByOldest(uuid, status, cursorId, pageable);
+            case LIKES -> feedBackRepository.findByLikes(uuid, status, cursorId, pageable);
         };
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);

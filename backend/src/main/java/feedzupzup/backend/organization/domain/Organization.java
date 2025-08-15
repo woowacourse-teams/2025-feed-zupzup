@@ -15,8 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,6 +36,9 @@ public class Organization extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, columnDefinition = "BINARY(16)")
+    private UUID uuid;
+
     @Column(nullable = false)
     private Name name;
 
@@ -51,9 +54,11 @@ public class Organization extends BaseTimeEntity {
 
     @Builder
     public Organization(
+            final @NonNull UUID uuid,
             final @NonNull Name name,
             final @NonNull CheeringCount cheeringCount
     ) {
+        this.uuid = uuid;
         this.name = name;
         this.cheeringCount = cheeringCount;
     }

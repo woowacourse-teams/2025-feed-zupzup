@@ -28,15 +28,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Tag(name = "Admin Feedback", description = "피드백 API(관리자 권한)")
 public interface AdminFeedbackApi {
 
-    @Operation(summary = "관리자용 피드백 목록 조회", description = "특정 장소의 피드백 목록을 조회합니다. (관리자 전용)")
+    @Operation(summary = "관리자용 피드백 목록 조회", description = "특정 단체의 피드백 목록을 조회합니다. (관리자 전용)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
     })
-    @GetMapping("/admin/organizations/{organizationId}/feedbacks")
+    @GetMapping("/admin/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            @Parameter(description = "장소 ID", example = "1") @PathVariable("organizationId") final Long organizationId,
+            @Parameter(description = "단체 UUID", example = "1") @PathVariable("organizationUuid") final String organizationUuid,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,

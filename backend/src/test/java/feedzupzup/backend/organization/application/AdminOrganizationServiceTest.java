@@ -37,7 +37,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         final AdminCreateOrganizationResponse response = adminOrganizationService.createOrganization(
                 createOrganizationRequest, savedAdmin.getId());
 
-        assertThat(response.organizationId()).isNotNull();
+        assertThat(response.organizationUuid()).isNotNull();
     }
 
     @Test

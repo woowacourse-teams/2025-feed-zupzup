@@ -5,11 +5,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "조직 생성 응답")
 public record AdminCreateOrganizationResponse(
-        @Schema(description = "생성된 조직 ID", example = "1")
-        Long organizationId
+        @Schema(description = "생성된 조직 UUID", example = "1")
+        String organizationUuid
 ) {
 
     public static AdminCreateOrganizationResponse from(final Organization organization) {
-        return new AdminCreateOrganizationResponse(organization.getId());
+        return new AdminCreateOrganizationResponse(organization.getUuid().toString());
     }
 }
