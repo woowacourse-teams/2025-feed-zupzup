@@ -22,6 +22,8 @@ export default function Header() {
   const location = useLocation();
   const theme = useAppTheme();
   const navigate = useNavigate();
+  const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef } =
+    useMoreMenuManager();
 
   const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu } =
     useMoreMenuManager();
