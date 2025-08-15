@@ -10,6 +10,7 @@ import {
 import { useCategorySelection } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
+import RoomNameInput from '@/domains/admin/components/RoomNameInput/RoomNameInput';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -30,11 +31,12 @@ export default function CreateRoomModal({
     <Modal isOpen={isOpen} onClose={onClose}>
       <section css={roomModalContainer}>
         <p css={roomModalTitle}>새 피드백 방 만들기</p>
-        <input
-          type='text'
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-          placeholder='방 이름을 입력하세요'
+
+        <RoomNameInput
+          roomName={roomName}
+          onChange={(e) => {
+            setRoomName(e.target.value);
+          }}
         />
         <RoomCategoryList
           selectedCategories={selectedCategories}
@@ -46,10 +48,22 @@ export default function CreateRoomModal({
         />
       </section>
       <div css={buttonContainer(theme)}>
-        <BasicButton variant='secondary' width={'48%'}>
+        <BasicButton
+          variant='secondary'
+          width={'48%'}
+          padding={'8px 8px'}
+          height={'40px'}
+          fontSize={'16px'}
+        >
           취소
         </BasicButton>
-        <BasicButton variant='primary' width={'48%'}>
+        <BasicButton
+          variant='primary'
+          width={'48%'}
+          padding={'8px 8px'}
+          height={'40px'}
+          fontSize={'16px'}
+        >
           방 만들기
         </BasicButton>
       </div>

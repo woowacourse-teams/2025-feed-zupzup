@@ -9,7 +9,7 @@ import {
   isSuccess,
 } from '@/utils/fetchUtils';
 
-type FetchMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH';
+type FetchMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
 
 interface ApiClientProps<RequestBody, Response> {
   method: FetchMethodType;
@@ -36,6 +36,21 @@ export const apiClient = {
     baseClient<Response, RequestBody>({
       ...options,
       method: 'POST',
+      URI,
+      body,
+    }),
+
+  put: <Response, RequestBody>(
+    URI: string,
+    body: RequestBody,
+    options?: Omit<
+      ApiClientProps<RequestBody, Response>,
+      'method' | 'URI' | 'body'
+    >
+  ) =>
+    baseClient<Response, RequestBody>({
+      ...options,
+      method: 'PUT',
       URI,
       body,
     }),

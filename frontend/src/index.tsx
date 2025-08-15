@@ -8,6 +8,7 @@ import { router } from '@/router';
 import { ErrorModalProvider } from '@/contexts/useErrorModal';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ModalProvider } from '@/contexts/useModal';
 
 declare global {
   interface Window {
@@ -15,12 +16,18 @@ declare global {
   }
 }
 
-// if (process.env.NODE_ENV === 'development') {
-//   const { worker } = await import('./mocks/browser');
-//   await worker.start({
-//     onUnhandledRequest: 'bypass',
-//   });
-// }
+if (
+  process.env.NODE_ENV === 'development' &&
+  window.location.hostname === 'localhost'
+) {
+  (async () => {
+    const { worker } = await import('./mocks/browser');
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: { url: '/service-worker.js' },
+    });
+  })();
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -65,7 +72,9 @@ root.render(
     <ErrorModalProvider>
       <ThemeProvider theme={theme}>
         <Sentry.ErrorBoundary>
-          <RouterProvider router={router} />
+          <ModalProvider>
+            <RouterProvider router={router} />
+          </ModalProvider>
         </Sentry.ErrorBoundary>
       </ThemeProvider>
     </ErrorModalProvider>
