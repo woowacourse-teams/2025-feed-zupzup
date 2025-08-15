@@ -9,9 +9,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Category {
 
-    FACILITY("시설"),
-    CURRICULUM("커리큘럼"),
-    ADMINISTRATION("행정"),
+    REPORT("신고"),
+    QUESTION("질문"),
+    SUGGESTION("건의"),
+    FEEDBACK("피드백"),
+    COMPLIMENT("칭찬"),
+    SHARING("정보공유"),
     ETC("기타"),
     ;
 

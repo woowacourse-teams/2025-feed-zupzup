@@ -1,0 +1,23 @@
+-- Admin 테이블 생성
+CREATE TABLE admin (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    login_id VARCHAR(10) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    admin_name VARCHAR(10) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Organizer 테이블 생성
+CREATE TABLE organizer (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    organization_id BIGINT NOT NULL,
+    admin_id BIGINT NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_organizer_organization FOREIGN KEY (organization_id) REFERENCES organization(id) ON DELETE CASCADE,
+    CONSTRAINT fk_organizer_admin FOREIGN KEY (admin_id) REFERENCES admin(id) ON DELETE CASCADE,
+    CONSTRAINT chk_organizer_role CHECK (role IN ('OWNER', 'MANAGER'))
+);

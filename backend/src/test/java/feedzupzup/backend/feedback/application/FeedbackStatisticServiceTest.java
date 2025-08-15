@@ -1,13 +1,13 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -44,8 +44,8 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(
@@ -98,8 +98,8 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
             organizationRepository.save(otherOrganization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(
@@ -130,8 +130,8 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             Organization savedOrganization = organizationRepository.save(organization);
 
-            final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                    organization, FACILITY);
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithStatus(

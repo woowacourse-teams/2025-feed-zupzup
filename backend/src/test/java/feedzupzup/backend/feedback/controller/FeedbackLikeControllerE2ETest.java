@@ -1,12 +1,12 @@
 package feedzupzup.backend.feedback.controller;
 
-import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -48,8 +48,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -77,8 +77,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -125,8 +125,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -171,8 +171,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -205,8 +205,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -249,8 +249,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -285,8 +285,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
@@ -341,8 +341,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,

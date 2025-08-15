@@ -1,1 +1,0 @@
-ALTER TABLE feedback MODIFY COLUMN content VARCHAR(500);
