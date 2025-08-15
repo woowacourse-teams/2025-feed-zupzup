@@ -4,11 +4,8 @@ import FeedbackPage from '@/domains/user/FeedbackPage/FeedbackPage';
 import OnBoarding from '@/domains/user/OnBoarding/OnBoarding';
 import useProgressStep from '@/hooks/useProgressStep';
 import { css } from '@emotion/react';
-import { useParams } from 'react-router-dom';
 
 export default function Home() {
-  const { id } = useParams();
-
   const { currentStep, moveNextStep, movePrevStep, totalStep } =
     useProgressStep({
       totalStep: 2,
