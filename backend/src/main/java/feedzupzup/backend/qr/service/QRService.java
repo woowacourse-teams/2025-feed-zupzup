@@ -12,6 +12,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -27,7 +28,7 @@ public class QRService {
     @Value("${page.base-url}")
     private String baseUrl;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void create(final UUID organizationUuid) {
         final Organization organization = getOrganization(organizationUuid);
 
