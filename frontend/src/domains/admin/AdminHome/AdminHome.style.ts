@@ -44,7 +44,7 @@ export const addFeedbackRoom = (theme: Theme) => css`
   min-height: 60px;
   background-color: ${theme.colors.purple[100]};
 
-  &:hover {
+  &:active {
     background-color: ${theme.colors.purple[100]}aa;
   }
 `;
