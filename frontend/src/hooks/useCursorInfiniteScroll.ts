@@ -26,7 +26,7 @@ export default function useCursorInfiniteScroll<
   enabled = true,
 }: UseCursorInfiniteScrollParams<Key>) {
   const query = useInfiniteQuery({
-    queryKey: ['infinity', key, url],
+    queryKey: ['infinity', key, url, size],
     enabled: enabled && Boolean(url),
     retry: MAX_RETRY_COUNT,
     initialPageParam: null as number | null,
