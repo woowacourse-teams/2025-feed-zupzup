@@ -1,4 +1,4 @@
-package feedzupzup.backend.notification.dto;
+package feedzupzup.backend.notification.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -9,7 +9,7 @@ public record AlertsSettingResponse(
         Boolean alertsOn
 ) {
     
-    public static AlertsSettingResponse of(boolean alertsOn) {
+    public static AlertsSettingResponse from(boolean alertsOn) {
         return new AlertsSettingResponse(alertsOn);
     }
 }

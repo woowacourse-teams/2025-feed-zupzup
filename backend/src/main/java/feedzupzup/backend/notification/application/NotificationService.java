@@ -4,9 +4,9 @@ import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.notification.domain.NotificationTokenRepository;
-import feedzupzup.backend.notification.dto.AlertsSettingResponse;
-import feedzupzup.backend.notification.dto.NotificationTokenRequest;
-import feedzupzup.backend.notification.dto.UpdateAlertsSettingRequest;
+import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
+import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
+import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import feedzupzup.backend.notification.exception.NotificationException.NotificationTokenExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class NotificationService {
     public AlertsSettingResponse getAlertsSetting(final Long adminId) {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
-        return AlertsSettingResponse.of(admin.isAlertsOn());
+        return AlertsSettingResponse.from(admin.isAlertsOn());
     }
 
     @Transactional
