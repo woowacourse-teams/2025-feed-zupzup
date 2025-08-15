@@ -7,7 +7,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
   const [myFeedbacks, setMyFeedbacks] = useState<FeedbackType[]>([]);
 
   const feedbackIds = useMemo(
-    () => [...new Set(getLocalStorage<number[]>('feedbackIds') || [])],
+    () => [...new Set(getLocalStorage<number[]>('myFeedbacks') || [])],
     []
   );
 
