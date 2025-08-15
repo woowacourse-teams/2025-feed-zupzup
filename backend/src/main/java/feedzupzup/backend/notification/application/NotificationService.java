@@ -7,6 +7,7 @@ import feedzupzup.backend.notification.domain.NotificationTokenRepository;
 import feedzupzup.backend.notification.dto.AlertsSettingResponse;
 import feedzupzup.backend.notification.dto.NotificationTokenRequest;
 import feedzupzup.backend.notification.dto.UpdateAlertsSettingRequest;
+import feedzupzup.backend.notification.exception.NotificationException.NotificationTokenExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class NotificationService {
     @Transactional
     public void registerToken(final NotificationTokenRequest request, final Long adminId) {
         if (notificationTokenRepository.existsByAdminId(adminId)) {
-            throw new IllegalArgumentException();
+            throw new NotificationTokenExistsException("이미 등록된 알림 토큰이 있습니다.");
         }
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));

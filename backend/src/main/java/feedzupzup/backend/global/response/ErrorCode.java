@@ -41,7 +41,8 @@ public enum ErrorCode {
     
     //Notification Error
     NOTIFICATION_RETRY_INTERRUPTED(INTERNAL_SERVER_ERROR, "N01", "알림 재시도 중 인터럽트가 발생했습니다."),
-    FIREBASE_INITIALIZATION_FAILED(INTERNAL_SERVER_ERROR, "N02", "Firebase를 초기화할 수 없습니다.")
+    FIREBASE_INITIALIZATION_FAILED(INTERNAL_SERVER_ERROR, "N02", "Firebase를 초기화할 수 없습니다."),
+    NOTIFICATION_TOKEN_ALREADY_EXISTS(BAD_REQUEST, "N03", "이미 등록된 알림 토큰이 있습니다.")
     ;
 
     private final HttpStatus httpStatus;
