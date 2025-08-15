@@ -15,12 +15,12 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: ROUTES.HOME,
+        path: ROUTES.SUBMIT,
         element: <Home />,
       },
       {
-        path: ROUTES.ADMIN,
-        element: <AdminDashboard />,
+        path: ROUTES.USER_DASHBOARD,
+        element: <UserDashboard />,
       },
       {
         path: ROUTES.LOGIN,
@@ -30,17 +30,23 @@ export const router = createBrowserRouter([
         path: ROUTES.SIGN_UP,
         element: <SignUp />,
       },
+    ],
+  },
+  {
+    path: ROUTES.ADMIN,
+    element: <App />,
+    children: [
       {
-        path: ROUTES.USER_DASHBOARD,
-        element: <UserDashboard />,
+        path: ROUTES.ADMIN_HOME,
+        element: <AdminHome />,
+      },
+      {
+        path: ROUTES.ADMIN_DASHBOARD,
+        element: <AdminDashboard />,
       },
       {
         path: ROUTES.ADMIN_SETTINGS,
         element: <Settings />,
-      },
-      {
-        path: ROUTES.ADMIN_HOME,
-        element: <AdminHome />,
       },
     ],
   },
