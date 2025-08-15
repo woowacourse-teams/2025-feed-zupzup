@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,7 +25,6 @@ public class FcmPushNotifier implements PushNotifier {
     private final FcmErrorHandler errorHandler;
 
     @Override
-    @Async
     public void sendBatchMessage(List<NotificationPayload> payloads) {
         if (payloads.isEmpty()) {
             log.warn("전송할 NotificationPayload가 없습니다.");
