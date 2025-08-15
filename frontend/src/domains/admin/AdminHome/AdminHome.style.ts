@@ -28,8 +28,6 @@ export const infoContainer = css`
 `;
 
 export const listTitle = (theme: Theme) => css`
-  font-size: 24px;
-  font-weight: 600;
   ${theme.typography.pretendard.smallBold}
 `;
 
