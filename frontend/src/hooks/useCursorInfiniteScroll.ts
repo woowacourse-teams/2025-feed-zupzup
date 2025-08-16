@@ -50,11 +50,15 @@ export default function useCursorInfiniteScroll<
   };
 }
 
-export async function fetchCursorPage<ResponseData>(params: {
+interface fetchCursorPageParams {
   url: string;
   size: number;
   pageParam: number | null;
-}): Promise<ResponseData> {
+}
+
+export async function fetchCursorPage<ResponseData>(
+  params: fetchCursorPageParams
+): Promise<ResponseData> {
   const { url, size, pageParam } = params;
 
   const queryString = new URLSearchParams({ size: String(size) });
