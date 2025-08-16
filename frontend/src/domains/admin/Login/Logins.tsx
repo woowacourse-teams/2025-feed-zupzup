@@ -20,25 +20,27 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 
+const LOGIN_INITIAL_VALUES = {
+  id: '',
+  password: '',
+};
+
+const LOGIN_VALIDATORS = {
+  id: validateId,
+  password: validatePassword,
+};
+
 export default function Login() {
   const theme = useAppTheme();
   const navigate = useNavigate();
-
-  const loginValidators = {
-    id: validateId,
-    password: validatePassword,
-  };
 
   const {
     authValue: loginValue,
     handleChangeForm,
     errors,
   } = useAuthForm({
-    initValues: {
-      id: '',
-      password: '',
-    },
-    validators: loginValidators,
+    initValues: LOGIN_INITIAL_VALUES,
+    validators: LOGIN_VALIDATORS,
   });
 
   const { handleSubmit } = useLogin({ loginValue });
