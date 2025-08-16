@@ -58,7 +58,7 @@ export async function fetchCursorPage<ResponseData>(params: {
   const { url, size, pageParam } = params;
 
   const queryString = new URLSearchParams({ size: String(size) });
-  if (pageParam != null) queryString.append('cursorId', String(pageParam));
+  if (pageParam != null) queryString.set('cursorId', String(pageParam));
 
   const sep = url.includes('?') ? '&' : '?';
   const requestUrl = `${url}${sep}${queryString.toString()}`;
