@@ -46,7 +46,10 @@ public enum ErrorCode {
     NOTIFICATION_TOKEN_ALREADY_EXISTS(BAD_REQUEST, "N03", "이미 등록된 알림 토큰이 있습니다."),
 
     //QR Error
-    QR_GENERATION_FAILED(INTERNAL_SERVER_ERROR, "Q01", "QR 생성에 실패하였습니다.");
+    QR_GENERATION_FAILED(INTERNAL_SERVER_ERROR, "Q01", "QR 생성에 실패하였습니다."),
+
+    //S3 Error
+    S3_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "S01", "파일 업로드에 실패하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
