@@ -12,13 +12,15 @@ interface UseCursorInfiniteScrollParams<Key extends string> {
   enabled?: boolean; // false면 패칭 비활성화
 }
 
+type CursorResponse<T, Key extends string> = Record<Key, T[]> & {
+  hasNext: boolean;
+  nextCursorId: number;
+};
+
 export default function useCursorInfiniteScroll<
   T extends object,
   Key extends string,
-  ResponseData extends Record<Key, T[]> & {
-    hasNext: boolean;
-    nextCursorId: number;
-  },
+  ResponseData extends CursorResponse<T, Key>,
 >({
   url,
   key,
