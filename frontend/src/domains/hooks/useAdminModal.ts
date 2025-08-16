@@ -33,8 +33,11 @@ export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
       feedbackId: number;
       comment: string;
     }) => patchFeedbackStatus({ feedbackId, comment }),
-    onError: (e) => {
-      showErrorModal(e, '에러');
+    onError: () => {
+      showErrorModal(
+        '피드백 완료 상태 변경에 실패했습니다. 다시 시도해 주세요',
+        '에러'
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -47,8 +50,8 @@ export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
   const deleteMutation = useMutation({
     mutationFn: ({ feedbackId }: { feedbackId: number }) =>
       deleteFeedback({ feedbackId }),
-    onError: (e) => {
-      showErrorModal(e, '에러');
+    onError: () => {
+      showErrorModal('피드백 삭제에 실패했습니다. 다시 시도해 주세요', '에러');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
