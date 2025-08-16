@@ -4,6 +4,7 @@ import { VAPID_KEY } from '@/firebase/config';
 import {
   registerFCMToken,
   updateNotificationSettings,
+  getNotificationSettings,
 } from '@/apis/notifications.api';
 import {
   setStoredNotificationState,
@@ -13,9 +14,7 @@ import {
 import type { NotificationServiceResult } from '@/types/notification.types';
 
 export class NotificationService {
-  static async enable(
-    organizationId: number
-  ): Promise<NotificationServiceResult> {
+  static async enable(): Promise<NotificationServiceResult> {
     try {
       if (!isNotificationSupported()) {
         throw new Error('이 브라우저는 푸시 알림을 지원하지 않습니다.');
@@ -44,48 +43,53 @@ export class NotificationService {
       await registerFCMToken(token);
 
       await updateNotificationSettings({
-        organizationId,
-        enabled: true,
+        alertsOn: true,
       });
 
-      setStoredNotificationState(organizationId, true);
+      setStoredNotificationState(true);
 
       return {
         success: true,
         message: '알림이 성공적으로 활성화되었습니다.',
-        data: { token, organizationId },
+        data: { token },
       };
     } catch (error) {
       console.error('[NotificationService] 활성화 실패:', error);
 
-      setStoredNotificationState(organizationId, false);
+      setStoredNotificationState(false);
 
       throw new Error(createNotificationErrorMessage(error));
     }
   }
 
-  static async disable(
-    organizationId: number
-  ): Promise<NotificationServiceResult> {
+  static async disable(): Promise<NotificationServiceResult> {
     try {
       await updateNotificationSettings({
-        organizationId,
-        enabled: false,
+        alertsOn: false,
       });
 
-      setStoredNotificationState(organizationId, false);
+      setStoredNotificationState(false);
 
       return {
         success: true,
         message: '알림이 비활성화되었습니다.',
-        data: { organizationId },
       };
     } catch (error) {
       console.error('[NotificationService] 비활성화 실패:', error);
 
-      setStoredNotificationState(organizationId, true);
+      setStoredNotificationState(true);
 
       throw new Error('알림 비활성화에 실패했습니다.');
+    }
+  }
+
+  static async getCurrentSettings(): Promise<boolean> {
+    try {
+      const response = await getNotificationSettings();
+      return response.data.alertsOn;
+    } catch (error) {
+      console.error('[NotificationService] 설정 조회 실패:', error);
+      return false;
     }
   }
 

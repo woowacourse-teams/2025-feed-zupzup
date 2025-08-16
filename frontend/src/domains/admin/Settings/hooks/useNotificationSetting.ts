@@ -2,9 +2,8 @@ import { useState, useCallback } from 'react';
 import { NotificationService } from '@/services/notificationService';
 import { useNotifications } from './useNotifications';
 
-export const useNotificationSetting = (organizationId: number = 1) => {
-  const { fcmStatus, isEnabled, updateState } =
-    useNotifications(organizationId);
+export const useNotificationSetting = () => {
+  const { fcmStatus, isEnabled, updateState } = useNotifications();
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,9 +17,9 @@ export const useNotificationSetting = (organizationId: number = 1) => {
 
       try {
         if (enabled) {
-          await NotificationService.enable(organizationId);
+          await NotificationService.enable();
         } else {
-          await NotificationService.disable(organizationId);
+          await NotificationService.disable();
         }
 
         updateState(enabled);
@@ -37,7 +36,7 @@ export const useNotificationSetting = (organizationId: number = 1) => {
         setLoading(false);
       }
     },
-    [loading, organizationId, updateState]
+    [loading, updateState]
   );
 
   return {

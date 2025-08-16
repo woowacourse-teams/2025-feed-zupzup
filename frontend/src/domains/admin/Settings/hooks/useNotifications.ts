@@ -5,21 +5,22 @@ import { NotificationService } from '@/services/notificationService';
 import {
   getStoredNotificationState,
   setStoredNotificationState,
+  getStoredFCMToken,
 } from '@/utils/notificationUtils';
 import type { FCMStatus } from '@/types/notification.types';
 
-export const useNotifications = (organizationId: number) => {
+export const useNotifications = () => {
   const [permission, setPermission] =
     useState<NotificationPermission>('default');
   const isSupported = NotificationService.checkIsSupported();
 
   const [isEnabled, setIsEnabled] = useState(() =>
-    getStoredNotificationState(organizationId)
+    getStoredNotificationState()
   );
 
   useEffect(() => {
-    setIsEnabled(getStoredNotificationState(organizationId));
-  }, [organizationId]);
+    setIsEnabled(getStoredNotificationState());
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !('Notification' in window)) return;
@@ -60,13 +61,13 @@ export const useNotifications = (organizationId: number) => {
 
   const updateState = (enabled: boolean) => {
     setIsEnabled(enabled);
-    setStoredNotificationState(organizationId, enabled);
+    setStoredNotificationState(enabled);
   };
 
   const fcmStatus: FCMStatus = {
     isSupported,
     permission,
-    hasToken: false,
+    hasToken: !!getStoredFCMToken(),
   };
 
   return {
