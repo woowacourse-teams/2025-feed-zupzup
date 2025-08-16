@@ -34,15 +34,15 @@ export default function AdminHome() {
           <p css={listTitle(theme)}>피드백 방 목록</p>
           <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
         </div>
-
         <FeedbackRoomList />
+
+        <FloatingButton
+          icon={<PlusIcon color='white' width='24' height='24' />}
+          onClick={() => window.alert('피드백 방 추가')}
+          inset={{ bottom: '80px', left: '100%' }}
+          customCSS={addFeedbackRoom(theme)}
+        />
       </div>
-      <FloatingButton
-        icon={<PlusIcon color='white' width='24' height='24' />}
-        onClick={() => window.alert('피드백 방 추가')}
-        inset={{ bottom: '80px', left: '100%' }}
-        customCSS={addFeedbackRoom(theme)}
-      />
     </div>
   );
 }
