@@ -2,6 +2,7 @@ import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 interface ModalState {
   type: 'confirm' | 'delete' | null;
@@ -27,9 +28,9 @@ export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
 
   const invalidateFeedbackQueries = () => {
     queryClient.invalidateQueries({
-      queryKey: ['organizationStatistics', organizationId],
+      queryKey: QUERY_KEYS.organizationStatistics(organizationId),
     });
-    queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.infiniteFeedbacks });
   };
 
   const confirmMutation = useMutation({

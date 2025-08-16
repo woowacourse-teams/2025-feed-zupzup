@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { getOrganizationStatistics } from '@/apis/organization.api';
 import type { GetOrganizationStatistics } from '@/types/organization.types';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 export interface StatisticsProps {
   reflectionRate: string;
@@ -18,7 +19,7 @@ const EMPTY: StatisticsProps = {
 
 export default function useUserOrganizationsStatistics() {
   const { data = EMPTY } = useQuery({
-    queryKey: ['organizationStatistics', 1],
+    queryKey: QUERY_KEYS.organizationStatistics(1),
     queryFn: () => getOrganizationStatistics({ organizationId: 1 }),
     select: (res: GetOrganizationStatistics) => res.data,
   });
