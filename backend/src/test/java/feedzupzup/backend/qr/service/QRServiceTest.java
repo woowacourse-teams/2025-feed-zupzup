@@ -36,7 +36,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
     private OrganizationRepository organizationRepository;
 
     @MockitoBean
-    private QRImageGenerator qrImageGenerator;
+    private QRCodeGenerator qrCodeGenerator;
 
     @MockitoBean
     private S3UploadService s3UploadService;
@@ -106,7 +106,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             final byte[] mockQrImage = "mock-qr-image".getBytes();
             final String mockImageUrl = "https://s3.amazonaws.com/bucket/qr-image.png";
 
-            when(qrImageGenerator.generateQRImage(anyString())).thenReturn(mockQrImage);
+            when(qrCodeGenerator.generateQRCode(anyString())).thenReturn(mockQrImage);
             when(s3UploadService.uploadFile(eq("png"), eq("/organization_qr"), eq(organization.getUuid()),
                     eq(mockQrImage)))
                     .thenReturn(mockImageUrl);

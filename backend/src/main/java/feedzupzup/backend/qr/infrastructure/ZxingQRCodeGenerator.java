@@ -7,7 +7,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import feedzupzup.backend.qr.infrastructure.exception.QRGenerationException;
-import feedzupzup.backend.qr.service.QRImageGenerator;
+import feedzupzup.backend.qr.service.QRCodeGenerator;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -19,13 +19,13 @@ import javax.imageio.ImageIO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ZxingQRImageGenerator implements QRImageGenerator {
+public class ZxingQRCodeGenerator implements QRCodeGenerator {
 
     public static final int WIDTH = 300;
     public static final int HEIGHT = 300;
     public static final String QR_IMAGE_EXTENSION = "PNG";
 
-    public byte[] generateQRImage(final String url) {
+    public byte[] generateQRCode(final String url) {
         final QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
         final Map<EncodeHintType, Object> options = new HashMap<>();

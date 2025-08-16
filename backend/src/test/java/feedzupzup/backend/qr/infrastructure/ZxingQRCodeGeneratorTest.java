@@ -14,10 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class ZxingQRImageGeneratorTest {
+class ZxingQRCodeGeneratorTest {
 
     @InjectMocks
-    private ZxingQRImageGenerator qrImageGenerator;
+    private ZxingQRCodeGenerator qrImageGenerator;
 
     @Nested
     @DisplayName("QR 이미지 생성 테스트")
@@ -30,7 +30,7 @@ class ZxingQRImageGeneratorTest {
             final String url = "https://feedzupzup.com/dashboard?uuid=123e4567-e89b-12d3-a456-426614174000";
 
             // when
-            final byte[] result = qrImageGenerator.generateQRImage(url);
+            final byte[] result = qrImageGenerator.generateQRCode(url);
 
             // then
             assertThat(result).isNotNull();
@@ -39,8 +39,8 @@ class ZxingQRImageGeneratorTest {
             // 생성된 이미지가 올바른 형식인지 확인
             final BufferedImage image = ImageIO.read(new ByteArrayInputStream(result));
             assertThat(image).isNotNull();
-            assertThat(image.getWidth()).isEqualTo(ZxingQRImageGenerator.WIDTH);
-            assertThat(image.getHeight()).isEqualTo(ZxingQRImageGenerator.HEIGHT);
+            assertThat(image.getWidth()).isEqualTo(ZxingQRCodeGenerator.WIDTH);
+            assertThat(image.getHeight()).isEqualTo(ZxingQRCodeGenerator.HEIGHT);
         }
 
         @Test
@@ -50,7 +50,7 @@ class ZxingQRImageGeneratorTest {
             final String url = "https://example.com";
 
             // when
-            final byte[] result = qrImageGenerator.generateQRImage(url);
+            final byte[] result = qrImageGenerator.generateQRCode(url);
 
             // then
             final BufferedImage image = ImageIO.read(new ByteArrayInputStream(result));
@@ -65,8 +65,8 @@ class ZxingQRImageGeneratorTest {
             final String url = "https://feedzupzup.com";
 
             // when
-            final byte[] result1 = qrImageGenerator.generateQRImage(url);
-            final byte[] result2 = qrImageGenerator.generateQRImage(url);
+            final byte[] result1 = qrImageGenerator.generateQRCode(url);
+            final byte[] result2 = qrImageGenerator.generateQRCode(url);
 
             // then
             assertThat(result1).isEqualTo(result2);

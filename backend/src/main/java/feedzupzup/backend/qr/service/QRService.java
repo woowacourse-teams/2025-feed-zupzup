@@ -6,7 +6,6 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.dto.QRResponse;
-import feedzupzup.backend.qr.infrastructure.QRImageGenerator;
 import feedzupzup.backend.qr.repository.QRRepository;
 import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.UUID;
@@ -23,7 +22,7 @@ public class QRService {
 
     private final QRRepository qrRepository;
     private final OrganizationRepository organizationRepository;
-    private final QRImageGenerator qrImageGenerator;
+    private final QRCodeGenerator qrCodeGenerator;
     private final S3UploadService s3UploadService;
 
     @Value("${page.base-url}")
@@ -50,9 +49,10 @@ public class QRService {
                     "해당 ID(id = " + organizationUuid + ")인 단체의 QR 코드는 이미 존재합니다.");
         }
 
-        final byte[] qrImage = qrImageGenerator.generateQRImage(baseUrl + "?uuid=" + organizationUuid);
+        String qrUrl = baseUrl + "?uuid=" + organizationUuid;
+        final byte[] qrCode = qrCodeGenerator.generateQRCode(qrUrl);
         final String imageUrl = s3UploadService.uploadFile(
-                "png", "/organization_qr", organization.getUuid(), qrImage);
+                "png", "/organization_qr", organization.getUuid(), qrCode);
 
         qrRepository.save(new QR(imageUrl, organization));
     }
