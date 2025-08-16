@@ -95,12 +95,14 @@ class OrganizationRepositoryTest extends RepositoryHelper {
             feedbackRepository.save(feedback2);
 
             AdminOrganizationInfo expected1 = new AdminOrganizationInfo(
+                    organization1.getUuid(),
                     organization1.getName().getValue(),
                     1L,
                     feedback1.getPostedAt().getValue()
             );
 
             AdminOrganizationInfo expected2 = new AdminOrganizationInfo(
+                    organization2.getUuid(),
                     organization2.getName().getValue(),
                     1L,
                     feedback2.getPostedAt().getValue()
