@@ -20,12 +20,17 @@ import {
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
 import { useNavigate } from 'react-router-dom';
+import Toast from '@/domains/components/Toast/Toast';
+import { FormEvent, useState } from 'react';
+import { postAdminSignup } from '@/apis/admin.api';
+import { setLocalStorage } from '@/utils/localStorage';
 
 type SignUpFieldName = 'name' | 'id' | 'password';
 
 export default function SignUp() {
   const theme = useAppTheme();
   const navigate = useNavigate();
+  const [toast, setToast] = useState<string | null>(null);
 
   const signUpValidators = {
     name: validateName,
@@ -54,9 +59,39 @@ export default function SignUp() {
     initValues: { confirmPassword: '', password: signUpValue.password },
   });
 
+  const handleSignUp = async (event: FormEvent) => {
+    event.preventDefault();
+    const isValid = Object.values(errors).every((error) => !error);
+    const isConfirmPasswordValid =
+      !confirmPasswordErrors && signUpValue.password !== '';
+
+    if (!isValid || !isConfirmPasswordValid) {
+      setToast('입력하신 정보를 다시 확인해주세요.');
+      return;
+    } else {
+      await postAdminSignup({
+        loginId: signUpValue.id,
+        password: signUpValue.password,
+        adminName: signUpValue.name,
+        onError: () => {
+          setToast('회원가입에 실패했습니다. 다시 시도해주세요.');
+        },
+        onSuccess: (authData: Response) => {
+          setToast('회원가입이 완료되었습니다.');
+          navigate(ROUTES.ADMIN + '/' + ROUTES.ADMIN_HOME);
+          setLocalStorage('admin', authData);
+        },
+      });
+    }
+  };
+
   return (
     <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
-      <form css={signUpForm(theme)}>
+      {toast && (
+        <Toast message={toast} onClose={() => setToast(null)} duration={2000} />
+      )}
+
+      <form css={signUpForm(theme)} onSubmit={handleSignUp}>
         <div css={fieldContainer}>
           {signUpFields.map((field: SignUpField) => {
             const isConfirm = field.name === 'passwordConfirm';
@@ -91,7 +126,9 @@ export default function SignUp() {
         <div css={signUpCaptionContainer(theme)}>
           <p>
             이미 계정이 있으신가요?
-            <strong onClick={() => navigate(ROUTES.LOGIN)}>로그인하기</strong>
+            <strong onClick={() => navigate('/' + ROUTES.LOGIN)}>
+              로그인하기
+            </strong>
           </p>
         </div>
       </form>
