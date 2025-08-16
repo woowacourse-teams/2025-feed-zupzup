@@ -14,8 +14,8 @@ import feedzupzup.backend.auth.dto.request.LoginRequest;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
@@ -66,12 +66,12 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .cookie(SESSION_ID, sessionCookie)
                 .body(request)
-        .when()
+                .when()
                 .post("/admin/organizations")
-        .then()
+                .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .log().all()
-                .body("data.organizationId", notNullValue());
+                .body("data.organizationUuid", notNullValue());
     }
 
     @Test
@@ -98,8 +98,10 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
 
-        Organization organization1 = organizationRepository.save(Organization.builder().name(new feedzupzup.backend.organization.domain.vo.Name("org1")).cheeringCount(new CheeringCount(0)).build());
-        Organization organization2 = organizationRepository.save(Organization.builder().name(new feedzupzup.backend.organization.domain.vo.Name("org2")).cheeringCount(new CheeringCount(0)).build());
+        Organization organization1 = organizationRepository.save(
+                OrganizationFixture.createAllBlackBox());
+        Organization organization2 = organizationRepository.save(
+                OrganizationFixture.createAllBlackBox());
         organizerRepository.save(new Organizer(organization1, admin, OrganizerRole.OWNER));
         organizerRepository.save(new Organizer(organization2, admin, OrganizerRole.OWNER));
 

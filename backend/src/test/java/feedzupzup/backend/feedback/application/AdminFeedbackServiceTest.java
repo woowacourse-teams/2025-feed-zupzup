@@ -11,8 +11,8 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
@@ -27,6 +27,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -185,14 +186,14 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
+            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganization(
+                    organization, organizationCategory);
 
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
@@ -203,7 +204,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), size, null, null, LATEST);
+                    organization.getUuid(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -236,7 +237,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), size, null, null, LATEST);
+                    organization.getUuid(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -249,12 +250,12 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         @DisplayName("빈 결과에 대해 적절히 처리한다")
         void getAllFeedbacks_empty_result() {
             // given
-            final Long organizationId = 999L;
+            final UUID organizationUuid = UUID.randomUUID();
             final int size = 10;
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organizationId, size, null, null, LATEST);
+                    organizationUuid, size, null, null, LATEST);
 
             // then
             assertAll(
@@ -287,9 +288,12 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     targetOrganization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory2);
 
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganization(targetOrganization, organizationCategory1);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganization(targetOrganization, organizationCategory1);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(otherOrganization, organizationCategory2);
+            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganization(targetOrganization,
+                    organizationCategory1);
+            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganization(targetOrganization,
+                    organizationCategory1);
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(otherOrganization,
+                    organizationCategory2);
 
             feedBackRepository.save(targetFeedback1);
             feedBackRepository.save(targetFeedback2);
@@ -299,7 +303,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    targetOrganization.getId(), size, null, null, LATEST);
+                    targetOrganization.getUuid(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -340,7 +344,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), size, null, null, LATEST);
+                    organization.getUuid(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -365,7 +369,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), size, null, null, LATEST);
+                    organization.getUuid(), size, null, null, LATEST);
 
             // then
             assertAll(
@@ -405,12 +409,13 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), size, cursorId, null, LATEST);
+                    organization.getUuid(), size, cursorId, null, LATEST);
 
             // then
             assertAll(
                     () -> assertThat(response.feedbacks()).hasSize(2),
-                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved2.getId()), // DESC 정렬이므로 saved2가 먼저
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(saved2.getId()),
+                    // DESC 정렬이므로 saved2가 먼저
                     () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(saved1.getId()),
                     () -> assertThat(response.hasNext()).isFalse()
             );
@@ -502,7 +507,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - LATEST로 정렬
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), 10, null, null, FeedbackOrderBy.LATEST);
+                    organization.getUuid(), 10, null, null, FeedbackOrderBy.LATEST);
 
             // then - 최신(ID가 큰) 순서로 정렬되어야 함
             assertAll(
@@ -538,7 +543,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - OLDEST로 정렬
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), 10, null, null, FeedbackOrderBy.OLDEST);
+                    organization.getUuid(), 10, null, null, FeedbackOrderBy.OLDEST);
 
             // then - 오래된(ID가 작은) 순서로 정렬되어야 함
             assertAll(
@@ -574,7 +579,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - LIKES로 정렬
             final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organization.getId(), 10, null, null, FeedbackOrderBy.LIKES);
+                    organization.getUuid(), 10, null, null, FeedbackOrderBy.LIKES);
 
             // then - 좋아요 많은 순서로 정렬되어야 함 (10, 5, 3)
             assertAll(

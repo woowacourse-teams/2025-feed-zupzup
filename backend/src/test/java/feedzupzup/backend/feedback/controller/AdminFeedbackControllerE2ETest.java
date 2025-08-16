@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
-import static feedzupzup.backend.category.domain.Category.*;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -21,6 +21,7 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -217,7 +218,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -304,7 +305,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 2)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -323,7 +324,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("cursorId", firstPageCursor)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -337,7 +338,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자가 빈 피드백 목록을 조회한다")
     void admin_get_empty_feedbacks() {
         // given
-        final Long organizationId = 999L;
+        final UUID organizationUuid = UUID.randomUUID();
 
         // when & then
         given()
@@ -345,7 +346,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organizationId)
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organizationUuid)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -401,7 +402,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -444,7 +445,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -484,7 +485,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -506,9 +507,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         // 순서대로 저장하여 ID가 증가하도록 함
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent(organization, "첫 번째 피드백", organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent(organization, "두 번째 피드백", organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent(organization, "세 번째 피드백", organizationCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent(organization, "첫 번째 피드백",
+                organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent(organization, "두 번째 피드백",
+                organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent(organization, "세 번째 피드백",
+                organizationCategory);
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -520,7 +524,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -544,9 +548,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         // 순서대로 저장하여 ID가 증가하도록 함
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent(organization, "첫 번째 피드백", organizationCategory);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent(organization, "두 번째 피드백", organizationCategory);
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent(organization, "세 번째 피드백", organizationCategory);
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent(organization, "첫 번째 피드백",
+                organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent(organization, "두 번째 피드백",
+                organizationCategory);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithContent(organization, "세 번째 피드백",
+                organizationCategory);
 
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -558,7 +565,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "OLDEST")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -599,7 +606,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LIKES")
                 .when()
-                .get("/admin/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

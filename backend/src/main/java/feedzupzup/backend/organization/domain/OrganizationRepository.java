@@ -1,10 +1,14 @@
 package feedzupzup.backend.organization.domain;
 
+import java.util.Optional;
+import java.util.UUID;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+
+    Optional<Organization> findByUuid(UUID uuid);
 
     @Query("""
                 SELECT new feedzupzup.backend.organization.domain.AdminOrganizationInfo(
