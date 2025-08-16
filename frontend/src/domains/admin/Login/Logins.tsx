@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { postAdminLogin } from '@/apis/admin.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { setLocalStorage } from '@/utils/localStorage';
+import { ADMIN_BASE } from '@/constants/routes';
 
 export default function Login() {
   const theme = useAppTheme();
@@ -57,7 +58,7 @@ export default function Login() {
         );
       },
       onSuccess: (data: Response) => {
-        navigate(ROUTES.ADMIN + '/' + ROUTES.ADMIN_HOME);
+        navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
         setLocalStorage('auth', data);
       },
     });

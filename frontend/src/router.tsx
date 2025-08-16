@@ -1,16 +1,15 @@
-import App from './App';
+import { ROUTES } from '@/constants/routes';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
 import Login from '@/domains/admin/Login/Logins';
 import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Settings from './domains/admin/Settings/Settings';
-import AdminHome from './domains/admin/AdminHome/AdminHome';
-import { ROUTES } from '@/constants/routes';
 import ProtectedRoute from '@/utils/protectedRoute';
-
-const isAuthenticated = true; // 로그인 api 연결하면서 수정할 예정
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import App from './App';
+import AdminHome from './domains/admin/AdminHome/AdminHome';
+import Settings from './domains/admin/Settings/Settings';
+import { getAuthRedirectElement, isAuthenticated } from '@/utils/authenticated';
 
 export const router = createBrowserRouter([
   {
@@ -31,18 +30,21 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.LOGIN,
-        element: <Login />,
+        element: getAuthRedirectElement(<Login />),
       },
       {
         path: ROUTES.SIGN_UP,
-        element: <SignUp />,
+        element: getAuthRedirectElement(<SignUp />),
       },
     ],
   },
   {
     path: ROUTES.ADMIN,
     element: (
-      <ProtectedRoute isAuthenticated={isAuthenticated} redirectPath='/login' />
+      <ProtectedRoute
+        isAuthenticated={isAuthenticated()}
+        redirectPath='/login'
+      />
     ),
     children: [
       {

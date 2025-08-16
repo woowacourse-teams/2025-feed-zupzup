@@ -24,6 +24,7 @@ import Toast from '@/domains/components/Toast/Toast';
 import { FormEvent, useState } from 'react';
 import { postAdminSignup } from '@/apis/admin.api';
 import { setLocalStorage } from '@/utils/localStorage';
+import { ADMIN_BASE } from '@/constants/routes';
 
 type SignUpFieldName = 'name' | 'id' | 'password';
 
@@ -78,7 +79,7 @@ export default function SignUp() {
         },
         onSuccess: (authData: Response) => {
           setToast('회원가입이 완료되었습니다.');
-          navigate(ROUTES.ADMIN + '/' + ROUTES.ADMIN_HOME);
+          navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
           setLocalStorage('auth', authData);
         },
       });

@@ -23,6 +23,7 @@ export type AdminAuthData = {
 };
 
 type PostAdminLogoutResponse = ApiResponse<string>;
+type GetAdminAuthResponse = ApiResponse<AdminAuthData>;
 
 export async function postAdminLogin({
   loginId,
@@ -68,4 +69,9 @@ export async function postAdminSignup({
       onSuccess,
     }
   );
+}
+
+export async function getAdminAuth(): Promise<GetAdminAuthResponse> {
+  const response = await apiClient.get('/admin/me');
+  return response as GetAdminAuthResponse;
 }

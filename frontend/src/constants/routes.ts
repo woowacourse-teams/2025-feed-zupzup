@@ -18,3 +18,5 @@ export const ROUTES = {
   LOGIN: 'login',
   SIGN_UP: 'signup',
 } as const;
+
+export const ADMIN_BASE = ROUTES.ADMIN + '/';
