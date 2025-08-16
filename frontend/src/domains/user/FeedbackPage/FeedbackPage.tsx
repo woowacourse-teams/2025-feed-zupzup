@@ -16,7 +16,7 @@ import FeedbackInput from '@/domains/user/home/components/FeedbackInput/Feedback
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { Analytics, suggestionFormEvents } from '@/analytics';
@@ -34,6 +34,7 @@ export default function FeedbackPage({
   const theme = useAppTheme();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { id } = useParams();
 
   const {
     feedback,
@@ -54,7 +55,7 @@ export default function FeedbackPage({
 
     Analytics.track(suggestionFormEvents.viewSuggestionsFromForm());
 
-    navigate('/dashboard');
+    navigate(`/${id}/dashboard`);
   };
 
   const handleRandomChangeWithTracking = () => {
@@ -73,7 +74,7 @@ export default function FeedbackPage({
     (isError: boolean) => {
       setIsModalOpen(false);
       if (!isError) {
-        navigate('/dashboard');
+        navigate(`/${id}/dashboard`);
       }
     },
     [navigate]

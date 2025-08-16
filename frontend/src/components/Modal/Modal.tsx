@@ -29,6 +29,8 @@ export default function Modal({
     disableUserClose,
   });
 
+  if (!isOpen) return null;
+
   return (
     <div css={overlay} onClick={handleOverlayClick}>
       <div css={[modalBox(theme, width, height), customCSS]}>{children}</div>
