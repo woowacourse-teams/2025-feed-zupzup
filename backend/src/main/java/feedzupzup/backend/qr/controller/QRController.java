@@ -1,7 +1,6 @@
 package feedzupzup.backend.qr.controller;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.qr.api.QRApi;
 import feedzupzup.backend.qr.dto.QRResponse;
@@ -18,7 +17,7 @@ public class QRController implements QRApi {
     private final QRService qrService;
 
     public SuccessResponse<QRResponse> getQR(
-            @AdminAuthenticationPrincipal final AdminSession adminSession,
+            final AdminSession adminSession,
             final UUID organizationUuid
     ) {
         final QRResponse response = qrService.getQR(organizationUuid);
