@@ -3,24 +3,24 @@ export const feedbackRooms = [
     roomName: '피드백 방 1',
     pendingCount: 3,
     feedbackHoursAgo: 2,
-    onClick: () => console.log('피드백 방 1 클릭'),
+    roomId: 1,
   },
   {
     roomName: '피드백 방 1',
     pendingCount: 3,
     feedbackHoursAgo: 2,
-    onClick: () => console.log('피드백 방 1 클릭'),
+    roomId: 2,
   },
   {
     roomName: '피드백 방 1',
     pendingCount: 3,
     feedbackHoursAgo: 2,
-    onClick: () => console.log('피드백 방 1 클릭'),
+    roomId: 3,
   },
   {
     roomName: '피드백 방 1',
     pendingCount: 3,
     feedbackHoursAgo: 2,
-    onClick: () => console.log('피드백 방 1 클릭'),
+    roomId: 4,
   },
 ];

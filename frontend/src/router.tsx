@@ -10,7 +10,7 @@ import AdminHome from './domains/admin/AdminHome/AdminHome';
 import { ROUTES } from '@/constants/routes';
 import ProtectedRoute from '@/utils/protectedRoute';
 
-const isAuthenticated = false; // 로그인 api 연결하면서 수정할 예정
+const isAuthenticated = true; // 로그인 api 연결하면서 수정할 예정
 
 export const router = createBrowserRouter([
   {
