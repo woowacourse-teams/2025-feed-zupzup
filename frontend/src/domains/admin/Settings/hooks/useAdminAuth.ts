@@ -1,17 +1,27 @@
 import { AdminAuthData, getAdminAuth } from '@/apis/admin.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function useAdminAuth() {
   const [adminAuth, setAdminAuth] = useState<AdminAuthData | null>(null);
+  const { showErrorModal } = useErrorModalContext();
+
+  const handleError = (error: Error) => {
+    showErrorModal(error, '로그인 후 이용해주세요.');
+    setAdminAuth(null);
+  };
 
   useEffect(() => {
     (async () => {
-      const response = await getAdminAuth();
-      if (response) {
-        setAdminAuth(response.data);
-      } else {
-        setAdminAuth(null);
+      try {
+        await getAdminAuth({
+          onError: () => handleError(new Error('관리자 인증 정보 조회 실패')),
+          onSuccess: (data) => setAdminAuth(data),
+        });
+      } catch (error) {
+        handleError(error as Error);
       }
     })();
   }, []);

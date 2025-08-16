@@ -16,6 +16,11 @@ interface PostAdminSignupParams {
   onSuccess: (data: Response) => void;
 }
 
+interface GetAdminAuthProps {
+  onError: () => void;
+  onSuccess: (data: AdminAuthData) => void;
+}
+
 export type AdminAuthData = {
   loginId: string;
   adminName: string;
@@ -23,7 +28,6 @@ export type AdminAuthData = {
 };
 
 type PostAdminLogoutResponse = ApiResponse<string>;
-type GetAdminAuthResponse = ApiResponse<AdminAuthData>;
 
 export async function postAdminLogin({
   loginId,
@@ -71,7 +75,9 @@ export async function postAdminSignup({
   );
 }
 
-export async function getAdminAuth(): Promise<GetAdminAuthResponse> {
-  const response = await apiClient.get('/admin/me');
-  return response as GetAdminAuthResponse;
+export async function getAdminAuth({ onError, onSuccess }: GetAdminAuthProps) {
+  await apiClient.get('/admin/me', {
+    onError,
+    onSuccess,
+  });
 }
