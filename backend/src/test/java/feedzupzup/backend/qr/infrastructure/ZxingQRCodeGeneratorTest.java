@@ -2,6 +2,7 @@ package feedzupzup.backend.qr.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import feedzupzup.backend.qr.config.QRConfiguration;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -9,14 +10,15 @@ import javax.imageio.ImageIO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@ContextConfiguration(classes = {QRConfiguration.class, ZxingQRCodeGenerator.class})
 class ZxingQRCodeGeneratorTest {
 
-    @InjectMocks
+    @Autowired
     private ZxingQRCodeGenerator qrImageGenerator;
 
     @Nested
@@ -27,7 +29,7 @@ class ZxingQRCodeGeneratorTest {
         @DisplayName("유효한 URL로 QR 이미지를 성공적으로 생성한다")
         void generateQRImage_success() throws IOException {
             // given
-            final String url = "https://feedzupzup.com/dashboard?uuid=123e4567-e89b-12d3-a456-426614174000";
+            final String url = "https://feedzupzup.com?uuid=123e4567-e89b-12d3-a456-426614174000";
 
             // when
             final byte[] result = qrImageGenerator.generateQRCode(url);
@@ -39,8 +41,8 @@ class ZxingQRCodeGeneratorTest {
             // 생성된 이미지가 올바른 형식인지 확인
             final BufferedImage image = ImageIO.read(new ByteArrayInputStream(result));
             assertThat(image).isNotNull();
-            assertThat(image.getWidth()).isEqualTo(ZxingQRCodeGenerator.IMAGE_WIDTH_PIXELS);
-            assertThat(image.getHeight()).isEqualTo(ZxingQRCodeGenerator.IMAGE_HEIGHT_PIXELS);
+            assertThat(image.getWidth()).isEqualTo(300);
+            assertThat(image.getHeight()).isEqualTo(300);
         }
 
         @Test

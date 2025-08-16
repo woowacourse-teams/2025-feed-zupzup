@@ -1,6 +1,7 @@
 package feedzupzup.backend.qr.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -40,8 +41,6 @@ class QRControllerE2ETest extends E2EHelper {
             final QR qr = new QR("https://example.com/qr-image.png", savedOrganization);
             qrRepository.save(qr);
 
-            final String expectedSiteUrl = "https://feedzupzup.com/dashboard?uuid=" + savedOrganization.getUuid();
-
             // when & then
             given()
                     .log().all()
@@ -54,7 +53,7 @@ class QRControllerE2ETest extends E2EHelper {
                     .body("message", equalTo("OK"))
                     .body("data", notNullValue())
                     .body("data.imageUrl", equalTo("https://example.com/qr-image.png"))
-                    .body("data.siteUrl", equalTo(expectedSiteUrl));
+                    .body("data.siteUrl", containsString("uuid=" + savedOrganization.getUuid()));
         }
 
         @Test

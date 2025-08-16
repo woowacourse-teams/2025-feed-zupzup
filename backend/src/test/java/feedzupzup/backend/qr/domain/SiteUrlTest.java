@@ -2,19 +2,25 @@ package feedzupzup.backend.qr.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import feedzupzup.backend.qr.config.QRConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
+@SpringBootTest
+@ContextConfiguration(classes = {QRConfiguration.class, SiteUrl.class})
 class SiteUrlTest {
 
     private static final String BASE_URL = "https://feedzupzup.com";
 
+    @Autowired
+    private SiteUrl siteUrl;
+
     @Test
     @DisplayName("파라미터 없는 기본 URL을 반환한다")
     void build_with_no_params() {
-        // given
-        final SiteUrl siteUrl = new SiteUrl(BASE_URL);
-
         // when
         final String result = siteUrl.builder().build();
 
@@ -26,7 +32,6 @@ class SiteUrlTest {
     @DisplayName("여러 쿼리 파라미터를 추가하고 특수문자를 URL 인코딩한다")
     void build_with_multiple_params_and_encoding() {
         // given
-        final SiteUrl siteUrl = new SiteUrl(BASE_URL);
         final String uuid = "123e4567-e89b-12d3-a456-426614174000";
         final String specialValue = "안녕하세요 world!";
 
@@ -42,18 +47,12 @@ class SiteUrlTest {
     }
 
     @Test
-    @DisplayName("builder()를 여러 번 호출해도 원본 객체에 영향을 주지 않는다")
+    @DisplayName("builder()를 여러 번 호출해도 독립적인 인스턴스를 생성한다")
     void builder_creates_independent_instances() {
-        // given
-        final SiteUrl originalSiteUrl = new SiteUrl(BASE_URL);
-
         // when
-        final SiteUrl builder1 = originalSiteUrl.builder().addParam("param1", "value1");
-        final SiteUrl builder2 = originalSiteUrl.builder().addParam("param2", "value2");
-
-        final String result1 = builder1.build();
-        final String result2 = builder2.build();
-        final String originalResult = originalSiteUrl.build();
+        final String result1 = siteUrl.builder().addParam("param1", "value1").build();
+        final String result2 = siteUrl.builder().addParam("param2", "value2").build();
+        final String originalResult = siteUrl.builder().build();
 
         // then
         assertThat(result1).isEqualTo(BASE_URL + "?param1=value1");

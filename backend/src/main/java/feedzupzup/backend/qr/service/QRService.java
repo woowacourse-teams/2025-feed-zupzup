@@ -4,6 +4,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceExistsExcep
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.qr.config.QRProperties;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.domain.SiteUrl;
 import feedzupzup.backend.qr.dto.QRCodeUploadRequest;
@@ -26,6 +27,7 @@ public class QRService {
     private final QRCodeGenerator qrCodeGenerator;
     private final S3UploadService s3UploadService;
     private final SiteUrl siteUrl;
+    private final QRProperties qrProperties;
 
     public QRResponse getQR(final UUID organizationUuid) {
         final Organization organization = getOrganization(organizationUuid);
@@ -56,7 +58,12 @@ public class QRService {
 
         final byte[] qrCode = qrCodeGenerator.generateQRCode(generatedSiteUrl);
         final String imageUrl = s3UploadService.uploadFile(
-                new QRCodeUploadRequest("png", "organization_qr", organization.getUuid().toString(), qrCode));
+                new QRCodeUploadRequest(
+                        qrProperties.image().extension(),
+                        "organization_qr",
+                        organization.getUuid().toString(),
+                        qrCode
+                ));
 
         qrRepository.save(new QR(imageUrl, organization));
     }

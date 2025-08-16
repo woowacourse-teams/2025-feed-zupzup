@@ -7,6 +7,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import feedzupzup.backend.qr.config.QRProperties;
 import feedzupzup.backend.qr.infrastructure.exception.QRGenerationException;
 import feedzupzup.backend.qr.service.QRCodeGenerator;
 import java.awt.image.BufferedImage;
@@ -15,14 +16,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ZxingQRCodeGenerator implements QRCodeGenerator {
 
-    static final int IMAGE_WIDTH_PIXELS = 300;
-    static final int IMAGE_HEIGHT_PIXELS = 300;
-    static final String QR_IMAGE_EXTENSION = "PNG";
+    private final QRProperties qrProperties;
 
     public byte[] generateQRCode(final String url) {
         try {
@@ -37,15 +38,16 @@ public class ZxingQRCodeGenerator implements QRCodeGenerator {
         final QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
         final Map<EncodeHintType, Object> options = new HashMap<>();
-        options.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-        options.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-        options.put(EncodeHintType.MARGIN, 1);
+        options.put(EncodeHintType.ERROR_CORRECTION,
+                ErrorCorrectionLevel.valueOf(qrProperties.generation().errorCorrectionLevel()));
+        options.put(EncodeHintType.CHARACTER_SET, qrProperties.generation().characterSet());
+        options.put(EncodeHintType.MARGIN, qrProperties.generation().margin());
 
         return qrCodeWriter.encode(
                 url,
                 BarcodeFormat.QR_CODE,
-                IMAGE_WIDTH_PIXELS,
-                IMAGE_HEIGHT_PIXELS,
+                qrProperties.image().width(),
+                qrProperties.image().height(),
                 options
         );
     }
@@ -54,7 +56,7 @@ public class ZxingQRCodeGenerator implements QRCodeGenerator {
         final BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
 
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            ImageIO.write(qrImage, QR_IMAGE_EXTENSION, outputStream);
+            ImageIO.write(qrImage, qrProperties.image().extension(), outputStream);
             return outputStream.toByteArray();
         }
     }

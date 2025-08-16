@@ -4,11 +4,10 @@ import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.qr.api.QRApi;
 import feedzupzup.backend.qr.dto.QRResponse;
 import feedzupzup.backend.qr.service.QRService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
