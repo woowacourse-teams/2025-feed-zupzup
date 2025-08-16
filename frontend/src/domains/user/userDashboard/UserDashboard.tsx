@@ -18,7 +18,6 @@ import {
   highlightStyle,
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import useInfinityScroll from '@/hooks/useInfinityScroll';
 import {
   FeedbackResponse,
   FeedbackType,
@@ -27,7 +26,8 @@ import {
 import { getLocalStorage } from '@/utils/localStorage';
 import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
-import { useMemo } from 'react';
+import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
+import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 
 export default function UserDashboard() {
   const organizationId = 1;
@@ -43,33 +43,26 @@ export default function UserDashboard() {
     myFeedbacks,
   } = useFeedbackFilterSort();
 
-  const apiUrl = useMemo(() => {
-    const baseUrl = `/organizations/${organizationId}/feedbacks`;
-    const params = new URLSearchParams();
-
-    params.append('orderBy', selectedSort);
-
-    if (selectedFilter === 'CONFIRMED') {
-      params.append('status', 'CONFIRMED');
-    } else if (selectedFilter === 'WAITING') {
-      params.append('status', 'WAITING');
-    }
-
-    return `${baseUrl}?${params.toString()}`;
-  }, [selectedFilter, selectedSort]);
+  const apiUrl = createFeedbacksUrl({
+    organizationId,
+    sort: selectedSort,
+    filter: selectedFilter,
+    isAdmin: false,
+  });
 
   const {
     items: feedbacks,
     fetchMore,
     hasNext,
     loading,
-  } = useInfinityScroll<
+  } = useCursorInfiniteScroll<
     FeedbackType,
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
     url: apiUrl,
     key: 'feedbacks',
+    size: 10,
   });
 
   useGetFeedback({ fetchMore, hasNext, loading });
@@ -128,6 +121,7 @@ export default function UserDashboard() {
           hasNext={hasNext}
           feedbackCount={displayFeedbacks.length}
         />
+        {hasNext && <div id='scroll-observer' style={{ minHeight: '1px' }} />}
       </div>
       <FloatingButton
         icon={<ArrowIcon />}
@@ -143,8 +137,6 @@ export default function UserDashboard() {
           customCSS={goTopButton(theme)}
         />
       )}
-
-      {hasNext && <div id='scroll-observer'></div>}
     </div>
   );
 }

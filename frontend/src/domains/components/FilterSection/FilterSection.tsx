@@ -13,8 +13,8 @@ import Button from '@/components/@commons/Button/Button';
 import { FeedbackFilterType, SortType } from '@/types/feedback.types';
 
 export interface FilterSectionProps {
-  selectedFilter: FeedbackFilterType | null;
-  onFilterChange: (filter: FeedbackFilterType | null) => void;
+  selectedFilter: FeedbackFilterType | '';
+  onFilterChange: (filter: FeedbackFilterType | '') => void;
   selectedSort: SortType;
   onSortChange: (sort: SortType) => void;
   customCSS?: SerializedStyles;
@@ -47,7 +47,7 @@ export default function FilterSection({
 
   const handleFilterClick = (filterValue: FeedbackFilterType) => {
     if (selectedFilter === filterValue) {
-      onFilterChange(null);
+      onFilterChange('');
     } else {
       onFilterChange(filterValue);
     }
