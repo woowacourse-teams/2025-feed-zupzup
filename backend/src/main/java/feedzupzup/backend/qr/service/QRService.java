@@ -28,8 +28,8 @@ public class QRService {
     @Value("${page.base-url}")
     private String baseUrl;
 
-    public QRResponse getQR(final String organizationUuid) {
-        final Organization organization = getOrganization(UUID.fromString(organizationUuid));
+    public QRResponse getQR(final UUID organizationUuid) {
+        final Organization organization = getOrganization(organizationUuid);
 
         final QR qr = qrRepository.findByOrganizationId(organization.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(

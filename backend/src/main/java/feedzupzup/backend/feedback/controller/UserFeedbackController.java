@@ -14,6 +14,7 @@ import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,7 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
-            final String organizationUuid,
+            final UUID organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
@@ -46,7 +47,7 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<CreateFeedbackResponse> create(
-            final String organizationUuid,
+            final UUID organizationUuid,
             final CreateFeedbackRequest request
     ) {
         final CreateFeedbackResponse response = userFeedbackService.create(request, organizationUuid);
@@ -66,7 +67,7 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<StatisticResponse> getStatistic(final String organizationUuid) {
+    public SuccessResponse<StatisticResponse> getStatistic(final UUID organizationUuid) {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
                 organizationUuid
         );
@@ -75,7 +76,7 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
-            final String organizationUuid,
+            final UUID organizationUuid,
             final FeedbackOrderBy orderBy,
             final List<Long> feedbackIds
     ) {

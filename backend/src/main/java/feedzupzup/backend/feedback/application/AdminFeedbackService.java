@@ -60,7 +60,7 @@ public class AdminFeedbackService {
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
-            final String organizationUuid,
+            final UUID organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
@@ -70,11 +70,10 @@ public class AdminFeedbackService {
 
         feedbackLikeService.flushLikeCountBuffer();
 
-        final UUID uuid = UUID.fromString(organizationUuid);
         final List<Feedback> feedbacks = switch (orderBy) {
-            case LATEST -> feedBackRepository.findByLatest(uuid, status, cursorId, pageable);
-            case OLDEST -> feedBackRepository.findByOldest(uuid, status, cursorId, pageable);
-            case LIKES -> feedBackRepository.findByLikes(uuid, status, cursorId, pageable);
+            case LATEST -> feedBackRepository.findByLatest(organizationUuid, status, cursorId, pageable);
+            case OLDEST -> feedBackRepository.findByOldest(organizationUuid, status, cursorId, pageable);
+            case LIKES -> feedBackRepository.findByLikes(organizationUuid, status, cursorId, pageable);
         };
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);

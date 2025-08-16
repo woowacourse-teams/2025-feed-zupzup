@@ -46,7 +46,7 @@ class QRControllerE2ETest extends E2EHelper {
             given()
                     .log().all()
                     .when()
-                    .get("/organizations/{organizationUuid}/qr-code", savedOrganization.getUuid().toString())
+                    .get("/organizations/{organizationUuid}/qr-code", savedOrganization.getUuid())
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value())
                     .contentType(ContentType.JSON)
@@ -61,7 +61,7 @@ class QRControllerE2ETest extends E2EHelper {
         @DisplayName("존재하지 않는 조직 UUID로 QR 조회 시 404 에러를 반환한다")
         void getQR_organization_not_found() {
             // given
-            final String nonExistentOrganizationUuid = UUID.randomUUID().toString();
+            final UUID nonExistentOrganizationUuid = UUID.randomUUID();
 
             // when & then
             given()
@@ -84,7 +84,7 @@ class QRControllerE2ETest extends E2EHelper {
             given()
                     .log().all()
                     .when()
-                    .get("/organizations/{organizationUuid}/qr-code", savedOrganization.getUuid().toString())
+                    .get("/organizations/{organizationUuid}/qr-code", savedOrganization.getUuid())
                     .then().log().all()
                     .statusCode(HttpStatus.NOT_FOUND.value())
                     .contentType(ContentType.JSON);

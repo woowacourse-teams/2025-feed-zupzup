@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 public class AdminFeedbackController implements AdminFeedbackApi {
@@ -24,7 +26,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            final String organizationUuid,
+            final UUID organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,

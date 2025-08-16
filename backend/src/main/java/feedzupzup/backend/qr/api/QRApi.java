@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
+
+import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,6 +23,6 @@ public interface QRApi {
     @ResponseStatus(HttpStatus.OK)
     SuccessResponse<QRResponse> getQR(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
-            @PathVariable("organizationUuid") final String organizationUuid
+            @PathVariable("organizationUuid") final UUID organizationUuid
     );
 }

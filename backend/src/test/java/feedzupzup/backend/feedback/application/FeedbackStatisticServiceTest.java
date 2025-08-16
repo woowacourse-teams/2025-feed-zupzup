@@ -63,7 +63,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
         // when
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                organization.getUuid().toString());
+                organization.getUuid());
 
         // then
         assertAll(
@@ -78,7 +78,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     @DisplayName("통계 메서드 호출 중 존재하지 않는 place가 주어진다면, 예외가 발생해야 한다.")
     void calculateStatistic_withNoFeedbacks() {
         // given
-        final String organizationUuid = UUID.randomUUID().toString(); // 존재하지 않는 장소 ID
+        final UUID organizationUuid = UUID.randomUUID(); // 존재하지 않는 장소 ID
 
         // when & then
         assertThatThrownBy(() -> feedbackStatisticService.calculateStatistic(organizationUuid))
@@ -113,7 +113,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
             // when
             final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                    otherOrganization.getUuid().toString());
+                    otherOrganization.getUuid());
 
             // then
             assertAll(
@@ -154,7 +154,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
 
             // when
             final StatisticResponse response = feedbackStatisticService.calculateStatistic(
-                    savedOrganization.getUuid().toString());
+                    savedOrganization.getUuid());
 
             // then
             assertAll(

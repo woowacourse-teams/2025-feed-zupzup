@@ -31,7 +31,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .get("/organizations/{organizationUuid}", savedOrganization.getUuid().toString())
+                .get("/organizations/{organizationUuid}", savedOrganization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -45,7 +45,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("존재하지 않는 단체 ID로 조회 시 404 에러를 반환한다")
     void get_organization_name_not_found() {
         // given
-        final String nonExistentOrganizationUuid = UUID.randomUUID().toString();
+        final UUID nonExistentOrganizationUuid = UUID.randomUUID();
 
         // when & then
         given()
@@ -73,7 +73,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/organizations/{organizationUuid}/cheer", savedOrganization.getUuid().toString())
+                .post("/organizations/{organizationUuid}/cheer", savedOrganization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

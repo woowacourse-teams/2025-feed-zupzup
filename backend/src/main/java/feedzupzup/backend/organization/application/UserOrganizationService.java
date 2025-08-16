@@ -18,8 +18,8 @@ public class UserOrganizationService {
 
     private final OrganizationRepository organizationRepository;
 
-    public UserOrganizationResponse getOrganizationByUuid(final String organizationUuid) {
-        final Organization organization = organizationRepository.findByUuid(UUID.fromString(organizationUuid))
+    public UserOrganizationResponse getOrganizationByUuid(final UUID organizationUuid) {
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
 
@@ -27,8 +27,8 @@ public class UserOrganizationService {
     }
 
     @Transactional
-    public CheeringResponse cheer(final CheeringRequest request, final String organizationUuid) {
-        final Organization organization = organizationRepository.findByUuid(UUID.fromString(organizationUuid))
+    public CheeringResponse cheer(final CheeringRequest request, final UUID organizationUuid) {
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
 

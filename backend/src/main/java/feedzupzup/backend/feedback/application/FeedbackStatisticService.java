@@ -19,15 +19,15 @@ public class FeedbackStatisticService {
     private final FeedbackRepository feedbackRepository;
     private final OrganizationRepository organizationRepository;
 
-    public StatisticResponse calculateStatistic(final String organizationUuid) {
+    public StatisticResponse calculateStatistic(final UUID organizationUuid) {
         final Organization organization = findOrganizationBy(organizationUuid);
         final FeedbackAmount feedbackAmount = feedbackRepository.countFeedbackByOrganizationIdAndProcessStatus(
                 organization.getId());
         return StatisticResponse.of(feedbackAmount, feedbackAmount.calculateReflectionRate());
     }
 
-    private Organization findOrganizationBy(final String organizationUuid) {
-        return organizationRepository.findByUuid(UUID.fromString(organizationUuid))
+    private Organization findOrganizationBy(final UUID organizationUuid) {
+        return organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 }

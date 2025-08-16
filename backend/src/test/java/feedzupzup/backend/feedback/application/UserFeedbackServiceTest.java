@@ -70,7 +70,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackResponse response = userFeedbackService.create(
-                request, savedOrganization.getUuid().toString());
+                request, savedOrganization.getUuid());
 
         //then
         assertAll(
@@ -96,7 +96,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "기타");
 
         // when & then
-        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid().toString()))
+        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid()))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -128,7 +128,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
 
         // then
         assertAll(
@@ -162,7 +162,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
 
         // then
         assertAll(
@@ -186,7 +186,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
         // then
         assertAll(
                 () -> assertThat(response.feedbacks()).isEmpty(),
@@ -229,7 +229,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, cursorId, null, LATEST);
+                organization.getUuid(), size, cursorId, null, LATEST);
 
         // then
         assertAll(
@@ -262,7 +262,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
 
         // then
         assertAll(
@@ -305,7 +305,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                targetOrganization.getUuid().toString(), size, null, null, LATEST);
+                targetOrganization.getUuid(), size, null, null, LATEST);
 
         // then
         assertAll(
@@ -345,7 +345,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         feedBackRepository.save(feedback5);
 
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                targetOrganization.getUuid().toString(), 10, null, CONFIRMED, LATEST);
+                targetOrganization.getUuid(), 10, null, CONFIRMED, LATEST);
         assertThat(response.feedbacks().size()).isEqualTo(3);
     }
 
@@ -376,7 +376,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         feedBackRepository.save(feedback5);
 
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                targetOrganization.getUuid().toString(), 10, null, WAITING, LATEST);
+                targetOrganization.getUuid(), 10, null, WAITING, LATEST);
         assertThat(response.feedbacks().size()).isEqualTo(2);
     }
 
@@ -407,7 +407,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         feedBackRepository.save(feedback5);
 
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                targetOrganization.getUuid().toString(), 10, null, null, LATEST);
+                targetOrganization.getUuid(), 10, null, null, LATEST);
         assertThat(response.feedbacks().size()).isEqualTo(5);
     }
 
@@ -448,7 +448,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
 
         // then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
         assertAll(
@@ -497,7 +497,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when - 인메모리 좋아요 추가 없이 조회
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
 
         // then - DB 좋아요 수만 반영되는지 확인
         assertAll(
@@ -543,7 +543,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
         final FeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 인메모리 좋아요 수만 반영되는지 확인
@@ -581,7 +581,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                organization.getUuid().toString(), size, null, null, LATEST);
+                organization.getUuid(), size, null, null, LATEST);
         final FeedbackItem userFeedbackItem = response.feedbacks().getFirst();
 
         // then - 좋아요 취소가 반영되어 정확한 수가 계산되는지 확인
@@ -619,7 +619,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - LATEST로 정렬
             final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                    organization.getUuid().toString(), 10, null, null, FeedbackOrderBy.LATEST);
+                    organization.getUuid(), 10, null, null, FeedbackOrderBy.LATEST);
 
             // then - 최신(ID가 큰) 순서로 정렬되어야 함
             assertAll(
@@ -654,7 +654,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - OLDEST로 정렬
             final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                    organization.getUuid().toString(), 10, null, null, FeedbackOrderBy.OLDEST);
+                    organization.getUuid(), 10, null, null, FeedbackOrderBy.OLDEST);
 
             // then - 오래된(ID가 작은) 순서로 정렬되어야 함
             assertAll(
@@ -689,7 +689,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - LIKES로 정렬
             final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                    organization.getUuid().toString(), 10, null, null, FeedbackOrderBy.LIKES);
+                    organization.getUuid(), 10, null, null, FeedbackOrderBy.LIKES);
 
             // then - 좋아요 많은 순서로 정렬되어야 함 (10, 5, 3)
             assertAll(

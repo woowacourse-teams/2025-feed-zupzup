@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public interface AdminFeedbackApi {
     })
     @GetMapping("/admin/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
-            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final String organizationUuid,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,

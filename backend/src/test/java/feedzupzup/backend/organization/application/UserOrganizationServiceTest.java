@@ -39,7 +39,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
 
             // when
             final UserOrganizationResponse response = userOrganizationService.getOrganizationByUuid(
-                    savedOrganization.getUuid().toString());
+                    savedOrganization.getUuid());
 
             // then
             assertThat(response.organizationName()).isEqualTo(organization.getName().getValue());
@@ -50,7 +50,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
         @DisplayName("존재하지 않는 단체 ID로 조회 시 예외를 발생시킨다")
         void get_organization_by_id_not_found() {
             // given
-            final String nonExistentOrganizationId = UUID.randomUUID().toString();
+            final UUID nonExistentOrganizationId = UUID.randomUUID();
 
             // when & then
             assertThatThrownBy(() -> userOrganizationService.getOrganizationByUuid(nonExistentOrganizationId))
@@ -70,7 +70,7 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
 
         // when
         final CheeringResponse response = userOrganizationService.cheer(
-                request, savedOrganization.getUuid().toString());
+                request, savedOrganization.getUuid());
 
         // then
         assertThat(response.cheeringTotalCount()).isEqualTo(100);

@@ -56,7 +56,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             qrRepository.save(qr);
 
             // when
-            final QRResponse response = qrService.getQR(organization.getUuid().toString());
+            final QRResponse response = qrService.getQR(organization.getUuid());
 
             // then
             assertAll(
@@ -73,7 +73,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             final UUID nonExistentUuid = UUID.randomUUID();
 
             // when & then
-            assertThatThrownBy(() -> qrService.getQR(nonExistentUuid.toString()))
+            assertThatThrownBy(() -> qrService.getQR(nonExistentUuid))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("해당 ID(id = " + nonExistentUuid + ")인 단체를 찾을 수 없습니다.");
         }
@@ -86,7 +86,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
 
             // when & then
-            assertThatThrownBy(() -> qrService.getQR(organization.getUuid().toString()))
+            assertThatThrownBy(() -> qrService.getQR(organization.getUuid()))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("해당 ID(id = " + organization.getUuid() + ")인 단체의 QR 코드를 찾을 수 없습니다.");
         }
