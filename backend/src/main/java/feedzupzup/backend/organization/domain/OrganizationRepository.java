@@ -1,8 +1,8 @@
 package feedzupzup.backend.organization.domain;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,6 +12,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     @Query("""
                 SELECT new feedzupzup.backend.organization.domain.AdminOrganizationInfo(
+                    o.uuid,
                     o.name.value,
                     SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING THEN 1L ELSE 0L END),
                     MAX(f.postedAt.postedAt)
