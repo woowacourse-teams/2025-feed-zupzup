@@ -36,7 +36,7 @@ public interface UserFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<UserFeedbackListResponse> getUserFeedbacks(
-            @Parameter(description = "단체 ID", example = "1") @PathVariable("organizationUuid") final String organizationUuid,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final String organizationUuid,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
@@ -52,7 +52,7 @@ public interface UserFeedbackApi {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<CreateFeedbackResponse> create(
-            @Parameter(description = "단체 ID", example = "1") @PathVariable("organizationUuid") final String organizationUuid,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final String organizationUuid,
             @RequestBody @Valid final CreateFeedbackRequest request
     );
 
@@ -88,7 +88,7 @@ public interface UserFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/organizations/{organizationUuid}/statistic")
     SuccessResponse<StatisticResponse> getStatistic(
-            @Parameter(description = "단체 ID", example = "1") @PathVariable("organizationUuid") final String organizationUuid
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final String organizationUuid
     );
 
     @Operation(summary = "내가 쓴 피드백 목록 조회", description = "내가 쓴 피드백 목록을 조회합니다.")
@@ -99,7 +99,7 @@ public interface UserFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/organizations/{organizationUuid}/feedbacks/my")
     SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
-            @Parameter(description = "단체 ID", example = "1") @PathVariable("organizationUuid") final String organizationUuid,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final String organizationUuid,
             @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy,
             @Parameter(description = "내가 쓴 피드백 ID 목록") @RequestParam final List<Long> feedbackIds
     );

@@ -27,7 +27,7 @@ public interface UserOrganizationApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/organizations/{organizationUuid}")
     SuccessResponse<UserOrganizationResponse> getOrganizationByUuid(
-            @Parameter(description = "단체 ID", example = "1")
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final String organizationUuid
     );
 
@@ -39,7 +39,7 @@ public interface UserOrganizationApi {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/organizations/{organizationUuid}/cheer")
     SuccessResponse<CheeringResponse> cheerByOrganizationUuid(
-            @Parameter(description = "단체 ID", example = "1")
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final String organizationUuid,
             @RequestBody final CheeringRequest request
     );
