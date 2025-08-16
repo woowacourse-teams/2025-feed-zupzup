@@ -8,6 +8,9 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Settings from './domains/admin/Settings/Settings';
 import AdminHome from './domains/admin/AdminHome/AdminHome';
 import { ROUTES } from '@/constants/routes';
+import ProtectedRoute from '@/utils/protectedRoute';
+
+const isAuthenticated = false; // 로그인 api 연결하면서 수정할 예정
 
 export const router = createBrowserRouter([
   {
@@ -38,7 +41,9 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTES.ADMIN,
-    element: <App />,
+    element: (
+      <ProtectedRoute isAuthenticated={isAuthenticated} redirectPath='/login' />
+    ),
     children: [
       {
         path: ROUTES.ADMIN_HOME,
