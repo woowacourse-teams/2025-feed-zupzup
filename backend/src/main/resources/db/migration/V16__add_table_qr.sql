@@ -1,0 +1,10 @@
+CREATE TABLE qr (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL,
+    organization_id BIGINT NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_qr_organization FOREIGN KEY (organization_id) REFERENCES organization(id) ON DELETE CASCADE,
+    CONSTRAINT uq_qr_organization UNIQUE (organization_id)
+);
