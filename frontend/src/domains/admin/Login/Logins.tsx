@@ -47,7 +47,7 @@ export default function Login() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const response = await postAdminLogin({
+    await postAdminLogin({
       loginId: loginValue.id,
       password: loginValue.password,
       onError: () => {
@@ -56,14 +56,11 @@ export default function Login() {
           '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.'
         );
       },
-      onSuccess: () => {
-        navigate(ROUTES.ADMIN_HOME);
+      onSuccess: (data: Response) => {
+        navigate(ROUTES.ADMIN + '/' + ROUTES.ADMIN_HOME);
+        setLocalStorage('auth', data);
       },
     });
-
-    if (response) {
-      setLocalStorage('auth', response.data);
-    }
   };
 
   return (

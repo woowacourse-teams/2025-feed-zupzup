@@ -1,3 +1,4 @@
+import { AdminAuthData } from '@/apis/admin.api';
 import PlusIcon from '@/components/icons/PlusIcon';
 import {
   addFeedbackRoom,
@@ -11,6 +12,7 @@ import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeade
 import FeedbackRoomList from '@/domains/admin/AdminHome/components/FeedbackRoomList/FeedbackRoomList';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { getLocalStorage } from '@/utils/localStorage';
 
 const ADMIN = '관리자1';
 const COMPLETED_COUNT = 17;
@@ -18,10 +20,12 @@ const TOTAL_COUNT = 29;
 
 export default function AdminHome() {
   const theme = useAppTheme();
+  const adminName = getLocalStorage<AdminAuthData>('auth')?.adminName || ADMIN;
+
   return (
     <div css={homeLayout}>
       <AdminHomeHeader
-        adminName={ADMIN}
+        adminName={adminName}
         completedCount={COMPLETED_COUNT}
         totalCount={TOTAL_COUNT}
       />
