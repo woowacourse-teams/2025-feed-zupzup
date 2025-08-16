@@ -36,6 +36,14 @@ public class Organizer extends BaseTimeEntity {
     @Column(nullable = false)
     private OrganizerRole role;
 
+    public boolean isAlertsOn() {
+        return admin.isAlertsOn();
+    }
+
+    public Long getAdminId() {
+        return admin.getId();
+    }
+
     public Organizer(
             final @NonNull Organization organization,
             final @NonNull Admin admin,

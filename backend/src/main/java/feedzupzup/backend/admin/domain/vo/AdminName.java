@@ -3,10 +3,6 @@ package feedzupzup.backend.admin.domain.vo;
 import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminNameException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.regex.Pattern;
 
 @Embeddable
