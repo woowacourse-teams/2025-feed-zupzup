@@ -29,6 +29,18 @@ public class QRService {
     @Value("${page.base-url}")
     private String baseUrl;
 
+    public QRResponse getQR(final String organizationUuid) {
+        final Organization organization = getOrganization(UUID.fromString(organizationUuid));
+
+        final QR qr = qrRepository.findByOrganizationId(organization.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "해당 ID(id = " + organizationUuid + ")인 단체의 QR 코드를 찾을 수 없습니다."));
+
+        final String siteUrl = "https://feedzupzup.com/dashboard?uuid=" + organizationUuid;
+
+        return QRResponse.of(qr, siteUrl);
+    }
+
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void create(final UUID organizationUuid) {
         final Organization organization = getOrganization(organizationUuid);
