@@ -7,6 +7,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import feedzupzup.backend.qr.infrastructure.exception.QRGenerationException;
+import feedzupzup.backend.qr.service.QRImageGenerator;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -18,7 +19,7 @@ import javax.imageio.ImageIO;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QRImageGenerator {
+public class ZxingQRImageGenerator implements QRImageGenerator {
 
     public static final int WIDTH = 300;
     public static final int HEIGHT = 300;
