@@ -1,12 +1,9 @@
 package feedzupzup.backend.organization.controller;
 
-import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.api.UserOrganizationApi;
 import feedzupzup.backend.organization.application.UserOrganizationService;
 import feedzupzup.backend.organization.dto.request.CheeringRequest;
-import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;
 import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
 import lombok.RequiredArgsConstructor;

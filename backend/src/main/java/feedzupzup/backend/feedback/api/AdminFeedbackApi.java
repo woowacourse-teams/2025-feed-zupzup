@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "Admin Feedback", description = "피드백 API(관리자 권한)")
+@SecurityRequirement(name = "SessionAuth")
 public interface AdminFeedbackApi {
 
     @Operation(summary = "관리자용 피드백 목록 조회", description = "특정 장소의 피드백 목록을 조회합니다. (관리자 전용)")
