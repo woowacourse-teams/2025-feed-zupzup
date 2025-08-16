@@ -14,7 +14,6 @@ import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -43,7 +42,7 @@ public class QRService {
         return QRResponse.of(qr, generatedSiteUrl);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void create(final UUID organizationUuid) {
         final Organization organization = getOrganization(organizationUuid);
 
