@@ -9,6 +9,7 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .get("/organizations/{organizationId}", savedOrganization.getId())
+                .get("/organizations/{organizationUuid}", savedOrganization.getUuid().toString())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -44,13 +45,13 @@ class OrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("존재하지 않는 단체 ID로 조회 시 404 에러를 반환한다")
     void get_organization_name_not_found() {
         // given
-        final Long nonExistentOrganizationId = 999L;
+        final String nonExistentOrganizationUuid = UUID.randomUUID().toString();
 
         // when & then
         given()
                 .log().all()
                 .when()
-                .get("/organizations/{organizationId}", nonExistentOrganizationId)
+                .get("/organizations/{organizationUuid}", nonExistentOrganizationUuid)
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .contentType(ContentType.JSON);
@@ -72,7 +73,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/organizations/{organizationId}/cheer", savedOrganization.getId())
+                .post("/organizations/{organizationUuid}/cheer", savedOrganization.getUuid().toString())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
