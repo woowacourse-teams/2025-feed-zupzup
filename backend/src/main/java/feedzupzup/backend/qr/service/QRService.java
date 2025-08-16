@@ -1,5 +1,6 @@
 package feedzupzup.backend.qr.service;
 
+import feedzupzup.backend.global.exception.ResourceException.ResourceExistsException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -33,7 +34,7 @@ public class QRService {
         final Organization organization = getOrganization(organizationUuid);
 
         if (qrRepository.existsByOrganizationId(organization.getId())) {
-            throw new ResourceNotFoundException(
+            throw new ResourceExistsException(
                     "해당 ID(id = " + organizationUuid + ")인 단체의 QR 코드는 이미 존재합니다.");
         }
 
