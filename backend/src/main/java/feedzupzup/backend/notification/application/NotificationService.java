@@ -25,21 +25,23 @@ public class NotificationService {
         if (notificationTokenRepository.existsByAdminId(adminId)) {
             throw new NotificationTokenExistsException("이미 등록된 알림 토큰이 있습니다.");
         }
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
+        final Admin admin = getAdminById(adminId);
         notificationTokenRepository.save(request.toNotificationToken(admin));
     }
 
     public AlertsSettingResponse getAlertsSetting(final Long adminId) {
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
+        final Admin admin = getAdminById(adminId);
         return AlertsSettingResponse.from(admin.isAlertsOn());
     }
 
     @Transactional
     public void updateAlertsSetting(final UpdateAlertsSettingRequest request, final Long adminId) {
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
+        final Admin admin = getAdminById(adminId);
         admin.updateAlertsSetting(request.alertsOn());
+    }
+
+    private Admin getAdminById(Long adminId) {
+        return adminRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
     }
 }

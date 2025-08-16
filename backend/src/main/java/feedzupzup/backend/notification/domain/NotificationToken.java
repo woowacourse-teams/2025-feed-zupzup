@@ -12,6 +12,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Getter
@@ -29,7 +30,7 @@ public class NotificationToken extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Admin admin;
 
-    public NotificationToken(final Admin admin, final String registrationToken) {
+    public NotificationToken(@NonNull Admin admin, @NonNull final String registrationToken) {
         this.admin = admin;
         this.registrationToken = registrationToken;
     }

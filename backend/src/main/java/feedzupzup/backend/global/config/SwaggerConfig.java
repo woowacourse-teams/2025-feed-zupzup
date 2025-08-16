@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +23,15 @@ public class SwaggerConfig {
                                 .addProperty("data", new Schema<>().description("응답 데이터"))
                                 .addProperty("status", new Schema<>().type("integer").description("상태 코드").example(200))
                                 .addProperty("message", new Schema<>().type("string").description("상태 메시지").example("OK")))
+                        .addSecuritySchemes("SessionAuth", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.COOKIE)
+                                .name("JSESSIONID")
+                                .description("관리자 세션 인증이 필요합니다. /api/admin/* 경로의 API 사용 시 필요합니다."))
                         .addResponses("BadRequest", new ApiResponse()
                                 .description("잘못된 요청"))
                         .addResponses("Unauthorized", new ApiResponse()
-                                .description("인증이 필요합니다"))
+                                .description("인증이 필요합니다. 관리자 로그인 후 세션을 통해 인증하세요."))
                         .addResponses("Forbidden", new ApiResponse()
                                 .description("접근 권한이 없습니다"))
                         .addResponses("NotFound", new ApiResponse()

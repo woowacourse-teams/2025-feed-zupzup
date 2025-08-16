@@ -4,6 +4,7 @@ import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.notification.application.PushNotifier;
 import feedzupzup.backend.notification.domain.NotificationPayload;
+import feedzupzup.backend.notification.exception.NotificationException;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organization.domain.Organization;
@@ -34,8 +35,8 @@ public class NotificationEventListener {
 
             List<Organizer> organizers = organizerRepository.findByOrganizationId(event.organizationId());
             List<Long> adminIds = organizers.stream()
-                    .filter(organizer -> organizer.getAdmin().isAlertsOn())
-                    .map(organizer -> organizer.getAdmin().getId())
+                    .filter(Organizer::isAlertsOn)
+                    .map(Organizer::getId)
                     .toList();
             
             if (!adminIds.isEmpty()) {
@@ -45,7 +46,7 @@ public class NotificationEventListener {
                         .toList();
                 pushNotifier.sendBatchMessage(payloads);
             }
-        } catch (Exception e) {
+        } catch (NotificationException e) {
             log.error("알림 전송 중 오류 발생: {}", e.getMessage(), e);
         }
     }
