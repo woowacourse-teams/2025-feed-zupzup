@@ -1,6 +1,7 @@
 package feedzupzup.backend.s3.service;
 
 import feedzupzup.backend.s3.config.S3Properties;
+import feedzupzup.backend.s3.dto.request.FileUploadRequest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,14 @@ public class S3UploadService {
     private final S3Properties s3Properties;
 
     public String uploadFile(
-            final String extension,
-            final String objectDir,
-            final UUID uuid,
-            final byte[] fileData
+            final FileUploadRequest fileUploadRequest
     ) {
-        final String objectKey = generateObjectKey(extension, objectDir, uuid);
-        putObject(objectKey, extension, fileData);
+        final String objectKey = generateObjectKey(
+                fileUploadRequest.extension(),
+                fileUploadRequest.objectDir(),
+                UUID.fromString(fileUploadRequest.objectId())
+        );
+        putObject(objectKey, fileUploadRequest.extension(), fileUploadRequest.fileData());
         return generateObjectUrl(objectKey);
     }
 
