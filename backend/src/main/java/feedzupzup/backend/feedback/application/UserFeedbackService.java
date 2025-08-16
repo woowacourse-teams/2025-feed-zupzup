@@ -10,15 +10,17 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
-import java.util.Comparator;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,7 @@ public class UserFeedbackService {
     private final FeedbackLikeCounter feedbackLikeCounter;
     private final OrganizationRepository organizationRepository;
     private final FeedbackLikeService feedbackLikeService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @BusinessActionLog
@@ -45,6 +48,10 @@ public class UserFeedbackService {
                 category);
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
+        
+        // 새로운 피드백이 생성되면 이벤트 발행
+        publishFeedbackCreatedEvent(organization);
+
         return CreateFeedbackResponse.from(savedFeedback);
     }
 
@@ -116,5 +123,10 @@ public class UserFeedbackService {
                 .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
                         .thenComparing(Feedback::getId))
                 .toList();
+    }
+    
+    private void publishFeedbackCreatedEvent(Organization organization) {
+        FeedbackCreatedEvent event = new FeedbackCreatedEvent(organization.getId(), "피드줍줍");
+        eventPublisher.publishEvent(event);
     }
 }

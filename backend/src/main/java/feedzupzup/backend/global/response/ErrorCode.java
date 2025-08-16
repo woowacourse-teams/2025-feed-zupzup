@@ -37,7 +37,12 @@ public enum ErrorCode {
     ADMIN_NOT_LOGGED_IN(UNAUTHORIZED, "A04", "로그인이 필요합니다."),
     DUPLICATE_LOGIN_ID(BAD_REQUEST, "A05", "이미 존재하는 로그인 ID입니다."),
     INVALID_LOGIN_CREDENTIALS(BAD_REQUEST, "A06", "로그인 ID 또는 비밀번호가 올바르지 않습니다."),
-    PASSWORD_NOT_MATCH(BAD_REQUEST, "A07", "비밀번호와 비밀번호 확인이 일치하지 않습니다.")
+    PASSWORD_NOT_MATCH(BAD_REQUEST, "A07", "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
+    
+    //Notification Error
+    NOTIFICATION_RETRY_INTERRUPTED(INTERNAL_SERVER_ERROR, "N01", "알림 재시도 중 인터럽트가 발생했습니다."),
+    FIREBASE_INITIALIZATION_FAILED(INTERNAL_SERVER_ERROR, "N02", "Firebase를 초기화할 수 없습니다."),
+    NOTIFICATION_TOKEN_ALREADY_EXISTS(BAD_REQUEST, "N03", "이미 등록된 알림 토큰이 있습니다.")
     ;
 
     private final HttpStatus httpStatus;
