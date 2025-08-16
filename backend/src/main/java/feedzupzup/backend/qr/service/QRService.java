@@ -5,12 +5,12 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.qr.domain.QR;
+import feedzupzup.backend.qr.domain.SiteUrl;
 import feedzupzup.backend.qr.dto.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
 import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +24,7 @@ public class QRService {
     private final OrganizationRepository organizationRepository;
     private final QRCodeGenerator qrCodeGenerator;
     private final S3UploadService s3UploadService;
-
-    @Value("${page.base-url}")
-    private String baseUrl;
+    private final SiteUrl siteUrl;
 
     public QRResponse getQR(final UUID organizationUuid) {
         final Organization organization = getOrganization(organizationUuid);
@@ -35,9 +33,11 @@ public class QRService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organizationUuid + ")인 단체의 QR 코드를 찾을 수 없습니다."));
 
-        final String siteUrl = "https://feedzupzup.com/dashboard?uuid=" + organizationUuid;
+        final String generatedSiteUrl = siteUrl.builder()
+                .addParam("uuid", organizationUuid.toString())
+                .build();
 
-        return QRResponse.of(qr, siteUrl);
+        return QRResponse.of(qr, generatedSiteUrl);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -49,8 +49,11 @@ public class QRService {
                     "해당 ID(id = " + organizationUuid + ")인 단체의 QR 코드는 이미 존재합니다.");
         }
 
-        String qrUrl = baseUrl + "?uuid=" + organizationUuid;
-        final byte[] qrCode = qrCodeGenerator.generateQRCode(qrUrl);
+        final String generatedSiteUrl = siteUrl.builder()
+                .addParam("uuid", organizationUuid.toString())
+                .build();
+
+        final byte[] qrCode = qrCodeGenerator.generateQRCode(generatedSiteUrl);
         final String imageUrl = s3UploadService.uploadFile(
                 "png", "/organization_qr", organization.getUuid(), qrCode);
 
