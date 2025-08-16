@@ -39,9 +39,11 @@ public class AdminOrganizationService {
             final Long adminId
     ) {
         final Organization organization = request.toOrganization();
+        final Organization savedOrganization = organizationRepository.save(organization);
+
         final Set<String> categories = request.categories();
 
-        saveOrganizationCategory(categories, organization);
+        saveOrganizationCategory(categories, savedOrganization);
 
         final Admin admin = findAdminBy(adminId);
         final Organizer organizer = new Organizer(
@@ -49,8 +51,6 @@ public class AdminOrganizationService {
                 admin,
                 OrganizerRole.OWNER
         );
-
-        final Organization savedOrganization = organizationRepository.save(organization);
         organizerRepository.save(organizer);
 
         eventPublisher.publishEvent(new OrganizationCreatedEvent(savedOrganization.getUuid()));
