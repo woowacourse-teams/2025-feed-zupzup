@@ -14,7 +14,7 @@ import {
 import type { NotificationServiceResult } from '@/types/notification.types';
 
 export class NotificationService {
-  static async enable(): Promise<NotificationServiceResult> {
+  static async enable(adminId: number = 3): Promise<NotificationServiceResult> {
     try {
       if (!isNotificationSupported()) {
         throw new Error('이 브라우저는 푸시 알림을 지원하지 않습니다.');
@@ -42,8 +42,10 @@ export class NotificationService {
 
       await registerFCMToken(token);
 
+      // adminId 전달
       await updateNotificationSettings({
         alertsOn: true,
+        adminId,
       });
 
       setStoredNotificationState(true);
@@ -51,7 +53,7 @@ export class NotificationService {
       return {
         success: true,
         message: '알림이 성공적으로 활성화되었습니다.',
-        data: { token },
+        data: { token, adminId },
       };
     } catch (error) {
       console.error('[NotificationService] 활성화 실패:', error);
@@ -62,10 +64,13 @@ export class NotificationService {
     }
   }
 
-  static async disable(): Promise<NotificationServiceResult> {
+  static async disable(
+    adminId: number = 3
+  ): Promise<NotificationServiceResult> {
     try {
       await updateNotificationSettings({
         alertsOn: false,
+        adminId,
       });
 
       setStoredNotificationState(false);
@@ -73,6 +78,7 @@ export class NotificationService {
       return {
         success: true,
         message: '알림이 비활성화되었습니다.',
+        data: { adminId },
       };
     } catch (error) {
       console.error('[NotificationService] 비활성화 실패:', error);
@@ -83,9 +89,10 @@ export class NotificationService {
     }
   }
 
-  static async getCurrentSettings(): Promise<boolean> {
+  static async getCurrentSettings(adminId: number = 3): Promise<boolean> {
     try {
-      const response = await getNotificationSettings();
+      // adminId 전달
+      const response = await getNotificationSettings(adminId);
       return response.data.alertsOn;
     } catch (error) {
       console.error('[NotificationService] 설정 조회 실패:', error);
