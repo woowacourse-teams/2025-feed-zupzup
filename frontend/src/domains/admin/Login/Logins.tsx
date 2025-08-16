@@ -2,32 +2,27 @@ import BasicButton from '@/components/BasicButton/BasicButton';
 import { ROUTES } from '@/constants';
 import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/admin/components/FormField/FormField';
+import useAuthForm from '@/domains/admin/hooks/useAuthForm';
 import {
   LoginField,
   loginFields,
 } from '@/domains/admin/Login/constants/loginFields';
+import useLogin from '@/domains/admin/Login/hooks/useLogin';
 import {
   fieldContainer,
   loginCaptionContainer,
   loginForm,
 } from '@/domains/admin/Login/Login.style';
-import useAuthForm from '@/domains/admin/hooks/useAuthForm';
-import { useAppTheme } from '@/hooks/useAppTheme';
 import {
   validateId,
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
-import { postAdminLogin } from '@/apis/admin.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { setLocalStorage } from '@/utils/localStorage';
-import { ADMIN_BASE } from '@/constants/routes';
 
 export default function Login() {
   const theme = useAppTheme();
   const navigate = useNavigate();
-
-  const { showErrorModal } = useErrorModalContext();
 
   const loginValidators = {
     id: validateId,
@@ -46,23 +41,7 @@ export default function Login() {
     validators: loginValidators,
   });
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    await postAdminLogin({
-      loginId: loginValue.id,
-      password: loginValue.password,
-      onError: () => {
-        showErrorModal(
-          new Error('로그인 실패'),
-          '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.'
-        );
-      },
-      onSuccess: (data: Response) => {
-        navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
-        setLocalStorage('auth', data);
-      },
-    });
-  };
+  const { handleSubmit } = useLogin({ loginValue });
 
   return (
     <AuthLayout title='로그인' caption='계정에 로그인 하세요'>

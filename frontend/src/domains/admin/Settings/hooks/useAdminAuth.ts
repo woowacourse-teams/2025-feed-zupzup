@@ -1,8 +1,6 @@
 import { AdminAuthData, getAdminAuth } from '@/apis/admin.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
-
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 export default function useAdminAuth() {
   const [adminAuth, setAdminAuth] = useState<AdminAuthData | null>(null);
