@@ -20,6 +20,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { postAdminLogin } from '@/apis/admin.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { setLocalStorage } from '@/utils/localStorage';
 
 export default function Login() {
   const theme = useAppTheme();
@@ -46,8 +47,8 @@ export default function Login() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await postAdminLogin({
-      id: loginValue.id,
+    const response = await postAdminLogin({
+      loginId: loginValue.id,
       password: loginValue.password,
       onError: () => {
         showErrorModal(
@@ -59,6 +60,10 @@ export default function Login() {
         navigate(ROUTES.ADMIN_HOME);
       },
     });
+
+    if (response) {
+      setLocalStorage('auth', response.data);
+    }
   };
 
   return (

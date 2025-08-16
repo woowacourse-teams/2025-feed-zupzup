@@ -1,22 +1,32 @@
 import { apiClient } from '@/apis/apiClient';
 
 interface PostAdminLoginParams {
-  id: string;
+  loginId: string;
   password: string;
   onError: () => void;
   onSuccess: () => void;
 }
 
+interface AdminLoginResponse {
+  data: {
+    loginId: string;
+    adminName: string;
+    adminId: number;
+  };
+  status: number;
+  message: string;
+}
+
 export async function postAdminLogin({
-  id,
+  loginId,
   password,
   onError,
   onSuccess,
-}: PostAdminLoginParams) {
+}: PostAdminLoginParams): Promise<AdminLoginResponse> {
   const response = await apiClient.post(
     '/admin/login',
     {
-      id,
+      loginId,
       password,
     },
     {
@@ -24,5 +34,5 @@ export async function postAdminLogin({
       onSuccess,
     }
   );
-  return response;
+  return response as AdminLoginResponse;
 }
