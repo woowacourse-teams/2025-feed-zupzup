@@ -6,7 +6,7 @@ import static org.mockito.Mockito.verify;
 import feedzupzup.backend.global.exception.ResourceException.ResourceExistsException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.event.OrganizationCreatedEvent;
-import feedzupzup.backend.qr.infrastructure.exception.QRGenerationException;
+import feedzupzup.backend.qr.domain.exception.QRException.QRGenerationException;
 import feedzupzup.backend.s3.exception.S3UploadException;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;

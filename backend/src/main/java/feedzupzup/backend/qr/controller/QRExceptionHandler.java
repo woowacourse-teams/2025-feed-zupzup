@@ -1,7 +1,7 @@
 package feedzupzup.backend.qr.controller;
 
 import feedzupzup.backend.global.response.ErrorResponse;
-import feedzupzup.backend.qr.infrastructure.exception.QRGenerationException;
+import feedzupzup.backend.qr.domain.exception.QRException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class QRExceptionHandler {
 
-    @ExceptionHandler(QRGenerationException.class)
-    public ResponseEntity<ErrorResponse> handleQRGenerationException(final QRGenerationException e) {
+    @ExceptionHandler(QRException.class)
+    public ResponseEntity<ErrorResponse> handleQRGenerationException(final QRException e) {
         log.warn(e.getMessage(), e);
         final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
         return ResponseEntity.status(httpStatus)

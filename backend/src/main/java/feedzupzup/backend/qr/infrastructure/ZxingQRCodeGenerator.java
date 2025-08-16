@@ -8,7 +8,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import feedzupzup.backend.qr.config.QRProperties;
-import feedzupzup.backend.qr.infrastructure.exception.QRGenerationException;
+import feedzupzup.backend.qr.domain.exception.QRException.QRGenerationException;
 import feedzupzup.backend.qr.service.QRCodeGenerator;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -30,7 +30,7 @@ public class ZxingQRCodeGenerator implements QRCodeGenerator {
             final BitMatrix bitMatrix = createBitMatrix(url);
             return convertBitMatrixToByteArray(bitMatrix);
         } catch (final WriterException | IOException e) {
-            throw new QRGenerationException();
+            throw new QRGenerationException("QR 코드 생성 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 
