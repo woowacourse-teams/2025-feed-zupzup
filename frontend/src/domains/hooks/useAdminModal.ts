@@ -25,6 +25,13 @@ export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
 
   const closeModal = () => setModalState({ type: null });
 
+  const invalidateFeedbackQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: ['organizationStatistics', organizationId],
+    });
+    queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
+  };
+
   const confirmMutation = useMutation({
     mutationFn: ({
       feedbackId,
@@ -39,12 +46,7 @@ export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
         '에러'
       );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['organizationStatistics', organizationId],
-      });
-      queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
-    },
+    onSuccess: invalidateFeedbackQueries,
   });
 
   const deleteMutation = useMutation({
@@ -53,12 +55,7 @@ export const useAdminModal = ({ organizationId = 1 }: UseAdminModalProps) => {
     onError: () => {
       showErrorModal('피드백 삭제에 실패했습니다. 다시 시도해 주세요', '에러');
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['organizationStatistics', organizationId],
-      });
-      queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
-    },
+    onSuccess: invalidateFeedbackQueries,
   });
 
   const handleConfirmFeedback = async (comment: string) => {
