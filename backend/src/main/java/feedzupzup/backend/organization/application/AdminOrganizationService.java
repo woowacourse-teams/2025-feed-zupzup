@@ -11,12 +11,14 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
+import feedzupzup.backend.organization.event.OrganizationCreatedEvent;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class AdminOrganizationService {
     private final OrganizerRepository organizerRepository;
     private final AdminRepository adminRepository;
     private final OrganizationCategoryRepository organizationCategoryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AdminCreateOrganizationResponse createOrganization(
@@ -49,6 +52,9 @@ public class AdminOrganizationService {
 
         final Organization savedOrganization = organizationRepository.save(organization);
         organizerRepository.save(organizer);
+
+        eventPublisher.publishEvent(new OrganizationCreatedEvent(savedOrganization.getUuid()));
+
         return AdminCreateOrganizationResponse.from(savedOrganization);
     }
 

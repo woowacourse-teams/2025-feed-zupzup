@@ -12,7 +12,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignReques
 
 @Service
 @RequiredArgsConstructor
-public class S3Service {
+public class S3PresignService {
 
     private final S3Presigner s3Presigner;
     private final S3Properties s3Properties;
@@ -56,7 +56,7 @@ public class S3Service {
     ) {
         return String.format("%s/%s/%s/%d/%s.%s",
                 s3Properties.rootDirName(),
-                s3Properties.environment(),
+                s3Properties.environmentDir(),
                 objectDir,
                 objectId,
                 UUID.randomUUID(),

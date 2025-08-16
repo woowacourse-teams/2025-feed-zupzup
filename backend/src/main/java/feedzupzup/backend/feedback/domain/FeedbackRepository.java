@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.domain;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,14 +14,14 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
-            WHERE f.organization.id = :organizationId
+            WHERE f.organization.uuid = :organizationUuid
             AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id < :cursorId)
             AND f.deletedAt IS NULL
             ORDER BY f.id DESC
             """)
     List<Feedback> findByLatest(
-            @Param("organizationId") Long organizationId,
+            @Param("organizationUuid") UUID organizationUuid,
             @Param("status") ProcessStatus status,
             @Param("cursorId") Long cursorId,
             Pageable pageable
@@ -29,14 +30,14 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
-            WHERE f.organization.id = :organizationId
+            WHERE f.organization.uuid = :organizationUuid
             AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id > :cursorId)
             AND f.deletedAt IS NULL
             ORDER BY f.id ASC
             """)
     List<Feedback> findByOldest(
-            @Param("organizationId") Long organizationId,
+            @Param("organizationUuid") UUID organizationUuid,
             @Param("status") ProcessStatus status,
             @Param("cursorId") Long cursorId,
             Pageable pageable
@@ -45,7 +46,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
-            WHERE f.organization.id = :organizationId
+            WHERE f.organization.uuid = :organizationUuid
             AND (:status IS NULL OR f.status = :status)
             AND (
                 :cursorId IS NULL OR 
@@ -56,7 +57,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             ORDER BY f.likeCount DESC, f.id ASC
             """)
     List<Feedback> findByLikes(
-            @Param("organizationId") Long organizationId,
+            @Param("organizationUuid") UUID organizationUuid,
             @Param("status") ProcessStatus status,
             @Param("cursorId") Long cursorId,
             Pageable pageable
@@ -64,7 +65,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     List<Feedback> findByIdIn(Collection<Long> ids);
 
-    List<Feedback> findByOrganizationIdAndIdIn(Long organizationId, List<Long> ids);
+    List<Feedback> findByOrganizationUuidAndIdIn(final UUID uuid, final Collection<Long> id);
 
     @Query("""
             SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(

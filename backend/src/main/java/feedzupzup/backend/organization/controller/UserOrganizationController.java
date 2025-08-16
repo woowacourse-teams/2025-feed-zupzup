@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 public class UserOrganizationController implements UserOrganizationApi {
@@ -17,17 +19,17 @@ public class UserOrganizationController implements UserOrganizationApi {
     private final UserOrganizationService userOrganizationService;
 
     @Override
-    public SuccessResponse<UserOrganizationResponse> getOrganizationById(final Long organizationId) {
-        final UserOrganizationResponse response = userOrganizationService.getOrganizationById(organizationId);
+    public SuccessResponse<UserOrganizationResponse> getOrganizationByUuid(final UUID organizationUuid) {
+        final UserOrganizationResponse response = userOrganizationService.getOrganizationByUuid(organizationUuid);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
-    public SuccessResponse<CheeringResponse> cheerByOrganizationId(
-            final Long organizationId,
+    public SuccessResponse<CheeringResponse> cheerByOrganizationUuid(
+            final UUID organizationUuid,
             final CheeringRequest request
     ) {
-        CheeringResponse response = userOrganizationService.cheer(request, organizationId);
+        CheeringResponse response = userOrganizationService.cheer(request, organizationUuid);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

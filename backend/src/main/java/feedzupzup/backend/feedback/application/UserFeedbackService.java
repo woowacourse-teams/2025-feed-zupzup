@@ -19,6 +19,7 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
@@ -40,15 +41,15 @@ public class UserFeedbackService {
     @BusinessActionLog
     public CreateFeedbackResponse create(
             final CreateFeedbackRequest request,
-            final Long organizationId
+            final UUID organizationUuid
     ) {
-        final Organization organization = findOrganizationBy(organizationId);
+        final Organization organization = findOrganizationBy(organizationUuid);
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
                 category);
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
-        
+
         // 새로운 피드백이 생성되면 이벤트 발행
         publishFeedbackCreatedEvent(organization);
 
@@ -56,7 +57,7 @@ public class UserFeedbackService {
     }
 
     public UserFeedbackListResponse getFeedbackPage(
-            final Long organizationId,
+            final UUID organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
@@ -67,9 +68,9 @@ public class UserFeedbackService {
         feedbackLikeService.flushLikeCountBuffer();
 
         final List<Feedback> feedbacks = switch (orderBy) {
-            case LATEST -> feedBackRepository.findByLatest(organizationId, status, cursorId, pageable);
-            case OLDEST -> feedBackRepository.findByOldest(organizationId, status, cursorId, pageable);
-            case LIKES -> feedBackRepository.findByLikes(organizationId, status, cursorId, pageable);
+            case LATEST -> feedBackRepository.findByLatest(organizationUuid, status, cursorId, pageable);
+            case OLDEST -> feedBackRepository.findByOldest(organizationUuid, status, cursorId, pageable);
+            case LIKES -> feedBackRepository.findByLikes(organizationUuid, status, cursorId, pageable);
         };
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
@@ -81,23 +82,23 @@ public class UserFeedbackService {
     }
 
     public MyFeedbackListResponse getMyFeedbackPage(
-            final Long organizationId,
+            final UUID organizationUuid,
             final FeedbackOrderBy orderBy,
             final List<Long> myFeedbackIds
     ) {
         feedbackLikeService.flushLikeCountBuffer();
 
-        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationIdAndIdIn(
-                organizationId, myFeedbackIds);
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationUuidAndIdIn(
+                organizationUuid, myFeedbackIds);
 
         final List<Feedback> sortedFeedbacks = sortFeedbacksByOrderBy(feedbacks, orderBy);
-        
+
         feedbackLikeCounter.applyBufferedLikeCount(sortedFeedbacks);
         return MyFeedbackListResponse.of(sortedFeedbacks);
     }
 
-    private Organization findOrganizationBy(final Long organizationId) {
-        return organizationRepository.findById(organizationId)
+    private Organization findOrganizationBy(final UUID organizationUuid) {
+        return organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 
@@ -112,19 +113,19 @@ public class UserFeedbackService {
                     .sorted(Comparator.comparing(Feedback::getId).reversed())
                     .toList();
         }
-        
+
         if (orderBy == FeedbackOrderBy.OLDEST) {
             return feedbacks.stream()
                     .sorted(Comparator.comparing(Feedback::getId))
                     .toList();
         }
-        
+
         return feedbacks.stream()
                 .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
                         .thenComparing(Feedback::getId))
                 .toList();
     }
-    
+
     private void publishFeedbackCreatedEvent(Organization organization) {
         FeedbackCreatedEvent event = new FeedbackCreatedEvent(organization.getId(), "피드줍줍");
         eventPublisher.publishEvent(event);
