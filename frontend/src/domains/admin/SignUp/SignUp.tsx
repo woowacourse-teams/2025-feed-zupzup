@@ -2,54 +2,54 @@ import BasicButton from '@/components/BasicButton/BasicButton';
 import { ROUTES } from '@/constants';
 import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/admin/components/FormField/FormField';
+import useAuthForm from '@/domains/admin/hooks/useAuthForm';
 import {
   SignUpField,
   signUpFields,
 } from '@/domains/admin/SignUp/constants/signUpFields';
 import useConfirmPassword from '@/domains/admin/SignUp/hooks/useConfirmPassword';
+import useSignup from '@/domains/admin/SignUp/hooks/useSignup';
 import {
   fieldContainer,
   signUpCaptionContainer,
   signUpForm,
 } from '@/domains/admin/SignUp/SignUp.style';
-import useAuthForm from '@/domains/admin/hooks/useAuthForm';
-import { useAppTheme } from '@/hooks/useAppTheme';
 import {
   validateId,
   validateName,
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
-import { useNavigate } from 'react-router-dom';
 import Toast from '@/domains/components/Toast/Toast';
-import { FormEvent, useState } from 'react';
-import { postAdminSignup } from '@/apis/admin.api';
-import { setLocalStorage } from '@/utils/localStorage';
-import { ADMIN_BASE } from '@/constants/routes';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type SignUpFieldName = 'name' | 'id' | 'password';
+
+const SIGNUP_INITIAL_VALUES = {
+  name: '',
+  id: '',
+  password: '',
+};
+
+const SIGNUP_VALIDATORS = {
+  name: validateName,
+  id: validateId,
+  password: validatePassword,
+};
 
 export default function SignUp() {
   const theme = useAppTheme();
   const navigate = useNavigate();
   const [toast, setToast] = useState<string | null>(null);
 
-  const signUpValidators = {
-    name: validateName,
-    id: validateId,
-    password: validatePassword,
-  };
-
   const {
     authValue: signUpValue,
     handleChangeForm,
     errors,
   } = useAuthForm({
-    initValues: {
-      name: '',
-      id: '',
-      password: '',
-    },
-    validators: signUpValidators,
+    initValues: SIGNUP_INITIAL_VALUES,
+    validators: SIGNUP_VALIDATORS,
   });
 
   const {
@@ -60,31 +60,12 @@ export default function SignUp() {
     initValues: { confirmPassword: '', password: signUpValue.password },
   });
 
-  const handleSignUp = async (event: FormEvent) => {
-    event.preventDefault();
-    const isValid = Object.values(errors).every((error) => !error);
-    const isConfirmPasswordValid =
-      !confirmPasswordErrors && signUpValue.password !== '';
-
-    if (!isValid || !isConfirmPasswordValid) {
-      setToast('입력하신 정보를 다시 확인해주세요.');
-      return;
-    } else {
-      await postAdminSignup({
-        loginId: signUpValue.id,
-        password: signUpValue.password,
-        adminName: signUpValue.name,
-        onError: () => {
-          setToast('회원가입에 실패했습니다. 다시 시도해주세요.');
-        },
-        onSuccess: (authData: Response) => {
-          setToast('회원가입이 완료되었습니다.');
-          navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
-          setLocalStorage('auth', authData);
-        },
-      });
-    }
-  };
+  const { handleSignUp } = useSignup({
+    confirmPasswordErrors,
+    errors,
+    signUpValue,
+    setToast,
+  });
 
   return (
     <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
