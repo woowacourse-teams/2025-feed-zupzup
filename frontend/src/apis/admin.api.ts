@@ -1,5 +1,5 @@
 import { apiClient } from '@/apis/apiClient';
-import { ApiResponse } from '@/types/api.types';
+import { ApiResponse } from '@/types/apiResponse';
 
 interface PostAdminLoginParams {
   loginId: string;

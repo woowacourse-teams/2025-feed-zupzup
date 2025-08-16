@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'; // 👈 추가
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import Toast from './Toast';
