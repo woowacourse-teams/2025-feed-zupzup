@@ -1,4 +1,5 @@
 import { apiClient } from '@/apis/apiClient';
+import { ApiResponse } from '@/types/api.types';
 
 interface PostAdminLoginParams {
   loginId: string;
@@ -7,15 +8,14 @@ interface PostAdminLoginParams {
   onSuccess: () => void;
 }
 
-interface AdminLoginResponse {
-  data: {
-    loginId: string;
-    adminName: string;
-    adminId: number;
-  };
-  status: number;
-  message: string;
-}
+export type AdminLoginData = {
+  loginId: string;
+  adminName: string;
+  adminId: number;
+};
+type AdminLoginResponse = ApiResponse<AdminLoginData>;
+
+type PostAdminLogoutResponse = ApiResponse<string>;
 
 export async function postAdminLogin({
   loginId,
@@ -35,4 +35,10 @@ export async function postAdminLogin({
     }
   );
   return response as AdminLoginResponse;
+}
+
+export async function postAdminLogout(): Promise<PostAdminLogoutResponse> {
+  const response = await apiClient.post('/admin/logout', {});
+
+  return response as PostAdminLogoutResponse;
 }

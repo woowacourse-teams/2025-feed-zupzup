@@ -1,8 +1,8 @@
 import { apiClient } from '@/apis/apiClient';
+import { ApiResponse } from '@/types/api.types';
 import type {
   FCMTokenRequest,
   NotificationSettingRequest,
-  ApiResponse,
 } from '@/types/notification.types';
 
 export const registerFCMToken = async (token: string): Promise<ApiResponse> => {
