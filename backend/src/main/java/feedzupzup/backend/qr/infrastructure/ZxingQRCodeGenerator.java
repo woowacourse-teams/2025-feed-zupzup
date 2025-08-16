@@ -20,9 +20,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class ZxingQRCodeGenerator implements QRCodeGenerator {
 
-    public static final int IMAGE_WIDTH_PIXELS = 300;
-    public static final int IMAGE_HEIGHT_PIXELS = 300;
-    public static final String QR_IMAGE_EXTENSION = "PNG";
+    static final int IMAGE_WIDTH_PIXELS = 300;
+    static final int IMAGE_HEIGHT_PIXELS = 300;
+    static final String QR_IMAGE_EXTENSION = "PNG";
 
     public byte[] generateQRCode(final String url) {
         try {

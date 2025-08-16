@@ -39,8 +39,8 @@ class ZxingQRCodeGeneratorTest {
             // 생성된 이미지가 올바른 형식인지 확인
             final BufferedImage image = ImageIO.read(new ByteArrayInputStream(result));
             assertThat(image).isNotNull();
-            assertThat(image.getWidth()).isEqualTo(ZxingQRCodeGenerator.WIDTH);
-            assertThat(image.getHeight()).isEqualTo(ZxingQRCodeGenerator.HEIGHT);
+            assertThat(image.getWidth()).isEqualTo(ZxingQRCodeGenerator.IMAGE_WIDTH_PIXELS);
+            assertThat(image.getHeight()).isEqualTo(ZxingQRCodeGenerator.IMAGE_HEIGHT_PIXELS);
         }
 
         @Test

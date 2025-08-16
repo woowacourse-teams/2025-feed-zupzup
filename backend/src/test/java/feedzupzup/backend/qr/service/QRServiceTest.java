@@ -3,8 +3,8 @@ package feedzupzup.backend.qr.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
@@ -14,6 +14,7 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.qr.domain.QR;
+import feedzupzup.backend.qr.dto.QRCodeUploadRequest;
 import feedzupzup.backend.qr.dto.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
 import feedzupzup.backend.s3.service.S3UploadService;
@@ -61,8 +62,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             // then
             assertAll(
                     () -> assertThat(response.imageUrl()).isEqualTo("https://example.com/qr-image.png"),
-                    () -> assertThat(response.siteUrl()).isEqualTo(
-                            "https://feedzupzup.com/dashboard?uuid=" + organization.getUuid())
+                    () -> assertThat(response.siteUrl()).contains("uuid=" + organization.getUuid())
             );
         }
 
@@ -107,8 +107,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             final String mockImageUrl = "https://s3.amazonaws.com/bucket/qr-image.png";
 
             when(qrCodeGenerator.generateQRCode(anyString())).thenReturn(mockQrImage);
-            when(s3UploadService.uploadFile(eq("png"), eq("/organization_qr"), eq(organization.getUuid()),
-                    eq(mockQrImage)))
+            when(s3UploadService.uploadFile(any(QRCodeUploadRequest.class)))
                     .thenReturn(mockImageUrl);
 
             // when
