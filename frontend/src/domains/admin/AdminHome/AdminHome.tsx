@@ -1,4 +1,3 @@
-import { AdminAuthData } from '@/apis/admin.api';
 import PlusIcon from '@/components/icons/PlusIcon';
 import { useModalContext } from '@/contexts/useModal';
 import {
@@ -14,6 +13,7 @@ import FeedbackRoomList from '@/domains/admin/AdminHome/components/FeedbackRoomL
 import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { AdminAuthData } from '@/types/adminAuth';
 import { getLocalStorage } from '@/utils/localStorage';
 
 const ADMIN = '관리자1';

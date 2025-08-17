@@ -1,10 +1,7 @@
-import {
-  AdminAuthData,
-  getAdminAuth,
-  AdminAuthResponse,
-} from '@/apis/admin.api';
+import { getAdminAuth, AdminAuthResponse } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { AdminAuthData } from '@/types/adminAuth';
 import { useEffect, useState } from 'react';
 
 export default function useAdminAuth() {
