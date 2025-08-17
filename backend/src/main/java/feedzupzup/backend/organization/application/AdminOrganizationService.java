@@ -9,14 +9,17 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationCategories;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
+import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
 import feedzupzup.backend.organization.event.OrganizationCreatedEvent;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -81,5 +84,31 @@ public class AdminOrganizationService {
                 categories, organization);
         organization.addOrganizationCategories(organizationCategories.getOrganizationCategories());
         organizationCategoryRepository.saveAll(organizationCategories.getOrganizationCategories());
+    }
+
+    @Transactional
+    public AdminUpdateOrganizationResponse updateOrganization(
+            final UUID organizationUuid,
+            final UpdateOrganizationRequest request,
+            final Long adminId
+    ) {
+
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
+
+        // TODO : Exception 변경하기
+        if (organizerRepository.existsOrganizerByAdminIdAndOrganizationId(organization.getId(), adminId)) {
+            throw new ResourceNotFoundException("해당 단체에 대한 접근 권한이 없습니다.");
+        }
+
+        final Set<String> categories = request.categories();
+        final OrganizationCategories organizationCategories = OrganizationCategories.createOf(
+                categories, organization);
+
+        organization.updateOrganizationCategoriesAndName(
+                organizationCategories.getOrganizationCategories(),
+                request.organizationName()
+        );
+        return AdminUpdateOrganizationResponse.from(organization);
     }
 }

@@ -86,4 +86,13 @@ public class Organization extends BaseTimeEntity {
     public void addOrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
         this.organizationCategories.addAll(organizationCategories);
     }
+
+    public void updateOrganizationCategoriesAndName(
+            final Set<OrganizationCategory> organizationCategories,
+            final String name
+    ) {
+        this.organizationCategories.clear();
+        this.organizationCategories.addAll(organizationCategories);
+        this.name = new Name(name);
+    }
 }
