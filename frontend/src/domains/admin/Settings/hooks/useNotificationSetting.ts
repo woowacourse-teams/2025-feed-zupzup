@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { NotificationService } from '@/services/notificationService';
 import { useNotifications } from './useNotifications';
 
-export const useNotificationSetting = (organizationId: number = 1) => {
+export const useNotificationSetting = (organizationId: string = '1') => {
   const { fcmStatus, isEnabled, updateState } =
     useNotifications(organizationId);
 

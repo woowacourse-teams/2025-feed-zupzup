@@ -24,14 +24,13 @@ import {
   FeedbackFilterType,
 } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
-import { useOrganizationId } from '@/contexts/useOrganizationId';
 
 export default function UserDashboard() {
-  const { organizationId } = useOrganizationId();
+  const { id: organizationId } = useParams();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();
@@ -45,7 +44,7 @@ export default function UserDashboard() {
   } = useFeedbackFilterSort();
 
   const apiUrl = createFeedbacksUrl({
-    organizationId,
+    organizationId: organizationId || '',
     sort: selectedSort,
     filter: selectedFilter,
     isAdmin: false,

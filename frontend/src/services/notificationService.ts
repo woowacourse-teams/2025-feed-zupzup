@@ -14,7 +14,7 @@ import type { NotificationServiceResult } from '@/types/notification.types';
 
 export class NotificationService {
   static async enable(
-    organizationId: number
+    organizationId: string
   ): Promise<NotificationServiceResult> {
     try {
       if (!isNotificationSupported()) {
@@ -65,7 +65,7 @@ export class NotificationService {
   }
 
   static async disable(
-    organizationId: number
+    organizationId: string
   ): Promise<NotificationServiceResult> {
     try {
       await updateNotificationSettings({

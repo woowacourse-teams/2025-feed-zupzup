@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { FeedbackType, SortType } from '@/types/feedback.types';
 import { getMyFeedbacks } from '@/apis/userFeedback.api';
 import { getLocalStorage } from '@/utils/localStorage';
-import { useOrganizationId } from '@/contexts/useOrganizationId';
+import { useParams } from 'react-router-dom';
 
 export function useMyFeedbackData(selectedSort: SortType) {
-  const { organizationId } = useOrganizationId();
+  const { id: organizationId } = useParams();
   const [myFeedbacks, setMyFeedbacks] = useState<FeedbackType[]>([]);
 
   const feedbackIds = useMemo(
@@ -18,7 +18,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
       if (feedbackIds.length === 0) return;
 
       const response = await getMyFeedbacks({
-        organizationId,
+        organizationId: organizationId || '',
         feedbackIds,
         orderBy: selectedSort,
       });

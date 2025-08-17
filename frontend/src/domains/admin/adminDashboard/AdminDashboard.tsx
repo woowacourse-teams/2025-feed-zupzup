@@ -16,10 +16,12 @@ import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
+import { useParams } from 'react-router-dom';
 
 export default function AdminDashboard() {
   const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
     useFeedbackFilterSort();
+  const { id: organizationId } = useParams();
 
   const apiUrl = createFeedbacksUrl({
     organizationId: 1,
@@ -50,7 +52,7 @@ export default function AdminDashboard() {
     closeModal,
     handleConfirmFeedback,
     handleDeleteFeedback,
-  } = useAdminModal({ organizationId: 1 });
+  } = useAdminModal({ organizationId: organizationId || '' });
 
   useGetFeedback({ fetchMore, hasNext, loading });
 

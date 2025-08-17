@@ -1,16 +1,16 @@
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 
-const getNotificationKey = (organizationId: number) =>
+const getNotificationKey = (organizationId: string) =>
   `notification_enabled_${organizationId}`;
 
-export const getStoredNotificationState = (organizationId: number): boolean => {
+export const getStoredNotificationState = (organizationId: string): boolean => {
   const key = getNotificationKey(organizationId);
   const stored = getLocalStorage<boolean>(key);
   return stored ?? false;
 };
 
 export const setStoredNotificationState = (
-  organizationId: number,
+  organizationId: string,
   enabled: boolean
 ): void => {
   const key = getNotificationKey(organizationId);
