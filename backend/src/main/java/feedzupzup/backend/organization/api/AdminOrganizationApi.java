@@ -43,7 +43,7 @@ public interface AdminOrganizationApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
     })
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/admin/organizations/{organizationUuid}")
     SuccessResponse<AdminUpdateOrganizationResponse> updateOrganization(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")

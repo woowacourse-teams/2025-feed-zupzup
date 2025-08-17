@@ -15,6 +15,7 @@ import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
@@ -169,4 +170,41 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @Test
+    @DisplayName("정상적인 조직 수정 요청시 조직 수정이 성공한다")
+    void updateOrganization_Success() {
+        // given
+        final Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+
+        Organization organization = organizationRepository.save(
+                OrganizationFixture.createAllBlackBox());
+        organizerRepository.save(new Organizer(organization, admin, OrganizerRole.OWNER));
+
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie(SESSION_ID);
+
+        UpdateOrganizationRequest request = new UpdateOrganizationRequest("새로운 조직", Set.of("신고", "건의", "기타"));
+
+        // when & then
+        given()
+                .contentType(ContentType.JSON)
+                .cookie(SESSION_ID, sessionCookie)
+                .body(request)
+                .when()
+                .put("/admin/organizations/" + organization.getUuid())
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .log().all()
+                .body("data.updateName", equalTo("새로운 조직"))
+                .body("data.updateCategories.size()", equalTo(3));
+    }
 }
