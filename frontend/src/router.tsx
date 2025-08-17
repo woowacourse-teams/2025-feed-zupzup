@@ -18,7 +18,9 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true, // "/"에 접근 시
-        element: <Navigate to='/1/submit' replace />, // "/1/submit"로 리다이렉트 (임시 -> 나중에 삭제)
+        element: (
+          <Navigate to='/d0b1b979-7ae8-11f0-8408-0242ac120002/submit' replace />
+        ), // (임시 -> 나중에 삭제)
       },
       {
         path: ROUTES.SUBMIT,
