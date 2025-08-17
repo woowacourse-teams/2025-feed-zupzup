@@ -72,10 +72,15 @@ public class Organization extends BaseTimeEntity {
     }
 
     public OrganizationCategory findOrganizationCategoryBy(final Category category) {
-        return organizationCategories.stream()
+        final OrganizationCategory resultCategory = organizationCategories.stream()
                 .filter(organizationCategory -> organizationCategory.isSameCategory(category))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
+
+        if (!resultCategory.isActive()) {
+            throw new ResourceNotFoundException("해당 카테고리는 현재 비활성화 되어있습니다.");
+        }
+        return resultCategory;
     }
 
     public void addOrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
