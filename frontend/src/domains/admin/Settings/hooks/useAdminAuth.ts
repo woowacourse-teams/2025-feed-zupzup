@@ -1,4 +1,5 @@
 import { AdminAuthData, getAdminAuth } from '@/apis/admin.api';
+import { ApiError } from '@/apis/apiClient';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useEffect, useState } from 'react';
 
@@ -6,7 +7,7 @@ export default function useAdminAuth() {
   const [adminAuth, setAdminAuth] = useState<AdminAuthData | null>(null);
   const { showErrorModal } = useErrorModalContext();
 
-  const handleError = (error: Error) => {
+  const handleError = (error: ApiError) => {
     showErrorModal(error, '로그인 후 이용해주세요.');
     setAdminAuth(null);
   };
@@ -15,11 +16,12 @@ export default function useAdminAuth() {
     (async () => {
       try {
         await getAdminAuth({
-          onError: () => handleError(new Error('관리자 인증 정보 조회 실패')),
+          onError: () =>
+            handleError(new ApiError(401, '관리자 인증 정보 조회 실패')),
           onSuccess: (data) => setAdminAuth(data),
         });
       } catch (error) {
-        handleError(error as Error);
+        handleError(error as ApiError);
       }
     })();
   }, []);

@@ -16,6 +16,10 @@ export default function useLogin({ loginValue }: UseLoginProps) {
   const navigate = useNavigate();
   const { showErrorModal } = useErrorModalContext();
 
+  const handleError = (error: ApiError) => {
+    showErrorModal(error, '로그인 요청 실패');
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
@@ -23,12 +27,11 @@ export default function useLogin({ loginValue }: UseLoginProps) {
         loginId: loginValue.id,
         password: loginValue.password,
         onError: () => {
-          showErrorModal(
+          handleError(
             new ApiError(
               401,
               '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요'
-            ),
-            '로그인 요청 실패'
+            )
           );
         },
         onSuccess: (data: Response) => {
@@ -37,7 +40,7 @@ export default function useLogin({ loginValue }: UseLoginProps) {
         },
       });
     } catch (error: ApiError | unknown) {
-      showErrorModal(error as ApiError, '로그인 요청 실패');
+      handleError(error as ApiError);
     }
   };
 
