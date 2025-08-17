@@ -2,11 +2,14 @@ import { Outlet } from 'react-router-dom';
 import { usePageTracking } from './hooks/usePageTracking';
 import { useLayoutConfig } from './hooks/useLayoutConfig';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import {
+  OrganizationIdProvider,
+  useOrganizationId,
+} from '@/contexts/useOrganizationId';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
-import { OrganizationIdProvider } from './contexts/useOrganizationId';
 
 const gaId = process.env.GA_ID;
 
@@ -26,28 +29,40 @@ if (gaId) {
   document.head.appendChild(script2);
 }
 
-export default function App() {
+function AppContent() {
   usePageTracking();
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
+  const { isLoading } = useOrganizationId();
+
+  // organizationId 로딩 중일 때 스켈레톤 UI 표시
+  if (isLoading) {
+    return <div>Loading...</div>; // 또는 스켈레톤 컴포넌트
+  }
 
   return (
+    <div css={appContainer(isShowHeader)}>
+      {isShowHeader && <Header />}
+      <main css={main}>
+        <Outlet />
+      </main>
+      {isShowBottomNav && <BottomNavigation />}
+      {isError && (
+        <AlertModal
+          onClose={setErrorFalse}
+          isOpen={isError}
+          title={title}
+          message={message}
+        />
+      )}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
     <OrganizationIdProvider>
-      <div css={appContainer(isShowHeader)}>
-        {isShowHeader && <Header />}
-        <main css={main}>
-          <Outlet />
-        </main>
-        {isShowBottomNav && <BottomNavigation />}
-        {isError && (
-          <AlertModal
-            onClose={setErrorFalse}
-            isOpen={isError}
-            title={title}
-            message={message}
-          />
-        )}
-      </div>
+      <AppContent />
     </OrganizationIdProvider>
   );
 }
