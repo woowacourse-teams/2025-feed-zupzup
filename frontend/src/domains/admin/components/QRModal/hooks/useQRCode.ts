@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { getQRCode } from '@/apis/qr.api';
 
 interface QRCodeData {
   imageUrl: string;
@@ -16,9 +17,8 @@ export const useQRCode = () => {
       setLoading(true);
 
       try {
-        // 나중에 서버랑 동기화 예정
-        // const result = await getQRCode({ organizationId: 1 });
-        setData(null);
+        const result = await getQRCode({ organizationId: '1' });
+        setData(result.data);
       } catch (err) {
         showErrorModal(err, 'QR 코드 조회 실패');
       } finally {
