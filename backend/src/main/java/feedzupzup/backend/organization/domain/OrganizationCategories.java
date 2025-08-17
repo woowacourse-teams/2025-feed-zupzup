@@ -18,15 +18,28 @@ public class OrganizationCategories {
                 mapToOrganizationCategories(categories, organization));
     }
 
-    public static OrganizationCategories createOf(final Set<String> categories, final Organization organization) {
+    private OrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
+        this.organizationCategories = new HashSet<>(organizationCategories);
+    }
+
+    public static OrganizationCategories createOf(
+            final Set<String> categories,
+            final Organization organization
+    ) {
         return new OrganizationCategories(categories, organization);
     }
 
-    private Set<OrganizationCategory> mapToOrganizationCategories(final Set<String> categories, final Organization organization) {
+    public static OrganizationCategories createFromOrganization(final Organization organization) {
+        return new OrganizationCategories(organization.getOrganizationCategories());
+    }
+
+    private Set<OrganizationCategory> mapToOrganizationCategories(final Set<String> categories,
+            final Organization organization) {
         validateCategories(categories);
         return Arrays.stream(Category.values())
                 .map(category ->
-                        new OrganizationCategory(organization, category, categories.contains(category.getKoreanName())))
+                        new OrganizationCategory(organization, category,
+                                categories.contains(category.getKoreanName())))
                 .collect(Collectors.toSet());
     }
 
@@ -41,5 +54,11 @@ public class OrganizationCategories {
 
     public Set<OrganizationCategory> getOrganizationCategories() {
         return Collections.unmodifiableSet(organizationCategories);
+    }
+
+    public Set<OrganizationCategory> getActiveCategories() {
+        return organizationCategories.stream()
+                .filter(OrganizationCategory::isActive)
+                .collect(Collectors.toUnmodifiableSet());
     }
 }
