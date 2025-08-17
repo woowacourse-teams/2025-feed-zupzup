@@ -7,10 +7,12 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 
 export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  ...pluginQuery.configs['flat/recommended'],
   prettierConfig,
   {
     files: ['**/*.ts', '**/*.tsx'],

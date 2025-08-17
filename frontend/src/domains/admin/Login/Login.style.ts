@@ -16,10 +16,10 @@ export const loginForm = (theme: Theme) => css`
   justify-content: start;
   align-items: start;
   gap: 24px;
-  width: calc(100% + ${PAGE_PADDING_PX * 4}px);
+  width: calc(100% + ${PAGE_PADDING_PX}px);
   height: 100%;
-  margin: -${PAGE_PADDING_PX}px;
-  padding: ${PAGE_PADDING_PX * 2}px;
+  margin-bottom: -${PAGE_PADDING_PX}px;
+  padding: ${PAGE_PADDING_PX}px ${PAGE_PADDING_PX / 2}px;
   background-color: ${theme.colors.white[100]};
   border-radius: 16px;
 `;

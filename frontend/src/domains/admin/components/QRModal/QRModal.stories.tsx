@@ -5,7 +5,9 @@ const meta: Meta<typeof QRModal> = {
   title: 'components/QRModal',
   component: QRModal,
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    isOpen: { control: 'boolean' },
+  },
   decorators: [
     (Story) => (
       <div style={{ maxWidth: '200px', height: '80vh' }}>
@@ -21,6 +23,6 @@ type Story = StoryObj<typeof QRModal>;
 
 export const Default: Story = {
   render: () => {
-    return <QRModal />;
+    return <QRModal isOpen={true} onClose={() => {}} />;
   },
 };

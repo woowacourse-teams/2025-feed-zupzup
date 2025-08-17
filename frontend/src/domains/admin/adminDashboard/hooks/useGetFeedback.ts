@@ -35,5 +35,5 @@ export default function useGetFeedback({
         unobserve(observerElement);
       }
     };
-  }, [fetchMore, observe, unobserve]);
+  }, [fetchMore, observe, unobserve, hasNext, loading]);
 }
