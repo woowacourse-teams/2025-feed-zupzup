@@ -1,4 +1,5 @@
 import { apiClient } from '@/apis/apiClient';
+import { AdminAuthData } from '@/types/adminAuth';
 import { ApiResponse } from '@/types/apiResponse';
 
 interface PostAdminLoginParams {
@@ -17,12 +18,6 @@ interface PostAdminSignupParams {
 interface GetAdminAuthProps {
   onSuccess: (response: AdminAuthResponse) => void;
 }
-
-export type AdminAuthData = {
-  loginId: string;
-  adminName: string;
-  adminId: number;
-};
 
 type PostAdminLogoutResponse = ApiResponse<string>;
 export type AdminAuthResponse = ApiResponse<AdminAuthData>;
