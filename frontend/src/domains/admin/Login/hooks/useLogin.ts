@@ -1,4 +1,5 @@
 import { postAdminLogin } from '@/apis/admin.api';
+import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { setLocalStorage } from '@/utils/localStorage';
@@ -23,7 +24,8 @@ export default function useLogin({ loginValue }: UseLoginProps) {
         password: loginValue.password,
         onError: () => {
           showErrorModal(
-            new Error(
+            new ApiError(
+              401,
               '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요'
             ),
             '로그인 요청 실패'
@@ -34,8 +36,8 @@ export default function useLogin({ loginValue }: UseLoginProps) {
           setLocalStorage('auth', data);
         },
       });
-    } catch (error) {
-      showErrorModal(error, '로그인 요청 실패');
+    } catch (error: ApiError | unknown) {
+      showErrorModal(error as ApiError, '로그인 요청 실패');
     }
   };
 
