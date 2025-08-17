@@ -27,7 +27,7 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: ROUTES.USER_DASHBOARD,
+        path: ROUTES.DASHBOARD,
         element: <UserDashboard />,
       },
       {
