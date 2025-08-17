@@ -14,16 +14,16 @@ import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
 
 import useCheerButton from '@/domains/hooks/useCheerButton';
-import { useParams } from 'react-router-dom';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 export default function DashboardOverview() {
-  const { id: organizationId } = useParams();
+  const { organizationId } = useOrganizationId();
   const theme = useAppTheme();
   const { groupName, totalCheeringCount } = useOrganizationName({
-    organizationId: organizationId || '',
+    organizationId,
   });
   const { statistics } = useUserOrganizationsStatistics({
-    organizationId: organizationId || '',
+    organizationId,
   });
 
   const DASH_PANELS = [
@@ -51,7 +51,7 @@ export default function DashboardOverview() {
     },
   ];
   const { handleCheerButton, animate } = useCheerButton({
-    organizationId: organizationId || '',
+    organizationId,
   });
 
   return (
