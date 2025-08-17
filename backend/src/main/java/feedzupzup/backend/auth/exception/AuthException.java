@@ -26,4 +26,22 @@ public class AuthException extends DomainException {
             super(errorCode, message);
         }
     }
+
+    public static final class UnauthorizedException extends AuthException {
+
+        private static final ErrorCode errorCode = ErrorCode.ADMIN_NOT_LOGGED_IN;
+
+        public UnauthorizedException() {
+            super(errorCode, errorCode.getMessage());
+        }
+    }
+
+    public static final class ForbiddenException extends AuthException {
+
+        private static final ErrorCode errorCode = ErrorCode.ACCESS_FORBIDDEN;
+
+        public ForbiddenException(String message) {
+            super(errorCode, message);
+        }
+    }
 }
