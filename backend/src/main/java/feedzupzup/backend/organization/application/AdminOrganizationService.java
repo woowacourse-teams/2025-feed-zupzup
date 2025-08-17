@@ -110,8 +110,6 @@ public class AdminOrganizationService {
                 organizationCategories.getOrganizationCategories(),
                 request.organizationName()
         );
-        return AdminUpdateOrganizationResponse.from(organization);
-
-        // TODO: 연관관계 전이 때문에 반영이 안 될 것이다. 이를 수정해라.
+        return AdminUpdateOrganizationResponse.from(organization, organizationCategories);
     }
 }
