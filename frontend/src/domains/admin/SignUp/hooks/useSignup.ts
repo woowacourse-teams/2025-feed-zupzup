@@ -1,4 +1,5 @@
 import { postAdminSignup } from '@/apis/admin.api';
+import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { setLocalStorage } from '@/utils/localStorage';
@@ -38,14 +39,18 @@ export default function useSignup({
       return;
     }
 
+    const handleError = (error: ApiError) => {
+      showErrorModal(error, '회원가입 요청 실패');
+    };
+
     try {
       await postAdminSignup({
         loginId: signUpValue.id,
         password: signUpValue.password,
         adminName: signUpValue.name,
         onError: () => {
-          showErrorModal(
-            new Error('회원가입에 실패했습니다. 다시 시도해주세요.')
+          handleError(
+            new ApiError(401, '회원가입에 실패했습니다. 다시 시도해주세요.')
           );
         },
         onSuccess: (authData: Response) => {
@@ -54,7 +59,7 @@ export default function useSignup({
         },
       });
     } catch (error) {
-      showErrorModal(error, '회원가입 요청에 실패했습니다. 다시 시도해주세요.');
+      handleError(error as ApiError);
     }
   };
 
