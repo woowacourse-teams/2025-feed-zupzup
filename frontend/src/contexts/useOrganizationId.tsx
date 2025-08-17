@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 interface OrganizationIdContextType {
   organizationId: string;
   setOrganizationId: (id: string) => void;
-  isLoading: boolean; // 로딩 상태 추가
+  isLoading: boolean;
 }
 
 const OrganizationIdContext = createContext<
@@ -25,14 +25,14 @@ export function OrganizationIdProvider({
   children,
 }: OrganizationIdProviderProps) {
   const [organizationId, setOrganizationId] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true); // 초기값을 true로 설정
+  const [isLoading, setIsLoading] = useState(true);
   const params = useParams();
 
   useEffect(() => {
     if (params.id) {
       setOrganizationId(params.id);
     }
-    setIsLoading(false); // params 확인 후 로딩 완료
+    setIsLoading(false);
   }, [params.id]);
 
   return (

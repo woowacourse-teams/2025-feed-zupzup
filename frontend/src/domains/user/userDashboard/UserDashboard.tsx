@@ -51,8 +51,6 @@ export default function UserDashboard() {
     isAdmin: false,
   });
 
-  console.log(apiUrl);
-
   const {
     items: feedbacks,
     fetchMore,

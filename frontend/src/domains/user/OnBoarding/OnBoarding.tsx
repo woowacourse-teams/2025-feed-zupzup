@@ -27,7 +27,6 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const navigate = useNavigate();
   const { organizationId } = useOrganizationId();
 
-  console.log(organizationId);
   const { groupName } = useOrganizationName({ organizationId });
 
   const handleViewSuggestionsClick = () => {
