@@ -60,7 +60,7 @@ export default function SignUp() {
     initValues: { confirmPassword: '', password: signUpValue.password },
   });
 
-  const { handleSignUp } = useSignup({
+  const { handleSignUp, isLoading } = useSignup({
     confirmPasswordErrors,
     errors,
     signUpValue,
@@ -104,7 +104,9 @@ export default function SignUp() {
             );
           })}
         </div>
-        <BasicButton>계정 만들기</BasicButton>
+        <BasicButton disabled={isLoading}>
+          {isLoading ? '가입 중...' : '계정 만들기'}
+        </BasicButton>
         <div css={signUpCaptionContainer(theme)}>
           <p>
             이미 계정이 있으신가요?

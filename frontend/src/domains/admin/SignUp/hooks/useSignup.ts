@@ -3,7 +3,7 @@ import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { setLocalStorage } from '@/utils/localStorage';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface UseSignupProps {
@@ -27,6 +27,7 @@ export default function useSignup({
 }: UseSignupProps) {
   const navigate = useNavigate();
   const { showErrorModal } = useErrorModalContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSignUp = async (event: FormEvent) => {
     event.preventDefault();
@@ -44,6 +45,7 @@ export default function useSignup({
     };
 
     try {
+      setIsLoading(true);
       await postAdminSignup({
         loginId: signUpValue.id,
         password: signUpValue.password,
@@ -60,10 +62,13 @@ export default function useSignup({
       });
     } catch (error) {
       handleError(error as ApiError);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return {
     handleSignUp,
+    isLoading,
   };
 }

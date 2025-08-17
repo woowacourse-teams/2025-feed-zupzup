@@ -35,7 +35,6 @@ export default function useLogin({ loginValue }: UseLoginProps) {
           );
         },
         onSuccess: (response: AdminAuthResponse) => {
-          console.log('로그인 성공', response.data);
           navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
           setLocalStorage('auth', response.data);
         },
