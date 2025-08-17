@@ -77,7 +77,7 @@ public class AdminOrganizationService {
             final Set<String> categories,
             final Organization organization
     ) {
-        final OrganizationCategories organizationCategories = OrganizationCategories.createAndConvert(
+        final OrganizationCategories organizationCategories = OrganizationCategories.createOf(
                 categories, organization);
         organization.addOrganizationCategories(organizationCategories.getOrganizationCategories());
         organizationCategoryRepository.saveAll(organizationCategories.getOrganizationCategories());

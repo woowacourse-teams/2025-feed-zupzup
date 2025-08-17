@@ -37,15 +37,20 @@ public class OrganizationCategory extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(nullable = false)
+    private boolean isActive;
+
     @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 
     public OrganizationCategory(
             final @NonNull Organization organization,
-            final @NonNull Category category
+            final @NonNull Category category,
+            final boolean isActive
     ) {
         this.organization = organization;
         this.category = category;
+        this.isActive = isActive;
     }
 
     public boolean isSameCategory(final Category category) {

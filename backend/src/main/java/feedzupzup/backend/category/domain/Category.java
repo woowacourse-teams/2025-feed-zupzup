@@ -20,14 +20,19 @@ public enum Category {
 
     private final String koreanName;
 
-    public boolean isSameCategory(String value) {
+    public boolean isSameCategory(final String value) {
         return this.koreanName.equals(value);
     }
 
-    public static Category findCategoryBy(String value) {
+    public static Category findCategoryBy(final String value) {
         return Arrays.stream(Category.values())
                 .filter(result -> result.isSameCategory(value))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
+    }
+
+    public static boolean hasCategory(final String value) {
+        return Arrays.stream(Category.values())
+                .anyMatch(category -> category.isSameCategory(value));
     }
 }
