@@ -9,12 +9,10 @@ import { useLogout } from './hooks/useLogout';
 import { useNotificationSetting } from './hooks/useNotificationSetting';
 import { settingsContainer } from './Settings.style';
 
-// CloudFront 캐시 무효화 테스트 - 2025.8.15
 type ModalState = { type: 'logout' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
-
   const {
     isToggleEnabled,
     updateNotificationSetting,
@@ -29,6 +27,11 @@ export default function Settings() {
     setModalState({ type: null });
   };
 
+  const handleToggleClick = () => {
+    clearError();
+    updateNotificationSetting(!isToggleEnabled);
+  };
+
   return (
     <div css={settingsContainer}>
       <ProfileBox name='우아한테크코스' id='woowacourse' />
@@ -40,10 +43,7 @@ export default function Settings() {
         rightElement={
           <BasicToggleButton
             isToggled={isToggleEnabled}
-            onClick={() => {
-              clearError();
-              updateNotificationSetting(!isToggleEnabled);
-            }}
+            onClick={handleToggleClick}
             name='notification-toggle'
             disabled={isLoading || !fcmStatus.isSupported}
           />

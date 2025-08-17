@@ -107,13 +107,17 @@ async function baseClient<Response, RequestBody>({
     'Content-type': 'application/json',
   };
 
-  const fullURL = `${process.env.BASE_URL}${URI}`;
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const baseURL = isDevelopment ? '/api' : process.env.BASE_URL;
+  const fullURL = `${baseURL}${URI}`;
 
   try {
     const response = await fetchWithTimeout(fullURL, {
       method,
       headers,
       body: body ? JSON.stringify(body) : null,
+      credentials: 'include',
+      mode: 'cors',
     });
 
     if (isEmptyResponse(response)) return;
@@ -175,7 +179,6 @@ const fetchWithTimeout = (
   init?: RequestInit,
   timeout = 5000
 ): Promise<Response> => {
-  // 네트워크 오류
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       reject(new Error('요청 시간이 초과되었습니다.'));

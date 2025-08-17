@@ -1,79 +1,103 @@
-// hooks/useNotificationSetting.ts (기존 구조 유지)
-import { useState, useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { NotificationService } from '@/services/notificationService';
 import { useNotifications } from './useNotifications';
 import {
   getNotificationSettings,
   updateNotificationSettings,
 } from '@/apis/notifications.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import { NotificationSettingsResponse } from '@/types/notification.types';
 
 export const useNotificationSetting = () => {
+  const queryClient = useQueryClient();
   const {
     fcmStatus,
     isEnabled: localEnabled,
     updateState,
   } = useNotifications();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [serverEnabled, setServerEnabled] = useState<boolean | null>(null);
+  const { showErrorModal } = useErrorModalContext();
+
+  const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
+    queryKey: QUERY_KEYS.notificationSettings(),
+    queryFn: getNotificationSettings,
+  });
 
   useEffect(() => {
-    const fetchServerState = async () => {
-      try {
-        const response = await getNotificationSettings(3);
-        setServerEnabled(response.data.alertsOn);
+    const alertsOn = serverSettings?.data?.alertsOn;
 
-        if (response.data.alertsOn !== localEnabled) {
-          updateState(response.data.alertsOn);
-        }
-      } catch (error) {
-        console.warn('서버 상태 조회 실패, 로컬 상태 사용:', error);
+    if (alertsOn !== undefined && alertsOn !== localEnabled) {
+      updateState(alertsOn);
+    }
+  }, [serverSettings?.data?.alertsOn, localEnabled]);
+
+  const isToggleEnabled = serverSettings?.data?.alertsOn ?? localEnabled;
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ enabled }: { enabled: boolean }) => {
+      if (enabled) {
+        await NotificationService.enable();
+      } else {
+        await NotificationService.disable();
       }
-    };
 
-    fetchServerState();
-  }, []);
-
-  const isToggleEnabled = serverEnabled !== null ? serverEnabled : localEnabled;
-
-  const toggle = useCallback(
-    async (enabled: boolean) => {
-      if (loading) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        if (enabled) {
-          await NotificationService.enable();
-        } else {
-          await NotificationService.disable();
-        }
-
-        await updateNotificationSettings({ alertsOn: enabled });
-
-        updateState(enabled);
-        setServerEnabled(enabled);
-
-        console.log(`알림이 ${enabled ? '활성화' : '비활성화'}되었습니다.`);
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : '알림 설정 변경에 실패했습니다.';
-        setError(errorMessage);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
+      return updateNotificationSettings({ alertsOn: enabled });
     },
-    [loading, updateState]
-  );
+    onMutate: async ({ enabled }) => {
+      await queryClient.cancelQueries({
+        queryKey: QUERY_KEYS.notificationSettings(),
+      });
+
+      const previousServerData = queryClient.getQueryData(
+        QUERY_KEYS.notificationSettings()
+      );
+      const previousLocalState = localEnabled;
+
+      queryClient.setQueryData(
+        QUERY_KEYS.notificationSettings(),
+        (old: NotificationSettingsResponse) => ({
+          ...old,
+          data: { alertsOn: enabled },
+        })
+      );
+
+      updateState(enabled);
+
+      return { previousServerData, previousLocalState };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousServerData) {
+        queryClient.setQueryData(
+          QUERY_KEYS.notificationSettings(),
+          context.previousServerData
+        );
+      }
+      if (context?.previousLocalState !== undefined) {
+        updateState(context.previousLocalState);
+      }
+
+      showErrorModal('알림 설정 변경에 실패했습니다.', '에러');
+    },
+  });
+
+  const updateNotificationSetting = async (enabled: boolean) => {
+    if (enabled === isToggleEnabled) {
+      return;
+    }
+
+    if (updateMutation.isPending) {
+      return;
+    }
+
+    await updateMutation.mutateAsync({ enabled });
+  };
 
   return {
     isToggleEnabled,
-    isLoading: loading,
-    error,
+    isLoading: isQueryLoading || updateMutation.isPending,
     fcmStatus,
-    updateNotificationSetting: toggle,
-    clearError: () => setError(null),
+    updateNotificationSetting,
+    clearError: () => {},
   };
 };

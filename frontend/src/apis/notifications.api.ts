@@ -16,27 +16,24 @@ export const registerFCMToken = async (
   return response as ApiResponse;
 };
 
-export const getNotificationSettings = async (
-  adminId: number = 3
-): Promise<NotificationSettingsResponse> => {
-  const response = await apiClient.get<NotificationSettingsResponse>(
-    `/admin/notifications/settings?adminId=${adminId}`
-  );
-  return response as NotificationSettingsResponse;
-};
+export const getNotificationSettings =
+  async (): Promise<NotificationSettingsResponse> => {
+    const response = await apiClient.get<NotificationSettingsResponse>(
+      '/admin/notifications/settings'
+    );
+    return response as NotificationSettingsResponse;
+  };
 
 interface UpdateNotificationSettingsParams {
   alertsOn: boolean;
-  adminId?: number;
 }
 
 export const updateNotificationSettings = async ({
   alertsOn,
-  adminId = 3,
 }: UpdateNotificationSettingsParams): Promise<ApiResponse> => {
   const response = await apiClient.patch<
     ApiResponse,
     NotificationSettingRequest
-  >(`/admin/notifications/settings?adminId=${adminId}`, { alertsOn });
+  >('/admin/notifications/settings', { alertsOn });
   return response as ApiResponse;
 };

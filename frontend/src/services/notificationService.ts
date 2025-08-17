@@ -3,18 +3,19 @@ import { messaging } from '@/firebase/messaging';
 import { VAPID_KEY } from '@/firebase/config';
 import {
   registerFCMToken,
-  updateNotificationSettings,
   getNotificationSettings,
 } from '@/apis/notifications.api';
 import {
   setStoredNotificationState,
   isNotificationSupported,
   createNotificationErrorMessage,
+  getStoredFCMToken,
+  setStoredFCMToken,
 } from '@/utils/notificationUtils';
 import type { NotificationServiceResult } from '@/types/notification.types';
 
 export class NotificationService {
-  static async enable(adminId: number = 3): Promise<NotificationServiceResult> {
+  static async enable(): Promise<NotificationServiceResult> {
     try {
       if (!isNotificationSupported()) {
         throw new Error('이 브라우저는 푸시 알림을 지원하지 않습니다.');
@@ -31,29 +32,29 @@ export class NotificationService {
 
       const registration = await this.ensureServiceWorkerRegistration();
 
-      const token = await getToken(messaging, {
-        vapidKey: VAPID_KEY,
-        serviceWorkerRegistration: registration,
-      });
+      const existingToken = getStoredFCMToken();
+      let token = existingToken;
 
-      if (!token) {
-        throw new Error('FCM 토큰 생성에 실패했습니다.');
+      if (!existingToken) {
+        token = await getToken(messaging, {
+          vapidKey: VAPID_KEY,
+          serviceWorkerRegistration: registration,
+        });
+
+        if (!token) {
+          throw new Error('FCM 토큰 생성에 실패했습니다.');
+        }
+
+        await registerFCMToken(token);
+        setStoredFCMToken(token);
       }
-
-      await registerFCMToken(token);
-
-      // adminId 전달
-      await updateNotificationSettings({
-        alertsOn: true,
-        adminId,
-      });
 
       setStoredNotificationState(true);
 
       return {
         success: true,
         message: '알림이 성공적으로 활성화되었습니다.',
-        data: { token, adminId },
+        data: { token },
       };
     } catch (error) {
       console.error('[NotificationService] 활성화 실패:', error);
@@ -64,21 +65,13 @@ export class NotificationService {
     }
   }
 
-  static async disable(
-    adminId: number = 3
-  ): Promise<NotificationServiceResult> {
+  static async disable(): Promise<NotificationServiceResult> {
     try {
-      await updateNotificationSettings({
-        alertsOn: false,
-        adminId,
-      });
-
       setStoredNotificationState(false);
 
       return {
         success: true,
         message: '알림이 비활성화되었습니다.',
-        data: { adminId },
       };
     } catch (error) {
       console.error('[NotificationService] 비활성화 실패:', error);
@@ -89,10 +82,18 @@ export class NotificationService {
     }
   }
 
-  static async getCurrentSettings(adminId: number = 3): Promise<boolean> {
+  static async removeToken(): Promise<void> {
     try {
-      // adminId 전달
-      const response = await getNotificationSettings(adminId);
+      localStorage.removeItem('fcm_token');
+      setStoredNotificationState(false);
+    } catch (error) {
+      console.error('[NotificationService] 토큰 삭제 실패:', error);
+    }
+  }
+
+  static async getCurrentSettings(): Promise<boolean> {
+    try {
+      const response = await getNotificationSettings();
       return response.data.alertsOn;
     } catch (error) {
       console.error('[NotificationService] 설정 조회 실패:', error);
