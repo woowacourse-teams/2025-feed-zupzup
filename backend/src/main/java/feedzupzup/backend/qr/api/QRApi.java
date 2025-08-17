@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public interface QRApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     SuccessResponse<QRResponse> getQR(
             @Parameter(hidden = true)

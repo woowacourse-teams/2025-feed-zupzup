@@ -9,6 +9,7 @@ import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ public interface NotificationApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/admin/notifications/token")
     SuccessResponse<Void> registerNotificationToken(
@@ -42,6 +44,8 @@ public interface NotificationApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/notifications/settings")
     SuccessResponse<AlertsSettingResponse> getAlertsSetting(
             @AdminAuthenticationPrincipal final AdminSession adminSession
@@ -55,6 +59,8 @@ public interface NotificationApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/notifications/settings")
     SuccessResponse<Void> updateAlertsSetting(
             @RequestBody @Valid final UpdateAlertsSettingRequest request,
