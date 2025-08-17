@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: ROUTES.USER_DASHBOARD,
+        path: ROUTES.DASHBOARD,
         element: <UserDashboard />,
       },
       {
@@ -43,25 +43,29 @@ export const router = createBrowserRouter([
         path: ROUTES.SIGN_UP,
         element: <SignUp />,
       },
-    ],
-  },
-  {
-    path: ROUTES.ADMIN,
-    element: (
-      <ProtectedRoute isAuthenticated={isAuthenticated} redirectPath='/login' />
-    ),
-    children: [
+
       {
-        path: ROUTES.ADMIN_HOME,
-        element: <AdminHome />,
-      },
-      {
-        path: ROUTES.ADMIN_DASHBOARD,
-        element: <AdminDashboard />,
-      },
-      {
-        path: ROUTES.ADMIN_SETTINGS,
-        element: <Settings />,
+        path: ROUTES.ADMIN,
+        element: (
+          <ProtectedRoute
+            isAuthenticated={isAuthenticated}
+            redirectPath='/login'
+          />
+        ),
+        children: [
+          {
+            path: ROUTES.ADMIN_HOME,
+            element: <AdminHome />,
+          },
+          {
+            path: ROUTES.DASHBOARD,
+            element: <AdminDashboard />,
+          },
+          {
+            path: ROUTES.ADMIN_SETTINGS,
+            element: <Settings />,
+          },
+        ],
       },
     ],
   },
