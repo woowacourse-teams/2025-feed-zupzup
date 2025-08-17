@@ -4,6 +4,8 @@ import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.exception.UnAuthorizeException;
+import feedzupzup.backend.global.exception.UnAuthorizeException.InvalidAuthorizeException;
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationCategories;
@@ -96,10 +98,9 @@ public class AdminOrganizationService {
         final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
 
-        // TODO : Exception 변경하기
         if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Id(adminId,
                 organization.getId())) {
-            throw new ResourceNotFoundException("해당 단체에 대한 접근 권한이 없습니다.");
+            throw new InvalidAuthorizeException("해당 단체 "+ "id = " + organization.getId() + "에 대한 접근 권한이 없습니다.");
         }
 
         final Set<String> categories = request.categories();
