@@ -2,47 +2,52 @@ import BasicButton from '@/components/BasicButton/BasicButton';
 import { ROUTES } from '@/constants';
 import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/admin/components/FormField/FormField';
+import useAuthForm from '@/domains/admin/hooks/useAuthForm';
 import {
   LoginField,
   loginFields,
 } from '@/domains/admin/Login/constants/loginFields';
+import useLogin from '@/domains/admin/Login/hooks/useLogin';
 import {
   fieldContainer,
   loginCaptionContainer,
   loginForm,
 } from '@/domains/admin/Login/Login.style';
-import useAuthForm from '@/domains/admin/hooks/useAuthForm';
-import { useAppTheme } from '@/hooks/useAppTheme';
 import {
   validateId,
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
+
+const LOGIN_INITIAL_VALUES = {
+  id: '',
+  password: '',
+};
+
+const LOGIN_VALIDATORS = {
+  id: validateId,
+  password: validatePassword,
+};
 
 export default function Login() {
   const theme = useAppTheme();
   const navigate = useNavigate();
-
-  const loginValidators = {
-    id: validateId,
-    password: validatePassword,
-  };
 
   const {
     authValue: loginValue,
     handleChangeForm,
     errors,
   } = useAuthForm({
-    initValues: {
-      id: '',
-      password: '',
-    },
-    validators: loginValidators,
+    initValues: LOGIN_INITIAL_VALUES,
+    validators: LOGIN_VALIDATORS,
   });
+
+  const { handleSubmit } = useLogin({ loginValue });
 
   return (
     <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
-      <form css={loginForm(theme)}>
+      <form css={loginForm(theme)} onSubmit={handleSubmit}>
         <div css={fieldContainer}>
           {loginFields.map((field: LoginField) => (
             <FormField
@@ -64,7 +69,7 @@ export default function Login() {
           <p>비밀번호를 잊으셨나요?</p>
           <p>
             계정이 없으신가요?
-            <strong onClick={() => navigate(ROUTES.SIGN_UP)}>
+            <strong onClick={() => navigate('/' + ROUTES.SIGN_UP)}>
               회원가입하기
             </strong>
           </p>

@@ -38,6 +38,7 @@ const colors = {
   },
 
   red: {
+    50: '#ff9ca1ff',
     100: '#FB2C36',
     200: '#E7000B',
   },

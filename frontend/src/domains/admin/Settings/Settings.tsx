@@ -8,12 +8,14 @@ import SettingListBox from './components/SettingListBox/SettingListBox';
 import { useLogout } from './hooks/useLogout';
 import { useNotificationSetting } from './hooks/useNotificationSetting';
 import { settingsContainer } from './Settings.style';
+import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 
 // CloudFront 캐시 무효화 테스트 - 2025.8.15
 type ModalState = { type: 'logout' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
+  const { adminAuth } = useAdminAuth();
 
   const {
     isToggleEnabled,
@@ -31,7 +33,10 @@ export default function Settings() {
 
   return (
     <div css={settingsContainer}>
-      <ProfileBox name='우아한테크코스' id='woowacourse' />
+      <ProfileBox
+        name={adminAuth?.adminName || '관리자'}
+        id={adminAuth?.loginId || 'admin'}
+      />
 
       <SettingListBox
         icon={<BellOutlineIcon />}
