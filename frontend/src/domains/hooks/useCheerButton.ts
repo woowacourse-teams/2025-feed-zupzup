@@ -2,7 +2,13 @@ import { postOrganizationCheer } from '@/apis/organization.api';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useState } from 'react';
 
-export default function useCheerButton() {
+interface UseCheerButtonProps {
+  organizationId: string;
+}
+
+export default function useCheerButton({
+  organizationId,
+}: UseCheerButtonProps) {
   const [count, setCount] = useState(0);
   const [animate, setAnimate] = useState(false);
 
@@ -16,7 +22,7 @@ export default function useCheerButton() {
   const debouncedSearch = useDebounce(
     ((count: number) => {
       postOrganizationCheer({
-        organizationId: 1,
+        organizationId,
         cheeringCount: count,
       });
       setCount(0);

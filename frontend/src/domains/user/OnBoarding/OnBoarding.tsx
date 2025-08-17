@@ -13,9 +13,10 @@ import {
   skipIcon,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Analytics, onboardingEvents } from '@/analytics';
 import { CategoryType } from '@/analytics/types';
+import { useOrganizationId } from '@/contexts/useOrganizationId';
 
 interface OnBoardingProps {
   onCategoryClick: (newCategory: CategoryType) => void;
@@ -24,14 +25,15 @@ interface OnBoardingProps {
 export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { organizationId } = useOrganizationId();
 
-  const { groupName } = useOrganizationName();
+  console.log(organizationId);
+  const { groupName } = useOrganizationName({ organizationId });
 
   const handleViewSuggestionsClick = () => {
     Analytics.track(onboardingEvents.viewSuggestionsFromOnboarding());
 
-    navigate(`/${id}/dashboard`);
+    navigate(`/${organizationId}/dashboard`);
   };
 
   return (

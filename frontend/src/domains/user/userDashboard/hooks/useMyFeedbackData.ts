@@ -2,8 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { FeedbackType, SortType } from '@/types/feedback.types';
 import { getMyFeedbacks } from '@/apis/userFeedback.api';
 import { getLocalStorage } from '@/utils/localStorage';
+import { useOrganizationId } from '@/contexts/useOrganizationId';
 
 export function useMyFeedbackData(selectedSort: SortType) {
+  const { organizationId } = useOrganizationId();
   const [myFeedbacks, setMyFeedbacks] = useState<FeedbackType[]>([]);
 
   const feedbackIds = useMemo(
@@ -16,7 +18,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
       if (feedbackIds.length === 0) return;
 
       const response = await getMyFeedbacks({
-        organizationId: 1,
+        organizationId,
         feedbackIds,
         orderBy: selectedSort,
       });

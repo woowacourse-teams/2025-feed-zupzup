@@ -14,11 +14,15 @@ import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
 
 import useCheerButton from '@/domains/hooks/useCheerButton';
+import { useOrganizationId } from '@/contexts/useOrganizationId';
 
 export default function DashboardOverview() {
+  const { organizationId } = useOrganizationId();
   const theme = useAppTheme();
-  const { groupName, totalCheeringCount } = useOrganizationName();
-  const { statistics } = useUserOrganizationsStatistics();
+  const { groupName, totalCheeringCount } = useOrganizationName({
+    organizationId,
+  });
+  const { statistics } = useUserOrganizationsStatistics({ organizationId });
 
   const DASH_PANELS = [
     {
@@ -44,7 +48,7 @@ export default function DashboardOverview() {
       color: theme.colors.green[100],
     },
   ];
-  const { handleCheerButton, animate } = useCheerButton();
+  const { handleCheerButton, animate } = useCheerButton({ organizationId });
 
   return (
     <>

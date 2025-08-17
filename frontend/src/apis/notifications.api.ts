@@ -14,7 +14,7 @@ export const registerFCMToken = async (token: string): Promise<ApiResponse> => {
 };
 
 interface UpdateNotificationSettingsParams {
-  organizationId: number;
+  organizationId: string;
   enabled: boolean;
 }
 
