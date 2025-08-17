@@ -12,7 +12,7 @@ interface QRCodeResponse {
 }
 
 interface GetQRCodeParams {
-  organizationId: number;
+  organizationId: string;
 }
 
 export async function getQRCode({ organizationId }: GetQRCodeParams) {
