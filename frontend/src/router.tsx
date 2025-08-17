@@ -1,6 +1,6 @@
 import { ROUTES } from '@/constants/routes';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
-import Login from '@/domains/admin/Login/Logins';
+import Login from '@/domains/admin/Login/Login';
 import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
