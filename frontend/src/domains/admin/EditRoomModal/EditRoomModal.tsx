@@ -9,7 +9,9 @@ import {
   buttonContainer,
 } from '@/domains/admin/EditRoomModal/EditRoomModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
+import useOrganizationName from '@/domains/hooks/useOrganizationName';
 
 interface EditRoomModalProps {
   isOpen: boolean;
@@ -18,21 +20,30 @@ interface EditRoomModalProps {
 
 export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
+  const { groupName, categories } = useOrganizationName();
+
   const [roomName, setRoomName] = useState('');
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
-    useCategorySelection();
+    useCategorySelection({
+      initialCategories: categories,
+    });
+
+  useEffect(() => {
+    if (groupName) {
+      setRoomName(groupName);
+    }
+  }, [groupName]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <section css={editRoomModalContainer}>
         <p css={editRoomModalTitle}>피드백 방 수정하기</p>
-        <p>방 이름</p>
-        <input
-          type='text'
-          value={roomName}
-          onChange={(e) => setRoomName(e.target.value)}
-          placeholder='방 이름을 입력하세요'
+        <RoomNameInput
+          roomName={roomName}
+          onChange={(e) => {
+            setRoomName(e.target.value);
+          }}
         />
         <RoomCategoryList
           selectedCategories={selectedCategories}

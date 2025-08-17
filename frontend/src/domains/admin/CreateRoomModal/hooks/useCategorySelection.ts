@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { CategoryListType } from '@/constants/categoryList';
+import { useState, useCallback, useEffect } from 'react';
+import { CategoryListType, CATEGORY_LIST } from '@/constants/categoryList';
 import { MAX_CATEGORIES } from '@/constants/maxCategories';
 
 export interface SelectedCategoryItem {
@@ -7,10 +7,38 @@ export interface SelectedCategoryItem {
   category: CategoryListType;
 }
 
-export function useCategorySelection() {
+interface UseCategorySelectionProps {
+  initialCategories?: CategoryListType[];
+}
+
+export function useCategorySelection({
+  initialCategories,
+}: UseCategorySelectionProps = {}) {
   const [selectedCategories, setSelectedCategories] = useState<
     SelectedCategoryItem[]
   >([]);
+
+  useEffect(() => {
+    if (initialCategories && initialCategories.length > 0) {
+      const initialSelectedCategories: SelectedCategoryItem[] =
+        initialCategories
+          .map((categoryString) => {
+            const categoryItem = CATEGORY_LIST.find(
+              (item) => item.category === categoryString
+            );
+            if (categoryItem) {
+              return {
+                icon: categoryItem.icon,
+                category: categoryItem.category,
+              };
+            }
+            return null;
+          })
+          .filter((item) => item !== null) as SelectedCategoryItem[];
+
+      setSelectedCategories(initialSelectedCategories);
+    }
+  }, [initialCategories]);
 
   const handleCategoryClick = useCallback(
     (icon: React.ReactNode | string, category: CategoryListType) => {
