@@ -5,7 +5,7 @@ interface PostAdminLoginParams {
   loginId: string;
   password: string;
   onError: () => void;
-  onSuccess: (data: Response) => void;
+  onSuccess: (response: AdminAuthResponse) => void;
 }
 
 interface PostAdminSignupParams {
@@ -13,12 +13,12 @@ interface PostAdminSignupParams {
   password: string;
   adminName: string;
   onError: () => void;
-  onSuccess: (data: Response) => void;
+  onSuccess: (response: AdminAuthResponse) => void;
 }
 
 interface GetAdminAuthProps {
   onError: () => void;
-  onSuccess: (data: AdminAuthData) => void;
+  onSuccess: (response: AdminAuthResponse) => void;
 }
 
 export type AdminAuthData = {
@@ -28,6 +28,7 @@ export type AdminAuthData = {
 };
 
 type PostAdminLogoutResponse = ApiResponse<string>;
+export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 
 export async function postAdminLogin({
   loginId,

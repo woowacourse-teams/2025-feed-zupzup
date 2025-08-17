@@ -1,4 +1,4 @@
-import { postAdminLogin } from '@/apis/admin.api';
+import { AdminAuthResponse, postAdminLogin } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
@@ -34,9 +34,10 @@ export default function useLogin({ loginValue }: UseLoginProps) {
             )
           );
         },
-        onSuccess: (data: Response) => {
+        onSuccess: (response: AdminAuthResponse) => {
+          console.log('로그인 성공', response.data);
           navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
-          setLocalStorage('auth', data);
+          setLocalStorage('auth', response.data);
         },
       });
     } catch (error: ApiError | unknown) {

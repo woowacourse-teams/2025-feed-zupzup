@@ -1,4 +1,4 @@
-import { postAdminSignup } from '@/apis/admin.api';
+import { AdminAuthResponse, postAdminSignup } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
@@ -53,8 +53,8 @@ export default function useSignup({
             new ApiError(401, '회원가입에 실패했습니다. 다시 시도해주세요.')
           );
         },
-        onSuccess: (authData: Response) => {
-          setLocalStorage('auth', authData);
+        onSuccess: (response: AdminAuthResponse) => {
+          setLocalStorage('auth', response.data);
           navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
         },
       });
