@@ -1,4 +1,5 @@
-import 'react'; // 👈 추가
+//@ts-expect-error: react error
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import Toast from './Toast';
 import { useState } from 'react';
