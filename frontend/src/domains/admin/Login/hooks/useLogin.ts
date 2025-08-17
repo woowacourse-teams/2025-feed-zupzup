@@ -16,31 +16,22 @@ export default function useLogin({ loginValue }: UseLoginProps) {
   const navigate = useNavigate();
   const { showErrorModal } = useErrorModalContext();
 
-  const handleError = (error: ApiError) => {
-    showErrorModal(error, '로그인 요청 실패');
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    setLocalStorage('auth', null);
+
     try {
       await postAdminLogin({
         loginId: loginValue.id,
         password: loginValue.password,
-        onError: () => {
-          handleError(
-            new ApiError(
-              401,
-              '로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요'
-            )
-          );
-        },
         onSuccess: (response: AdminAuthResponse) => {
           navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
           setLocalStorage('auth', response.data);
         },
       });
     } catch (error: ApiError | unknown) {
-      handleError(error as ApiError);
+      showErrorModal(error as ApiError, '로그인 요청 실패');
     }
   };
 

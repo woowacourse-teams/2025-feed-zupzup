@@ -4,7 +4,6 @@ import { ApiResponse } from '@/types/apiResponse';
 interface PostAdminLoginParams {
   loginId: string;
   password: string;
-  onError: () => void;
   onSuccess: (response: AdminAuthResponse) => void;
 }
 
@@ -12,12 +11,10 @@ interface PostAdminSignupParams {
   loginId: string;
   password: string;
   adminName: string;
-  onError: () => void;
   onSuccess: (response: AdminAuthResponse) => void;
 }
 
 interface GetAdminAuthProps {
-  onError: () => void;
   onSuccess: (response: AdminAuthResponse) => void;
 }
 
@@ -33,7 +30,6 @@ export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 export async function postAdminLogin({
   loginId,
   password,
-  onError,
   onSuccess,
 }: PostAdminLoginParams) {
   await apiClient.post(
@@ -43,7 +39,6 @@ export async function postAdminLogin({
       password,
     },
     {
-      onError,
       onSuccess,
     }
   );
@@ -59,7 +54,6 @@ export async function postAdminSignup({
   loginId,
   password,
   adminName,
-  onError,
   onSuccess,
 }: PostAdminSignupParams) {
   await apiClient.post(
@@ -70,15 +64,13 @@ export async function postAdminSignup({
       adminName,
     },
     {
-      onError,
       onSuccess,
     }
   );
 }
 
-export async function getAdminAuth({ onError, onSuccess }: GetAdminAuthProps) {
+export async function getAdminAuth({ onSuccess }: GetAdminAuthProps) {
   await apiClient.get('/admin/me', {
-    onError,
     onSuccess,
   });
 }

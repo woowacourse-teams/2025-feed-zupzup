@@ -40,28 +40,19 @@ export default function useSignup({
       return;
     }
 
-    const handleError = (error: ApiError) => {
-      showErrorModal(error, '회원가입 요청 실패');
-    };
-
     try {
       setIsLoading(true);
       await postAdminSignup({
         loginId: signUpValue.id,
         password: signUpValue.password,
         adminName: signUpValue.name,
-        onError: () => {
-          handleError(
-            new ApiError(401, '회원가입에 실패했습니다. 다시 시도해주세요.')
-          );
-        },
         onSuccess: (response: AdminAuthResponse) => {
           setLocalStorage('auth', response.data);
           navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
         },
       });
     } catch (error) {
-      handleError(error as ApiError);
+      showErrorModal(error as ApiError, '회원가입 요청 실패');
     } finally {
       setIsLoading(false);
     }
