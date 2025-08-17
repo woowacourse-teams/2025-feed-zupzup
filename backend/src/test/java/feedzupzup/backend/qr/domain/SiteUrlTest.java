@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = {QRConfiguration.class, SiteUrl.class})
 class SiteUrlTest {
 
-    private static final String BASE_URL = "https://feedzupzup.com";
+    private static final String BASE_URL = "https://test.feedzupzup.com";
 
     @Autowired
     private SiteUrl siteUrl;
