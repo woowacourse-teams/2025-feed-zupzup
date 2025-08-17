@@ -6,6 +6,7 @@ import feedzupzup.backend.global.BaseTimeEntity;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.domain.vo.Name;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -49,7 +50,7 @@ public class Organization extends BaseTimeEntity {
     @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "organization")
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, orphanRemoval = true)
     private final Set<OrganizationCategory> organizationCategories = new HashSet<>();
 
     @Builder
