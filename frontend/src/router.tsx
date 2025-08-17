@@ -4,12 +4,12 @@ import Login from '@/domains/admin/Login/Login';
 import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
+import { getAuthRedirectElement } from '@/utils/authenticated';
 import ProtectedRoute from '@/utils/protectedRoute';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import AdminHome from './domains/admin/AdminHome/AdminHome';
 import Settings from './domains/admin/Settings/Settings';
-import { getAuthRedirectElement, isAuthenticated } from '@/utils/authenticated';
 
 export const router = createBrowserRouter([
   {
@@ -42,12 +42,7 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTES.ADMIN,
-    element: (
-      <ProtectedRoute
-        isAuthenticated={isAuthenticated()}
-        redirectPath='/login'
-      />
-    ),
+    element: <ProtectedRoute redirectPath='/login' />,
     children: [
       {
         path: ROUTES.ADMIN_HOME,

@@ -26,8 +26,8 @@ export default function useLogin({ loginValue }: UseLoginProps) {
         loginId: loginValue.id,
         password: loginValue.password,
         onSuccess: (response: AdminAuthResponse) => {
-          navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
           setLocalStorage('auth', response.data);
+          navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
         },
       });
     } catch (error: ApiError | unknown) {
