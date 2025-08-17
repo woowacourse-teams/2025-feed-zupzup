@@ -97,7 +97,8 @@ public class AdminOrganizationService {
                 .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
 
         // TODO : Exception 변경하기
-        if (organizerRepository.existsOrganizerByAdminIdAndOrganizationId(organization.getId(), adminId)) {
+        if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Id(adminId,
+                organization.getId())) {
             throw new ResourceNotFoundException("해당 단체에 대한 접근 권한이 없습니다.");
         }
 
@@ -110,5 +111,7 @@ public class AdminOrganizationService {
                 request.organizationName()
         );
         return AdminUpdateOrganizationResponse.from(organization);
+
+        // TODO: 연관관계 전이 때문에 반영이 안 될 것이다. 이를 수정해라.
     }
 }
