@@ -21,20 +21,22 @@ export function useCategorySelection({
   useEffect(() => {
     if (!initialCategories || initialCategories.length === 0) return;
 
-    const initialSelectedCategories: SelectedCategoryItem[] = initialCategories
-      .map((categoryString) => {
-        const categoryItem = CATEGORY_LIST.find(
-          (item) => item.category === categoryString
-        );
-        if (categoryItem) {
-          return {
-            icon: categoryItem.icon,
-            category: categoryItem.category,
-          };
-        }
-        return null;
-      })
-      .filter((item) => item !== null) as SelectedCategoryItem[];
+    const initialSelectedCategories: SelectedCategoryItem[] =
+      initialCategories.reduce(
+        (acc: SelectedCategoryItem[], categoryString) => {
+          const categoryItem = CATEGORY_LIST.find(
+            (item) => item.category === categoryString
+          );
+          if (categoryItem) {
+            acc.push({
+              icon: categoryItem.icon,
+              category: categoryItem.category,
+            });
+          }
+          return acc;
+        },
+        []
+      ) as SelectedCategoryItem[];
 
     setSelectedCategories(initialSelectedCategories);
   }, [initialCategories]);
