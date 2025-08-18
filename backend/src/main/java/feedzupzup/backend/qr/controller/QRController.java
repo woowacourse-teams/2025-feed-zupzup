@@ -3,7 +3,8 @@ package feedzupzup.backend.qr.controller;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.qr.api.QRApi;
-import feedzupzup.backend.qr.dto.QRResponse;
+import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
+import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.service.QRService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,15 @@ public class QRController implements QRApi {
             final AdminSession adminSession,
             final UUID organizationUuid
     ) {
-        final QRResponse response = qrService.getQR(organizationUuid);
+        final QRResponse response = qrService.getQRCode(organizationUuid);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    public SuccessResponse<QRDownloadUrlResponse> getQRDownloadUrl(
+            final AdminSession adminSession,
+            final UUID organizationUuid
+    ) {
+        final QRDownloadUrlResponse response = qrService.getDownloadUrl(organizationUuid);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

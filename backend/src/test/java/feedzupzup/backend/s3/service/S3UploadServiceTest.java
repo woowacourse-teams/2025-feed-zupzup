@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import feedzupzup.backend.global.response.ErrorCode;
-import feedzupzup.backend.qr.dto.QRCodeUploadRequest;
+import feedzupzup.backend.qr.dto.request.QRCodeUploadRequest;
 import feedzupzup.backend.s3.config.S3Properties;
 import feedzupzup.backend.s3.exception.S3UploadException;
 import org.junit.jupiter.api.DisplayName;

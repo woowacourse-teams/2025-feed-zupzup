@@ -14,8 +14,8 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.qr.domain.QR;
-import feedzupzup.backend.qr.dto.QRCodeUploadRequest;
-import feedzupzup.backend.qr.dto.QRResponse;
+import feedzupzup.backend.qr.dto.request.QRCodeUploadRequest;
+import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
 import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.UUID;
@@ -57,7 +57,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             qrRepository.save(qr);
 
             // when
-            final QRResponse response = qrService.getQR(organization.getUuid());
+            final QRResponse response = qrService.getQRCode(organization.getUuid());
 
             // then
             assertAll(
@@ -73,7 +73,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             final UUID nonExistentUuid = UUID.randomUUID();
 
             // when & then
-            assertThatThrownBy(() -> qrService.getQR(nonExistentUuid))
+            assertThatThrownBy(() -> qrService.getQRCode(nonExistentUuid))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("해당 ID(id = " + nonExistentUuid + ")인 단체를 찾을 수 없습니다.");
         }
@@ -86,7 +86,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
 
             // when & then
-            assertThatThrownBy(() -> qrService.getQR(organization.getUuid()))
+            assertThatThrownBy(() -> qrService.getQRCode(organization.getUuid()))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessageContaining("해당 ID(id = " + organization.getUuid() + ")인 단체의 QR 코드를 찾을 수 없습니다.");
         }
