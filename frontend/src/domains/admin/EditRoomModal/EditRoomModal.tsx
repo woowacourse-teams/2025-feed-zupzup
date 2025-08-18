@@ -20,7 +20,9 @@ interface EditRoomModalProps {
 
 export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
-  const { groupName, categories } = useOrganizationName();
+  const { groupName, categories } = useOrganizationName({
+    organizationId: '1',
+  });
 
   const [roomName, setRoomName] = useState('');
 

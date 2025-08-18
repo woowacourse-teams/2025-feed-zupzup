@@ -1,4 +1,4 @@
-import { isAuthenticated } from '@/utils/authenticated';
+import { isAuthenticated } from '@/utils/isAuthenticated';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 interface ProtectedRouteProps {

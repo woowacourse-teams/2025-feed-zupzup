@@ -4,7 +4,7 @@ import Login from '@/domains/admin/Login/Login';
 import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
-import AuthRedirectRoute from '@/utils/authenticated';
+import AuthRedirectRoute from '@/utils/isAuthenticated';
 import ProtectedRoute from '@/utils/protectedRoute';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';

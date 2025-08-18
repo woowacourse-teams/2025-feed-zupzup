@@ -1,22 +1,7 @@
 import { ROUTES } from '@/constants';
 import { ADMIN_BASE } from '@/constants/routes';
-import React from 'react';
+import { isAuthenticated } from '@/utils/isAuthenticated';
 import { Navigate } from 'react-router-dom';
-
-export const isAuthenticated = () => {
-  try {
-    const auth = localStorage.getItem('auth');
-    if (!auth) return false;
-
-    const parsedAuth = JSON.parse(auth);
-    return Boolean(
-      parsedAuth?.adminId && parsedAuth?.adminName && parsedAuth?.loginId
-    );
-  } catch {
-    localStorage.removeItem('auth');
-    return false;
-  }
-};
 
 export default function AuthRedirectRoute({
   children,
