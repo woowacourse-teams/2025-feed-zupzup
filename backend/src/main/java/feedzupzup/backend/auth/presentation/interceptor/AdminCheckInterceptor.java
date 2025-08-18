@@ -21,8 +21,8 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
-        AdminSession adminSession = httpSessionManager.getAdminSession(request);
-        Long adminId = adminSession.adminId();
+        final AdminSession adminSession = httpSessionManager.getAdminSession(request);
+        final Long adminId = adminSession.adminId();
 
         if (adminId == null) {
             throw new UnauthorizedException("로그인이 필요합니다.");
