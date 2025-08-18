@@ -17,3 +17,7 @@ export function getLocalStorage<T = string>(key: string): T | null {
 export function setLocalStorage<T = string>(key: string, dataList: T) {
   localStorage.setItem(key, JSON.stringify(dataList));
 }
+
+export function resetLocalStorage(key: string) {
+  localStorage.removeItem(key);
+}

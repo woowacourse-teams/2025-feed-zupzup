@@ -1,16 +1,15 @@
-import App from './App';
+import { ROUTES } from '@/constants/routes';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
-import Login from '@/domains/admin/Login/Logins';
+import Login from '@/domains/admin/Login/Login';
 import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Settings from './domains/admin/Settings/Settings';
-import AdminHome from './domains/admin/AdminHome/AdminHome';
-import { ROUTES } from '@/constants/routes';
+import { getAuthRedirectElement } from '@/utils/authenticated';
 import ProtectedRoute from '@/utils/protectedRoute';
-
-const isAuthenticated = true; // 로그인 api 연결하면서 수정할 예정
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import App from './App';
+import AdminHome from './domains/admin/AdminHome/AdminHome';
+import Settings from './domains/admin/Settings/Settings';
 
 export const router = createBrowserRouter([
   {
@@ -20,12 +19,8 @@ export const router = createBrowserRouter([
       {
         index: true, // "/"에 접근 시
         element: (
-          <Navigate
-            to='/d0b1b979-7ae8-11f0-8408-0242ac120002
-/submit'
-            replace
-          />
-        ), // "/1/submit"로 리다이렉트 (임시 -> 나중에 삭제)
+          <Navigate to='/d0b1b979-7ae8-11f0-8408-0242ac120002/submit' replace />
+        ), // (임시 -> 나중에 삭제)
       },
       {
         path: ROUTES.SUBMIT,
@@ -37,35 +32,29 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.LOGIN,
-        element: <Login />,
+        element: getAuthRedirectElement(<Login />),
       },
       {
         path: ROUTES.SIGN_UP,
-        element: <SignUp />,
+        element: getAuthRedirectElement(<SignUp />),
       },
-
+    ],
+  },
+  {
+    path: ROUTES.ADMIN,
+    element: <ProtectedRoute redirectPath='/login' />,
+    children: [
       {
-        path: ROUTES.ADMIN,
-        element: (
-          <ProtectedRoute
-            isAuthenticated={isAuthenticated}
-            redirectPath='/login'
-          />
-        ),
-        children: [
-          {
-            path: ROUTES.ADMIN_HOME,
-            element: <AdminHome />,
-          },
-          {
-            path: ROUTES.DASHBOARD,
-            element: <AdminDashboard />,
-          },
-          {
-            path: ROUTES.ADMIN_SETTINGS,
-            element: <Settings />,
-          },
-        ],
+        path: ROUTES.ADMIN_HOME,
+        element: <AdminHome />,
+      },
+      {
+        path: ROUTES.DASHBOARD,
+        element: <AdminDashboard />,
+      },
+      {
+        path: ROUTES.ADMIN_SETTINGS,
+        element: <Settings />,
       },
     ],
   },

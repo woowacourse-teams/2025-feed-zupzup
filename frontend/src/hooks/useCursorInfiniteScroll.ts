@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { apiClient } from '@/apis/apiClient';
-import { ApiResponse } from '@/types/notification.types';
+import { ApiResponse } from '@/types/apiResponse';
 
 const DEFAULT_SIZE = 10;
 const MAX_RETRY_COUNT = 3;
