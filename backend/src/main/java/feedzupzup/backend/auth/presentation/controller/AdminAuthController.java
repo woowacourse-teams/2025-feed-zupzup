@@ -29,8 +29,7 @@ public class AdminAuthController implements AdminAuthApi {
     }
 
     @Override
-    public SuccessResponse<LoginResponse> login(final LoginRequest request,
-                                                     final HttpServletRequest httpRequest) {
+    public SuccessResponse<LoginResponse> login(final LoginRequest request, final HttpServletRequest httpRequest) {
         final LoginResponse response = authService.login(request);
         httpSessionManager.createAdminSession(httpRequest, response.adminId());
         return SuccessResponse.success(HttpStatus.OK, response);

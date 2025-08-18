@@ -13,7 +13,7 @@ public class AuthException extends DomainException {
 
         private static final ErrorCode errorCode = ErrorCode.INVALID_LOGIN_CREDENTIALS;
 
-        public InvalidPasswordException(String message) {
+        public InvalidPasswordException(final String message) {
             super(errorCode, message);
         }
     }
@@ -22,7 +22,25 @@ public class AuthException extends DomainException {
 
         private static final ErrorCode errorCode = ErrorCode.DUPLICATE_LOGIN_ID;
 
-        public DuplicateLoginIdException(String message) {
+        public DuplicateLoginIdException(final String message) {
+            super(errorCode, message);
+        }
+    }
+
+    public static final class UnauthorizedException extends AuthException {
+
+        private static final ErrorCode errorCode = ErrorCode.ADMIN_NOT_LOGGED_IN;
+
+        public UnauthorizedException(final String message) {
+            super(errorCode, message);
+        }
+    }
+
+    public static final class ForbiddenException extends AuthException {
+
+        private static final ErrorCode errorCode = ErrorCode.ACCESS_FORBIDDEN;
+
+        public ForbiddenException(final String message) {
             super(errorCode, message);
         }
     }
