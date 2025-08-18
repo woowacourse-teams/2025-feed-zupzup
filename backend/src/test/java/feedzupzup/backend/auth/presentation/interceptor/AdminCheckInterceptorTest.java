@@ -2,11 +2,14 @@ package feedzupzup.backend.auth.presentation.interceptor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
+import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -30,7 +33,7 @@ class AdminCheckInterceptorTest {
     private HttpServletResponse response;
 
     @Mock
-    private HttpSession session;
+    private HttpSessionManager httpSessionManager;
 
     @InjectMocks
     private AdminCheckInterceptor adminCheckInterceptor;
@@ -39,8 +42,7 @@ class AdminCheckInterceptorTest {
     @DisplayName("세션에 adminId가 없으면 UnauthorizedException이 발생한다")
     void preHandle_NoAdminIdInSession() {
         // Given
-        given(request.getSession()).willReturn(session);
-        given(session.getAttribute("adminId")).willReturn(null);
+        given(httpSessionManager.getAdminSession(any())).willReturn(new AdminSession(null));
 
         // When & Then
         assertThatThrownBy(() -> adminCheckInterceptor.preHandle(request, response, new Object()))
@@ -52,8 +54,7 @@ class AdminCheckInterceptorTest {
     void preHandle_AdminNotExists() {
         // Given
         Long adminId = 1L;
-        given(request.getSession()).willReturn(session);
-        given(session.getAttribute("adminId")).willReturn(adminId);
+        given(httpSessionManager.getAdminSession(any())).willReturn(new AdminSession(adminId));
         given(adminRepository.existsById(adminId)).willReturn(false);
 
         // When & Then
@@ -67,8 +68,7 @@ class AdminCheckInterceptorTest {
     void preHandle_Success() {
         // Given
         Long adminId = 1L;
-        given(request.getSession()).willReturn(session);
-        given(session.getAttribute("adminId")).willReturn(adminId);
+        given(httpSessionManager.getAdminSession(any())).willReturn(new AdminSession(adminId));
         given(adminRepository.existsById(adminId)).willReturn(true);
 
         // When
