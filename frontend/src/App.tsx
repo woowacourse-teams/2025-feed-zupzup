@@ -6,6 +6,7 @@ import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
+import { ModalProvider } from './contexts/useModal';
 
 const gaId = process.env.GA_ID;
 
@@ -31,21 +32,23 @@ function AppContent() {
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
 
   return (
-    <div css={appContainer(isShowHeader)}>
-      {isShowHeader && <Header />}
-      <main css={main}>
-        <Outlet />
-      </main>
-      {isShowBottomNav && <BottomNavigation />}
-      {isError && (
-        <AlertModal
-          onClose={setErrorFalse}
-          isOpen={isError}
-          title={title}
-          message={message}
-        />
-      )}
-    </div>
+    <ModalProvider>
+      <div css={appContainer(isShowHeader)}>
+        {isShowHeader && <Header />}
+        <main css={main}>
+          <Outlet />
+        </main>
+        {isShowBottomNav && <BottomNavigation />}
+        {isError && (
+          <AlertModal
+            onClose={setErrorFalse}
+            isOpen={isError}
+            title={title}
+            message={message}
+          />
+        )}
+      </div>
+    </ModalProvider>
   );
 }
 
