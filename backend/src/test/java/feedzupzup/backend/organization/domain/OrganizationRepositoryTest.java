@@ -63,9 +63,9 @@ class OrganizationRepositoryTest extends RepositoryHelper {
             organizerRepository.save(new Organizer(organization2, admin, OrganizerRole.OWNER));
 
             organizationCategory1 = organizationCategoryRepository.save(
-                    new OrganizationCategory(organization1, Category.ETC));
+                    new OrganizationCategory(organization1, Category.ETC, true));
             organizationCategory2 = organizationCategoryRepository.save(
-                    new OrganizationCategory(organization2, Category.ETC));
+                    new OrganizationCategory(organization2, Category.ETC, true));
         }
 
         @Test

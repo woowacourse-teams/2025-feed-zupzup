@@ -2,25 +2,26 @@ package feedzupzup.backend.organization.dto.response;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.organization.domain.OrganizationCategories;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Schema(description = "단체 조회 응답")
-public record UserOrganizationResponse(
-        @Schema(description = "단체 이름", example = "우아한테크코스")
-        String organizationName,
-        @Schema(description = "응원 총 횟수", example = "10")
-        int totalCheeringCount,
-        @Schema(description = "카테고리 리스트", example = "[\"건의\", \"신고\", \"기타\"]")
-        Set<String> categories
+@Schema(description = "단체 수정 응답")
+public record AdminUpdateOrganizationResponse(
+        @Schema(description = "수정된 단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
+        String organizationUuid,
+
+        @Schema(description = "수정된 단체 이름", example = "우아한테크코스")
+        String updateName,
+
+        @Schema(description = "수정된 카테고리", example = "[\"건의\", \"신고\"]")
+        Set<String> updateCategories
 ) {
 
-    public static UserOrganizationResponse from(final Organization organization) {
-        return new UserOrganizationResponse(
+    public static AdminUpdateOrganizationResponse from(final Organization organization) {
+        return new AdminUpdateOrganizationResponse(
+                organization.getUuid().toString(),
                 organization.getName().getValue(),
-                organization.getCheeringCountValue(),
                 convertCategories(organization.getOrganizationCategories().getActiveCategories())
         );
     }

@@ -7,9 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
 import java.util.UUID;
 
-@Schema(description = "조직 저장 요청")
+@Schema(description = "단체 저장 요청")
 public record CreateOrganizationRequest(
-        @Schema(description = "조직 이름", example = "우아한테크코스")
+        @Schema(description = "단체 이름", example = "우아한테크코스")
         String organizationName,
 
         @Schema(description = "카테고리 리스트", example = "[\"건의\", \"신고\"]")

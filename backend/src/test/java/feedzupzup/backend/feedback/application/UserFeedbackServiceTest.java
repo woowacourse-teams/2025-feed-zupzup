@@ -25,6 +25,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -62,7 +63,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         //given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
-        final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION);
+        final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION, true);
         organizationCategoryRepository.save(organizationCategory);
 
         final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "건의");

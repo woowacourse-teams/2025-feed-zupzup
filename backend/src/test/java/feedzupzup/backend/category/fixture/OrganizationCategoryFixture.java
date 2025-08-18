@@ -9,11 +9,11 @@ public class OrganizationCategoryFixture {
     public static OrganizationCategory createOrganizationCategory(
             final Organization organization,
             final Category category) {
-        return new OrganizationCategory(organization, category);
+        return new OrganizationCategory(organization, category, true);
     }
 
     public static OrganizationCategory createOrganizationCategory(Organization organization) {
-        return new OrganizationCategory(organization, Category.ETC);
+        return new OrganizationCategory(organization, Category.ETC, true);
     }
 
 }
