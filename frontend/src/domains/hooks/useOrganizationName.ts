@@ -1,4 +1,5 @@
 import { getOrganizationName } from '@/apis/organization.api';
+import { CategoryListType } from '@/constants/categoryList';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useEffect, useState } from 'react';
 
@@ -11,6 +12,7 @@ export default function useOrganizationName({
 }: UseOrganizationNameProps) {
   const [groupName, setGroupName] = useState('피드줍줍');
   const [totalCheeringCount, setTotalCheeringCount] = useState(0);
+  const [categories, setCategories] = useState<CategoryListType[]>([]);
   const { showErrorModal } = useErrorModalContext();
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export default function useOrganizationName({
         const response = await getOrganizationName({ organizationId });
         setGroupName(response!.data.organizationName);
         setTotalCheeringCount(response!.data.totalCheeringCount);
+        setCategories(response!.data.categories);
       } catch (e) {
         showErrorModal(e, '에러');
       }
@@ -27,5 +30,5 @@ export default function useOrganizationName({
     getOrganization();
   }, []);
 
-  return { groupName, totalCheeringCount };
+  return { groupName, totalCheeringCount, categories };
 }
