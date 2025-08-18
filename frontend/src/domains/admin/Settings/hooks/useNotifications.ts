@@ -67,7 +67,7 @@ export const useNotifications = () => {
   const fcmStatus: FCMStatus = {
     isSupported,
     permission,
-    hasToken: !!getStoredFCMToken(),
+    hasToken: getStoredFCMToken() !== null,
   };
 
   return {
