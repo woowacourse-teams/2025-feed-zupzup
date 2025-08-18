@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Tag(name = "QR", description = "관리자 QR API")
+@SecurityRequirement(name = "SessionAuth")
 public interface QRApi {
 
     @Operation(summary = "QR 조회", description = "QR 조회 (관리자 전용)")
