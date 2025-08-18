@@ -28,15 +28,15 @@ export const useNotificationSetting = () => {
     queryFn: getNotificationSettings,
   });
 
-  useEffect(() => {
-    const alertsOn = serverSettings?.data?.alertsOn;
+  const alertsOn = serverSettings?.data?.alertsOn;
 
+  useEffect(() => {
     if (alertsOn !== undefined && alertsOn !== localEnabled) {
       updateState(alertsOn);
     }
-  }, [serverSettings?.data?.alertsOn, localEnabled]);
+  }, [alertsOn, localEnabled]);
 
-  const isToggleEnabled = serverSettings?.data?.alertsOn ?? localEnabled;
+  const isToggleEnabled = alertsOn ?? localEnabled;
 
   const updateMutation = useMutation({
     mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {
