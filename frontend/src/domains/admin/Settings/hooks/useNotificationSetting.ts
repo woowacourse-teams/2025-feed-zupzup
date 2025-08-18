@@ -1,52 +1,106 @@
-import { useState, useCallback } from 'react';
+import { useEffect } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { NotificationService } from '@/services/notificationService';
 import { useNotifications } from './useNotifications';
+import {
+  getNotificationSettings,
+  patchNotificationSettings,
+} from '@/apis/notifications.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import { NotificationSettingsResponse } from '@/types/notification.types';
 
-export const useNotificationSetting = (organizationId: number = 1) => {
-  const { fcmStatus, isEnabled, updateState } =
-    useNotifications(organizationId);
+interface UpdateNotificationSettingParams {
+  enabled: boolean;
+}
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const useNotificationSetting = () => {
+  const queryClient = useQueryClient();
+  const {
+    fcmStatus,
+    isEnabled: localEnabled,
+    updateState,
+  } = useNotifications();
+  const { showErrorModal } = useErrorModalContext();
 
-  const toggle = useCallback(
-    async (enabled: boolean) => {
-      if (loading) return;
+  const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
+    queryKey: QUERY_KEYS.notificationSettings(),
+    queryFn: getNotificationSettings,
+  });
 
-      setLoading(true);
-      setError(null);
+  useEffect(() => {
+    const alertsOn = serverSettings?.data?.alertsOn;
 
-      try {
-        if (enabled) {
-          await NotificationService.enable(organizationId);
-        } else {
-          await NotificationService.disable(organizationId);
-        }
+    if (alertsOn !== undefined && alertsOn !== localEnabled) {
+      updateState(alertsOn);
+    }
+  }, [serverSettings?.data?.alertsOn, localEnabled]);
 
-        updateState(enabled);
-        console.log(
-          `[FCM] 알림이 ${enabled ? '활성화' : '비활성화'}되었습니다.`
-        );
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : '알림 설정 변경에 실패했습니다.';
-        setError(errorMessage);
-        updateState(!enabled);
-        throw err;
-      } finally {
-        setLoading(false);
+  const isToggleEnabled = serverSettings?.data?.alertsOn ?? localEnabled;
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {
+      if (enabled) {
+        await NotificationService.enable();
+      } else {
+        await NotificationService.disable();
       }
+
+      return patchNotificationSettings({ alertsOn: enabled });
     },
-    [loading, organizationId, updateState]
-  );
+    onMutate: async ({ enabled }: UpdateNotificationSettingParams) => {
+      await queryClient.cancelQueries({
+        queryKey: QUERY_KEYS.notificationSettings(),
+      });
+
+      const previousServerData = queryClient.getQueryData(
+        QUERY_KEYS.notificationSettings()
+      );
+      const previousLocalState = localEnabled;
+
+      queryClient.setQueryData(
+        QUERY_KEYS.notificationSettings(),
+        (old: NotificationSettingsResponse) => ({
+          ...old,
+          data: { alertsOn: enabled },
+        })
+      );
+
+      updateState(enabled);
+
+      return { previousServerData, previousLocalState };
+    },
+    onError: (_, __, context) => {
+      if (context?.previousServerData) {
+        queryClient.setQueryData(
+          QUERY_KEYS.notificationSettings(),
+          context.previousServerData
+        );
+      }
+      if (context?.previousLocalState !== undefined) {
+        updateState(context.previousLocalState);
+      }
+
+      showErrorModal('알림 설정 변경에 실패했습니다.', '에러');
+    },
+  });
+
+  const updateNotificationSetting = async (enabled: boolean) => {
+    if (enabled === isToggleEnabled) {
+      return;
+    }
+
+    if (updateMutation.isPending) {
+      return;
+    }
+
+    await updateMutation.mutateAsync({ enabled });
+  };
 
   return {
-    isToggleEnabled: isEnabled,
-    isLoading: loading,
-    error,
+    isToggleEnabled,
+    isLoading: isQueryLoading || updateMutation.isPending,
     fcmStatus,
-
-    updateNotificationSetting: toggle,
-    clearError: () => setError(null),
+    updateNotificationSetting,
   };
 };

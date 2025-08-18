@@ -11,7 +11,7 @@ interface FeedbackSubmitParams {
   userName: string;
   isSecret: boolean;
   category: CategoryType | null;
-  organizationId?: number;
+  organizationId: string;
 }
 
 export default function useFeedbackSubmit() {
@@ -24,7 +24,7 @@ export default function useFeedbackSubmit() {
       userName,
       isSecret,
       category,
-      organizationId = 1,
+      organizationId,
     }: FeedbackSubmitParams) => {
       if (submitStatus === 'submitting') return;
 

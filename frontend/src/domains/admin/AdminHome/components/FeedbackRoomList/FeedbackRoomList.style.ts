@@ -5,4 +5,5 @@ export const feedbackList = css`
   flex-direction: column;
   gap: 20px;
   width: 100%;
+  min-height: calc(100% - 100px);
 `;

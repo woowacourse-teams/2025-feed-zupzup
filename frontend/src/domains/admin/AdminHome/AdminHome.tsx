@@ -1,4 +1,5 @@
 import PlusIcon from '@/components/icons/PlusIcon';
+import { useModalContext } from '@/contexts/useModal';
 import {
   addFeedbackRoom,
   feedbackListContainer,
@@ -9,8 +10,11 @@ import {
 } from '@/domains/admin/AdminHome/AdminHome.style';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import FeedbackRoomList from '@/domains/admin/AdminHome/components/FeedbackRoomList/FeedbackRoomList';
+import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { AdminAuthData } from '@/types/adminAuth';
+import { getLocalStorage } from '@/utils/localStorage';
 
 const ADMIN = '관리자1';
 const COMPLETED_COUNT = 17;
@@ -18,10 +22,18 @@ const TOTAL_COUNT = 29;
 
 export default function AdminHome() {
   const theme = useAppTheme();
+  const adminName = getLocalStorage<AdminAuthData>('auth')?.adminName || ADMIN;
+
+  const { openModal, closeModal, isOpen } = useModalContext();
+
+  const handleRoomInfoEditClick = () => {
+    openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
+  };
+
   return (
     <div css={homeLayout}>
       <AdminHomeHeader
-        adminName={ADMIN}
+        adminName={adminName}
         completedCount={COMPLETED_COUNT}
         totalCount={TOTAL_COUNT}
       />
@@ -30,15 +42,15 @@ export default function AdminHome() {
           <p css={listTitle(theme)}>피드백 방 목록</p>
           <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
         </div>
-
         <FeedbackRoomList />
+
+        <FloatingButton
+          icon={<PlusIcon color='white' width='24' height='24' />}
+          onClick={handleRoomInfoEditClick}
+          inset={{ bottom: '80px', left: '100%' }}
+          customCSS={addFeedbackRoom(theme)}
+        />
       </div>
-      <FloatingButton
-        icon={<PlusIcon color='white' width='24' height='24' />}
-        onClick={() => window.alert('피드백 방 추가')}
-        inset={{ bottom: '80px', left: '100%' }}
-        customCSS={addFeedbackRoom(theme)}
-      />
     </div>
   );
 }

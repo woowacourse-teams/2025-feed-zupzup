@@ -15,6 +15,7 @@ export const homeLayout = css`
 
 export const feedbackListContainer = (theme: Theme) => css`
   width: calc(100% + ${PAGE_PADDING_PX}px);
+  height: 100vh;
   min-height: calc(100% - ${PAGE_PADDING_PX}px);
   margin-top: 160px;
   background-color: ${theme.colors.white[100]};

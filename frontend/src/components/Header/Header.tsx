@@ -10,24 +10,24 @@ import {
   moreMenu,
   moreMenuContainer,
 } from './Header.style';
-import { useLocation } from 'react-router-dom';
+
 import Button from '../@commons/Button/Button';
-import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
+
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
 import { useNavigate } from 'react-router-dom';
 import MoreMenu from '@/components/Header/MoreMenu/MoreMenu';
 import useMoreMenuManager from '@/components/Header/hooks/useMoreMenuManager';
+import { useLayoutConfig } from '@/hooks/useLayoutConfig';
 
 export default function Header() {
-  const location = useLocation();
   const theme = useAppTheme();
   const navigate = useNavigate();
+  const { layoutConfig } = useLayoutConfig();
 
   const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu } =
     useMoreMenuManager();
 
-  const { title, subtitle, hasMoreIcon, showBackButton } =
-    LAYOUT_CONFIGS[location.pathname].header;
+  const { title, subtitle, hasMoreIcon, showBackButton } = layoutConfig.header;
 
   const handleBackButtonClick = () => {
     navigate(-1);

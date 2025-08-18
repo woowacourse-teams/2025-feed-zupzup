@@ -5,16 +5,16 @@ import {
 } from '@/types/organization.types';
 
 interface PostOrganizationCheerParams {
-  organizationId: number;
+  organizationId: string;
   cheeringCount: number;
 }
 
 interface GetOrganizationNameParams {
-  organizationId: number;
+  organizationId: string;
 }
 
 interface GetOrganizationStatistic {
-  organizationId: number;
+  organizationId: string;
 }
 
 export async function getOrganizationName({
