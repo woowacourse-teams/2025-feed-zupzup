@@ -15,8 +15,10 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.dto.request.QRCodeUploadRequest;
+import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
 import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
+import feedzupzup.backend.s3.service.S3PresignedDownloadService;
 import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +43,9 @@ class QRServiceTest extends ServiceIntegrationHelper {
 
     @MockitoBean
     private S3UploadService s3UploadService;
+
+    @MockitoBean
+    private S3PresignedDownloadService s3PresignedDownloadService;
 
     @Nested
     @DisplayName("QR 조회 테스트")
@@ -147,6 +152,57 @@ class QRServiceTest extends ServiceIntegrationHelper {
             assertThatThrownBy(() -> qrService.create(organization.getUuid()))
                     .isInstanceOf(ResourceExistsException.class)
                     .hasMessageContaining("해당 ID(id = " + organization.getUuid() + ")인 단체의 QR 코드는 이미 존재합니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("QR 다운로드 URL 생성 테스트")
+    class GetDownloadUrlTest {
+
+        @Test
+        @DisplayName("유효한 조직 UUID로 다운로드 URL을 성공적으로 생성한다")
+        void getDownloadUrl_success() {
+            // given
+            final Organization organization = OrganizationFixture.createByName("테스트조직");
+            organizationRepository.save(organization);
+
+            final QR qr = new QR("https://s3.amazonaws.com/bucket/qr-image.png", organization);
+            qrRepository.save(qr);
+
+            final String mockDownloadUrl = "https://s3.amazonaws.com/bucket/presigned-download-url";
+            when(s3PresignedDownloadService.generateDownloadUrlFromImageUrl(anyString(), anyString()))
+                    .thenReturn(mockDownloadUrl);
+
+            // when
+            final QRDownloadUrlResponse response = qrService.getDownloadUrl(organization.getUuid());
+
+            // then
+            assertThat(response.downloadUrl()).isEqualTo(mockDownloadUrl);
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 조직 UUID로 다운로드 URL 생성 시 예외가 발생한다")
+        void getDownloadUrl_organization_not_found() {
+            // given
+            final UUID nonExistentUuid = UUID.randomUUID();
+
+            // when & then
+            assertThatThrownBy(() -> qrService.getDownloadUrl(nonExistentUuid))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("해당 ID(id = " + nonExistentUuid + ")인 단체를 찾을 수 없습니다.");
+        }
+
+        @Test
+        @DisplayName("조직은 존재하지만 QR이 없을 때 다운로드 URL 생성 시 예외가 발생한다")
+        void getDownloadUrl_qr_not_found() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            // when & then
+            assertThatThrownBy(() -> qrService.getDownloadUrl(organization.getUuid()))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("해당 ID(id = " + organization.getUuid() + ")인 단체의 QR 코드를 찾을 수 없습니다.");
         }
     }
 }

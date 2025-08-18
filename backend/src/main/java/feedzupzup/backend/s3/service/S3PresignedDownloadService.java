@@ -1,6 +1,7 @@
 package feedzupzup.backend.s3.service;
 
 import feedzupzup.backend.s3.config.S3Properties;
+import feedzupzup.backend.s3.exception.S3PresignedException;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,9 @@ public class S3PresignedDownloadService {
                     .url()
                     .toExternalForm();
         } catch (final S3Exception e) {
-            throw new RuntimeException("S3 서버 오류로 파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
+            throw new S3PresignedException("S3 서버 오류로 파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
         } catch (final SdkClientException e) {
-            throw new RuntimeException("클라이언트 오류로 파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
+            throw new S3PresignedException("클라이언트 오류로 파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
         }
     }
 

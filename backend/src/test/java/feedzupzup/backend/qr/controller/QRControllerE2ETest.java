@@ -128,4 +128,44 @@ class QRControllerE2ETest extends E2EHelper {
                     .contentType(ContentType.JSON);
         }
     }
+
+    @Nested
+    @DisplayName("QR 다운로드 URL 조회 테스트")
+    class GetQRDownloadUrlTest {
+
+        @Test
+        @DisplayName("존재하지 않는 조직 UUID로 QR 다운로드 URL 조회 시 404 에러를 반환한다")
+        void getQRDownloadUrl_organization_not_found() {
+            // given
+            final UUID nonExistentOrganizationUuid = UUID.randomUUID();
+
+            // when & then
+            given()
+                    .log().all()
+                    .cookie(SESSION_ID, sessionCookie)
+                    .when()
+                    .get("/admin/organizations/{organizationUuid}/qr-code/download-url", nonExistentOrganizationUuid)
+                    .then().log().all()
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .contentType(ContentType.JSON);
+        }
+
+        @Test
+        @DisplayName("조직은 존재하지만 QR이 없을 때 다운로드 URL 조회 시 404 에러를 반환한다")
+        void getQRDownloadUrl_qr_not_found() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            final Organization savedOrganization = organizationRepository.save(organization);
+
+            // when & then
+            given()
+                    .log().all()
+                    .cookie(SESSION_ID, sessionCookie)
+                    .when()
+                    .get("/admin/organizations/{organizationUuid}/qr-code/download-url", savedOrganization.getUuid())
+                    .then().log().all()
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .contentType(ContentType.JSON);
+        }
+    }
 }
