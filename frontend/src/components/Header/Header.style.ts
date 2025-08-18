@@ -29,14 +29,13 @@ export const headerSection = css`
 `;
 
 export const headerTitle = (theme: Theme) => css`
-  font-size: 14px;
-  color: ${theme.colors.white[100]};
-  ${theme.typography.BMHANNAPro.small}
+  color: ${theme.colors.black[100]};
+  ${theme.typography.BMHANNAPro.bodyBold}
 `;
 
 export const headerSubtitle = (theme: Theme) => css`
-  color: ${theme.colors.gray[200]};
-  ${theme.typography.pretendard.captionSmall}
+  color: ${theme.colors.gray[400]};
+  ${theme.typography.pretendard.caption}
 `;
 
 export const captionSection = css`
