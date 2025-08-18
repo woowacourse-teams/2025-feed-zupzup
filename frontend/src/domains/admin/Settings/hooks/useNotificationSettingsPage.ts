@@ -1,16 +1,12 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNotifications } from './useNotifications';
-import { useUpdateNotificationSetting } from './useUpdateNotificationSetting';
+import { useFCMManager } from './useFCMManager';
+import { useNotificationSettingMutation } from './useNotificationSettingMutation';
 import { getNotificationSettings } from '@/apis/notifications.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 
-export const useNotificationSetting = () => {
-  const {
-    fcmStatus,
-    isEnabled: localEnabled,
-    updateState,
-  } = useNotifications();
+export const useNotificationSettingsPage = () => {
+  const { fcmStatus, isEnabled: localEnabled, updateState } = useFCMManager();
 
   const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
     queryKey: QUERY_KEYS.notificationSettings(),
@@ -27,7 +23,7 @@ export const useNotificationSetting = () => {
 
   const isToggleEnabled = alertsOn ?? localEnabled;
 
-  const updateMutation = useUpdateNotificationSetting({
+  const updateMutation = useNotificationSettingMutation({
     localEnabled,
     updateState,
   });

@@ -9,15 +9,15 @@ interface UpdateNotificationSettingParams {
   enabled: boolean;
 }
 
-interface UseUpdateNotificationSettingProps {
+interface UseNotificationSettingMutationProps {
   localEnabled: boolean;
   updateState: (enabled: boolean) => void;
 }
 
-export const useUpdateNotificationSetting = ({
+export const useNotificationSettingMutation = ({
   localEnabled,
   updateState,
-}: UseUpdateNotificationSettingProps) => {
+}: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
   const { showErrorModal } = useErrorModalContext();
 

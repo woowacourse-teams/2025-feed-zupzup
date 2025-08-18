@@ -6,7 +6,7 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
 import { useLogout } from './hooks/useLogout';
-import { useNotificationSetting } from './hooks/useNotificationSetting';
+import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage';
 import { settingsContainer } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 
@@ -15,7 +15,7 @@ type ModalState = { type: 'logout' } | { type: null };
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
-    useNotificationSetting();
+    useNotificationSettingsPage();
   const { adminAuth } = useAdminAuth();
   const { handleLogout } = useLogout();
 
