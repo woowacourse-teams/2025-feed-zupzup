@@ -65,24 +65,16 @@ export class NotificationService {
     }
   }
 
-  static async disable(): Promise<NotificationServiceResult> {
-    try {
-      setStoredNotificationState(false);
+  static disable(): NotificationServiceResult {
+    setStoredNotificationState(false);
 
-      return {
-        success: true,
-        message: '알림이 비활성화되었습니다.',
-      };
-    } catch (error) {
-      console.error('[NotificationService] 비활성화 실패:', error);
-
-      setStoredNotificationState(true);
-
-      throw new Error('알림 비활성화에 실패했습니다.');
-    }
+    return {
+      success: true,
+      message: '알림이 비활성화되었습니다.',
+    };
   }
 
-  static async removeToken(): Promise<void> {
+  static removeToken(): void {
     try {
       localStorage.removeItem('fcm_token');
       setStoredNotificationState(false);
