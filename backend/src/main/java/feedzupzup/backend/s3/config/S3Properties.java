@@ -6,8 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record S3Properties(
         String region,
         String bucketName,
-        String environment,
         String rootDirName,
+        String environmentDir,
         int signatureDuration
 ) {
 

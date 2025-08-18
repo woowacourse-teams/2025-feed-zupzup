@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Name {
 
-    private static final int MAX_LENGTH = 10;
+    private static final int MAX_LENGTH = 20;
 
     @Column(name = "name")
     private String value;
@@ -22,7 +22,7 @@ public class Name {
         this.value = value;
     }
 
-    public void validateLength(String value) {
+    public void validateLength(final String value) {
         if (value.length() > MAX_LENGTH) {
             throw new OrganizationLengthException(
                     "organization name length은 " + MAX_LENGTH + "를 초과할 수 없습니다.");

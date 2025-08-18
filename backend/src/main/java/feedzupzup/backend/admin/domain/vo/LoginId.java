@@ -1,14 +1,8 @@
 package feedzupzup.backend.admin.domain.vo;
 
 import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminIdException;
-import feedzupzup.backend.auth.exception.AuthException;
-import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import java.util.regex.Pattern;
 
 @Embeddable
