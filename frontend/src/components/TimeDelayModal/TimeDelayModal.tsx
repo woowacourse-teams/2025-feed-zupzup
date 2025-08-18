@@ -78,6 +78,8 @@ export default function TimeDelayModal({
     );
   };
 
+  if (!isOpen) return null;
+
   return (
     <Modal
       isOpen={isOpen}

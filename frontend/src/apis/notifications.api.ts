@@ -1,4 +1,6 @@
 import { apiClient } from '@/apis/apiClient';
+import { ApiResponse } from '@/types/apiResponse';
+
 import type {
   FCMTokenRequest,
   NotificationSettingRequest,

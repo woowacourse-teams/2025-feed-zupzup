@@ -1,5 +1,5 @@
 export const QUERY_KEYS = {
-  organizationStatistics: (id: number) => ['organizationStatistics', id],
+  organizationStatistics: (id: string) => ['organizationStatistics', id],
   infiniteFeedbacks: ['infinity', 'feedbacks'],
   notificationSettings: () => ['notificationSettings'] as const,
 };
