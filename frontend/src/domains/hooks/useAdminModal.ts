@@ -10,10 +10,10 @@ interface ModalState {
 }
 
 interface UseAdminModalProps {
-  organizationId?: string;
+  organizationId: string;
 }
 
-export const useAdminModal = ({ organizationId = '1' }: UseAdminModalProps) => {
+export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { showErrorModal } = useErrorModalContext();
