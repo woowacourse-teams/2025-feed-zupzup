@@ -24,13 +24,13 @@ export const getNotificationSettings =
     return response as NotificationSettingsResponse;
   };
 
-interface UpdateNotificationSettingsParams {
+interface PatchNotificationSettingsParams {
   alertsOn: boolean;
 }
 
-export const updateNotificationSettings = async ({
+export const patchNotificationSettings = async ({
   alertsOn,
-}: UpdateNotificationSettingsParams): Promise<ApiResponse> => {
+}: PatchNotificationSettingsParams): Promise<ApiResponse> => {
   const response = await apiClient.patch<
     ApiResponse,
     NotificationSettingRequest

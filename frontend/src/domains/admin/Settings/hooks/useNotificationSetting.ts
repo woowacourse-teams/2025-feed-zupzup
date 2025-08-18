@@ -4,7 +4,7 @@ import { NotificationService } from '@/services/notificationService';
 import { useNotifications } from './useNotifications';
 import {
   getNotificationSettings,
-  updateNotificationSettings,
+  patchNotificationSettings,
 } from '@/apis/notifications.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { QUERY_KEYS } from '@/constants/queryKeys';
@@ -42,7 +42,7 @@ export const useNotificationSetting = () => {
         await NotificationService.disable();
       }
 
-      return updateNotificationSettings({ alertsOn: enabled });
+      return patchNotificationSettings({ alertsOn: enabled });
     },
     onMutate: async ({ enabled }) => {
       await queryClient.cancelQueries({
@@ -97,7 +97,7 @@ export const useNotificationSetting = () => {
     isToggleEnabled,
     isLoading: isQueryLoading || updateMutation.isPending,
     fcmStatus,
-    updateNotificationSetting,
+      ,
     clearError: () => {},
   };
 };
