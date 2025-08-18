@@ -41,10 +41,9 @@ public class OrganizationCategories {
 
     private void validateCategories(final Set<String> categories) {
         for (String category : categories) {
-            if (Category.hasCategory(category)) {
-                return;
+            if (!Category.hasCategory(category)) {
+                throw new ResourceNotFoundException("category " + category + " 는 존재하지 않는 카테고리입니다.");
             }
-            throw new ResourceNotFoundException("category " + category + " 는 존재하지 않는 카테고리입니다.");
         }
     }
 
