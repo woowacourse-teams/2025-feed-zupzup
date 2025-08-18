@@ -55,10 +55,22 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
         />
       </section>
       <div css={buttonContainer(theme)}>
-        <BasicButton variant='secondary' width={'48%'}>
+        <BasicButton
+          variant='secondary'
+          width={'48%'}
+          padding={'8px 8px'}
+          height={'40px'}
+          fontSize={'16px'}
+        >
           취소
         </BasicButton>
-        <BasicButton variant='primary' width={'48%'}>
+        <BasicButton
+          variant='secondary'
+          width={'48%'}
+          padding={'8px 8px'}
+          height={'40px'}
+          fontSize={'16px'}
+        >
           수정하기
         </BasicButton>
       </div>
