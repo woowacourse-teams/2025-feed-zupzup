@@ -16,11 +16,12 @@ import FeedbackInput from '@/domains/user/home/components/FeedbackInput/Feedback
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { Analytics, suggestionFormEvents } from '@/analytics';
 import { CategoryType } from '@/analytics/types';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface FeedbackPageProps {
   category: CategoryType | null;
@@ -34,7 +35,7 @@ export default function FeedbackPage({
   const theme = useAppTheme();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { id } = useParams();
+  const { organizationId } = useOrganizationId();
 
   const {
     feedback,
@@ -55,7 +56,7 @@ export default function FeedbackPage({
 
     Analytics.track(suggestionFormEvents.viewSuggestionsFromForm());
 
-    navigate(`/${id}/dashboard`);
+    navigate(`/${organizationId}/dashboard`);
   };
 
   const handleRandomChangeWithTracking = () => {
@@ -74,7 +75,7 @@ export default function FeedbackPage({
     (isError: boolean) => {
       setIsModalOpen(false);
       if (!isError) {
-        navigate(`/${id}/dashboard`);
+        navigate(`/${organizationId}/dashboard`);
       }
     },
     [navigate]
@@ -97,6 +98,7 @@ export default function FeedbackPage({
         userName: username,
         isSecret: isLocked,
         category,
+        organizationId,
       });
     } catch (error) {
       setIsModalOpen(false);

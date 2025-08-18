@@ -28,9 +28,10 @@ import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 export default function UserDashboard() {
-  const organizationId = 1;
+  const { organizationId } = useOrganizationId();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
   const navigate = useNavigate();
   const theme = useAppTheme();

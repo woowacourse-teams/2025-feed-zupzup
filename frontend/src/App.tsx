@@ -25,7 +25,7 @@ if (gaId) {
   document.head.appendChild(script2);
 }
 
-export default function App() {
+function AppContent() {
   usePageTracking();
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
@@ -47,4 +47,8 @@ export default function App() {
       )}
     </div>
   );
+}
+
+export default function App() {
+  return <AppContent />;
 }

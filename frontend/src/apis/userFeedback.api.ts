@@ -7,7 +7,7 @@ import {
 } from '@/types/feedback.types';
 
 interface UserFeedbackParams {
-  organizationId: number;
+  organizationId: string;
   userName: string;
   isSecret: boolean;
   content: string;
@@ -74,7 +74,7 @@ export async function deleteLike({
 }
 
 interface GetMyFeedbacksParams {
-  organizationId: number;
+  organizationId: string;
   feedbackIds?: number[];
   orderBy?: SortType;
 }

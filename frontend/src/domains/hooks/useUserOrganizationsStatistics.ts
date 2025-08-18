@@ -17,10 +17,16 @@ const EMPTY: StatisticsProps = {
   totalCount: '0',
 };
 
-export default function useUserOrganizationsStatistics() {
+interface UseUserOrganizationsStatisticsProps {
+  organizationId: string;
+}
+
+export default function useUserOrganizationsStatistics({
+  organizationId,
+}: UseUserOrganizationsStatisticsProps) {
   const { data = EMPTY } = useQuery({
-    queryKey: QUERY_KEYS.organizationStatistics(1),
-    queryFn: () => getOrganizationStatistics({ organizationId: 1 }),
+    queryKey: QUERY_KEYS.organizationStatistics(organizationId),
+    queryFn: () => getOrganizationStatistics({ organizationId }),
     select: (res: GetOrganizationStatistics) => res.data,
   });
 
