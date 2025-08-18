@@ -11,6 +11,7 @@ import {
   createNotificationErrorMessage,
   getStoredFCMToken,
   setStoredFCMToken,
+  clearStoredFCMToken,
 } from '@/utils/notificationUtils';
 import type { NotificationServiceResult } from '@/types/notification.types';
 
@@ -76,7 +77,7 @@ export class NotificationService {
 
   static removeToken(): void {
     try {
-      localStorage.removeItem('fcm_token');
+      clearStoredFCMToken();
       setStoredNotificationState(false);
     } catch (error) {
       console.error('[NotificationService] 토큰 삭제 실패:', error);
