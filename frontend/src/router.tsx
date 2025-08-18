@@ -5,7 +5,7 @@ import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
-import ProtectedRoute from '@/utils/protectedRoute';
+import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import AdminHome from './domains/admin/AdminHome/AdminHome';
