@@ -37,6 +37,8 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
     })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
@@ -53,6 +55,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/secret")
     SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
@@ -67,6 +70,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/admin/feedbacks/{feedbackId}")
     SuccessResponse<Void> delete(
@@ -80,6 +84,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/status")
     SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
@@ -94,6 +99,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/comment")
     SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(

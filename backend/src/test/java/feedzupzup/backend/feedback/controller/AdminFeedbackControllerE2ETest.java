@@ -5,6 +5,13 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
+import feedzupzup.backend.admin.domain.Admin;
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.LoginId;
+import feedzupzup.backend.admin.domain.vo.Password;
+import feedzupzup.backend.auth.application.PasswordEncoder;
+import feedzupzup.backend.auth.dto.request.LoginRequest;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
@@ -30,6 +37,8 @@ import org.springframework.http.HttpStatus;
 
 class AdminFeedbackControllerE2ETest extends E2EHelper {
 
+    private static final String SESSION_ID = "JSESSIONID";
+
     @Autowired
     private FeedbackRepository feedBackRepository;
 
@@ -42,9 +51,32 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private String sessionCookie;
+
     @BeforeEach
-    void clearMemory() {
+    void setUp() {
         feedbackLikeRepository.clear();
+
+        final Password password = new Password("password123");
+        final Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password),
+                new AdminName("testName"));
+        adminRepository.save(admin);
+
+        final LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie(SESSION_ID);
     }
 
     @Test
@@ -68,6 +100,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .when()
                 .delete("/admin/feedbacks/{feedbackId}", savedFeedback.getId())
                 .then().log().all()
@@ -99,6 +132,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .contentType(ContentType.JSON)
                 .body(updateRequest)
                 .when()
@@ -121,6 +155,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .contentType(ContentType.JSON)
                 .body(updateRequest)
                 .when()
@@ -151,6 +186,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .contentType(ContentType.JSON)
                 .body(updateRequest)
                 .when()
@@ -174,6 +210,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .contentType(ContentType.JSON)
                 .body(updateRequest)
                 .when()
@@ -215,6 +252,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -254,6 +292,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .contentType(ContentType.JSON)
                 .body(updateFeedbackCommentRequest)
                 .when()
@@ -302,6 +341,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when - 첫 번째 페이지 조회
         final Long firstPageCursor = given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 2)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -320,6 +360,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when - 두 번째 페이지 조회
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 2)
                 .queryParam("cursorId", firstPageCursor)
                 .queryParam("orderBy", "LATEST")
@@ -343,6 +384,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -399,6 +441,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -442,6 +485,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then - 인메모리 좋아요 추가 없이 조회, DB 좋아요 수만 반영되는지 확인
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -482,6 +526,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then - 인메모리 좋아요 수만 반영되는지 확인
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -521,6 +566,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then - LATEST 정렬로 조회하면 최신순(ID 역순)으로 반환
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LATEST")
                 .when()
@@ -562,6 +608,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then - OLDEST 정렬로 조회하면 오래된순(ID 순)으로 반환
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "OLDEST")
                 .when()
@@ -603,6 +650,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // when & then - LIKES 정렬로 조회하면 좋아요 많은순으로 반환 (10, 5, 3)
         given()
                 .log().all()
+                .cookie(SESSION_ID, sessionCookie)
                 .queryParam("size", 10)
                 .queryParam("orderBy", "LIKES")
                 .when()

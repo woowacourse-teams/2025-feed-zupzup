@@ -1,9 +1,6 @@
 package feedzupzup.backend.global.response;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.*;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +36,7 @@ public enum ErrorCode {
     DUPLICATE_LOGIN_ID(BAD_REQUEST, "A05", "이미 존재하는 로그인 ID입니다."),
     INVALID_LOGIN_CREDENTIALS(BAD_REQUEST, "A06", "로그인 ID 또는 비밀번호가 올바르지 않습니다."),
     PASSWORD_NOT_MATCH(BAD_REQUEST, "A07", "비밀번호와 비밀번호 확인이 일치하지 않습니다."),
+    ACCESS_FORBIDDEN(FORBIDDEN, "A08", "해당 기능에 대한 권한이 없습니다."),
 
     //Notification Error
     NOTIFICATION_RETRY_INTERRUPTED(INTERNAL_SERVER_ERROR, "N01", "알림 재시도 중 인터럽트가 발생했습니다."),

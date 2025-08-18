@@ -48,17 +48,18 @@ public interface AdminAuthApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공", useReturnTypeSchema = true)
     })
+    @SecurityRequirement(name = "SessionAuth")
     @PostMapping("/admin/logout")
     SuccessResponse<String> logout(
             @Parameter(hidden = true) HttpServletRequest httpRequest
     );
 
     @Operation(summary = "관리자 정보 조회", description = "현재 로그인한 관리자의 정보를 조회합니다.")
-    @SecurityRequirement(name = "SessionAuth")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @GetMapping("/admin/me")
     SuccessResponse<LoginResponse> getAdminLoginStatus(
             @Parameter(hidden = true) @AdminAuthenticationPrincipal AdminSession adminSession

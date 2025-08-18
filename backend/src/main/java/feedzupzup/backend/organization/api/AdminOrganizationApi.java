@@ -29,6 +29,7 @@ public interface AdminOrganizationApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/admin/organizations")
     SuccessResponse<AdminCreateOrganizationResponse> createOrganization(
@@ -41,6 +42,7 @@ public interface AdminOrganizationApi {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations")
     SuccessResponse<List<AdminInquireOrganizationResponse>> getOrganizations(

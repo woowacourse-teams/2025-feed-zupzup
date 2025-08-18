@@ -28,6 +28,7 @@ public interface QRApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
     })
+    @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     SuccessResponse<QRResponse> getQR(
             @Parameter(hidden = true)
