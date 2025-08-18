@@ -24,7 +24,12 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
     <Modal isOpen={isOpen} onClose={onClose}>
       <QRImageSection url={data?.imageUrl || ''} />
       <QRUrlSection url={data?.siteUrl || ''} />
-      <BasicButton variant='secondary' padding={'8px 16px'} height={30}>
+      <BasicButton
+        variant='secondary'
+        padding={'8px 16px'}
+        height={30}
+        onClick={onClose}
+      >
         취소
       </BasicButton>
     </Modal>
