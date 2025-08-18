@@ -31,8 +31,8 @@ public class AuthException extends DomainException {
 
         private static final ErrorCode errorCode = ErrorCode.ADMIN_NOT_LOGGED_IN;
 
-        public UnauthorizedException() {
-            super(errorCode, errorCode.getMessage());
+        public UnauthorizedException(String message) {
+            super(errorCode, message);
         }
     }
 
