@@ -74,7 +74,7 @@ class S3UploadServiceTest {
         // when & then
         assertThatThrownBy(() -> s3UploadService.uploadFile(request))
                 .isInstanceOf(S3UploadException.class)
-                .hasMessageContaining("S3 클라이언트 오류로 파일 업로드에 실패했습니다");
+                .hasMessageContaining("클라이언트 오류로 파일 업로드에 실패했습니다");
     }
 
     @Test
