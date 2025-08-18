@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
@@ -41,7 +41,7 @@ public interface UserFeedbackApi {
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortBy sortBy
     );
 
     @Operation(summary = "피드백 생성", description = "새로운 피드백을 생성합니다.")
@@ -101,7 +101,7 @@ public interface UserFeedbackApi {
     @GetMapping("/organizations/{organizationUuid}/feedbacks/my")
     SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackOrderBy orderBy,
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortBy sortBy,
             @Parameter(description = "내가 쓴 피드백 ID 목록") @RequestParam final List<Long> feedbackIds
     );
 }

@@ -4,7 +4,9 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
+import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
+    private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final FeedbackLikeCounter feedbackLikeCounter;
     private final FeedbackLikeService feedbackLikeService;
 
@@ -64,17 +67,14 @@ public class AdminFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackOrderBy orderBy
+            final FeedbackSortBy sortBy
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
 
         feedbackLikeService.flushLikeCountBuffer();
 
-        final List<Feedback> feedbacks = switch (orderBy) {
-            case LATEST -> feedBackRepository.findByLatest(organizationUuid, status, cursorId, pageable);
-            case OLDEST -> feedBackRepository.findByOldest(organizationUuid, status, cursorId, pageable);
-            case LIKES -> feedBackRepository.findByLikes(organizationUuid, status, cursorId, pageable);
-        };
+        FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
+        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
