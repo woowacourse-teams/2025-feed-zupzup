@@ -7,6 +7,7 @@ import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,7 +30,7 @@ public interface AdminOrganizationApi {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/admin/organizations")
     SuccessResponse<AdminCreateOrganizationResponse> createOrganization(
-            @AdminAuthenticationPrincipal final AdminSession adminSession,
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @RequestBody final CreateOrganizationRequest createOrganizationRequest
     );
 
@@ -42,6 +43,6 @@ public interface AdminOrganizationApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations")
     SuccessResponse<List<AdminInquireOrganizationResponse>> getOrganizations(
-            @AdminAuthenticationPrincipal final AdminSession adminSession
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
     );
 }
