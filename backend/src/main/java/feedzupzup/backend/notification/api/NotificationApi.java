@@ -9,6 +9,7 @@ import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@Tag(name = "알람", description = "관리자 알람 API")
+@Tag(name = "Notification", description = "관리자 알람 API")
+@SecurityRequirement(name = "SessionAuth")
 public interface NotificationApi {
 
     @Operation(summary = "알람 토큰 등록", description = "사용자의 알람 토큰 등록 (관리자 전용)")
