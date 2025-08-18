@@ -13,13 +13,8 @@ type ModalState = { type: 'logout' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
-  const {
-    isToggleEnabled,
-    updateNotificationSetting,
-    isLoading,
-    fcmStatus,
-    clearError,
-  } = useNotificationSetting();
+  const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
+    useNotificationSetting();
 
   const { handleLogout } = useLogout();
 
@@ -28,7 +23,6 @@ export default function Settings() {
   };
 
   const handleToggleClick = () => {
-    clearError();
     updateNotificationSetting(!isToggleEnabled);
   };
 
