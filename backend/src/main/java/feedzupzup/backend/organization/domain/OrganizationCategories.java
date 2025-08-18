@@ -50,10 +50,10 @@ public class OrganizationCategories {
     public void updateOrganizationCategories(final Set<String> categories) {
         for (OrganizationCategory organizationCategory : this.organizationCategories) {
             if (categories.contains(organizationCategory.getCategory().getKoreanName())) {
-                organizationCategory.modifyUpdateStatus(true);
+                organizationCategory.updateStatus(true);
                 continue;
             }
-            organizationCategory.modifyUpdateStatus(false);
+            organizationCategory.updateStatus(false);
         }
     }
 
