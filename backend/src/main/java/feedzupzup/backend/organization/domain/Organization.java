@@ -3,7 +3,6 @@ package feedzupzup.backend.organization.domain;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.global.BaseTimeEntity;
-import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.domain.vo.Name;
 import jakarta.persistence.Column;
@@ -12,9 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -49,8 +46,8 @@ public class Organization extends BaseTimeEntity {
     @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 
-    @OneToMany(mappedBy = "organization")
-    private final Set<OrganizationCategory> organizationCategories = new HashSet<>();
+    @Embedded
+    private OrganizationCategories organizationCategories;
 
     @Builder
     public Organization(
@@ -61,6 +58,7 @@ public class Organization extends BaseTimeEntity {
         this.uuid = uuid;
         this.name = name;
         this.cheeringCount = cheeringCount;
+        this.organizationCategories = new OrganizationCategories();
     }
 
     public void cheer(final CheeringCount other) {
@@ -72,13 +70,18 @@ public class Organization extends BaseTimeEntity {
     }
 
     public OrganizationCategory findOrganizationCategoryBy(final Category category) {
-        return organizationCategories.stream()
-                .filter(organizationCategory -> organizationCategory.isSameCategory(category))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
+        return this.organizationCategories.findOrganizationCategoryBy(category);
     }
 
-    public void addOrganizationCategories(final Set<OrganizationCategory> organizationCategories) {
-        this.organizationCategories.addAll(organizationCategories);
+    public void addOrganizationCategories(final Set<String> organizationCategories) {
+        this.organizationCategories.addAll(organizationCategories, this);
+    }
+
+    public void updateOrganizationCategoriesAndName(
+            final Set<String> categories,
+            final String name
+    ) {
+        this.organizationCategories.updateOrganizationCategories(categories);
+        this.name = new Name(name);
     }
 }

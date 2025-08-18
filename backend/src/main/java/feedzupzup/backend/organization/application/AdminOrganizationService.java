@@ -4,19 +4,22 @@ import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.exception.UnAuthorizeException.InvalidAuthorizeException;
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.organization.domain.OrganizationCategories;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
+import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
+import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
 import feedzupzup.backend.organization.event.OrganizationCreatedEvent;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -77,9 +80,26 @@ public class AdminOrganizationService {
             final Set<String> categories,
             final Organization organization
     ) {
-        final OrganizationCategories organizationCategories = OrganizationCategories.createAndConvert(
-                categories, organization);
-        organization.addOrganizationCategories(organizationCategories.getOrganizationCategories());
-        organizationCategoryRepository.saveAll(organizationCategories.getOrganizationCategories());
+        organizationCategoryRepository.saveAll(organization.getOrganizationCategories().getOrganizationCategories());
+        organization.addOrganizationCategories(categories);
+    }
+
+    @Transactional
+    public AdminUpdateOrganizationResponse updateOrganization(
+            final UUID organizationUuid,
+            final UpdateOrganizationRequest request,
+            final Long adminId
+    ) {
+
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
+
+        if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Id(adminId,
+                organization.getId())) {
+            throw new InvalidAuthorizeException("해당 단체 "+ "id = " + organization.getId() + "에 대한 접근 권한이 없습니다.");
+        }
+        final Set<String> categories = request.categories();
+        organization.updateOrganizationCategoriesAndName(categories, request.organizationName());
+        return AdminUpdateOrganizationResponse.from(organization);
     }
 }
