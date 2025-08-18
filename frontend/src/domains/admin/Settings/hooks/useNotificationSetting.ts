@@ -1,27 +1,16 @@
 import { useEffect } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { NotificationService } from '@/services/notificationService';
+import { useQuery } from '@tanstack/react-query';
 import { useNotifications } from './useNotifications';
-import {
-  getNotificationSettings,
-  patchNotificationSettings,
-} from '@/apis/notifications.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { useUpdateNotificationSetting } from './useUpdateNotificationSetting';
+import { getNotificationSettings } from '@/apis/notifications.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { NotificationSettingsResponse } from '@/types/notification.types';
-
-interface UpdateNotificationSettingParams {
-  enabled: boolean;
-}
 
 export const useNotificationSetting = () => {
-  const queryClient = useQueryClient();
   const {
     fcmStatus,
     isEnabled: localEnabled,
     updateState,
   } = useNotifications();
-  const { showErrorModal } = useErrorModalContext();
 
   const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
     queryKey: QUERY_KEYS.notificationSettings(),
@@ -34,55 +23,13 @@ export const useNotificationSetting = () => {
     if (alertsOn !== undefined && alertsOn !== localEnabled) {
       updateState(alertsOn);
     }
-  }, [alertsOn, localEnabled]);
+  }, [alertsOn, localEnabled, updateState]);
 
   const isToggleEnabled = alertsOn ?? localEnabled;
 
-  const updateMutation = useMutation({
-    mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {
-      if (enabled) {
-        await NotificationService.enable();
-      } else {
-        await NotificationService.disable();
-      }
-
-      return patchNotificationSettings({ alertsOn: enabled });
-    },
-    onMutate: async ({ enabled }: UpdateNotificationSettingParams) => {
-      await queryClient.cancelQueries({
-        queryKey: QUERY_KEYS.notificationSettings(),
-      });
-
-      const previousServerData = queryClient.getQueryData(
-        QUERY_KEYS.notificationSettings()
-      );
-      const previousLocalState = localEnabled;
-
-      queryClient.setQueryData(
-        QUERY_KEYS.notificationSettings(),
-        (old: NotificationSettingsResponse) => ({
-          ...old,
-          data: { alertsOn: enabled },
-        })
-      );
-
-      updateState(enabled);
-
-      return { previousServerData, previousLocalState };
-    },
-    onError: (_, __, context) => {
-      if (context?.previousServerData) {
-        queryClient.setQueryData(
-          QUERY_KEYS.notificationSettings(),
-          context.previousServerData
-        );
-      }
-      if (context?.previousLocalState !== undefined) {
-        updateState(context.previousLocalState);
-      }
-
-      showErrorModal('알림 설정 변경에 실패했습니다.', '에러');
-    },
+  const updateMutation = useUpdateNotificationSetting({
+    localEnabled,
+    updateState,
   });
 
   const updateNotificationSetting = async (enabled: boolean) => {
