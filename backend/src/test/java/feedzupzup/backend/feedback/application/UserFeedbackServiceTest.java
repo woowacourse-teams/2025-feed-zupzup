@@ -1,7 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,7 +17,7 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackOrderBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
@@ -620,7 +622,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - LATEST로 정렬
             final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, FeedbackOrderBy.LATEST);
+                    organization.getUuid(), 10, null, null, LATEST);
 
             // then - 최신(ID가 큰) 순서로 정렬되어야 함
             assertAll(
@@ -655,7 +657,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - OLDEST로 정렬
             final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, FeedbackOrderBy.OLDEST);
+                    organization.getUuid(), 10, null, null, OLDEST);
 
             // then - 오래된(ID가 작은) 순서로 정렬되어야 함
             assertAll(
@@ -690,7 +692,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when - LIKES로 정렬
             final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, FeedbackOrderBy.LIKES);
+                    organization.getUuid(), 10, null, null, LIKES);
 
             // then - 좋아요 많은 순서로 정렬되어야 함 (10, 5, 3)
             assertAll(
