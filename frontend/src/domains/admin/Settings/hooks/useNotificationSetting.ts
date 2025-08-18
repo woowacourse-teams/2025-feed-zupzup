@@ -10,6 +10,10 @@ import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { NotificationSettingsResponse } from '@/types/notification.types';
 
+interface PatchNotificationSettingParams {
+  enabled: boolean;
+}
+
 export const useNotificationSetting = () => {
   const queryClient = useQueryClient();
   const {
@@ -35,7 +39,7 @@ export const useNotificationSetting = () => {
   const isToggleEnabled = serverSettings?.data?.alertsOn ?? localEnabled;
 
   const updateMutation = useMutation({
-    mutationFn: async ({ enabled }: { enabled: boolean }) => {
+    mutationFn: async ({ enabled }: PatchNotificationSettingParams) => {
       if (enabled) {
         await NotificationService.enable();
       } else {
@@ -44,7 +48,7 @@ export const useNotificationSetting = () => {
 
       return patchNotificationSettings({ alertsOn: enabled });
     },
-    onMutate: async ({ enabled }) => {
+    onMutate: async ({ enabled }: PatchNotificationSettingParams) => {
       await queryClient.cancelQueries({
         queryKey: QUERY_KEYS.notificationSettings(),
       });
@@ -97,7 +101,7 @@ export const useNotificationSetting = () => {
     isToggleEnabled,
     isLoading: isQueryLoading || updateMutation.isPending,
     fcmStatus,
-      ,
+    updateNotificationSetting,
     clearError: () => {},
   };
 };
