@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AuthExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorResponse> handleOrganizationException(final AuthException e) {
+    public ResponseEntity<ErrorResponse> handleAuthException(final AuthException e) {
         log.warn(e.getMessage(), e);
         final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
         return ResponseEntity.status(httpStatus)
