@@ -9,7 +9,6 @@ export default function AuthRedirectRoute({
   children: React.ReactNode;
 }) {
   const authed = isAuthenticated();
-  console.log('-', window.location.pathname);
 
   if (authed) {
     return <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />;
