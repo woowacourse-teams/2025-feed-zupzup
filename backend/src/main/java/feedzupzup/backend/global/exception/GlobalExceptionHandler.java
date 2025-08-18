@@ -47,4 +47,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus)
                 .body(ErrorResponse.error(e.getErrorCode()));
     }
+
+    @ExceptionHandler(UnAuthorizeException.class)
+    public ResponseEntity<ErrorResponse> handleUnAuthorizeException(final UnAuthorizeException e) {
+        log.warn(e.getMessage(), e);
+        final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
 }

@@ -6,6 +6,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,9 @@ public class OldestFeedbackSortStrategy implements FeedbackSortStrategy {
     private final FeedbackRepository feedbackRepository;
 
     @Override
-    public List<Feedback> getSortedFeedbacks(final Long organizationId, final ProcessStatus status, final Long cursorId,
+    public List<Feedback> getSortedFeedbacks(final UUID organizationUuId, final ProcessStatus status, final Long cursorId,
             final Pageable pageable) {
-        return feedbackRepository.findByOldest(organizationId, status, cursorId, pageable);
+        return feedbackRepository.findByOldest(organizationUuId, status, cursorId, pageable);
     }
 
     @Override

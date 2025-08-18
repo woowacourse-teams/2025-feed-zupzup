@@ -18,6 +18,7 @@ import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -62,7 +63,7 @@ public class AdminFeedbackService {
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
-            final Long organizationId,
+            final UUID organizationUuid,
             final int size,
             final Long cursorId,
             final ProcessStatus status,
@@ -73,7 +74,7 @@ public class AdminFeedbackService {
         feedbackLikeService.flushLikeCountBuffer();
 
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationId, status, cursorId, pageable);
+        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());

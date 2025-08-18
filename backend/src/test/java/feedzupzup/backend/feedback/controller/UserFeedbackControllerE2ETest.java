@@ -23,6 +23,7 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -76,7 +77,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -115,7 +116,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 2)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -134,7 +135,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("cursorId", firstPageCursor)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -148,7 +149,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 빈 피드백 목록을 조회한다")
     void user_get_empty_feedbacks() {
         // given
-        final Long organizationId = 999L; // 피드백이 없는 장소
+        final UUID organizationUuid = UUID.randomUUID(); // 피드백이 없는 장소
 
         // when & then
         given()
@@ -156,7 +157,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organizationId)
+                .get("/organizations/{organizationUuid}/feedbacks", organizationUuid)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -203,7 +204,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organization1.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", organization1.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -233,7 +234,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/organizations/{organizationId}/feedbacks", savedOrganization.getId())
+                .post("/organizations/{organizationUuid}/feedbacks", savedOrganization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
@@ -266,7 +267,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/organizations/{organizationId}/feedbacks", savedOrganization.getId())
+                .post("/organizations/{organizationUuid}/feedbacks", savedOrganization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .contentType(ContentType.JSON)
@@ -299,7 +300,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when()
-                .post("/organizations/{organizationId}/feedbacks", savedOrganization.getId())
+                .post("/organizations/{organizationUuid}/feedbacks", savedOrganization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
                 .extract()
@@ -312,7 +313,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", savedOrganization.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", savedOrganization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -383,7 +384,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .queryParam("period", "WEEK") // 7일 기간으로 통계 요청
                 .when()
-                .get("/organizations/{organizationId}/statistic", organization.getId())
+                .get("/organizations/{organizationUuid}/statistic", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -424,7 +425,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -465,7 +466,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "OLDEST")
                 .when()
-                .get("/organizations/{organizationId}/feedbacks", organization.getId())
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -506,7 +507,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LIKES")
                 .when()
-                .get("organizations/{organizationId}/feedbacks", organization.getId())
+                .get("organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

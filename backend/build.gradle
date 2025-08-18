@@ -30,7 +30,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'
@@ -41,6 +40,10 @@ dependencies {
 
     //aws
     implementation 'software.amazon.awssdk:s3:2.30.16'
+
+    //QR
+    implementation 'com.google.zxing:core:3.5.2'
+    implementation 'com.google.zxing:javase:3.5.2'
 
     //db
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -59,6 +62,9 @@ dependencies {
     testImplementation 'org.testcontainers:mysql'
 
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
+
+    //firebase
+    implementation 'com.google.firebase:firebase-admin:9.5.0'
 }
 
 tasks.register('copySecret', Copy) {
@@ -81,10 +87,18 @@ tasks.register('copySecretAlloy', Copy) {
     into '.'
 }
 
-compileJava.dependsOn copySecret, copySecretTest, copySecretAlloy
-processResources.dependsOn copySecret, copySecretAlloy
+tasks.register('copyFirebaseServiceKey', Copy) {
+    mustRunAfter copySecretAlloy
+    from file('./backend-submodule/firebase')
+    include 'service_account_key.json'
+    into 'src/main/resources/firebase'
+}
+
+compileJava.dependsOn copySecret, copySecretTest, copySecretAlloy, copyFirebaseServiceKey
+processResources.dependsOn copySecret, copySecretAlloy, copyFirebaseServiceKey
 processTestResources.dependsOn copySecretTest
 
 test {
     useJUnitPlatform()
+    dependsOn copySecretTest, copyFirebaseServiceKey
 }

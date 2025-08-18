@@ -6,6 +6,7 @@ import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +19,15 @@ public class FeedbackStatisticService {
     private final FeedbackRepository feedbackRepository;
     private final OrganizationRepository organizationRepository;
 
-    public StatisticResponse calculateStatistic(final Long organizationId) {
-        final Organization organization = findOrganizationBy(organizationId);
-        final FeedbackAmount feedbackAmount = feedbackRepository.countFeedbackByOrganizationIdAndProcessStatus(organization.getId());
+    public StatisticResponse calculateStatistic(final UUID organizationUuid) {
+        final Organization organization = findOrganizationBy(organizationUuid);
+        final FeedbackAmount feedbackAmount = feedbackRepository.countFeedbackByOrganizationIdAndProcessStatus(
+                organization.getId());
         return StatisticResponse.of(feedbackAmount, feedbackAmount.calculateReflectionRate());
     }
 
-    private Organization findOrganizationBy(final Long organizationId) {
-        return organizationRepository.findById(organizationId)
+    private Organization findOrganizationBy(final UUID organizationUuid) {
+        return organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
     }
 }
