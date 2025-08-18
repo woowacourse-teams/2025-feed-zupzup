@@ -2,7 +2,6 @@ package feedzupzup.backend.organization.dto.response;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.organization.domain.OrganizationCategories;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,15 +18,11 @@ public record AdminUpdateOrganizationResponse(
         Set<String> updateCategories
 ) {
 
-    public static AdminUpdateOrganizationResponse from(
-            final Organization organization,
-            final OrganizationCategories organizationCategories
-    ) {
-
+    public static AdminUpdateOrganizationResponse from(final Organization organization) {
         return new AdminUpdateOrganizationResponse(
                 organization.getUuid().toString(),
                 organization.getName().getValue(),
-                convertCategories(organizationCategories.getActiveCategories())
+                convertCategories(organization.getOrganizationCategories().getActiveCategories())
         );
     }
 

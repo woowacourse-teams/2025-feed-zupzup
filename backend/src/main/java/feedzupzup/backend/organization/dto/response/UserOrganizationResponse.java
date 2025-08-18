@@ -17,14 +17,11 @@ public record UserOrganizationResponse(
         Set<String> categories
 ) {
 
-    public static UserOrganizationResponse from(
-            final Organization organization,
-            final OrganizationCategories organizationCategories
-    ) {
+    public static UserOrganizationResponse from(final Organization organization) {
         return new UserOrganizationResponse(
                 organization.getName().getValue(),
                 organization.getCheeringCountValue(),
-                convertCategories(organizationCategories.getActiveCategories())
+                convertCategories(organization.getOrganizationCategories().getActiveCategories())
         );
     }
 

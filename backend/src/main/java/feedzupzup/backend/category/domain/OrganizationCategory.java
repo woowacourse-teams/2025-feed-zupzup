@@ -56,4 +56,8 @@ public class OrganizationCategory extends BaseTimeEntity {
     public boolean isSameCategory(final Category category) {
        return this.category.equals(category);
     }
+
+    public void modifyUpdateStatus(final boolean activeStatus) {
+        this.isActive = activeStatus;
+    }
 }

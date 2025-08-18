@@ -4,11 +4,9 @@ import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.global.exception.UnAuthorizeException;
 import feedzupzup.backend.global.exception.UnAuthorizeException.InvalidAuthorizeException;
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.organization.domain.OrganizationCategories;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
@@ -82,10 +80,8 @@ public class AdminOrganizationService {
             final Set<String> categories,
             final Organization organization
     ) {
-        final OrganizationCategories organizationCategories = OrganizationCategories.createOf(
-                categories, organization);
-        organization.addOrganizationCategories(organizationCategories.getOrganizationCategories());
-        organizationCategoryRepository.saveAll(organizationCategories.getOrganizationCategories());
+        organizationCategoryRepository.saveAll(organization.getOrganizationCategories().getOrganizationCategories());
+        organization.addOrganizationCategories(categories);
     }
 
     @Transactional
@@ -102,15 +98,8 @@ public class AdminOrganizationService {
                 organization.getId())) {
             throw new InvalidAuthorizeException("해당 단체 "+ "id = " + organization.getId() + "에 대한 접근 권한이 없습니다.");
         }
-
         final Set<String> categories = request.categories();
-        final OrganizationCategories organizationCategories = OrganizationCategories.createOf(
-                categories, organization);
-
-        organization.updateOrganizationCategoriesAndName(
-                organizationCategories.getOrganizationCategories(),
-                request.organizationName()
-        );
-        return AdminUpdateOrganizationResponse.from(organization, organizationCategories);
+        organization.updateOrganizationCategoriesAndName(categories, request.organizationName());
+        return AdminUpdateOrganizationResponse.from(organization);
     }
 }

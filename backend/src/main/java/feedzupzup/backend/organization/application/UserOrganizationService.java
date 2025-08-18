@@ -23,11 +23,7 @@ public class UserOrganizationService {
         final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
-
-        final OrganizationCategories organizationCategories = OrganizationCategories.createFromOrganization(
-                organization);
-
-        return UserOrganizationResponse.from(organization, organizationCategories);
+        return UserOrganizationResponse.from(organization);
     }
 
     @Transactional
