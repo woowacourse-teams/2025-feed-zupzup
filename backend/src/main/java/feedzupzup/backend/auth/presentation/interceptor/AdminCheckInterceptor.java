@@ -25,11 +25,12 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
         final Long adminId = adminSession.adminId();
 
         if (adminId == null) {
+            httpSessionManager.removeAdminSession(request, response);
             throw new UnauthorizedException("로그인이 필요합니다.");
         }
 
         if (!adminRepository.existsById(adminId)) {
-            httpSessionManager.removeAdminSession(request);
+            httpSessionManager.removeAdminSession(request, response);
             throw new ForbiddenException("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
         }
 
