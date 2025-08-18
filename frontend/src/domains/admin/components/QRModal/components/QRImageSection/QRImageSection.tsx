@@ -1,6 +1,5 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import DownloadIcon from '@/components/icons/DownloadIcon';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import {
   QRCodeContainer,
   QRImageContainer,
@@ -8,22 +7,16 @@ import {
 } from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection.styles';
 import { QRText } from '@/domains/admin/components/QRModal/QRModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { downloadQRCode } from '@/utils/downloadUtils';
 
 type QRImageSectionProps = {
   url: string;
 };
 
 export default function QRImageSection({ url }: QRImageSectionProps) {
-  const { showErrorModal } = useErrorModalContext();
   const theme = useAppTheme();
 
   const handleDownload = async () => {
-    try {
-      await downloadQRCode(url);
-    } catch (error) {
-      showErrorModal(error, 'QR 코드 다운로드 실패');
-    }
+    // 나중에 서버 api 구현되면 사용
   };
 
   return (
