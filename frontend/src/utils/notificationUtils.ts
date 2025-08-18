@@ -1,20 +1,27 @@
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 
-const getNotificationKey = (organizationId: string) =>
-  `notification_enabled_${organizationId}`;
+const NOTIFICATION_KEY = 'notification_enabled';
+const FCM_TOKEN_KEY = 'fcm_token';
 
-export const getStoredNotificationState = (organizationId: string): boolean => {
-  const key = getNotificationKey(organizationId);
-  const stored = getLocalStorage<boolean>(key);
+export const getStoredNotificationState = (): boolean => {
+  const stored = getLocalStorage<boolean>(NOTIFICATION_KEY);
   return stored ?? false;
 };
 
-export const setStoredNotificationState = (
-  organizationId: string,
-  enabled: boolean
-): void => {
-  const key = getNotificationKey(organizationId);
-  setLocalStorage(key, enabled);
+export const setStoredNotificationState = (enabled: boolean): void => {
+  setLocalStorage(NOTIFICATION_KEY, enabled);
+};
+
+export const getStoredFCMToken = (): string | null => {
+  return getLocalStorage<string>(FCM_TOKEN_KEY) ?? null;
+};
+
+export const setStoredFCMToken = (token: string): void => {
+  setLocalStorage(FCM_TOKEN_KEY, token);
+};
+
+export const clearStoredFCMToken = (): void => {
+  setLocalStorage(FCM_TOKEN_KEY, null);
 };
 
 export const isNotificationSupported = (): boolean => {

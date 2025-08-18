@@ -10,25 +10,21 @@ import { useNotificationSetting } from './hooks/useNotificationSetting';
 import { settingsContainer } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 
-// CloudFront 캐시 무효화 테스트 - 2025.8.15
 type ModalState = { type: 'logout' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
+  const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
+    useNotificationSetting();
   const { adminAuth } = useAdminAuth();
-
-  const {
-    isToggleEnabled,
-    updateNotificationSetting,
-    isLoading,
-    fcmStatus,
-    clearError,
-  } = useNotificationSetting();
-
   const { handleLogout } = useLogout();
 
   const closeModal = () => {
     setModalState({ type: null });
+  };
+
+  const handleToggleClick = () => {
+    updateNotificationSetting(!isToggleEnabled);
   };
 
   return (
@@ -45,10 +41,7 @@ export default function Settings() {
         rightElement={
           <BasicToggleButton
             isToggled={isToggleEnabled}
-            onClick={() => {
-              clearError();
-              updateNotificationSetting(!isToggleEnabled);
-            }}
+            onClick={handleToggleClick}
             name='notification-toggle'
             disabled={isLoading || !fcmStatus.isSupported}
           />

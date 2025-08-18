@@ -1,14 +1,19 @@
+import { ApiResponse } from './apiResponse';
+
 export interface FCMTokenRequest {
-  token: string;
+  notificationToken: string;
 }
 
 export interface NotificationSettingRequest {
-  enabled: boolean;
+  alertsOn: boolean;
 }
 
+export type NotificationSettingsResponse = ApiResponse<{
+  alertsOn: boolean;
+}>;
+
 export interface NotificationSetting {
-  organizationId: number;
-  notificationEnabled: boolean;
+  alertsOn: boolean;
   fcmTokenRegistered: boolean;
   updatedAt?: string;
 }
@@ -24,11 +29,4 @@ export interface NotificationServiceResult {
   success: boolean;
   message?: string;
   data?: unknown;
-}
-
-export interface TestNotificationPayload {
-  organizationId: number;
-  title?: string;
-  body?: string;
-  icon?: string;
 }

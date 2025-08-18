@@ -17,10 +17,8 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        index: true, // "/"에 접근 시
-        element: (
-          <Navigate to='/d0b1b979-7ae8-11f0-8408-0242ac120002/submit' replace />
-        ), // (임시 -> 나중에 삭제)
+        index: true,
+        element: <Navigate to='/1/submit' replace />,
       },
       {
         path: ROUTES.SUBMIT,
@@ -38,23 +36,23 @@ export const router = createBrowserRouter([
         path: ROUTES.SIGN_UP,
         element: getAuthRedirectElement(<SignUp />),
       },
-    ],
-  },
-  {
-    path: ROUTES.ADMIN,
-    element: <ProtectedRoute redirectPath='/login' />,
-    children: [
       {
-        path: ROUTES.ADMIN_HOME,
-        element: <AdminHome />,
-      },
-      {
-        path: ROUTES.DASHBOARD,
-        element: <AdminDashboard />,
-      },
-      {
-        path: ROUTES.ADMIN_SETTINGS,
-        element: <Settings />,
+        path: ROUTES.ADMIN,
+        element: <ProtectedRoute redirectPath='/login' />,
+        children: [
+          {
+            path: ROUTES.ADMIN_HOME,
+            element: <AdminHome />,
+          },
+          {
+            path: ROUTES.DASHBOARD,
+            element: <AdminDashboard />,
+          },
+          {
+            path: ROUTES.ADMIN_SETTINGS,
+            element: <Settings />,
+          },
+        ],
       },
     ],
   },
