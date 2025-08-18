@@ -56,7 +56,7 @@ export default function FeedbackForm({
             onFocus={onUsernameFocus}
             placeholder='사용자 이름을 입력하세요'
             customCSS={usernameInput(theme)}
-            maxLength={20}
+            maxLength={10}
             minLength={1}
             disabled={isLocked}
           />

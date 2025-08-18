@@ -1,40 +1,49 @@
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import AdminFeedbackBox from '@/domains/admin/adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
-import useFeedbackManagement from '@/domains/admin/adminDashboard/hooks/useFeedbackManagement';
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
-import useInfinityScroll from '@/hooks/useInfinityScroll';
-import { FeedbackResponse, FeedbackType } from '@/types/feedback.types';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
+import {
+  FeedbackResponse,
+  FeedbackType,
+  FeedbackFilterType,
+} from '@/types/feedback.types';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
+import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
+import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 export default function AdminDashboard() {
+  const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
+    useFeedbackFilterSort();
+  const { organizationId } = useOrganizationId();
+
+  const apiUrl = createFeedbacksUrl({
+    organizationId,
+    sort: selectedSort,
+    filter: selectedFilter,
+    isAdmin: true,
+  });
+
   const {
-    items: originalFeedbacks,
+    items: feedbacks,
     fetchMore,
     hasNext,
     loading,
-  } = useInfinityScroll<
+  } = useCursorInfiniteScroll<
     FeedbackType,
     'feedbacks',
     FeedbackResponse<FeedbackType>
   >({
-    url: '/admin/organizations/1/feedbacks',
+    url: apiUrl,
     key: 'feedbacks',
+    size: 10,
   });
-
-  const { feedbacks, optimisticConfirmFeedback, optimisticDeleteFeedback } =
-    useFeedbackManagement({
-      originalFeedbacks,
-    });
-
-  const { isAuthorized, isCheckingAuth } = useAdminAuth();
 
   const {
     modalState,
@@ -43,26 +52,14 @@ export default function AdminDashboard() {
     closeModal,
     handleConfirmFeedback,
     handleDeleteFeedback,
-  } = useAdminModal({
-    onConfirmFeedback: optimisticConfirmFeedback,
-    onDeleteFeedback: optimisticDeleteFeedback,
-  });
+  } = useAdminModal({ organizationId });
 
-  const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
-    useFeedbackFilterSort(feedbacks);
   useGetFeedback({ fetchMore, hasNext, loading });
-
-  if (isCheckingAuth) {
-    return <div>로딩중...</div>;
-  }
-
-  if (!isAuthorized) {
-    return null;
-  }
 
   return (
     <section css={dashboardLayout}>
       <DashboardOverview />
+
       <FilterSection
         selectedFilter={selectedFilter}
         onFilterChange={handleFilterChange}
@@ -70,6 +67,7 @@ export default function AdminDashboard() {
         onSortChange={handleSortChange}
         isAdmin={true}
       />
+
       <FeedbackBoxList>
         {feedbacks.map((feedback) => (
           <AdminFeedbackBox
@@ -87,14 +85,16 @@ export default function AdminDashboard() {
             comment={feedback.comment}
           />
         ))}
-        {loading && <div>로딩중...</div>}
       </FeedbackBoxList>
+
       <FeedbackStatusMessage
         loading={loading}
+        filterType={selectedFilter as FeedbackFilterType}
         hasNext={hasNext}
         feedbackCount={feedbacks.length}
       />
-      {hasNext && <div id='scroll-observer'></div>}
+
+      {hasNext && <div id='scroll-observer' style={{ minHeight: '1px' }} />}
 
       {modalState.type === 'delete' && (
         <ConfirmModal
@@ -105,6 +105,7 @@ export default function AdminDashboard() {
           onConfirm={handleDeleteFeedback}
         />
       )}
+
       {modalState.type === 'confirm' && (
         <AnswerModal
           isOpen={true}

@@ -21,6 +21,7 @@ import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { Analytics, suggestionFormEvents } from '@/analytics';
 import { CategoryType } from '@/analytics/types';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface FeedbackPageProps {
   category: CategoryType | null;
@@ -34,6 +35,7 @@ export default function FeedbackPage({
   const theme = useAppTheme();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { organizationId } = useOrganizationId();
 
   const {
     feedback,
@@ -54,7 +56,7 @@ export default function FeedbackPage({
 
     Analytics.track(suggestionFormEvents.viewSuggestionsFromForm());
 
-    navigate('/dashboard');
+    navigate(`/${organizationId}/dashboard`);
   };
 
   const handleRandomChangeWithTracking = () => {
@@ -73,7 +75,7 @@ export default function FeedbackPage({
     (isError: boolean) => {
       setIsModalOpen(false);
       if (!isError) {
-        navigate('/dashboard');
+        navigate(`/${organizationId}/dashboard`);
       }
     },
     [navigate]
@@ -96,6 +98,7 @@ export default function FeedbackPage({
         userName: username,
         isSecret: isLocked,
         category,
+        organizationId,
       });
     } catch (error) {
       setIsModalOpen(false);
@@ -108,7 +111,7 @@ export default function FeedbackPage({
   return (
     <section css={container}>
       <div css={arrowLeftIconContainer} onClick={movePrevStep}>
-        <ArrowLeftIcon />
+        <ArrowLeftIcon color={theme.colors.gray[600]} />
       </div>
 
       <form css={mainContent} onSubmit={onSubmit}>

@@ -1,38 +1,32 @@
-import { useState } from 'react';
-import {
-  FeedbackType,
-  FeedbackFilterType,
-  SortType,
-} from '@/types/feedback.types';
-import useMyFeedbacks from '@/domains/user/userDashboard/hooks/useMyFeedbacks';
+import { useState, useCallback } from 'react';
+import { FeedbackFilterType, SortType } from '@/types/feedback.types';
 
-export default function useFeedbackFilterSort(feedbacks: FeedbackType[]) {
-  const [selectedFilter, setSelectedFilter] =
-    useState<FeedbackFilterType | null>(null);
+import { useMyFeedbackData } from '../user/userDashboard/hooks/useMyFeedbackData';
+
+export default function useFeedbackFilterSort() {
+  const [selectedFilter, setSelectedFilter] = useState<FeedbackFilterType | ''>(
+    ''
+  );
   const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
-  const { getIsMyFeedback } = useMyFeedbacks();
 
-  const handleFilterChange = (newFilter: FeedbackFilterType | null) => {
-    setSelectedFilter(newFilter);
-  };
+  const { myFeedbacks } = useMyFeedbackData(selectedSort);
 
-  const handleSortChange = (newSort: SortType) => {
+  const handleFilterChange = useCallback(
+    (newFilter: FeedbackFilterType | '') => {
+      setSelectedFilter(newFilter);
+    },
+    []
+  );
+
+  const handleSortChange = useCallback((newSort: SortType) => {
     setSelectedSort(newSort);
-  };
-
-  const filteredAndSortedFeedbacks = feedbacks.filter((feedback) => {
-    if (selectedFilter === 'MINE') {
-      return getIsMyFeedback(feedback.feedbackId);
-    }
-
-    return true;
-  });
+  }, []);
 
   return {
     selectedFilter,
     selectedSort,
     handleFilterChange,
     handleSortChange,
-    filteredAndSortedFeedbacks,
+    myFeedbacks,
   };
 }

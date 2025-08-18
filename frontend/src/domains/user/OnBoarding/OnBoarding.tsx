@@ -16,6 +16,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useNavigate } from 'react-router-dom';
 import { Analytics, onboardingEvents } from '@/analytics';
 import { CategoryType } from '@/analytics/types';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface OnBoardingProps {
   onCategoryClick: (newCategory: CategoryType) => void;
@@ -24,13 +25,16 @@ interface OnBoardingProps {
 export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const theme = useAppTheme();
   const navigate = useNavigate();
+  const { organizationId } = useOrganizationId();
 
-  const { groupName } = useOrganizationName();
+  const { groupName } = useOrganizationName({
+    organizationId,
+  });
 
   const handleViewSuggestionsClick = () => {
     Analytics.track(onboardingEvents.viewSuggestionsFromOnboarding());
 
-    navigate('/dashboard');
+    navigate(`/${organizationId}/dashboard`);
   };
 
   return (
@@ -46,19 +50,19 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
         </div>
         <div css={buttonContainer}>
           <CategoryButton
-            icon='🏠'
-            text='시설'
-            onClick={() => onCategoryClick('시설')}
+            icon='🚨'
+            text='신고'
+            onClick={() => onCategoryClick('신고')}
           />
           <CategoryButton
-            icon='📑'
-            text='행정'
-            onClick={() => onCategoryClick('행정')}
+            icon='🙋‍♀️'
+            text='질문'
+            onClick={() => onCategoryClick('질문')}
           />
           <CategoryButton
-            icon='📕'
-            text='커리큘럼'
-            onClick={() => onCategoryClick('커리큘럼')}
+            icon='💬'
+            text='건의'
+            onClick={() => onCategoryClick('건의')}
           />
           <CategoryButton
             icon='💡'

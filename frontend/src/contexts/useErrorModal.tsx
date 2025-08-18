@@ -39,10 +39,14 @@ export function ErrorModalProvider({ children }: ErrorModalProvider) {
   const showErrorModal = useCallback((error: unknown, title?: string) => {
     if (error instanceof ApiError) {
       setMessage(error.message);
-      setTitle(title ?? '에러 발생');
-      setErrorTrue();
     }
+    if (typeof error === 'string') {
+      setMessage(error);
+    }
+    setTitle(title ?? '에러 발생');
+    setErrorTrue();
   }, []);
+
   return (
     <errorModalContext.Provider
       value={{

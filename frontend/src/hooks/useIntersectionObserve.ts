@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 
 const basicOptions: IntersectionObserverInit = {
   root: null,
-  rootMargin: '140px',
-  threshold: 0.5,
+  rootMargin: '200px',
+  threshold: 0,
 };
 
 export default function useIntersectionObserve() {

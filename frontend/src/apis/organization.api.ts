@@ -5,17 +5,16 @@ import {
 } from '@/types/organization.types';
 
 interface PostOrganizationCheerParams {
-  organizationId: number;
+  organizationId: string;
   cheeringCount: number;
 }
 
 interface GetOrganizationNameParams {
-  organizationId: number;
+  organizationId: string;
 }
 
 interface GetOrganizationStatistic {
-  organizationId: number;
-  period: 'WEEK' | 'MONTH';
+  organizationId: string;
 }
 
 export async function getOrganizationName({
@@ -42,13 +41,9 @@ export async function postOrganizationCheer({
 
 export async function getOrganizationStatistics({
   organizationId,
-  period,
 }: GetOrganizationStatistic) {
-  const params = new URLSearchParams({
-    period,
-  }).toString();
   const response = await apiClient.get<GetOrganizationStatistics>(
-    `/organizations/${organizationId}/statistic?${params}`
+    `/organizations/${organizationId}/statistic?`
   );
   return response as GetOrganizationStatistics;
 }

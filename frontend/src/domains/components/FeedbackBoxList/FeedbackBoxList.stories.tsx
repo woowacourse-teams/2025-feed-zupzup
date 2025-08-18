@@ -62,7 +62,7 @@ const userFeedbackConfirmed = {
   userName: '김개발',
   isMyFeedback: false,
   comment: '감사합니당',
-  category: '시설' as const,
+  category: '건의' as const,
 };
 
 const adminFeedbackWaiting = {
@@ -80,7 +80,7 @@ const adminFeedbackWaiting = {
   customCSS: [],
   isMyFeedback: false,
   comment: '감사합니당',
-  category: '행정' as const,
+  category: '기타' as const,
 };
 
 const adminFeedbackConfirmed = {
@@ -97,7 +97,7 @@ const adminFeedbackConfirmed = {
   customCSS: [],
   isMyFeedback: false,
   comment: '감사합니당',
-  category: '행정' as const,
+  category: '기타' as const,
 };
 
 export const Default: Story = {

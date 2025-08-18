@@ -13,17 +13,17 @@ import Button from '@/components/@commons/Button/Button';
 import { FeedbackFilterType, SortType } from '@/types/feedback.types';
 
 export interface FilterSectionProps {
-  selectedFilter: FeedbackFilterType | null;
-  onFilterChange: (filter: FeedbackFilterType | null) => void;
+  selectedFilter: FeedbackFilterType | '';
+  onFilterChange: (filter: FeedbackFilterType | '') => void;
   selectedSort: SortType;
   onSortChange: (sort: SortType) => void;
   customCSS?: SerializedStyles;
-  isAdmin?: boolean;
+  isAdmin: boolean;
 }
 
 const filterOptions = (isAdmin: boolean) => [
-  { value: 'PENDING' as FeedbackFilterType, label: '미처리' },
-  { value: 'COMPLETED' as FeedbackFilterType, label: '완료' },
+  { value: 'WAITING' as FeedbackFilterType, label: '미처리' },
+  { value: 'CONFIRMED' as FeedbackFilterType, label: '완료' },
   ...(!isAdmin
     ? [{ value: 'MINE' as FeedbackFilterType, label: '내가 쓴 글' }]
     : []),
@@ -47,7 +47,7 @@ export default function FilterSection({
 
   const handleFilterClick = (filterValue: FeedbackFilterType) => {
     if (selectedFilter === filterValue) {
-      onFilterChange(null);
+      onFilterChange('');
     } else {
       onFilterChange(filterValue);
     }
@@ -78,8 +78,8 @@ export default function FilterSection({
           value={selectedSort}
           onChange={(e) => onSortChange(e.target.value as SortType)}
           placeholder='정렬 기준'
-          width='120px'
-          height='36px'
+          width='100px'
+          height='32px'
         />
       </div>
     </div>
