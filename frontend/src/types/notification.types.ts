@@ -1,3 +1,5 @@
+import { ApiResponse } from './apiResponse';
+
 export interface FCMTokenRequest {
   notificationToken: string;
 }

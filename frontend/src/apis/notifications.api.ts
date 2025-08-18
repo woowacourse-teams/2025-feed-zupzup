@@ -5,7 +5,6 @@ import type {
   FCMTokenRequest,
   NotificationSettingRequest,
   NotificationSettingsResponse,
-  ApiResponse,
 } from '@/types/notification.types';
 
 export const registerFCMToken = async (

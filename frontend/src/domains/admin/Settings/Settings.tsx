@@ -16,7 +16,7 @@ export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
     useNotificationSetting();
-
+  const { adminAuth } = useAdminAuth();
   const { handleLogout } = useLogout();
 
   const closeModal = () => {
