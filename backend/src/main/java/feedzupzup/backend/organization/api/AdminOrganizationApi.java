@@ -48,7 +48,6 @@ public interface AdminOrganizationApi {
     SuccessResponse<AdminUpdateOrganizationResponse> updateOrganization(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final UUID organizationUuid,
-
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @RequestBody final UpdateOrganizationRequest updateOrganizationRequest
     );
