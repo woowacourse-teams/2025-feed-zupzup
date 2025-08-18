@@ -2,7 +2,7 @@ import { getToken } from 'firebase/messaging';
 import { messaging } from '@/firebase/messaging';
 import { VAPID_KEY } from '@/firebase/config';
 import {
-  registerFCMToken,
+  postFCMToken,
   getNotificationSettings,
 } from '@/apis/notifications.api';
 import {
@@ -46,7 +46,7 @@ export class NotificationService {
           throw new Error('FCM 토큰 생성에 실패했습니다.');
         }
 
-        await registerFCMToken(token);
+        await postFCMToken(token);
         setStoredFCMToken(token);
       }
 
