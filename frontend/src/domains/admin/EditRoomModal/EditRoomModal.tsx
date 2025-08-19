@@ -62,6 +62,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
+          onClick={onClose}
         >
           취소
         </BasicButton>
