@@ -14,6 +14,8 @@ import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useEditRoom from './hooks/useEditRooom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useModalContext } from '@/contexts/useModal';
+import AlertModal from '@/components/AlertModal/AlertModal';
 
 interface EditRoomModalProps {
   isOpen: boolean;
@@ -26,6 +28,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const { groupName, categories } = useOrganizationName({
     organizationId,
   });
+  const { openModal } = useModalContext();
 
   const [organizationName, setOrganizationName] = useState('');
 
@@ -40,10 +43,18 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
     }
   }, [groupName]);
 
-  const { handleRoomEditButton, isLoading } = useEditRoom({
+  const { editRoom, isLoading } = useEditRoom({
     organizationName,
     categories: selectedCategories.map((category) => category.category),
   });
+
+  const handleRoomEditButton = async () => {
+    await editRoom();
+    onClose();
+    openModal(
+      <AlertModal isOpen={true} onClose={() => {}} title='방 수정 완료' />
+    );
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -82,7 +93,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
-          onClick={() => handleRoomEditButton()}
+          onClick={handleRoomEditButton}
           disabled={isLoading}
         >
           수정하기

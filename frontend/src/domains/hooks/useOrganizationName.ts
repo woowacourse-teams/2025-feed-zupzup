@@ -1,7 +1,6 @@
 import { getOrganizationName } from '@/apis/organization.api';
-import { CategoryListType } from '@/constants/categoryList';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 interface UseOrganizationNameProps {
   organizationId: string;
@@ -10,25 +9,23 @@ interface UseOrganizationNameProps {
 export default function useOrganizationName({
   organizationId,
 }: UseOrganizationNameProps) {
-  const [groupName, setGroupName] = useState('피드줍줍');
-  const [totalCheeringCount, setTotalCheeringCount] = useState(0);
-  const [categories, setCategories] = useState<CategoryListType[]>([]);
   const { showErrorModal } = useErrorModalContext();
 
-  useEffect(() => {
-    async function getOrganization() {
-      try {
-        const response = await getOrganizationName({ organizationId });
-        setGroupName(response!.data.organizationName);
-        setTotalCheeringCount(response!.data.totalCheeringCount);
-        setCategories(response!.data.categories);
-      } catch (e) {
-        showErrorModal(e, '에러');
-      }
-    }
+  const { data, error } = useQuery({
+    queryKey: ['organizationData', organizationId],
+    queryFn: async () => {
+      const response = await getOrganizationName({ organizationId });
+      return response!.data;
+    },
+  });
 
-    getOrganization();
-  }, []);
+  if (error) {
+    showErrorModal('서버에서 에러가 발생했습니다. 다시 시도해 주세요.', '에러');
+  }
 
-  return { groupName, totalCheeringCount, categories };
+  return {
+    groupName: data?.organizationName || '피드줍줍',
+    totalCheeringCount: data?.totalCheeringCount || 0,
+    categories: data?.categories || [],
+  };
 }

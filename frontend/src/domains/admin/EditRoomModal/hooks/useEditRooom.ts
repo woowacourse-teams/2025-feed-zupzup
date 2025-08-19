@@ -27,11 +27,14 @@ export default function useEditRoom({
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
+      queryClient.invalidateQueries({
+        queryKey: ['organizationData'],
+      });
     },
   });
 
   return {
-    handleRoomEditButton: mutate.mutateAsync,
+    editRoom: mutate.mutateAsync,
     isLoading: mutate.isPending,
   };
 }
