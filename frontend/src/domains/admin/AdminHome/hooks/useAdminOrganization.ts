@@ -1,30 +1,34 @@
 import {
   AdminOrganization,
   getAdminOrganization,
-  GetAdminOrganizationResponse,
 } from '@/apis/adminOrganization.api';
 import { ApiError } from '@/apis/apiClient';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 export default function useAdminOrganization() {
-  const [adminOrganizations, setAdminOrganizations] = useState<
-    AdminOrganization[] | []
-  >([]);
   const { handleApiError } = useApiErrorHandler();
 
-  useEffect(() => {
-    const fetchAdminOrganizations = async () => {
-      try {
-        const response: GetAdminOrganizationResponse =
-          await getAdminOrganization();
-        setAdminOrganizations(response.data);
-      } catch (error) {
-        handleApiError(error as ApiError);
-      }
-    };
-    fetchAdminOrganizations();
-  }, []);
+  const {
+    data: adminOrganizations = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<AdminOrganization[]>({
+    queryKey: QUERY_KEYS.adminOrganizations(),
+    queryFn: async () => {
+      const res = await getAdminOrganization();
+      return res.data;
+    },
+  });
 
-  return { adminOrganizations };
+  useEffect(() => {
+    if (isError) {
+      handleApiError(error as ApiError);
+    }
+  }, [isError, handleApiError]);
+
+  return { adminOrganizations, isLoading };
 }

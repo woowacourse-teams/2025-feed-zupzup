@@ -10,6 +10,7 @@ import {
 } from '@/domains/admin/AdminHome/AdminHome.style';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import AdminOrganizationList from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList';
+import useAdminOrganization from '@/domains/admin/AdminHome/hooks/useAdminOrganization';
 import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -30,6 +31,8 @@ export default function AdminHome() {
     openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
   };
 
+  const { adminOrganizations, isLoading } = useAdminOrganization();
+
   return (
     <div css={homeLayout}>
       <AdminHomeHeader
@@ -42,14 +45,19 @@ export default function AdminHome() {
           <p css={listTitle(theme)}>피드백 방 목록</p>
           <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
         </div>
-        <AdminOrganizationList />
-
-        <FloatingButton
-          icon={<PlusIcon color='white' width='24' height='24' />}
-          onClick={handleRoomInfoEditClick}
-          inset={{ bottom: '80px', left: '100%' }}
-          customCSS={addAdminOrganization(theme)}
+        <AdminOrganizationList
+          adminOrganizations={adminOrganizations}
+          isLoading={isLoading}
         />
+
+        {!isLoading && (
+          <FloatingButton
+            icon={<PlusIcon color='white' width='24' height='24' />}
+            onClick={handleRoomInfoEditClick}
+            inset={{ bottom: '80px', left: '100%' }}
+            customCSS={addAdminOrganization(theme)}
+          />
+        )}
       </div>
     </div>
   );
