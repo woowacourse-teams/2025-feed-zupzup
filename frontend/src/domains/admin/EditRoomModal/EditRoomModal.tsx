@@ -12,6 +12,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState, useEffect } from 'react';
 import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface EditRoomModalProps {
   isOpen: boolean;
@@ -20,10 +21,8 @@ interface EditRoomModalProps {
 
 export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
-  const { groupName, categories } = useOrganizationName({
-    organizationId: '1',
-  });
-
+  const { organizationId } = useOrganizationId();
+  const { groupName, categories } = useOrganizationName({ organizationId });
   const [roomName, setRoomName] = useState('');
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
