@@ -18,7 +18,9 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to='/1/submit' replace />,
+        element: (
+          <Navigate to='/d0b1b979-7ae8-11f0-8408-0242ac120002/submit' replace />
+        ),
       },
       {
         path: ROUTES.SUBMIT,

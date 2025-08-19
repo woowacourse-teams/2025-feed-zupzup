@@ -1,4 +1,3 @@
-import { postAdminLogout } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { resetLocalStorage } from '@/utils/localStorage';
@@ -11,7 +10,6 @@ export function useApiErrorHandler() {
   const handleApiError = async (error: ApiError) => {
     if (error.status === 401) {
       try {
-        await postAdminLogout();
         resetLocalStorage('auth');
         showErrorModal(error, '로그인 권한 없음');
         navigate('/login');
