@@ -7,7 +7,7 @@ export const setupMockServiceWorker = () => {
       const { worker } = await import('../mocks/browser');
       await worker.start({
         onUnhandledRequest: 'bypass',
-        serviceWorker: { url: '/service-worker.js' },
+        serviceWorker: { url: '/mockServiceWorker.js' },
       });
       console.log('🛠️ MSW (Mock Service Worker) 시작됨');
     })();

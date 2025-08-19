@@ -14,7 +14,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { setupGlobalVersion } from '@/utils/version';
 import { initSentry } from '@/services/sentry';
 import { registerServiceWorker } from '@/services/serviceWorker';
-import { setupMockServiceWorker } from './services/msw';
+//import { setupMockServiceWorker } from './services/msw';
 
 declare global {
   interface Window {
@@ -34,7 +34,7 @@ declare global {
 setupGlobalVersion();
 initSentry();
 registerServiceWorker();
-setupMockServiceWorker();
+//setupMockServiceWorker();
 
 const queryClient = new QueryClient();
 

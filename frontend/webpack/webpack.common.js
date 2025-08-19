@@ -57,49 +57,21 @@ export default {
     new HtmlWebpackPlugin({
       template: './public/index.html',
       meta: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        Pragma: 'no-cache',
-        Expires: '0',
+        'Cache-Control': 'no-cache, max-age=0',
       },
     }),
     new CopyWebpackPlugin({
       patterns: [
-        {
-          from: 'public/favicon.ico',
-          to: '.',
-        },
-        {
-          from: 'public/manifest.json',
-          to: '.',
-        },
-        {
-          from: 'public/512x512.png',
-          to: 'images/[name].[contenthash][ext]',
-        },
-        {
-          from: 'public/192x192.png',
-          to: 'images/[name].[contenthash][ext]',
-        },
-        {
-          from: 'public/service-worker.js',
-          to: 'sw.[contenthash].js',
-          transform(content) {
-            const versionComment = `// SW Version: ${Date.now()}\n`;
-            return versionComment + content;
-          },
-        },
+        { from: 'public/favicon.ico', to: '.' },
+        { from: 'public/manifest.json', to: '.' },
+        { from: 'public/512x512.png', to: '.' },
+        { from: 'public/192x192.png', to: '.' },
+        { from: 'public/service-worker.js', to: '.' },
         {
           from: 'public',
           to: '.',
           globOptions: {
-            ignore: [
-              '**/index.html',
-              '**/favicon.ico',
-              '**/manifest.json',
-              '**/512x512.png',
-              '**/192x192.png',
-              '**/service-worker.js',
-            ],
+            ignore: ['**/index.html'],
           },
         },
       ],
