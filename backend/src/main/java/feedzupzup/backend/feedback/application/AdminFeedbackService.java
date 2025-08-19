@@ -35,11 +35,7 @@ public class AdminFeedbackService {
 
     @Transactional
     @BusinessActionLog
-    public void delete(
-            final Long adminId,
-            final Long feedbackId
-    ) {
-        hasAccessToFeedback(adminId, feedbackId);
+    public void delete(final Long feedbackId) {
         feedBackRepository.deleteById(feedbackId);
     }
 

@@ -76,6 +76,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
             final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
@@ -85,20 +88,34 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             // when
-            adminFeedbackService.delete(savedFeedback.getId());
+            adminFeedbackService.delete(admin.getId(), savedFeedback.getId());
 
             // then
             assertThat(feedBackRepository.findById(savedFeedback.getId())).isEmpty();
         }
 
         @Test
-        @DisplayName("존재하지 않는 피드백 삭제 시 예외가 발생 하지 않는다.")
-        void delete_non_existing_feedback_exception() {
-            // given
-            final Long nonExistingId = 999L;
+        @DisplayName("관리자가 속한 단체가 아닐경우, 삭제 시 예외가 발생해야 한다")
+        void not_contains_organization_delete_api_then_throw_exception() {
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
 
-            // when & then
-            assertThatCode(() -> adminFeedbackService.delete(nonExistingId)).doesNotThrowAnyException();
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization,
+                    organizationCategory);
+            final Feedback savedFeedback = feedBackRepository.save(feedback);
+
+            final Admin otherAdmin = AdminFixture.createFromLoginId("admin999");
+            adminRepository.save(otherAdmin);
+
+            assertThatThrownBy(() -> adminFeedbackService.delete(otherAdmin.getId(), savedFeedback.getId()))
+                    .isInstanceOf(ForbiddenException.class);
         }
     }
 
