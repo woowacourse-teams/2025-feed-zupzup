@@ -1,7 +1,11 @@
 import { apiClient } from '@/apis/apiClient';
+import { CategoryListType } from '@/constants/categoryList';
+import { ApiResponse } from '@/types/apiResponse';
 import {
   GetOrganizationName,
   GetOrganizationStatistics,
+  PutOrganizationsBody,
+  PutOrganizationsResponse,
 } from '@/types/organization.types';
 
 interface PostOrganizationCheerParams {
@@ -15,6 +19,12 @@ interface GetOrganizationNameParams {
 
 interface GetOrganizationStatistic {
   organizationId: string;
+}
+
+interface PutOrganizationsParams {
+  organizationId: string;
+  organizationName: string;
+  categories: CategoryListType[];
 }
 
 export async function getOrganizationName({
@@ -46,4 +56,20 @@ export async function getOrganizationStatistics({
     `/organizations/${organizationId}/statistic?`
   );
   return response as GetOrganizationStatistics;
+}
+
+export async function putOrganizations({
+  organizationId,
+  organizationName,
+  categories,
+}: PutOrganizationsParams) {
+  const response = await apiClient.put<
+    ApiResponse<PutOrganizationsResponse>,
+    PutOrganizationsBody
+  >(`/admin/organizations/${organizationId}?`, {
+    organizationName,
+    categories,
+  });
+
+  return response;
 }

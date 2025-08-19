@@ -12,6 +12,8 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState, useEffect } from 'react';
 import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
+import useEditRoom from './hooks/useEditRooom';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface EditRoomModalProps {
   isOpen: boolean;
@@ -20,11 +22,12 @@ interface EditRoomModalProps {
 
 export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
+  const { organizationId } = useOrganizationId();
   const { groupName, categories } = useOrganizationName({
-    organizationId: '1',
+    organizationId,
   });
 
-  const [roomName, setRoomName] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
     useCategorySelection({
@@ -33,18 +36,23 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
 
   useEffect(() => {
     if (groupName) {
-      setRoomName(groupName);
+      setOrganizationName(groupName);
     }
   }, [groupName]);
+
+  const { handleRoomEditButton, isLoading } = useEditRoom({
+    organizationName,
+    categories: selectedCategories.map((category) => category.category),
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <section css={editRoomModalContainer}>
         <p css={editRoomModalTitle}>피드백 방 수정하기</p>
         <RoomNameInput
-          roomName={roomName}
+          roomName={organizationName}
           onChange={(e) => {
-            setRoomName(e.target.value);
+            setOrganizationName(e.target.value);
           }}
         />
         <RoomCategoryList
@@ -63,6 +71,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
+          disabled={isLoading}
         >
           취소
         </BasicButton>
@@ -72,6 +81,8 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
+          onClick={() => handleRoomEditButton()}
+          disabled={isLoading}
         >
           수정하기
         </BasicButton>
