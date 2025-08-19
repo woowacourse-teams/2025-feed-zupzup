@@ -2,11 +2,7 @@ import { useState, useEffect } from 'react';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { getQRCode } from '@/apis/qr.api';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-
-interface QRCodeData {
-  imageUrl: string;
-  siteUrl: string;
-}
+import { QRCodeData } from '@/types/qr.types';
 
 export const useQRCode = () => {
   const [data, setData] = useState<QRCodeData | null>(null);
