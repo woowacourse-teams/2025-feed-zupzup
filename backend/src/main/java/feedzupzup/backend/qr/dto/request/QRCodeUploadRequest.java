@@ -1,4 +1,4 @@
-package feedzupzup.backend.qr.dto;
+package feedzupzup.backend.qr.dto.request;
 
 import feedzupzup.backend.s3.dto.request.FileUploadRequest;
 

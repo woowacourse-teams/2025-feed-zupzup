@@ -1,6 +1,10 @@
 package feedzupzup.backend.global.response;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +52,8 @@ public enum ErrorCode {
     QR_GENERATION_FAILED(INTERNAL_SERVER_ERROR, "Q01", "QR 생성에 실패하였습니다."),
 
     //S3 Error
-    S3_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "S01", "파일 업로드에 실패하였습니다.");
+    S3_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "S01", "파일 업로드에 실패하였습니다."),
+    S3_PRESIGNED_FAILED(INTERNAL_SERVER_ERROR, "S02", "Presigned URL 생성에 실패하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
