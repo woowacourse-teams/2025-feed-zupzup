@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export const feedbackList = css`
+export const adminOrganizationList = css`
   display: flex;
   flex-direction: column;
   gap: 20px;
