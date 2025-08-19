@@ -15,8 +15,8 @@ type QRImageSectionProps = {
 export default function QRImageSection({ url }: QRImageSectionProps) {
   const theme = useAppTheme();
 
-  const handleDownload = () => {
-    // 이미지 다운 로직
+  const handleDownload = async () => {
+    // 나중에 서버 api 구현되면 사용
   };
 
   return (
