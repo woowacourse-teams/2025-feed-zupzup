@@ -4,7 +4,6 @@ import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -33,15 +32,10 @@ public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolv
             final WebDataBinderFactory binderFactory
     ) {
         final HttpServletRequest request = extractHttpServletRequest(webRequest);
-        final HttpServletResponse response = extractHttpServletResponse(webRequest);
-        return sessionManager.getAdminSession(request, response);
+        return sessionManager.getAdminSession(request);
     }
 
     private HttpServletRequest extractHttpServletRequest(final NativeWebRequest webRequest) {
         return webRequest.getNativeRequest(HttpServletRequest.class);
-    }
-
-    private HttpServletResponse extractHttpServletResponse(final NativeWebRequest webRequest) {
-        return webRequest.getNativeResponse(HttpServletResponse.class);
     }
 }
