@@ -45,7 +45,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final AdminSession adminSession,
             final Long feedbackId
     ) {
-        adminFeedbackService.delete(feedbackId);
+        adminFeedbackService.delete(adminSession.adminId(), feedbackId);
         return SuccessResponse.success(HttpStatus.OK);
     }
 

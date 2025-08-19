@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
@@ -35,7 +36,11 @@ public class AdminFeedbackService {
 
     @Transactional
     @BusinessActionLog
-    public void delete(final Long feedbackId) {
+    public void delete(
+            final Long adminId,
+            final Long feedbackId
+    ) {
+        validateAuthentication(adminId, feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
 
