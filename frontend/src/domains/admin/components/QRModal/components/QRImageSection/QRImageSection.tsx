@@ -7,6 +7,8 @@ import {
 } from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection.styles';
 import { QRText } from '@/domains/admin/components/QRModal/QRModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useQRImageDownload } from './hooks/useQRImageDownload';
+import { urlDownload } from '@/domains/utils/urlDownload';
 
 type QRImageSectionProps = {
   url: string;
@@ -14,9 +16,11 @@ type QRImageSectionProps = {
 
 export default function QRImageSection({ url }: QRImageSectionProps) {
   const theme = useAppTheme();
+  const { downloadUrl } = useQRImageDownload();
 
   const handleDownload = async () => {
-    // 나중에 서버 api 구현되면 사용
+    if (!downloadUrl) return;
+    urlDownload({ downloadUrl, fileName: 'qr-code.png' });
   };
 
   return (
