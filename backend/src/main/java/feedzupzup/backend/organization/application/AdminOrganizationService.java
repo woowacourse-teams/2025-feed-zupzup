@@ -87,17 +87,11 @@ public class AdminOrganizationService {
     @Transactional
     public AdminUpdateOrganizationResponse updateOrganization(
             final UUID organizationUuid,
-            final UpdateOrganizationRequest request,
-            final Long adminId
+            final UpdateOrganizationRequest request
     ) {
-
         final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
 
-        if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Id(adminId,
-                organization.getId())) {
-            throw new ForbiddenException("해당 단체 "+ "id = " + organization.getId() + "에 대한 접근 권한이 없습니다.");
-        }
         final Set<String> categories = request.categories();
         organization.updateOrganizationCategoriesAndName(categories, request.organizationName());
         return AdminUpdateOrganizationResponse.from(organization);
