@@ -50,7 +50,7 @@ class AdminCheckInterceptorTest {
     }
 
     @Test
-    @DisplayName("adminId가 존재하지 않는 관리자면 ForbiddenException이 발생한다")
+    @DisplayName("adminId가 존재하지 않는 관리자면 UuAuthorizeException이 발생한다")
     void preHandle_AdminNotExists() {
         // Given
         Long adminId = 1L;
@@ -59,7 +59,7 @@ class AdminCheckInterceptorTest {
 
         // When & Then
         assertThatThrownBy(() -> adminCheckInterceptor.preHandle(request, response, new Object()))
-                .isInstanceOf(ForbiddenException.class)
+                .isInstanceOf(UnauthorizedException.class)
                 .hasMessageContaining("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
     }
 

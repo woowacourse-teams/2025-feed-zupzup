@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
+import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
@@ -10,6 +11,7 @@ import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,6 +43,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,

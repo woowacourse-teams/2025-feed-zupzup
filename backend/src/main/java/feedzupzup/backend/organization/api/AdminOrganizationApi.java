@@ -2,12 +2,14 @@ package feedzupzup.backend.organization.api;
 
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -53,7 +55,7 @@ public interface AdminOrganizationApi {
     SuccessResponse<AdminUpdateOrganizationResponse> updateOrganization(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @RequestBody final UpdateOrganizationRequest updateOrganizationRequest
     );
 

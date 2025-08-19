@@ -1,6 +1,7 @@
 package feedzupzup.backend.global.config;
 
 import feedzupzup.backend.auth.presentation.interceptor.AdminCheckInterceptor;
+import feedzupzup.backend.auth.presentation.resolver.AdminOrganizationArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.AdminSessionArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,7 @@ import java.util.List;
 public class WebConfig implements WebMvcConfigurer {
 
     private final AdminSessionArgumentResolver adminSessionArgumentResolver;
+    private final AdminOrganizationArgumentResolver adminOrganizationArgumentResolver;
     private final AdminCheckInterceptor adminCheckInterceptor;
 
     @Override
@@ -38,6 +40,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(adminSessionArgumentResolver);
+        resolvers.add(adminOrganizationArgumentResolver);
     }
 
     @Override

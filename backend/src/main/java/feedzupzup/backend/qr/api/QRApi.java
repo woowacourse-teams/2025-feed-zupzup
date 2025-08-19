@@ -2,7 +2,9 @@ package feedzupzup.backend.qr.api;
 
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
 import feedzupzup.backend.qr.dto.response.QRResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,8 +35,7 @@ public interface QRApi {
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     SuccessResponse<QRResponse> getQR(
-            @Parameter(hidden = true)
-            @AdminAuthenticationPrincipal final AdminSession adminSession,
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final UUID organizationUuid
     );
@@ -51,8 +52,7 @@ public interface QRApi {
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     SuccessResponse<QRDownloadUrlResponse> getQRDownloadUrl(
-            @Parameter(hidden = true)
-            @AdminAuthenticationPrincipal final AdminSession adminSession,
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final UUID organizationUuid
     );

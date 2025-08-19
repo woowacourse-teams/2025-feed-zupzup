@@ -12,6 +12,7 @@ import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
+            final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid,
             final int size,
             final Long cursorId,
@@ -33,7 +35,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final FeedbackSortBy sortBy
     ) {
         return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
-                organizationUuid,
+                loginOrganizerInfo.organizationUuid(),
                 size,
                 cursorId,
                 status,
