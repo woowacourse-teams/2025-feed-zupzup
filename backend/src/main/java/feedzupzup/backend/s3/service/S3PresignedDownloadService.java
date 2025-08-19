@@ -57,6 +57,10 @@ public class S3PresignedDownloadService {
                 s3Properties.bucketName(),
                 s3Properties.region());
 
+        if (!imageUrl.startsWith(bucketUrl)) {
+            throw new S3PresignedException("올바르지 않은 S3 이미지 URL 형식입니다: " + imageUrl);
+        }
+
         return imageUrl.substring(bucketUrl.length());
     }
 }
