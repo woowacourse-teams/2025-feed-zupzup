@@ -12,11 +12,15 @@ interface UpdateNotificationSettingParams {
 interface UseNotificationSettingMutationProps {
   localEnabled: boolean;
   updateState: (enabled: boolean) => void;
+  onErrorCallback?: () => void;
+  onSuccessCallback?: () => void;
 }
 
 export const useNotificationSettingMutation = ({
   localEnabled,
   updateState,
+  onErrorCallback,
+  onSuccessCallback,
 }: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
   const { showErrorModal } = useErrorModalContext();
@@ -43,7 +47,7 @@ export const useNotificationSettingMutation = ({
 
       queryClient.setQueryData(
         QUERY_KEYS.notificationSettings(),
-        (old: NotificationSettingsResponse) => ({
+        (old: NotificationSettingsResponse | undefined) => ({
           ...old,
           data: { alertsOn: enabled },
         })
@@ -53,18 +57,20 @@ export const useNotificationSettingMutation = ({
 
       return { previousServerData, previousLocalState };
     },
+    onSuccess: () => {
+      onSuccessCallback?.();
+    },
     onError: (_, __, context) => {
-      if (context?.previousServerData) {
-        queryClient.setQueryData(
-          QUERY_KEYS.notificationSettings(),
-          context.previousServerData
-        );
-      }
+      queryClient.removeQueries({
+        queryKey: QUERY_KEYS.notificationSettings(),
+      });
+
       if (context?.previousLocalState !== undefined) {
         updateState(context.previousLocalState);
       }
 
       showErrorModal('알림 설정 변경에 실패했습니다.', '에러');
+      onErrorCallback?.();
     },
   });
 };

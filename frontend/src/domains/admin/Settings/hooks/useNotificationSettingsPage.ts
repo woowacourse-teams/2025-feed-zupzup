@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useFCMManager } from './useFCMManager';
 import { useNotificationSettingMutation } from './useNotificationSettingMutation';
@@ -7,6 +7,9 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 
 export const useNotificationSettingsPage = () => {
   const { fcmStatus, isEnabled: localEnabled, updateState } = useFCMManager();
+
+  const [pendingState, setPendingState] = useState<boolean | null>(null);
+  const originalStateRef = useRef<boolean | null>(null);
 
   const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
     queryKey: QUERY_KEYS.notificationSettings(),
@@ -21,15 +24,27 @@ export const useNotificationSettingsPage = () => {
     }
   }, [alertsOn, localEnabled, updateState]);
 
-  const isToggleEnabled = alertsOn ?? localEnabled;
+  const actualToggleState = alertsOn ?? localEnabled;
 
   const updateMutation = useNotificationSettingMutation({
     localEnabled,
     updateState,
+    onErrorCallback: () => {
+      setPendingState(null);
+      originalStateRef.current = null;
+    },
+    onSuccessCallback: () => {
+      setPendingState(null);
+      originalStateRef.current = null;
+    },
   });
 
-  const updateNotificationSetting = async (enabled: boolean) => {
-    if (enabled === isToggleEnabled) {
+  const isToggleEnabled = updateMutation.isPending
+    ? (pendingState ?? originalStateRef.current ?? actualToggleState)
+    : actualToggleState;
+
+  const updateNotificationSetting = (enabled: boolean) => {
+    if (enabled === actualToggleState) {
       return;
     }
 
@@ -37,11 +52,10 @@ export const useNotificationSettingsPage = () => {
       return;
     }
 
-    try {
-      await updateMutation.mutateAsync({ enabled });
-    } catch (error) {
-      console.error('Error updating notification setting:', error);
-    }
+    originalStateRef.current = actualToggleState;
+    setPendingState(enabled);
+
+    updateMutation.mutate({ enabled });
   };
 
   return {
