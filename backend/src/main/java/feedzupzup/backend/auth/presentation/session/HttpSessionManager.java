@@ -1,11 +1,8 @@
 package feedzupzup.backend.auth.presentation.session;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.admin.domain.exception.AdminException;
-import feedzupzup.backend.auth.exception.AuthException;
-import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
-import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.servlet.http.Cookie;
+import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
