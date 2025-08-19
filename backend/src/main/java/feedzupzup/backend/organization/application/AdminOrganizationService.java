@@ -2,9 +2,10 @@ package feedzupzup.backend.organization.application;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.auth.exception.AuthException;
+import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.global.exception.UnAuthorizeException.InvalidAuthorizeException;
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -96,7 +97,7 @@ public class AdminOrganizationService {
 
         if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Id(adminId,
                 organization.getId())) {
-            throw new InvalidAuthorizeException("해당 단체 "+ "id = " + organization.getId() + "에 대한 접근 권한이 없습니다.");
+            throw new ForbiddenException("해당 단체 "+ "id = " + organization.getId() + "에 대한 접근 권한이 없습니다.");
         }
         final Set<String> categories = request.categories();
         organization.updateOrganizationCategoriesAndName(categories, request.organizationName());

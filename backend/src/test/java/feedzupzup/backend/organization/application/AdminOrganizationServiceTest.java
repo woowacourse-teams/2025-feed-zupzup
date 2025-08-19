@@ -6,9 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.fixture.AdminFixture;
+import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.global.exception.UnAuthorizeException.InvalidAuthorizeException;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
@@ -127,7 +127,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         // when, then
         assertThatThrownBy(() -> adminOrganizationService.updateOrganization(
                 organizationUuid, updateOrganizationRequest, otherAdmin.getId()))
-                .isInstanceOf(InvalidAuthorizeException.class);
+                .isInstanceOf(ForbiddenException.class);
     }
 
     private Admin createAndSaveAdmin() {
