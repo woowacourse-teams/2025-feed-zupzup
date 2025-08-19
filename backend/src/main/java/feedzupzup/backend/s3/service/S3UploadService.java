@@ -5,7 +5,6 @@ import feedzupzup.backend.s3.dto.request.FileUploadRequest;
 import feedzupzup.backend.s3.exception.S3UploadException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -63,7 +62,9 @@ public class S3UploadService {
         } catch (S3Exception e) {
             throw new S3UploadException("S3 서버 오류로 파일 업로드에 실패했습니다: " + objectKey);
         } catch (SdkClientException e) {
-            throw new S3UploadException("S3 클라이언트 오류로 파일 업로드에 실패했습니다: " + objectKey);
+            throw new S3UploadException("클라이언트 오류로 파일 업로드에 실패했습니다: " + objectKey);
+        } catch (Exception e) {
+            throw new S3UploadException("파일 업로드에 실패했습니다: " + objectKey);
         }
     }
 

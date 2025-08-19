@@ -1,4 +1,4 @@
-package feedzupzup.backend.qr.dto;
+package feedzupzup.backend.qr.dto.response;
 
 import feedzupzup.backend.qr.domain.QR;
 
