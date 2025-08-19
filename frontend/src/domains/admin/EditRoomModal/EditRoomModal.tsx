@@ -23,7 +23,6 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
   const { organizationId } = useOrganizationId();
   const { groupName, categories } = useOrganizationName({ organizationId });
-
   const [roomName, setRoomName] = useState('');
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
