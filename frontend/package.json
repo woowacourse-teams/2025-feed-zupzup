@@ -5,7 +5,7 @@
   "scripts": {
     "test": "jest",
     "test-e2e": "cypress open",
-    "dev": "webpack serve --config webpack/webpack.dev.js",
+    "dev": "webpack serve --config webpack/webpack.local.js",
     "build:dev": "webpack --config webpack/webpack.dev.js",
     "build:prod": "webpack --config webpack/webpack.prod.js",
     "preview:dev": "npm run build:dev && npx serve -s dist -p 5000",
