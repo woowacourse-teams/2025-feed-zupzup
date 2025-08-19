@@ -7,7 +7,7 @@ import { createDefineEnv } from './buildUtils.js';
 const result = dotenv.config({ path: '.env.dev' });
 const env = result.parsed || {};
 
-const defineEnv = createDefineEnv(env, 'development');
+const defineEnv = createDefineEnv(env, 'local');
 
 export default merge(common, {
   mode: 'development',
