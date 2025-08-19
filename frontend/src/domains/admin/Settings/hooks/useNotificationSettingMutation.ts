@@ -1,11 +1,6 @@
-import { useEffect } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { NotificationService } from '@/services/notificationService';
-import { useNotifications } from './useNotifications';
-import {
-  getNotificationSettings,
-  patchNotificationSettings,
-} from '@/apis/notifications.api';
+import { patchNotificationSettings } from '@/apis/notifications.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { NotificationSettingsResponse } from '@/types/notification.types';
@@ -14,31 +9,19 @@ interface UpdateNotificationSettingParams {
   enabled: boolean;
 }
 
-export const useNotificationSetting = () => {
+interface UseNotificationSettingMutationProps {
+  localEnabled: boolean;
+  updateState: (enabled: boolean) => void;
+}
+
+export const useNotificationSettingMutation = ({
+  localEnabled,
+  updateState,
+}: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
-  const {
-    fcmStatus,
-    isEnabled: localEnabled,
-    updateState,
-  } = useNotifications();
   const { showErrorModal } = useErrorModalContext();
 
-  const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
-    queryKey: QUERY_KEYS.notificationSettings(),
-    queryFn: getNotificationSettings,
-  });
-
-  useEffect(() => {
-    const alertsOn = serverSettings?.data?.alertsOn;
-
-    if (alertsOn !== undefined && alertsOn !== localEnabled) {
-      updateState(alertsOn);
-    }
-  }, [serverSettings?.data?.alertsOn, localEnabled]);
-
-  const isToggleEnabled = serverSettings?.data?.alertsOn ?? localEnabled;
-
-  const updateMutation = useMutation({
+  return useMutation({
     mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {
       if (enabled) {
         await NotificationService.enable();
@@ -84,23 +67,4 @@ export const useNotificationSetting = () => {
       showErrorModal('알림 설정 변경에 실패했습니다.', '에러');
     },
   });
-
-  const updateNotificationSetting = async (enabled: boolean) => {
-    if (enabled === isToggleEnabled) {
-      return;
-    }
-
-    if (updateMutation.isPending) {
-      return;
-    }
-
-    await updateMutation.mutateAsync({ enabled });
-  };
-
-  return {
-    isToggleEnabled,
-    isLoading: isQueryLoading || updateMutation.isPending,
-    fcmStatus,
-    updateNotificationSetting,
-  };
 };

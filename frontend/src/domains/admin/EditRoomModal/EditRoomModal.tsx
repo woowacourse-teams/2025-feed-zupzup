@@ -72,6 +72,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           height={'40px'}
           fontSize={'16px'}
           disabled={isLoading}
+          onClick={onClose}
         >
           취소
         </BasicButton>

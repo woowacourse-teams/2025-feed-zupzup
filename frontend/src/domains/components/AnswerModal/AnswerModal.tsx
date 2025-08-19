@@ -1,6 +1,7 @@
 import TextArea from '@/components/@commons/TextArea/TextArea';
 import BasicButton from '@/components/BasicButton/BasicButton';
-import { headerSubtitle, headerTitle } from '@/components/Header/Header.style';
+import { headerSubtitle } from '@/components/Header/Header.style';
+
 import Modal from '@/components/Modal/Modal';
 import TextareaCounter from '@/components/TextareaCounter/TextareaCounter';
 import {
@@ -10,6 +11,7 @@ import {
   container,
   contentTextarea,
   textareaContainer,
+  headerTitle,
 } from '@/domains/components/AnswerModal/AnswerModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';

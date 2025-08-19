@@ -17,7 +17,8 @@ export default function QRUrlSection({ url }: QRUrlSectionProps) {
   const theme = useAppTheme();
 
   const handleCopy = async () => {
-    // 링크 복사 로직
+    await navigator.clipboard.writeText(url);
+    alert('복사되었습니다.');
   };
 
   return (

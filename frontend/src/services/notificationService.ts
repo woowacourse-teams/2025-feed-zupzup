@@ -2,7 +2,7 @@ import { getToken } from 'firebase/messaging';
 import { messaging } from '@/firebase/messaging';
 import { VAPID_KEY } from '@/firebase/config';
 import {
-  registerFCMToken,
+  postFCMToken,
   getNotificationSettings,
 } from '@/apis/notifications.api';
 import {
@@ -11,6 +11,7 @@ import {
   createNotificationErrorMessage,
   getStoredFCMToken,
   setStoredFCMToken,
+  clearStoredFCMToken,
 } from '@/utils/notificationUtils';
 import type { NotificationServiceResult } from '@/types/notification.types';
 
@@ -45,7 +46,7 @@ export class NotificationService {
           throw new Error('FCM 토큰 생성에 실패했습니다.');
         }
 
-        await registerFCMToken(token);
+        await postFCMToken(token);
         setStoredFCMToken(token);
       }
 
@@ -65,26 +66,18 @@ export class NotificationService {
     }
   }
 
-  static async disable(): Promise<NotificationServiceResult> {
-    try {
-      setStoredNotificationState(false);
+  static disable(): NotificationServiceResult {
+    setStoredNotificationState(false);
 
-      return {
-        success: true,
-        message: '알림이 비활성화되었습니다.',
-      };
-    } catch (error) {
-      console.error('[NotificationService] 비활성화 실패:', error);
-
-      setStoredNotificationState(true);
-
-      throw new Error('알림 비활성화에 실패했습니다.');
-    }
+    return {
+      success: true,
+      message: '알림이 비활성화되었습니다.',
+    };
   }
 
-  static async removeToken(): Promise<void> {
+  static removeToken(): void {
     try {
-      localStorage.removeItem('fcm_token');
+      clearStoredFCMToken();
       setStoredNotificationState(false);
     } catch (error) {
       console.error('[NotificationService] 토큰 삭제 실패:', error);
