@@ -4,6 +4,7 @@ import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -21,19 +22,26 @@ public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolv
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AdminAuthenticationPrincipal.class) &&
-               parameter.getParameterType().equals(AdminSession.class);
+                parameter.getParameterType().equals(AdminSession.class);
     }
 
     @Override
-    public Object resolveArgument(final MethodParameter parameter, 
-                                  final ModelAndViewContainer mavContainer,
-                                  final NativeWebRequest webRequest, 
-                                  final WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(
+            final MethodParameter parameter,
+            final ModelAndViewContainer mavContainer,
+            final NativeWebRequest webRequest,
+            final WebDataBinderFactory binderFactory
+    ) {
         final HttpServletRequest request = extractHttpServletRequest(webRequest);
-        return sessionManager.getAdminSession(request);
+        final HttpServletResponse response = extractHttpServletResponse(webRequest);
+        return sessionManager.getAdminSession(request, response);
     }
 
     private HttpServletRequest extractHttpServletRequest(final NativeWebRequest webRequest) {
         return webRequest.getNativeRequest(HttpServletRequest.class);
+    }
+
+    private HttpServletResponse extractHttpServletResponse(final NativeWebRequest webRequest) {
+        return webRequest.getNativeResponse(HttpServletResponse.class);
     }
 }
