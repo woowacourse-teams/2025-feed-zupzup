@@ -1,13 +1,11 @@
+import { ApiResponse } from './apiResponse';
+
 export interface QRCodeData {
   imageUrl: string;
   siteUrl: string;
 }
 
-export interface QRCodeResponse {
-  data: QRCodeData;
-  status: number;
-  message: string;
-}
+export type QRCodeResponse = ApiResponse<QRCodeData>;
 
 export interface GetQRCodeParams {
   organizationId: string;
