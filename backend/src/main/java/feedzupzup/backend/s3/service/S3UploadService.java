@@ -63,6 +63,8 @@ public class S3UploadService {
             throw new S3UploadException("S3 서버 오류로 파일 업로드에 실패했습니다: " + objectKey);
         } catch (SdkClientException e) {
             throw new S3UploadException("클라이언트 오류로 파일 업로드에 실패했습니다: " + objectKey);
+        } catch (Exception e) {
+            throw new S3UploadException("파일 업로드에 실패했습니다: " + objectKey);
         }
     }
 

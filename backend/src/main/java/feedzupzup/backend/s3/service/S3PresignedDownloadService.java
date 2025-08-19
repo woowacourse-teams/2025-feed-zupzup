@@ -29,6 +29,8 @@ public class S3PresignedDownloadService {
             throw new S3PresignedException("S3 서버 오류로 파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
         } catch (final SdkClientException e) {
             throw new S3PresignedException("클라이언트 오류로 파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
+        } catch (final Exception e) {
+            throw new S3PresignedException("파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
         }
     }
 
