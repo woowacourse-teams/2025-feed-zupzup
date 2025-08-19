@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useFCMManager } from './useFCMManager';
 import { useNotificationSettingMutation } from './useNotificationSettingMutation';
@@ -7,9 +7,6 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 
 export const useNotificationSettingsPage = () => {
   const { fcmStatus, isEnabled: localEnabled, updateState } = useFCMManager();
-
-  const [pendingState, setPendingState] = useState<boolean | null>(null);
-  const originalStateRef = useRef<boolean | null>(null);
 
   const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
     queryKey: QUERY_KEYS.notificationSettings(),
@@ -24,36 +21,17 @@ export const useNotificationSettingsPage = () => {
     }
   }, [alertsOn, localEnabled, updateState]);
 
-  const actualToggleState = alertsOn ?? localEnabled;
+  const isToggleEnabled = alertsOn ?? localEnabled;
 
   const updateMutation = useNotificationSettingMutation({
     localEnabled,
     updateState,
-    onErrorCallback: () => {
-      setPendingState(null);
-      originalStateRef.current = null;
-    },
-    onSuccessCallback: () => {
-      setPendingState(null);
-      originalStateRef.current = null;
-    },
   });
 
-  const isToggleEnabled = updateMutation.isPending
-    ? (pendingState ?? originalStateRef.current ?? actualToggleState)
-    : actualToggleState;
-
   const updateNotificationSetting = (enabled: boolean) => {
-    if (enabled === actualToggleState) {
+    if (enabled === isToggleEnabled || updateMutation.isPending) {
       return;
     }
-
-    if (updateMutation.isPending) {
-      return;
-    }
-
-    originalStateRef.current = actualToggleState;
-    setPendingState(enabled);
 
     updateMutation.mutate({ enabled });
   };

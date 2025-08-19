@@ -12,15 +12,11 @@ interface UpdateNotificationSettingParams {
 interface UseNotificationSettingMutationProps {
   localEnabled: boolean;
   updateState: (enabled: boolean) => void;
-  onErrorCallback?: () => void;
-  onSuccessCallback?: () => void;
 }
 
 export const useNotificationSettingMutation = ({
   localEnabled,
   updateState,
-  onErrorCallback,
-  onSuccessCallback,
 }: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
   const { showErrorModal } = useErrorModalContext();
@@ -32,7 +28,6 @@ export const useNotificationSettingMutation = ({
       } else {
         await NotificationService.disable();
       }
-
       return patchNotificationSettings({ alertsOn: enabled });
     },
     onMutate: async ({ enabled }: UpdateNotificationSettingParams) => {
@@ -43,7 +38,6 @@ export const useNotificationSettingMutation = ({
       const previousServerData = queryClient.getQueryData(
         QUERY_KEYS.notificationSettings()
       );
-      const previousLocalState = localEnabled;
 
       queryClient.setQueryData(
         QUERY_KEYS.notificationSettings(),
@@ -55,10 +49,7 @@ export const useNotificationSettingMutation = ({
 
       updateState(enabled);
 
-      return { previousServerData, previousLocalState };
-    },
-    onSuccess: () => {
-      onSuccessCallback?.();
+      return { previousServerData, previousLocalState: localEnabled };
     },
     onError: (_, __, context) => {
       queryClient.removeQueries({
@@ -70,7 +61,6 @@ export const useNotificationSettingMutation = ({
       }
 
       showErrorModal('알림 설정 변경에 실패했습니다.', '에러');
-      onErrorCallback?.();
     },
   });
 };
