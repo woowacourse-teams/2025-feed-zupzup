@@ -1,7 +1,4 @@
-import {
-  default as CopyPlugin,
-  default as CopyWebpackPlugin,
-} from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -46,6 +43,9 @@ export default {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'images/[name].[hash][ext]',
+        },
       },
       {
         test: /.css$/i,
@@ -56,22 +56,50 @@ export default {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      meta: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
+      },
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'public/favicon.ico', to: '.' },
-        { from: 'public/manifest.json', to: '.' },
-        { from: 'public/512x512.png', to: '.' },
-        { from: 'public/192x192.png', to: '.' },
-        { from: 'public/service-worker.js', to: '.' },
-      ],
-    }),
-    new CopyPlugin({
-      patterns: [
+        {
+          from: 'public/favicon.ico',
+          to: '.',
+        },
+        {
+          from: 'public/manifest.json',
+          to: '.',
+        },
+        {
+          from: 'public/512x512.png',
+          to: 'images/[name].[contenthash][ext]',
+        },
+        {
+          from: 'public/192x192.png',
+          to: 'images/[name].[contenthash][ext]',
+        },
+        {
+          from: 'public/service-worker.js',
+          to: 'sw.[contenthash].js',
+          transform(content) {
+            const versionComment = `// SW Version: ${Date.now()}\n`;
+            return versionComment + content;
+          },
+        },
         {
           from: 'public',
+          to: '.',
           globOptions: {
-            ignore: ['**/index.html'],
+            ignore: [
+              '**/index.html',
+              '**/favicon.ico',
+              '**/manifest.json',
+              '**/512x512.png',
+              '**/192x192.png',
+              '**/service-worker.js',
+            ],
           },
         },
       ],
