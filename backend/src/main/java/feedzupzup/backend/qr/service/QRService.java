@@ -67,8 +67,9 @@ public class QRService {
         final Organization organization = getOrganization(organizationUuid);
         final QR qr = getQr(organization);
 
-        final String qrPrefix = "QR";
-        final String downloadFileName = qrPrefix + qrProperties.image().extension();
+        final String qrPrefix = "QR_" + organization.getUuid().toString().substring(0, 8);
+        final String extension = qrProperties.image().extension().toLowerCase();
+        final String downloadFileName = String.format("%s.%s", qrPrefix, extension);
         final String presignedUrl = s3PresignedDownloadService.generateDownloadUrlFromImageUrl(
                 qr.getImageUrl(), downloadFileName);
 
