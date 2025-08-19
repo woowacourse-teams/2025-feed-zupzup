@@ -1,5 +1,5 @@
 import {
-  AdminOrganization,
+  AdminOrganizationType,
   getAdminOrganization,
 } from '@/apis/adminOrganization.api';
 import { ApiError } from '@/apis/apiClient';
@@ -16,7 +16,7 @@ export default function useAdminOrganization() {
     isLoading,
     isError,
     error,
-  } = useQuery<AdminOrganization[]>({
+  } = useQuery<AdminOrganizationType[]>({
     queryKey: QUERY_KEYS.adminOrganizations(),
     queryFn: async () => {
       const res = await getAdminOrganization();
