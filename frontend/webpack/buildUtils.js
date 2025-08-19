@@ -12,7 +12,7 @@ export const getBuildInfo = (env, envMode = 'production') => {
       ENV_MODE: envMode,
     };
   } catch {
-    const fallbackVersion = envMode === 'development' ? '1.0.0-dev' : '1.0.0';
+    const fallbackVersion = env.NPM_PACKAGE_VERSION || '1.0.0';
     const fallbackHash =
       envMode === 'development'
         ? 'dev-' + Date.now().toString(36)
