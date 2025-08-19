@@ -1,7 +1,7 @@
 package feedzupzup.backend.auth.presentation.session;
 
-import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.admin.domain.exception.AdminException;
+import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,10 +20,10 @@ public class HttpSessionManager {
         this.adminIdSessionKey = adminIdSessionKey;
     }
 
-    public AdminSession getAdminSession(final HttpServletRequest request) {
-        final HttpSession session = getExistingSession(request);
+    public AdminSession getAdminSession(final HttpServletRequest request, final HttpServletResponse response) {
+        final HttpSession session = getExistingSession(request, response);
         final Long adminId = getAdminIdFromSession(session);
-        
+
         return new AdminSession(adminId);
     }
 
@@ -45,9 +45,10 @@ public class HttpSessionManager {
         response.addCookie(cookie);
     }
 
-    private HttpSession getExistingSession(final HttpServletRequest request) {
+    private HttpSession getExistingSession(final HttpServletRequest request, final HttpServletResponse response) {
         final HttpSession session = request.getSession(false);
         if (session == null) {
+            removeAdminSession(request, response);
             throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "세션을 찾을 수 없습니다");
         }
         return session;
