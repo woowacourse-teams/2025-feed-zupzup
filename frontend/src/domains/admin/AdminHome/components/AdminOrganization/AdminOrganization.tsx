@@ -35,7 +35,7 @@ export default function AdminOrganization({
       <p css={pendingText(theme)}>
         <strong>{waitingCount}</strong> 건 미처리
       </p>
-      {postedAt !== null ? (
+      {postedAt ? (
         <p>최근 피드백: {formatRelativeTime(postedAt)}</p>
       ) : (
         <p>최근 피드백: 없음</p>
