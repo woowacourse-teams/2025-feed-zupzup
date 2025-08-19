@@ -2,12 +2,13 @@ import dotenv from 'dotenv';
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 import common from './webpack.common.js';
-import { createDefineEnv } from './buildUtils.js';
 
 const result = dotenv.config({ path: '.env.dev' });
 const env = result.parsed || {};
 
-const { defineEnv } = createDefineEnv(env, 'development');
+const defineEnv = {
+  'process.env': JSON.stringify(env),
+};
 
 export default merge(common, {
   mode: 'development',
