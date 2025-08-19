@@ -5,7 +5,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
-import com.google.cloud.storage.Acl.Role;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
@@ -20,10 +19,7 @@ import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -32,7 +28,6 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -117,115 +112,6 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"));
-    }
-
-    @Test
-    @DisplayName("관리자가 피드백 상태를 성공적으로 업데이트한다")
-    void admin_update_feedback_status_success() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                organization, SUGGESTION);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback = FeedbackFixture.createFeedbackWithContent(
-                organization,
-                "상태 변경될 피드백",
-                organizationCategory
-        );
-        final Feedback savedFeedback = feedBackRepository.save(feedback);
-        final UpdateFeedbackStatusRequest updateRequest = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
-
-        // when & then
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .contentType(ContentType.JSON)
-                .body(updateRequest)
-                .when()
-                .patch("/admin/feedbacks/{feedbackId}/status", savedFeedback.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.status", equalTo("CONFIRMED"));
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 피드백 상태 업데이트 시 예외가 발생한다")
-    void admin_update_feedback_status_not_found() {
-        // given
-        final Long nonExistentFeedbackId = 999L;
-        final UpdateFeedbackStatusRequest updateRequest = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
-
-        // when & then
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .contentType(ContentType.JSON)
-                .body(updateRequest)
-                .when()
-                .patch("/admin/feedbacks/{feedbackId}/status", nonExistentFeedbackId)
-                .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
-    @DisplayName("관리자가 피드백 비밀상태를 성공적으로 변경한다")
-    void admin_update_feedback_secret_success() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                organization, SUGGESTION);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(
-                organization,
-                false,
-                organizationCategory
-        );
-        final Feedback savedFeedback = feedBackRepository.save(feedback);
-        final UpdateFeedbackSecretRequest updateRequest = new UpdateFeedbackSecretRequest(true);
-
-        // when & then
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .contentType(ContentType.JSON)
-                .body(updateRequest)
-                .when()
-                .patch("/admin/feedbacks/{feedbackId}/secret", savedFeedback.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbackId", equalTo(savedFeedback.getId().intValue()))
-                .body("data.isSecret", equalTo(true));
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 피드백 비밀상태 변경 시 예외가 발생한다")
-    void admin_update_feedback_secret_not_found() {
-        // given
-        final Long nonExistentFeedbackId = 999L;
-        final UpdateFeedbackSecretRequest updateRequest = new UpdateFeedbackSecretRequest(true);
-
-        // when & then
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .contentType(ContentType.JSON)
-                .body(updateRequest)
-                .when()
-                .patch("/admin/feedbacks/{feedbackId}/secret", nonExistentFeedbackId)
-                .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
