@@ -37,7 +37,11 @@ export const useNotificationSettingsPage = () => {
       return;
     }
 
-    await updateMutation.mutateAsync({ enabled });
+    try {
+      await updateMutation.mutateAsync({ enabled });
+    } catch (error) {
+      console.error('Error updating notification setting:', error);
+    }
   };
 
   return {
