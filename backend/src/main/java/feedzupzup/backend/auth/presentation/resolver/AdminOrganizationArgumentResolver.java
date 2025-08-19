@@ -4,8 +4,7 @@ import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
-import feedzupzup.backend.organization.domain.OrganizationRepository;
-import feedzupzup.backend.organizer.domain.OrganizerRepository;
+=import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -25,7 +24,6 @@ public class AdminOrganizationArgumentResolver implements HandlerMethodArgumentR
 
     private final HttpSessionManager sessionManager;
     private final OrganizerRepository organizerRepository;
-    private final OrganizationRepository organizationRepository;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
