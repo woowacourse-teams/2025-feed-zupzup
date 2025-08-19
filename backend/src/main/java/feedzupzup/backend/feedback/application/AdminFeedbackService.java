@@ -1,5 +1,8 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.auth.exception.AuthException;
+import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
@@ -29,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AdminFeedbackService {
 
+    private final AdminRepository adminRepository;
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final FeedbackLikeCounter feedbackLikeCounter;
@@ -84,12 +88,22 @@ public class AdminFeedbackService {
     @Transactional
     @BusinessActionLog
     public UpdateFeedbackCommentResponse updateFeedbackComment(
+            final Long adminId,
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
         final Feedback feedback = getFeedback(feedbackId);
+
+        validateAuthentication(adminId, feedbackId);
+
         feedback.updateCommentAndStatus(request.toComment());
         return UpdateFeedbackCommentResponse.from(feedback);
+    }
+
+    private void validateAuthentication(final Long adminId, final Long feedbackId) {
+        if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
+            throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
+        }
     }
 
     private Feedback getFeedback(final Long feedbackId) {

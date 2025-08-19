@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.api;
 
+import feedzupzup.backend.admin.dto.AdminSession;
+import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
@@ -62,6 +64,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/secret")
     SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackSecretRequest request
     );
@@ -77,6 +80,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/admin/feedbacks/{feedbackId}")
     SuccessResponse<Void> delete(
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
     );
 
@@ -91,6 +95,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/status")
     SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackStatusRequest request
     );
@@ -106,6 +111,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/admin/feedbacks/{feedbackId}/comment")
     SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackCommentRequest request
     );

@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
+import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
@@ -45,21 +46,28 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
+            final AdminSession adminSession,
             final Long feedbackId,
             final UpdateFeedbackSecretRequest request
     ) {
-        UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(feedbackId, request);
+        UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(
+                feedbackId, request
+        );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
-    public SuccessResponse<Void> delete(final Long feedbackId) {
+    public SuccessResponse<Void> delete(
+            final AdminSession adminSession,
+            final Long feedbackId
+    ) {
         adminFeedbackService.delete(feedbackId);
         return SuccessResponse.success(HttpStatus.OK);
     }
 
     @Override
     public SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
+            final AdminSession adminSession,
             final Long feedbackId,
             final UpdateFeedbackStatusRequest request
     ) {
@@ -70,11 +78,12 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(
+            final AdminSession adminSession,
             final Long feedbackId,
             final UpdateFeedbackCommentRequest request
     ) {
         final UpdateFeedbackCommentResponse response = adminFeedbackService.updateFeedbackComment(
-                request, feedbackId);
+                adminSession.adminId(), request, feedbackId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

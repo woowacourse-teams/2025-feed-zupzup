@@ -9,6 +9,13 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.admin.domain.Admin;
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.domain.fixture.AdminFixture;
+import feedzupzup.backend.admin.domain.vo.AdminName;
+import feedzupzup.backend.admin.domain.vo.LoginId;
+import feedzupzup.backend.admin.domain.vo.Password;
+import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
@@ -29,7 +36,12 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.UUID;
+import org.aspectj.weaver.ast.Or;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -48,6 +60,19 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private OrganizerRepository organizerRepository;
+
+    private Admin admin;
+    @BeforeEach
+    void setUpAuth() {
+        admin = AdminFixture.create();
+        adminRepository.save(admin);
+    }
 
     @Nested
     @DisplayName("피드백 삭제 테스트")
@@ -431,6 +456,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -446,10 +474,43 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UpdateFeedbackCommentResponse updateFeedbackCommentResponse =
-                adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+                adminFeedbackService.updateFeedbackComment(
+                        admin.getId(),
+                        updateFeedbackCommentRequest,
+                        feedback.getId()
+                );
 
         // then
         assertThat(updateFeedbackCommentResponse.comment()).isEqualTo(testComment);
+    }
+
+    @Test
+    @DisplayName("단체에 속하지 않은 관리자가 댓글을 수정하려고 한다면 예외가 발생해야 한다.")
+    void not_contains_organization_admin_request_then_throw_exception() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        final Admin otherAdmin = AdminFixture.create();
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization,
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        String testComment = "testComment";
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                testComment
+        );
+
+        // when & then
+        assertThatThrownBy(() -> adminFeedbackService.updateFeedbackComment(otherAdmin.getId(), updateFeedbackCommentRequest, feedback.getId()))
+                .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
@@ -458,6 +519,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
 
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
@@ -473,7 +537,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         );
 
         //when
-        adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+        adminFeedbackService.updateFeedbackComment(admin.getId(), updateFeedbackCommentRequest, feedback.getId());
         final Feedback resultFeedback = feedBackRepository.findById(1L).get();
 
         // then
