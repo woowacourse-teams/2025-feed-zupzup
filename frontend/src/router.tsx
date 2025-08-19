@@ -10,6 +10,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import AdminHome from './domains/admin/AdminHome/AdminHome';
 import Settings from './domains/admin/Settings/Settings';
+import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 
 export const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ export const router = createBrowserRouter([
             element: <Settings />,
           },
         ],
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },
