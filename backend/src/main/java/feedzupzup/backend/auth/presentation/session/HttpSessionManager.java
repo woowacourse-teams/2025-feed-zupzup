@@ -43,6 +43,7 @@ public class HttpSessionManager {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setDomain(request.getServerName());
         cookie.setSecure(true);
         response.addCookie(cookie);
     }
