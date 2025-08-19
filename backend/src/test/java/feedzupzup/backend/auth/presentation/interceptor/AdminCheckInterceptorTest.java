@@ -41,7 +41,7 @@ class AdminCheckInterceptorTest {
     void preHandle_AdminNotExists() {
         // Given
         Long adminId = 1L;
-        given(httpSessionManager.getAdminSession(any(), any())).willReturn(new AdminSession(adminId));
+        given(httpSessionManager.getAdminSession(any())).willReturn(new AdminSession(adminId));
         given(adminRepository.existsById(adminId)).willReturn(false);
 
         // When & Then
@@ -55,7 +55,7 @@ class AdminCheckInterceptorTest {
     void preHandle_Success() {
         // Given
         Long adminId = 1L;
-        given(httpSessionManager.getAdminSession(any(), any())).willReturn(new AdminSession(adminId));
+        given(httpSessionManager.getAdminSession(any())).willReturn(new AdminSession(adminId));
         given(adminRepository.existsById(adminId)).willReturn(true);
 
         // When
