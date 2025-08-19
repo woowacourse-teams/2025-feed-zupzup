@@ -12,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.fixture.AdminFixture;
-import feedzupzup.backend.admin.domain.vo.AdminName;
-import feedzupzup.backend.admin.domain.vo.LoginId;
-import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
@@ -22,15 +19,10 @@ import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -40,7 +32,6 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.UUID;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -108,93 +99,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when & then
             assertThatCode(() -> adminFeedbackService.delete(nonExistingId)).doesNotThrowAnyException();
-        }
-    }
-
-    @Nested
-    @DisplayName("피드백 상태 업데이트 테스트")
-    class UpdateFeedbackStatusTest {
-
-        @Test
-        @DisplayName("유효한 피드백 ID와 상태로 업데이트 시 성공한다")
-        void updateFeedbackStatus_success() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationRepository.save(organization);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING,
-                    organizationCategory);
-            final Feedback savedFeedback = feedBackRepository.save(feedback);
-            final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
-
-            // when
-            final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
-                    request, savedFeedback.getId());
-
-            // then
-            assertThat(response).isNotNull();
-            assertThat(response.status()).isEqualTo(ProcessStatus.CONFIRMED);
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 피드백 ID로 업데이트 시 예외가 발생한다")
-        void updateFeedbackStatus_not_found() {
-            // given
-            final Long nonExistentFeedbackId = 999L;
-            final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.updateFeedbackStatus(
-                    request, nonExistentFeedbackId))
-                    .isInstanceOf(ResourceNotFoundException.class);
-        }
-    }
-
-    @Nested
-    @DisplayName("피드백 비밀상태 변경 테스트")
-    class UpdateFeedbackSecretTest {
-
-        @Test
-        @DisplayName("유효한 피드백 ID와 비밀상태로 업데이트 시 성공한다")
-        void updateFeedbackSecret_success() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(organization, false,
-                    organizationCategory);
-            final Feedback savedFeedback = feedBackRepository.save(feedback);
-            final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
-
-            // when
-            final UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(
-                    savedFeedback.getId(), request);
-
-            // then
-            assertAll(
-                    () -> assertThat(response.feedbackId()).isEqualTo(savedFeedback.getId()),
-                    () -> assertThat(response.isSecret()).isTrue()
-            );
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 피드백 ID로 비밀상태 변경 시 예외가 발생한다")
-        void updateFeedbackSecret_not_found() {
-            // given
-            final Long nonExistentFeedbackId = 999L;
-            final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.updateFeedbackSecret(nonExistentFeedbackId, request))
-                    .isInstanceOf(ResourceNotFoundException.class);
         }
     }
 

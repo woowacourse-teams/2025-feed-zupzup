@@ -6,12 +6,8 @@ import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,22 +49,6 @@ public interface AdminFeedbackApi {
             @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortBy sortBy
     );
 
-    @Operation(summary = "피드백 비밀 상태 변경", description = "피드백의 비밀 상태를 변경합니다. (관리자 전용)")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "변경 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
-            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
-            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
-    })
-    @SecurityRequirement(name = "SessionAuth")
-    @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/admin/feedbacks/{feedbackId}/secret")
-    SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
-            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
-            @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
-            @RequestBody @Valid final UpdateFeedbackSecretRequest request
-    );
-
     @Operation(summary = "피드백 삭제", description = "피드백을 삭제합니다. (관리자 전용)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공", useReturnTypeSchema = true),
@@ -82,22 +62,6 @@ public interface AdminFeedbackApi {
     SuccessResponse<Void> delete(
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
-    );
-
-    @Operation(summary = "피드백 처리 상태 변경", description = "피드백의 처리 상태를 변경합니다. (관리자 전용)")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "상태 변경 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
-            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
-            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
-    })
-    @SecurityRequirement(name = "SessionAuth")
-    @ResponseStatus(HttpStatus.OK)
-    @PatchMapping("/admin/feedbacks/{feedbackId}/status")
-    SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
-            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
-            @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
-            @RequestBody @Valid final UpdateFeedbackStatusRequest request
     );
 
     @Operation(summary = "답글 추가", description = "답글을 추가합니다. (관리자 전용)")
