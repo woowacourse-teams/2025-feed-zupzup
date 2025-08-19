@@ -6,8 +6,12 @@ import feedzupzup.backend.feedback.application.AdminFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
+import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import lombok.RequiredArgsConstructor;
@@ -41,12 +45,35 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
+    public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
+            final AdminSession adminSession,
+            final Long feedbackId,
+            final UpdateFeedbackSecretRequest request
+    ) {
+        UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(
+                feedbackId, request
+        );
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
     public SuccessResponse<Void> delete(
             final AdminSession adminSession,
             final Long feedbackId
     ) {
-        adminFeedbackService.delete(adminSession.adminId(), feedbackId);
+        adminFeedbackService.delete(feedbackId);
         return SuccessResponse.success(HttpStatus.OK);
+    }
+
+    @Override
+    public SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
+            final AdminSession adminSession,
+            final Long feedbackId,
+            final UpdateFeedbackStatusRequest request
+    ) {
+        final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
+                request, feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
