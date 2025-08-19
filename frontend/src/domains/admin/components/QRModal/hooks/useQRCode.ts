@@ -5,7 +5,10 @@ import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { QRCodeData } from '@/types/qr.types';
 
 export const useQRCode = () => {
-  const [data, setData] = useState<QRCodeData | null>(null);
+  const [data, setData] = useState<QRCodeData>({
+    imageUrl: '',
+    siteUrl: '',
+  });
   const [loading, setLoading] = useState(false);
   const { showErrorModal } = useErrorModalContext();
   const { organizationId } = useOrganizationId();

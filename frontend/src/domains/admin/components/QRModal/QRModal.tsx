@@ -22,8 +22,8 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <QRImageSection url={data?.imageUrl || ''} />
-      <QRUrlSection url={data?.siteUrl || ''} />
+      <QRImageSection url={data?.imageUrl} />
+      <QRUrlSection url={data?.siteUrl} />
       <BasicButton
         variant='secondary'
         padding={'8px 16px'}
