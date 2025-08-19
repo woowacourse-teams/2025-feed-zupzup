@@ -3,14 +3,15 @@ import {
   getAdminOrganization,
   GetAdminOrganizationResponse,
 } from '@/apis/adminOrganization.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { ApiError } from '@/apis/apiClient';
+import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { useEffect, useState } from 'react';
 
 export default function useAdminOrganization() {
   const [adminOrganizations, setAdminOrganizations] = useState<
     AdminOrganization[] | []
   >([]);
-  const { showErrorModal } = useErrorModalContext();
+  const { handleApiError } = useApiErrorHandler();
 
   useEffect(() => {
     const fetchAdminOrganizations = async () => {
@@ -19,7 +20,7 @@ export default function useAdminOrganization() {
           await getAdminOrganization();
         setAdminOrganizations(response.data);
       } catch (error) {
-        showErrorModal(error, '조직 정보 조회 실패');
+        handleApiError(error as ApiError);
       }
     };
     fetchAdminOrganizations();
