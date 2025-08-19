@@ -3,7 +3,9 @@ package feedzupzup.backend.auth.presentation.session;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.admin.domain.exception.AdminException;
 import feedzupzup.backend.global.response.ErrorCode;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -31,11 +33,16 @@ public class HttpSessionManager {
         session.setMaxInactiveInterval(TWO_WEEKS_IN_SECONDS);
     }
 
-    public void removeAdminSession(final HttpServletRequest request) {
+    public void removeAdminSession(final HttpServletRequest request, final HttpServletResponse response) {
         final HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
+
+        final Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
     }
 
     private HttpSession getExistingSession(final HttpServletRequest request) {
