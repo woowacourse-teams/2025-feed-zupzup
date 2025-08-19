@@ -67,7 +67,8 @@ public class QRService {
         final Organization organization = getOrganization(organizationUuid);
         final QR qr = getQr(organization);
 
-        final String downloadFileName = organization.getName() + qrProperties.image().extension();
+        final String qrPrefix = "QR-";
+        final String downloadFileName = qrPrefix + organization.getName() + qrProperties.image().extension();
         String presignedUrl = s3PresignedDownloadService.generateDownloadUrlFromImageUrl(
                 qr.getImageUrl(), downloadFileName);
 
@@ -86,8 +87,9 @@ public class QRService {
     }
 
     private String buildSiteUrl(final UUID organizationUuid) {
+        final String paramKey = "uuid";
         return siteUrl.builder()
-                .addParam("uuid", organizationUuid.toString())
+                .addParam(paramKey, organizationUuid.toString())
                 .build();
     }
 }
