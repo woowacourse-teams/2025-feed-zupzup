@@ -9,7 +9,7 @@ import {
 } from '@/utils/notificationUtils';
 import type { FCMStatus } from '@/types/notification.types';
 
-export const useNotifications = () => {
+export const useFCMManager = () => {
   const [permission, setPermission] =
     useState<NotificationPermission>('default');
   const isSupported = NotificationService.checkIsSupported();

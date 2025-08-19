@@ -23,7 +23,6 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
   const { organizationId } = useOrganizationId();
   const { groupName, categories } = useOrganizationName({ organizationId });
-
   const [roomName, setRoomName] = useState('');
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
@@ -63,6 +62,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
+          onClick={onClose}
         >
           취소
         </BasicButton>

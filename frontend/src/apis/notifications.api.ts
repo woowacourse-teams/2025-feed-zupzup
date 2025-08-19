@@ -7,7 +7,7 @@ import type {
   NotificationSettingsResponse,
 } from '@/types/notification.types';
 
-export const registerFCMToken = async (
+export const postFCMToken = async (
   notificationToken: string
 ): Promise<ApiResponse> => {
   const response = await apiClient.post<ApiResponse, FCMTokenRequest>(
