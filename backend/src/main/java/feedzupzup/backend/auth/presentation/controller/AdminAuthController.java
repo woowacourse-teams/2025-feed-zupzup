@@ -1,16 +1,15 @@
 package feedzupzup.backend.auth.presentation.controller;
 
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.presentation.api.AdminAuthApi;
 import feedzupzup.backend.auth.application.AuthService;
-import feedzupzup.backend.auth.dto.response.LoginResponse;
 import feedzupzup.backend.auth.dto.request.LoginRequest;
 import feedzupzup.backend.auth.dto.request.SignUpRequest;
+import feedzupzup.backend.auth.dto.response.LoginResponse;
 import feedzupzup.backend.auth.dto.response.SignUpResponse;
+import feedzupzup.backend.auth.presentation.api.AdminAuthApi;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import feedzupzup.backend.global.response.SuccessResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,8 +36,8 @@ public class AdminAuthController implements AdminAuthApi {
     }
 
     @Override
-    public SuccessResponse<String> logout(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) {
-        httpSessionManager.removeAdminSession(httpRequest, httpResponse);
+    public SuccessResponse<String> logout(final HttpServletRequest httpRequest) {
+        httpSessionManager.removeAdminSession(httpRequest);
         return SuccessResponse.success(HttpStatus.OK, "로그아웃이 완료되었습니다.");
     }
 
