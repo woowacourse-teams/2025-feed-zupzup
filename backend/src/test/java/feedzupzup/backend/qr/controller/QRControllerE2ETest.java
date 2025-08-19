@@ -16,6 +16,9 @@ import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
 import io.restassured.http.ContentType;
@@ -41,14 +44,19 @@ class QRControllerE2ETest extends E2EHelper {
     private QRRepository qrRepository;
 
     @Autowired
+    private OrganizerRepository organizerRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private String sessionCookie;
 
+    private Admin admin;
+
     @BeforeEach
     void setUpAuth() {
         final Password password = new Password("password123");
-        final Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password),
+        admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password),
                 new AdminName("testName"));
         adminRepository.save(admin);
 
@@ -71,8 +79,12 @@ class QRControllerE2ETest extends E2EHelper {
         @DisplayName("조직 UUID로 QR 코드를 성공적으로 조회한다")
         void getQR_success() {
             // given
+
             final Organization organization = OrganizationFixture.createAllBlackBox();
             final Organization savedOrganization = organizationRepository.save(organization);
+
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
 
             final QR qr = new QR("https://example.com/qr-image.png", savedOrganization);
             qrRepository.save(qr);
@@ -117,6 +129,9 @@ class QRControllerE2ETest extends E2EHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             final Organization savedOrganization = organizationRepository.save(organization);
 
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
             // when & then
             given()
                     .log().all()
@@ -156,6 +171,9 @@ class QRControllerE2ETest extends E2EHelper {
             // given
             final Organization organization = OrganizationFixture.createAllBlackBox();
             final Organization savedOrganization = organizationRepository.save(organization);
+
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
 
             // when & then
             given()

@@ -27,6 +27,9 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,6 +55,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
+    private OrganizerRepository organizerRepository;
+
+    @Autowired
     private AdminRepository adminRepository;
 
     @Autowired
@@ -59,12 +65,14 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
 
     private String sessionCookie;
 
+    private Admin admin;
+
     @BeforeEach
     void setUp() {
         feedbackLikeRepository.clear();
 
         final Password password = new Password("password123");
-        final Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password),
+        admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password),
                 new AdminName("testName"));
         adminRepository.save(admin);
 
@@ -226,6 +234,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -313,6 +324,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -379,7 +393,11 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("관리자가 빈 피드백 목록을 조회한다")
     void admin_get_empty_feedbacks() {
         // given
-        final UUID organizationUuid = UUID.randomUUID();
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
 
         // when & then
         given()
@@ -388,7 +406,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .queryParam("size", 10)
                 .queryParam("sortBy", "LATEST")
                 .when()
-                .get("/admin/organizations/{organizationUuid}/feedbacks", organizationUuid)
+                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -405,6 +423,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
 
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
@@ -464,6 +485,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -507,6 +531,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -546,6 +573,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
 
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
@@ -589,6 +619,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -630,6 +663,9 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
 
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
