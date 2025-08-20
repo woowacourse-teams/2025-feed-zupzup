@@ -7,6 +7,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
@@ -78,5 +79,18 @@ public interface AdminFeedbackApi {
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @RequestBody @Valid final UpdateFeedbackCommentRequest request
+    );
+
+    @Operation(summary = "피드백 전체 처리 현황 조회", description = "피드백의 전체 처리 현황을 조회합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/feedbacks/statistics")
+    SuccessResponse<FeedbackStatisticResponse> getAllFeedbackStatistics(
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
     );
 }
