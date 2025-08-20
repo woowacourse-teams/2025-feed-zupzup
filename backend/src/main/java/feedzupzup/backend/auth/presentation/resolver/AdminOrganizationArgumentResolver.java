@@ -4,8 +4,6 @@ import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
-import feedzupzup.backend.global.exception.ResourceException;
-import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
