@@ -20,7 +20,6 @@ export default function useCreateOrganization({
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.adminOrganizations(),
       });
-      onClose();
     },
     onError: (error: ApiError) => {
       handleApiError(error);
