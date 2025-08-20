@@ -2,6 +2,8 @@ package feedzupzup.backend.auth.presentation.session;
 
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.admin.domain.exception.AdminException;
+import feedzupzup.backend.auth.exception.AuthException;
+import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.global.response.ErrorCode;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ public class HttpSessionManager {
     private HttpSession getExistingSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(false);
         if (session == null) {
-            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "세션을 찾을 수 없습니다");
+            throw new UnauthorizedException("세션을 찾을 수 없습니다");
         }
         return session;
     }
@@ -56,7 +58,7 @@ public class HttpSessionManager {
     private Long getAdminIdFromSession(final HttpSession session) {
         final Long adminId = (Long) session.getAttribute(adminIdSessionKey);
         if (adminId == null) {
-            throw new AdminException(ErrorCode.ADMIN_NOT_LOGGED_IN, "관리자가 로그인되어 있지 않습니다");
+            throw new UnauthorizedException("관리자가 로그인되어 있지 않습니다");
         }
         return adminId;
     }
