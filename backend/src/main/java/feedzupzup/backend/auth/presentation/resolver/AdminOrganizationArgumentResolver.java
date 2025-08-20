@@ -4,9 +4,6 @@ import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
-import feedzupzup.backend.global.exception.ResourceException;
-import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +24,6 @@ public class AdminOrganizationArgumentResolver implements HandlerMethodArgumentR
 
     private final HttpSessionManager sessionManager;
     private final OrganizerRepository organizerRepository;
-    private final OrganizationRepository organizationRepository;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
@@ -45,12 +41,8 @@ public class AdminOrganizationArgumentResolver implements HandlerMethodArgumentR
         final Long adminId = sessionManager.getAdminSession(request).adminId();
         final UUID organizationUuid = extractOrganizationUuid(webRequest);
 
-        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
-            throw new ResourceNotFoundException("해당 UUID" + organizationUuid + "는 존재하지 않습니다.");
-        }
-
         if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Uuid(adminId, organizationUuid)) {
-            throw new ForbiddenException("해당 기능에 대해 접근 권한이 존재하지 않습니다.");
+            throw new ForbiddenException("해당 단체: " + organizationUuid + "에 대한 접근 권한이 존재하지 않습니다.");
         }
         return new LoginOrganizerInfo(adminId, organizationUuid);
     }

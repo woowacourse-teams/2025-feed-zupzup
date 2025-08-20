@@ -1,7 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
-import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
@@ -70,6 +69,8 @@ public class AdminFeedbackService {
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
+        hasAccessToFeedback(adminId, feedbackId);
+
         final Feedback feedback = getFeedback(feedbackId);
 
         validateAuthentication(adminId, feedbackId);
@@ -78,7 +79,7 @@ public class AdminFeedbackService {
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
-    private void validateAuthentication(final Long adminId, final Long feedbackId) {
+    private void hasAccessToFeedback(final Long adminId, final Long feedbackId) {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
             throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
         }
@@ -87,5 +88,11 @@ public class AdminFeedbackService {
     private Feedback getFeedback(final Long feedbackId) {
         return feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+    }
+
+    private void validateAuthentication(final Long adminId, final Long feedbackId) {
+        if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
+            throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
+        }
     }
 }
