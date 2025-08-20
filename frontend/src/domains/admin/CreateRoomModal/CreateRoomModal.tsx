@@ -14,8 +14,9 @@ import {
   useCategorySelection,
 } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
 import useCreateOrganization from '@/domains/admin/CreateRoomModal/hooks/useCreateOrganization';
+import useSubmitDisabled from '@/domains/admin/CreateRoomModal/hooks/useSubmitDisabled';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -28,7 +29,6 @@ export default function CreateRoomModal({
 }: CreateRoomModalProps) {
   const theme = useAppTheme();
   const [organizationName, setOrganizationName] = useState('');
-  const [disabled, setDisabled] = useState(true);
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
     useCategorySelection();
@@ -37,9 +37,10 @@ export default function CreateRoomModal({
     onClose,
   });
 
-  useEffect(() => {
-    setDisabled(!organizationName || selectedCategories.length === 0);
-  }, [organizationName, selectedCategories]);
+  const { disabled } = useSubmitDisabled({
+    organizationName,
+    selectedCategories,
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
