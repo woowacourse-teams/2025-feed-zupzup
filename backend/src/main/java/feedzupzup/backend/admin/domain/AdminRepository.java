@@ -14,16 +14,13 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     
     boolean existsByLoginId(final LoginId loginId);
 
-
     @Query("""
-    SELECT EXISTS (
-      SELECT 1
-      FROM Admin a
-      INNER JOIN Organizer org ON a.id = org.admin.id
-      INNER JOIN Organization o ON o.id = org.organization.id
-      INNER JOIN Feedback f ON f.organization.id = o.id
-      WHERE a.id = :adminId AND f.id = :feedbackId
-    )
-    """)
+      SELECT EXISTS (
+        SELECT 1
+        FROM Organizer org
+        INNER JOIN Feedback f ON f.organization.id = org.organization.id
+        WHERE org.admin.id = :adminId AND f.id = :feedbackId
+      )
+      """)
     boolean existsFeedbackId(Long adminId, Long feedbackId);
 }
