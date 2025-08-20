@@ -16,7 +16,7 @@ export default function useOrganizationName({
   const { handleApiError } = useApiErrorHandler();
 
   const { data, error } = useQuery({
-    queryKey: QUERY_KEYS.organizationData(organizationId),
+    queryKey: [...QUERY_KEYS.organizationData, organizationId],
     queryFn: async () => {
       const response = await getOrganizationName({ organizationId });
       return response.data;

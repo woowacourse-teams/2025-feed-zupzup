@@ -1,6 +1,7 @@
 import { ApiError } from '@/apis/apiClient';
 import { putOrganizations } from '@/apis/organization.api';
 import { CategoryListType } from '@/constants/categoryList';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
@@ -31,9 +32,9 @@ export default function useEditRoom({
       handleApiError(error as ApiError);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['infinity', 'feedbacks'] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.infiniteFeedbacks });
       queryClient.invalidateQueries({
-        queryKey: ['organizationData'],
+        queryKey: QUERY_KEYS.organizationData,
       });
     },
   });
