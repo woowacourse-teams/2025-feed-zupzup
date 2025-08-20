@@ -89,10 +89,3 @@ jobs:
           git add CHANGELOG.md
           git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
           git push origin fe/production
-
-      - name: Build
-        working-directory: ./frontend
-        run: |
-          echo "NPM_PACKAGE_VERSION=${{ env.new_tag }}" >> $GITHUB_ENV
-          npm install
-          npm run build
