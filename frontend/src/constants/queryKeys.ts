@@ -3,5 +3,6 @@ export const QUERY_KEYS = {
   infiniteFeedbacks: ['infinity', 'feedbacks'],
   notificationSettings: () => ['notificationSettings'] as const,
   qrImageDownload: ['qrImageDownload'],
+  organizationData: ['organizationData'],
   adminOrganizations: () => ['adminOrganizations'] as const,
 };
