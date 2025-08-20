@@ -1,4 +1,5 @@
 import { getOrganizationName } from '@/apis/organization.api';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useQuery } from '@tanstack/react-query';
 
@@ -12,7 +13,7 @@ export default function useOrganizationName({
   const { showErrorModal } = useErrorModalContext();
 
   const { data, error } = useQuery({
-    queryKey: ['organizationData', organizationId],
+    queryKey: QUERY_KEYS.organizationData(organizationId),
     queryFn: async () => {
       const response = await getOrganizationName({ organizationId });
       return response!.data;
