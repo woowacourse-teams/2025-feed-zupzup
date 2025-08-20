@@ -26,7 +26,7 @@ jobs:
       - name: Decide new version (SemVer by commit messages)
         id: semver
         run: |
-          LAST_TAG=${{ env.last_tag }}
+          LAST_TAG=${{ env.LAST_TAG }} 
           VERSION=$(echo $LAST_TAG | sed 's/^v//')
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
@@ -60,6 +60,13 @@ jobs:
             git log --pretty=format:"- %s" >> release_notes.md
           fi
 
+      - name: Check if tag already exists
+        run: |
+          if git rev-parse ${{ env.new_tag }} >/dev/null 2>&1; then
+          echo "❌ Tag ${{ env.new_tag }} already exists. Skipping release."
+          exit 0
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -71,7 +78,11 @@ jobs:
 
       - name: Update CHANGELOG.md
         run: |
+          if [ -f CHANGELOG.md ]; then
           cat release_notes.md CHANGELOG.md > tmp.md
+          else
+          cat release_notes.md > tmp.md
+          fi
           mv tmp.md CHANGELOG.md
           git config user.name "github-actions"
           git config user.email "actions@github.com"
