@@ -28,7 +28,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   const { groupName, categories } = useOrganizationName({
     organizationId,
   });
-  const { openModal } = useModalContext();
+  const { openModal, closeModal, isOpen: isAlertOpen } = useModalContext();
 
   const [organizationName, setOrganizationName] = useState('');
 
@@ -52,7 +52,11 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
     await editRoom();
     onClose();
     openModal(
-      <AlertModal isOpen={true} onClose={() => {}} title='방 수정 완료' />
+      <AlertModal
+        isOpen={isAlertOpen}
+        onClose={closeModal}
+        title='방 수정 완료'
+      />
     );
   };
 

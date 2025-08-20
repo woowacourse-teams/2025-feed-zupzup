@@ -66,7 +66,7 @@ export async function putOrganizations({
   const response = await apiClient.put<
     ApiResponse<PutOrganizationsResponse>,
     PutOrganizationsBody
-  >(`/admin/organizations/${organizationId}?`, {
+  >(`/admin/organizations/${organizationId}`, {
     organizationName,
     categories,
   });
