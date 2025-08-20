@@ -28,16 +28,12 @@ export const useNotificationSettingsPage = () => {
     updateState,
   });
 
-  const updateNotificationSetting = async (enabled: boolean) => {
-    if (enabled === isToggleEnabled) {
+  const updateNotificationSetting = (enabled: boolean) => {
+    if (enabled === isToggleEnabled || updateMutation.isPending) {
       return;
     }
 
-    if (updateMutation.isPending) {
-      return;
-    }
-
-    await updateMutation.mutateAsync({ enabled });
+    updateMutation.mutate({ enabled });
   };
 
   return {

@@ -9,13 +9,9 @@ export function useApiErrorHandler() {
 
   const handleApiError = async (error: ApiError) => {
     if (error.status === 401) {
-      try {
-        resetLocalStorage('auth');
-        showErrorModal(error, '로그인 권한 없음');
-        navigate('/login');
-      } catch (e) {
-        console.log('로그아웃 실패', e);
-      }
+      resetLocalStorage('auth');
+      showErrorModal(error, '로그인 권한 없음');
+      navigate('/login');
     }
   };
 
