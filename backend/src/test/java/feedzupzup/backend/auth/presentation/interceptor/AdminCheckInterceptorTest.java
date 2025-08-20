@@ -8,7 +8,6 @@ import static org.mockito.BDDMockito.given;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
-import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

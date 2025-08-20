@@ -37,7 +37,8 @@ public class AdminFeedbackService {
     @BusinessActionLog
     public void delete(
             final Long adminId,
-            final Long feedbackId) {
+            final Long feedbackId
+    ) {
         validateAuthentication(adminId, feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
@@ -71,6 +72,9 @@ public class AdminFeedbackService {
         hasAccessToFeedback(adminId, feedbackId);
 
         final Feedback feedback = getFeedback(feedbackId);
+
+        validateAuthentication(adminId, feedbackId);
+
         feedback.updateCommentAndStatus(request.toComment());
         return UpdateFeedbackCommentResponse.from(feedback);
     }

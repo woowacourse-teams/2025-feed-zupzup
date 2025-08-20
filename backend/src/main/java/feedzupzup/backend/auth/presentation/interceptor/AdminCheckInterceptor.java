@@ -18,7 +18,8 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
     private final HttpSessionManager httpSessionManager;
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) {
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
+            final Object handler) {
         final AdminSession adminSession = httpSessionManager.getAdminSession(request);
         final Long adminId = adminSession.adminId();
 
