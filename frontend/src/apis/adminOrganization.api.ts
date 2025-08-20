@@ -9,14 +9,14 @@ export type AdminOrganizationType = {
   postedAt: string;
 };
 
-export type GetAdminOrganizationResponse = ApiResponse<AdminOrganizationType[]>;
+type GetAdminOrganizationResponse = ApiResponse<AdminOrganizationType[]>;
 
 type RequestData = {
   organizationName: string;
   categories: CategoryType[];
 };
 
-export type AdminOrganizationUUIDType = {
+type AdminOrganizationUUIDType = {
   organizationUuid: string;
 };
 
