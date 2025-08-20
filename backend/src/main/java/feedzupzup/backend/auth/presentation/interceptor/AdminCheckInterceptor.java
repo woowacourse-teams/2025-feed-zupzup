@@ -18,13 +18,16 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
     private final HttpSessionManager httpSessionManager;
 
     @Override
-    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response,
-            final Object handler) {
+    public boolean preHandle(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Object handler
+    ) {
         final AdminSession adminSession = httpSessionManager.getAdminSession(request);
         final Long adminId = adminSession.adminId();
 
         if (adminId == null || !adminRepository.existsById(adminId)) {
-            httpSessionManager.removeAdminSession(request, response);
+            httpSessionManager.removeAdminSession(request);
             throw new UnauthorizedException("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
         }
         return true;
