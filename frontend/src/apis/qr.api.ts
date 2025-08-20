@@ -1,9 +1,15 @@
 import { apiClient } from '@/apis/apiClient';
-import {
-  GetQRCodeParams,
-  QRCodeResponse,
-  QRDownloadUrlResponse,
-} from '@/types/qr.types';
+import { ApiResponse } from '@/types/apiResponse';
+import { QRCodeData } from '@/types/qr.types';
+
+type QRCodeResponse = ApiResponse<QRCodeData>;
+
+interface GetQRCodeParams {
+  organizationId: string;
+}
+interface QRDownloadData {
+  downloadUrl: string;
+}
 
 export async function getQRCode({ organizationId }: GetQRCodeParams) {
   const response = await apiClient.get<QRCodeResponse>(
@@ -15,6 +21,8 @@ export async function getQRCode({ organizationId }: GetQRCodeParams) {
 interface GetQRDownloadUrlParams {
   organizationId: string;
 }
+
+type QRDownloadUrlResponse = ApiResponse<QRDownloadData>;
 
 export async function getQRDownloadUrl({
   organizationId,
