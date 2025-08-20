@@ -35,7 +35,10 @@ public class AdminFeedbackService {
 
     @Transactional
     @BusinessActionLog
-    public void delete(final Long feedbackId) {
+    public void delete(
+            final Long adminId,
+            final Long feedbackId) {
+        validateAuthentication(adminId, feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
 
@@ -81,5 +84,11 @@ public class AdminFeedbackService {
     private Feedback getFeedback(final Long feedbackId) {
         return feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+    }
+
+    private void validateAuthentication(final Long adminId, final Long feedbackId) {
+        if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
+            throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
+        }
     }
 }

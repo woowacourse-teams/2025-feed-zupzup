@@ -4,7 +4,7 @@ import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
-=import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
