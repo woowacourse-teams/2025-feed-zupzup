@@ -92,7 +92,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
           취소
         </BasicButton>
         <BasicButton
-          variant='secondary'
+          variant='primary'
           width={'48%'}
           padding={'8px 8px'}
           height={'40px'}

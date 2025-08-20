@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import FeedbackRoom from '@/domains/admin/AdminHome/components/FeedbackRoom/FeedbackRoom';
+import FeedbackRoom from '@/domains/admin/AdminHome/components/AdminOrganization/AdminOrganization';
 
 const meta: Meta<typeof FeedbackRoom> = {
   title: 'components/FeedbackRoom',
   component: FeedbackRoom,
   tags: ['autodocs'],
   argTypes: {
-    roomName: { control: 'text', description: '피드백 방 이름' },
-    pendingCount: {
+    organizationName: { control: 'text', description: '피드백 방 이름' },
+    waitingCount: {
       control: { type: 'number', min: 0 },
       description: '미처리 건 수',
     },
-    feedbackHoursAgo: {
+    postedAt: {
       control: { type: 'number', min: 0 },
       description: '최근 피드백 시각(시간 전)',
     },
@@ -40,36 +40,36 @@ type Story = StoryObj<typeof FeedbackRoom>;
 
 export const Default: Story = {
   args: {
-    roomName: '회의실 A',
-    pendingCount: 3,
-    feedbackHoursAgo: 5,
+    organizationName: '회의실 A',
+    waitingCount: 3,
+    postedAt: new Date().toISOString(),
     onClick: () => {},
   },
 };
 
 export const NoPending: Story = {
   args: {
-    roomName: '회의실 B',
-    pendingCount: 0,
-    feedbackHoursAgo: 12,
+    organizationName: '회의실 B',
+    waitingCount: 0,
+    postedAt: new Date().toISOString(),
     onClick: () => {},
   },
 };
 
 export const RecentlyUpdated: Story = {
   args: {
-    roomName: '회의실 C',
-    pendingCount: 8,
-    feedbackHoursAgo: 1,
+    organizationName: '회의실 C',
+    waitingCount: 8,
+    postedAt: new Date(Date.now() - 3600000).toISOString(),
     onClick: () => {},
   },
 };
 
 export const LongTimeAgo: Story = {
   args: {
-    roomName: '회의실 D',
-    pendingCount: 15,
-    feedbackHoursAgo: 48,
+    organizationName: '회의실 D',
+    waitingCount: 15,
+    postedAt: new Date(Date.now() - 86400000).toISOString(),
     onClick: () => {},
   },
 };
