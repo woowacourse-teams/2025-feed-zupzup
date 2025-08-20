@@ -1,21 +1,16 @@
 import { ApiError } from '@/apis/apiClient';
 import { putOrganizations } from '@/apis/organization.api';
-import { CategoryListType } from '@/constants/categoryList';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
+import { PutOrganizationsBody } from '@/types/organization.types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-interface UseEditRoomParams {
-  organizationName: string;
-  categories: CategoryListType[];
-}
 
 export default function useEditRoom({
   organizationName,
   categories,
-}: UseEditRoomParams) {
+}: PutOrganizationsBody) {
   const { showErrorModal } = useErrorModalContext();
   const { organizationId } = useOrganizationId();
   const { handleApiError } = useApiErrorHandler();
