@@ -1,16 +1,21 @@
+import { CategoryType } from '@/analytics/types';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import Modal from '@/components/Modal/Modal';
-import { buttonContainer } from '@/domains/admin/CreateRoomModal/CreateRoomModal.styles';
 import RoomCategoryList from '@/domains/admin/components/RoomCategoryList/RoomCategoryList';
 import RoomCategoryTagList from '@/domains/admin/components/RoomCategoryTagList/RoomCategoryTagList';
+import RoomNameInput from '@/domains/admin/components/RoomNameInput/RoomNameInput';
 import {
+  buttonContainer,
   roomModalContainer,
   roomModalTitle,
 } from '@/domains/admin/CreateRoomModal/CreateRoomModal.styles';
-import { useCategorySelection } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
+import {
+  SelectedCategoryItem,
+  useCategorySelection,
+} from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
+import useCreateOrganization from '@/domains/admin/CreateRoomModal/hooks/useCreateOrganization';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useState } from 'react';
-import RoomNameInput from '@/domains/admin/components/RoomNameInput/RoomNameInput';
+import { useEffect, useState } from 'react';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -22,10 +27,19 @@ export default function CreateRoomModal({
   onClose,
 }: CreateRoomModalProps) {
   const theme = useAppTheme();
-  const [roomName, setRoomName] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
+  const [disabled, setDisabled] = useState(true);
 
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
     useCategorySelection();
+
+  const { createRoom, isPending } = useCreateOrganization({
+    onClose,
+  });
+
+  useEffect(() => {
+    setDisabled(!organizationName || selectedCategories.length === 0);
+  }, [organizationName, selectedCategories]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -33,9 +47,9 @@ export default function CreateRoomModal({
         <p css={roomModalTitle}>새 피드백 방 만들기</p>
 
         <RoomNameInput
-          roomName={roomName}
+          roomName={organizationName}
           onChange={(e) => {
-            setRoomName(e.target.value);
+            setOrganizationName(e.target.value);
           }}
         />
         <RoomCategoryList
@@ -54,17 +68,28 @@ export default function CreateRoomModal({
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
+          onClick={onClose}
         >
           취소
         </BasicButton>
         <BasicButton
-          variant='primary'
+          variant={disabled ? 'disabled' : 'primary'}
           width={'48%'}
           padding={'8px 8px'}
           height={'40px'}
           fontSize={'16px'}
+          onClick={() =>
+            createRoom({
+              organizationName: organizationName,
+              categories: selectedCategories.map(
+                (category: SelectedCategoryItem) =>
+                  category.category as CategoryType
+              ),
+            })
+          }
+          disabled={disabled}
         >
-          방 만들기
+          {isPending ? '제출 중입니다' : '방 만들기'}
         </BasicButton>
       </div>
     </Modal>
