@@ -1,0 +1,80 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - fe/production
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get last tag
+        id: lasttag
+        run: echo "last_tag=$(git describe --tags --abbrev=0 || echo 'v0.0.0')" >> $GITHUB_ENV
+
+      - name: Decide new version (SemVer by commit messages)
+        id: semver
+        run: |
+          LAST_TAG=${{ env.last_tag }}
+          VERSION=$(echo $LAST_TAG | sed 's/^v//')
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+
+          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s%n%b")
+
+          if echo "$COMMITS" | grep -q "BREAKING CHANGE"; then
+            MAJOR=$((MAJOR+1))
+            MINOR=0
+            PATCH=0
+          elif echo "$COMMITS" | grep -qE "^feat"; then
+            MINOR=$((MINOR+1))
+            PATCH=0
+          elif echo "$COMMITS" | grep -qE "^fix"; then
+            PATCH=$((PATCH+1))
+          else
+            PATCH=$((PATCH+1))
+          fi
+
+          NEW_TAG="v$MAJOR.$MINOR.$PATCH"
+          echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
+          echo "next version: $NEW_TAG"
+
+      - name: Generate release notes
+        run: |
+          echo "## ${{ env.new_tag }} ($(date +'%Y-%m-%d'))" > release_notes.md
+          if [ -n "${{ env.last_tag }}" ]; then
+            git log ${{ env.last_tag }}..HEAD --pretty=format:"- %s" >> release_notes.md
+          else
+            git log --pretty=format:"- %s" >> release_notes.md
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.new_tag }}
+          name: Release ${{ env.new_tag }}
+          body_path: release_notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update CHANGELOG.md
+        run: |
+          cat release_notes.md CHANGELOG.md > tmp.md
+          mv tmp.md CHANGELOG.md
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add CHANGELOG.md
+          git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
+          git push origin fe/production
+
+      - name: Build
+        run: |
+          echo "NPM_PACKAGE_VERSION=${{ env.new_tag }}" >> $GITHUB_ENV
+          npm install
+          npm run build
