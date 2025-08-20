@@ -26,41 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final AdminCheckInterceptor adminCheckInterceptor;
 
     @Override
-    public void addCorsMappings(final CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(
-                        "http://localhost:3000",
-                        "https://feedzupzup.com",
-                        "https://dev.feedzupzup.com"
-                )
-                .allowedOriginPatterns(
-                        "http://192.168.*.*:3000"
-                )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedHeaders("Content-Type", "Authorization", "Accept", "X-Requested-With")
-                .allowCredentials(true);
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",
-                "https://feedzupzup.com",
-                "https://dev.feedzupzup.com"
-        ));
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://192.168.*.*:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Accept", "X-Requested-With"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L); // preflight 캐시 시간
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(adminSessionArgumentResolver);
         resolvers.add(adminOrganizationArgumentResolver);
