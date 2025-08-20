@@ -21,7 +21,10 @@ export default function useOrganizationName({
   });
 
   if (error) {
-    showErrorModal('서버에서 에러가 발생했습니다. 다시 시도해 주세요.', '에러');
+    showErrorModal(
+      '조직 정보를 불러오는데 실패했습니다. 다시 시도해 주세요.',
+      '에러'
+    );
   }
 
   return {
