@@ -20,7 +20,7 @@ export type AdminOrganizationUUIDType = {
   organizationUuid: string;
 };
 
-export async function getAdminOrganization(): Promise<GetAdminOrganizationResponse> {
+export async function getAdminOrganization() {
   const response = await apiClient.get('/admin/organizations');
 
   return response as GetAdminOrganizationResponse;
