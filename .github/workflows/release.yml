@@ -14,8 +14,14 @@ jobs:
           fetch-depth: 0
 
       - name: Get last tag
-        id: lasttag
-        run: echo "last_tag=$(git describe --tags --abbrev=0 || echo 'v0.0.0')" >> $GITHUB_ENV
+        run: |
+          git fetch --tags
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+          echo "LAST_TAG not found, using first commit"
+          LAST_TAG=$(git rev-list --max-parents=0 HEAD)
+          fi
+          echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
 
       - name: Decide new version (SemVer by commit messages)
         id: semver
