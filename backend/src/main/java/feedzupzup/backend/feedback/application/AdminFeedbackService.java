@@ -69,10 +69,9 @@ public class AdminFeedbackService {
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedback = getFeedback(feedbackId);
-
         hasAccessToFeedback(adminId, feedbackId);
 
+        final Feedback feedback = getFeedback(feedbackId);
         feedback.updateCommentAndStatus(request.toComment());
         return UpdateFeedbackCommentResponse.from(feedback);
     }
