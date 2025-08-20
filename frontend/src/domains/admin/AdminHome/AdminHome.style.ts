@@ -13,9 +13,9 @@ export const homeLayout = css`
   padding: 52px 16px 0;
 `;
 
-export const feedbackListContainer = (theme: Theme) => css`
+export const adminOrganizationListContainer = (theme: Theme) => css`
   width: calc(100% + ${PAGE_PADDING_PX}px);
-  height: 100vh;
+  height: calc(100vh - 500px);
   min-height: calc(100% - ${PAGE_PADDING_PX}px);
   margin-top: 160px;
   background-color: ${theme.colors.white[100]};
@@ -40,7 +40,7 @@ export const listCaption = (theme: Theme) => css`
   ${theme.typography.pretendard.caption}
 `;
 
-export const addFeedbackRoom = (theme: Theme) => css`
+export const addAdminOrganization = (theme: Theme) => css`
   width: 60px;
   min-height: 60px;
   background-color: ${theme.colors.purple[100]};

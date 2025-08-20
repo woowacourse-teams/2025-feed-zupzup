@@ -1,7 +1,7 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const feedbackRoomContainer = (theme: Theme) => css`
+export const adminOrganizationContainer = (theme: Theme) => css`
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -18,14 +18,14 @@ export const feedbackRoomContainer = (theme: Theme) => css`
   }
 `;
 
-export const feedbackTitleContainer = css`
+export const organizationTitleContainer = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
 
-export const feedbackRoomTitle = (theme: Theme) => css`
+export const organizationTitle = (theme: Theme) => css`
   display: flex;
   align-items: center;
   gap: 8px;
