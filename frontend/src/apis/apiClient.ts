@@ -107,8 +107,8 @@ async function baseClient<Response, RequestBody>({
     'Content-type': 'application/json',
   };
 
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const baseURL = isDevelopment ? '/api' : process.env.BASE_URL;
+  const isLocal = process.env.ENV_MODE === 'local';
+  const baseURL = isLocal ? '/api' : process.env.BASE_URL;
   const fullURL = `${baseURL}${URI}`;
 
   try {
