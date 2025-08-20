@@ -1,5 +1,8 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.dto.AdminSession;
+import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
@@ -9,12 +12,8 @@ import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class AdminFeedbackService {
 
+    private final AdminRepository adminRepository;
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final FeedbackLikeCounter feedbackLikeCounter;
@@ -36,30 +36,12 @@ public class AdminFeedbackService {
 
     @Transactional
     @BusinessActionLog
-    public void delete(final Long feedbackId) {
-        feedBackRepository.deleteById(feedbackId);
-    }
-
-    @Transactional
-    @BusinessActionLog
-    public UpdateFeedbackStatusResponse updateFeedbackStatus(
-            final UpdateFeedbackStatusRequest request,
+    public void delete(
+            final Long adminId,
             final Long feedbackId
     ) {
-        final Feedback feedback = getFeedback(feedbackId);
-        feedback.updateStatus(request.status());
-        return UpdateFeedbackStatusResponse.from(feedback);
-    }
-
-    @Transactional
-    @BusinessActionLog
-    public UpdateFeedbackSecretResponse updateFeedbackSecret(
-            final Long feedbackId,
-            final UpdateFeedbackSecretRequest request
-    ) {
-        final Feedback feedBack = getFeedback(feedbackId);
-        feedBack.updateSecret(request.isSecret());
-        return UpdateFeedbackSecretResponse.from(feedBack);
+        validateAuthentication(adminId, feedbackId);
+        feedBackRepository.deleteById(feedbackId);
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
@@ -84,12 +66,22 @@ public class AdminFeedbackService {
     @Transactional
     @BusinessActionLog
     public UpdateFeedbackCommentResponse updateFeedbackComment(
+            final Long adminId,
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
         final Feedback feedback = getFeedback(feedbackId);
+
+        validateAuthentication(adminId, feedbackId);
+
         feedback.updateCommentAndStatus(request.toComment());
         return UpdateFeedbackCommentResponse.from(feedback);
+    }
+
+    private void validateAuthentication(final Long adminId, final Long feedbackId) {
+        if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
+            throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
+        }
     }
 
     private Feedback getFeedback(final Long feedbackId) {

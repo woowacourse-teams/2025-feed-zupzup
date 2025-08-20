@@ -1,7 +1,7 @@
 package feedzupzup.backend.qr.controller;
 
-import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import feedzupzup.backend.qr.api.QRApi;
 import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
 import feedzupzup.backend.qr.dto.response.QRResponse;
@@ -18,18 +18,18 @@ public class QRController implements QRApi {
     private final QRService qrService;
 
     public SuccessResponse<QRResponse> getQR(
-            final AdminSession adminSession,
+            final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid
     ) {
-        final QRResponse response = qrService.getQRCode(organizationUuid);
+        final QRResponse response = qrService.getQRCode(loginOrganizerInfo.organizationUuid());
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     public SuccessResponse<QRDownloadUrlResponse> getQRDownloadUrl(
-            final AdminSession adminSession,
+            final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid
     ) {
-        final QRDownloadUrlResponse response = qrService.getDownloadUrl(organizationUuid);
+        final QRDownloadUrlResponse response = qrService.getDownloadUrl(loginOrganizerInfo.organizationUuid());
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

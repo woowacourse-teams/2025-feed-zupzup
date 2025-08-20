@@ -9,27 +9,30 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.admin.domain.Admin;
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.domain.fixture.AdminFixture;
+import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,6 +52,19 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private OrganizerRepository organizerRepository;
+
+    private Admin admin;
+    @BeforeEach
+    void setUpAuth() {
+        admin = AdminFixture.create();
+        adminRepository.save(admin);
+    }
+
     @Nested
     @DisplayName("피드백 삭제 테스트")
     class DeleteFeedbackTest {
@@ -60,6 +76,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
 
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
             final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
@@ -69,107 +88,34 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             // when
-            adminFeedbackService.delete(savedFeedback.getId());
+            adminFeedbackService.delete(admin.getId(), savedFeedback.getId());
 
             // then
             assertThat(feedBackRepository.findById(savedFeedback.getId())).isEmpty();
         }
 
         @Test
-        @DisplayName("존재하지 않는 피드백 삭제 시 예외가 발생 하지 않는다.")
-        void delete_non_existing_feedback_exception() {
-            // given
-            final Long nonExistingId = 999L;
-
-            // when & then
-            assertThatCode(() -> adminFeedbackService.delete(nonExistingId)).doesNotThrowAnyException();
-        }
-    }
-
-    @Nested
-    @DisplayName("피드백 상태 업데이트 테스트")
-    class UpdateFeedbackStatusTest {
-
-        @Test
-        @DisplayName("유효한 피드백 ID와 상태로 업데이트 시 성공한다")
-        void updateFeedbackStatus_success() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationRepository.save(organization);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Feedback feedback = FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING,
-                    organizationCategory);
-            final Feedback savedFeedback = feedBackRepository.save(feedback);
-            final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
-
-            // when
-            final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
-                    request, savedFeedback.getId());
-
-            // then
-            assertThat(response).isNotNull();
-            assertThat(response.status()).isEqualTo(ProcessStatus.CONFIRMED);
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 피드백 ID로 업데이트 시 예외가 발생한다")
-        void updateFeedbackStatus_not_found() {
-            // given
-            final Long nonExistentFeedbackId = 999L;
-            final UpdateFeedbackStatusRequest request = new UpdateFeedbackStatusRequest(ProcessStatus.CONFIRMED);
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.updateFeedbackStatus(
-                    request, nonExistentFeedbackId))
-                    .isInstanceOf(ResourceNotFoundException.class);
-        }
-    }
-
-    @Nested
-    @DisplayName("피드백 비밀상태 변경 테스트")
-    class UpdateFeedbackSecretTest {
-
-        @Test
-        @DisplayName("유효한 피드백 ID와 비밀상태로 업데이트 시 성공한다")
-        void updateFeedbackSecret_success() {
-            // given
+        @DisplayName("관리자가 속한 단체가 아닐경우, 삭제 시 예외가 발생해야 한다")
+        void not_contains_organization_delete_api_then_throw_exception() {
             final Organization organization = OrganizationFixture.createAllBlackBox();
             organizationRepository.save(organization);
+
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
 
             final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
-            final Feedback feedback = FeedbackFixture.createFeedbackWithSecret(organization, false,
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization,
                     organizationCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
-            final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
 
-            // when
-            final UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(
-                    savedFeedback.getId(), request);
+            final Admin otherAdmin = AdminFixture.createFromLoginId("admin999");
+            adminRepository.save(otherAdmin);
 
-            // then
-            assertAll(
-                    () -> assertThat(response.feedbackId()).isEqualTo(savedFeedback.getId()),
-                    () -> assertThat(response.isSecret()).isTrue()
-            );
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 피드백 ID로 비밀상태 변경 시 예외가 발생한다")
-        void updateFeedbackSecret_not_found() {
-            // given
-            final Long nonExistentFeedbackId = 999L;
-            final UpdateFeedbackSecretRequest request = new UpdateFeedbackSecretRequest(true);
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.updateFeedbackSecret(nonExistentFeedbackId, request))
-                    .isInstanceOf(ResourceNotFoundException.class);
+            assertThatThrownBy(() -> adminFeedbackService.delete(otherAdmin.getId(), savedFeedback.getId()))
+                    .isInstanceOf(ForbiddenException.class);
         }
     }
 
@@ -431,6 +377,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
@@ -446,10 +395,43 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
         // when
         final UpdateFeedbackCommentResponse updateFeedbackCommentResponse =
-                adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+                adminFeedbackService.updateFeedbackComment(
+                        admin.getId(),
+                        updateFeedbackCommentRequest,
+                        feedback.getId()
+                );
 
         // then
         assertThat(updateFeedbackCommentResponse.comment()).isEqualTo(testComment);
+    }
+
+    @Test
+    @DisplayName("단체에 속하지 않은 관리자가 댓글을 수정하려고 한다면 예외가 발생해야 한다.")
+    void not_contains_organization_admin_request_then_throw_exception() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        final Admin otherAdmin = AdminFixture.create();
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization,
+                organizationCategory);
+        feedBackRepository.save(feedback);
+
+        String testComment = "testComment";
+        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
+                testComment
+        );
+
+        // when & then
+        assertThatThrownBy(() -> adminFeedbackService.updateFeedbackComment(otherAdmin.getId(), updateFeedbackCommentRequest, feedback.getId()))
+                .isInstanceOf(ForbiddenException.class);
     }
 
     @Test
@@ -458,6 +440,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
 
         final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
@@ -473,7 +458,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         );
 
         //when
-        adminFeedbackService.updateFeedbackComment(updateFeedbackCommentRequest, feedback.getId());
+        adminFeedbackService.updateFeedbackComment(admin.getId(), updateFeedbackCommentRequest, feedback.getId());
         final Feedback resultFeedback = feedBackRepository.findById(1L).get();
 
         // then

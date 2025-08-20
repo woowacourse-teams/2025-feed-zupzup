@@ -2,7 +2,7 @@ package feedzupzup.backend.auth.presentation.interceptor;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
+import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,11 +23,10 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
         final AdminSession adminSession = httpSessionManager.getAdminSession(request);
         final Long adminId = adminSession.adminId();
 
-        if (!adminRepository.existsById(adminId)) {
-            httpSessionManager.removeAdminSession(request);
-            throw new ForbiddenException("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
+        if (adminId == null || !adminRepository.existsById(adminId)) {
+            httpSessionManager.removeAdminSession(request, response);
+            throw new UnauthorizedException("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
         }
-
         return true;
     }
 }

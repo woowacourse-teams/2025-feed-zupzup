@@ -26,4 +26,6 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
                 ORDER BY MAX(f.postedAt.postedAt) DESC
             """)
     List<AdminOrganizationInfo> getAdminOrganizationInfos(Long adminId);
+
+    boolean existsOrganizationByUuid(UUID uuid);
 }
