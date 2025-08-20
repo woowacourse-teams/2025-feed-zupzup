@@ -45,12 +45,8 @@ public class AdminOrganizationArgumentResolver implements HandlerMethodArgumentR
         final Long adminId = sessionManager.getAdminSession(request).adminId();
         final UUID organizationUuid = extractOrganizationUuid(webRequest);
 
-        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
-            throw new ResourceNotFoundException("해당 UUID" + organizationUuid + "는 존재하지 않습니다.");
-        }
-
         if (!organizerRepository.existsOrganizerByAdmin_IdAndOrganization_Uuid(adminId, organizationUuid)) {
-            throw new ForbiddenException("해당 기능에 대해 접근 권한이 존재하지 않습니다.");
+            throw new ForbiddenException("해당 단체: " + organizationUuid + "에 대한 접근 권한이 존재하지 않습니다.");
         }
         return new LoginOrganizerInfo(adminId, organizationUuid);
     }
