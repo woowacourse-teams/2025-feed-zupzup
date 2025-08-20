@@ -106,7 +106,7 @@ class QRControllerE2ETest extends E2EHelper {
         }
 
         @Test
-        @DisplayName("존재하지 않는 조직 UUID로 QR 조회 시 404 에러를 반환한다")
+        @DisplayName("존재하지 않는 조직 UUID로 QR 조회 시 403 에러를 반환한다")
         void getQR_organization_not_found() {
             // given
             final UUID nonExistentOrganizationUuid = UUID.randomUUID();
@@ -118,7 +118,7 @@ class QRControllerE2ETest extends E2EHelper {
                     .when()
                     .get("/admin/organizations/{organizationUuid}/qr-code", nonExistentOrganizationUuid)
                     .then().log().all()
-                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .statusCode(HttpStatus.FORBIDDEN.value())
                     .contentType(ContentType.JSON);
         }
 
@@ -149,7 +149,7 @@ class QRControllerE2ETest extends E2EHelper {
     class GetQRDownloadUrlTest {
 
         @Test
-        @DisplayName("존재하지 않는 조직 UUID로 QR 다운로드 URL 조회 시 404 에러를 반환한다")
+        @DisplayName("존재하지 않는 조직 UUID로 QR 다운로드 URL 조회 시 403 에러를 반환한다")
         void getQRDownloadUrl_organization_not_found() {
             // given
             final UUID nonExistentOrganizationUuid = UUID.randomUUID();
@@ -161,7 +161,7 @@ class QRControllerE2ETest extends E2EHelper {
                     .when()
                     .get("/admin/organizations/{organizationUuid}/qr-code/download-url", nonExistentOrganizationUuid)
                     .then().log().all()
-                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .statusCode(HttpStatus.FORBIDDEN.value())
                     .contentType(ContentType.JSON);
         }
 
