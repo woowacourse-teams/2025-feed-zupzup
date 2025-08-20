@@ -1,7 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
-import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
@@ -40,7 +39,7 @@ public class AdminFeedbackService {
             final Long adminId,
             final Long feedbackId
     ) {
-        validateAuthentication(adminId, feedbackId);
+        hasAccessToFeedback(adminId, feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
 
@@ -70,15 +69,15 @@ public class AdminFeedbackService {
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
-        final Feedback feedback = getFeedback(feedbackId);
 
-        validateAuthentication(adminId, feedbackId);
+        hasAccessToFeedback(adminId, feedbackId);
+        final Feedback feedback = getFeedback(feedbackId);
 
         feedback.updateCommentAndStatus(request.toComment());
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
-    private void validateAuthentication(final Long adminId, final Long feedbackId) {
+    private void hasAccessToFeedback(final Long adminId, final Long feedbackId) {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
             throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
         }
