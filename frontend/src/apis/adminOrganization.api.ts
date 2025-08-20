@@ -1,3 +1,4 @@
+import { CategoryType } from '@/analytics/types';
 import { apiClient } from '@/apis/apiClient';
 import { ApiResponse } from '@/types/apiResponse';
 
@@ -8,10 +9,31 @@ export type AdminOrganizationType = {
   postedAt: string;
 };
 
-export type GetAdminOrganizationResponse = ApiResponse<AdminOrganizationType[]>;
+type GetAdminOrganizationResponse = ApiResponse<AdminOrganizationType[]>;
 
-export async function getAdminOrganization(): Promise<GetAdminOrganizationResponse> {
+type RequestData = {
+  organizationName: string;
+  categories: CategoryType[];
+};
+
+type AdminOrganizationUUIDType = {
+  organizationUuid: string;
+};
+
+export async function getAdminOrganization() {
   const response = await apiClient.get('/admin/organizations');
 
   return response as GetAdminOrganizationResponse;
+}
+
+export async function postAdminOrganization({
+  organizationName,
+  categories,
+}: RequestData): Promise<AdminOrganizationUUIDType> {
+  const response = await apiClient.post('/admin/organizations', {
+    organizationName,
+    categories,
+  });
+
+  return response as AdminOrganizationUUIDType;
 }

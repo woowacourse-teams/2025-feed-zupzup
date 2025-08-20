@@ -27,7 +27,7 @@ export default function AdminHome() {
 
   const { openModal, closeModal, isOpen } = useModalContext();
 
-  const handleRoomInfoEditClick = () => {
+  const handleCreateAdminOrganization = () => {
     openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
   };
 
@@ -53,7 +53,7 @@ export default function AdminHome() {
         {!isLoading && (
           <FloatingButton
             icon={<PlusIcon color='white' width='24' height='24' />}
-            onClick={handleRoomInfoEditClick}
+            onClick={handleCreateAdminOrganization}
             inset={{ bottom: '80px', left: '100%' }}
             customCSS={addAdminOrganization(theme)}
           />
