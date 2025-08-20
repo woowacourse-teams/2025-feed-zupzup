@@ -2,6 +2,7 @@ package feedzupzup.backend.organization.controller;
 
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.api.AdminOrganizationApi;
 import feedzupzup.backend.organization.application.AdminOrganizationService;
@@ -10,11 +11,14 @@ import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -35,11 +39,12 @@ public class AdminOrganizationController implements AdminOrganizationApi {
     @Override
     public SuccessResponse<AdminUpdateOrganizationResponse> updateOrganization(
             final UUID organizationUuid,
-            @AdminAuthenticationPrincipal final AdminSession adminSession,
+            final LoginOrganizerInfo loginOrganizerInfo,
             final UpdateOrganizationRequest request
     ) {
         final AdminUpdateOrganizationResponse response = adminOrganizationService.updateOrganization(
-                organizationUuid, request, adminSession.adminId()
+                loginOrganizerInfo.organizationUuid(),
+                request
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }

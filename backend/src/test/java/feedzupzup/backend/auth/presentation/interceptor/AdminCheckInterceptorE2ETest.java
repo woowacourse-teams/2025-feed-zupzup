@@ -79,7 +79,7 @@ class AdminCheckInterceptorE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("존재하지 않는 관리자 ID로 세션이 설정된 경우 403 에러가 발생한다")
+    @DisplayName("존재하지 않는 관리자 ID로 세션이 설정된 경우 401 에러가 발생한다")
     void adminCheckInterceptor_AdminNotExists() {
         // Given - 관리자 생성 후 삭제하여 세션만 남겨둔 상태
         Password password = new Password("password123");
@@ -105,9 +105,9 @@ class AdminCheckInterceptorE2ETest extends E2EHelper {
         .when()
                 .get("/admin/organizations")
         .then()
-                .statusCode(HttpStatus.FORBIDDEN.value())
-                .body("status", equalTo(403))
-                .body("code", equalTo("A08"));
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .body("status", equalTo(401))
+                .body("code", equalTo("A04"));
     }
 
     @Test

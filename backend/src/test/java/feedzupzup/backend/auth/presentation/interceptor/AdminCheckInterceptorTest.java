@@ -37,7 +37,18 @@ class AdminCheckInterceptorTest {
     private AdminCheckInterceptor adminCheckInterceptor;
 
     @Test
-    @DisplayName("adminId가 존재하지 않는 관리자면 ForbiddenException이 발생한다")
+    @DisplayName("세션에 adminId가 없으면 UnauthorizedException이 발생한다")
+    void preHandle_NoAdminIdInSession() {
+        // Given
+        given(httpSessionManager.getAdminSession(any())).willReturn(new AdminSession(null));
+
+        // When & Then
+        assertThatThrownBy(() -> adminCheckInterceptor.preHandle(request, response, new Object()))
+                .isInstanceOf(UnauthorizedException.class);
+    }
+
+    @Test
+    @DisplayName("adminId가 존재하지 않는 관리자면 UnauthorizeException이 발생한다")
     void preHandle_AdminNotExists() {
         // Given
         Long adminId = 1L;
@@ -46,7 +57,7 @@ class AdminCheckInterceptorTest {
 
         // When & Then
         assertThatThrownBy(() -> adminCheckInterceptor.preHandle(request, response, new Object()))
-                .isInstanceOf(ForbiddenException.class)
+                .isInstanceOf(UnauthorizedException.class)
                 .hasMessageContaining("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
     }
 

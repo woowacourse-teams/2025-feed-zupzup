@@ -1,17 +1,15 @@
 package feedzupzup.backend.feedback.controller;
 
+import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.feedback.api.AdminFeedbackApi;
 import feedzupzup.backend.feedback.application.AdminFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackSecretRequest;
-import feedzupzup.backend.feedback.dto.request.UpdateFeedbackStatusRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackSecretResponse;
-import feedzupzup.backend.feedback.dto.response.UpdateFeedbackStatusResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +24,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<AdminFeedbackListResponse> getAdminFeedbacks(
+            final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid,
             final int size,
             final Long cursorId,
@@ -33,7 +32,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final FeedbackSortBy sortBy
     ) {
         return SuccessResponse.success(HttpStatus.OK, adminFeedbackService.getFeedbackPage(
-                organizationUuid,
+                loginOrganizerInfo.organizationUuid(),
                 size,
                 cursorId,
                 status,
@@ -42,37 +41,22 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<UpdateFeedbackSecretResponse> updateFeedbackSecret(
-            final Long feedbackId,
-            final UpdateFeedbackSecretRequest request
+    public SuccessResponse<Void> delete(
+            final AdminSession adminSession,
+            final Long feedbackId
     ) {
-        UpdateFeedbackSecretResponse response = adminFeedbackService.updateFeedbackSecret(feedbackId, request);
-        return SuccessResponse.success(HttpStatus.OK, response);
-    }
-
-    @Override
-    public SuccessResponse<Void> delete(final Long feedbackId) {
-        adminFeedbackService.delete(feedbackId);
+        adminFeedbackService.delete(adminSession.adminId(), feedbackId);
         return SuccessResponse.success(HttpStatus.OK);
     }
 
     @Override
-    public SuccessResponse<UpdateFeedbackStatusResponse> updateFeedbackStatus(
-            final Long feedbackId,
-            final UpdateFeedbackStatusRequest request
-    ) {
-        final UpdateFeedbackStatusResponse response = adminFeedbackService.updateFeedbackStatus(
-                request, feedbackId);
-        return SuccessResponse.success(HttpStatus.OK, response);
-    }
-
-    @Override
     public SuccessResponse<UpdateFeedbackCommentResponse> updateFeedbackComment(
+            final AdminSession adminSession,
             final Long feedbackId,
             final UpdateFeedbackCommentRequest request
     ) {
         final UpdateFeedbackCommentResponse response = adminFeedbackService.updateFeedbackComment(
-                request, feedbackId);
+                adminSession.adminId(), request, feedbackId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }
