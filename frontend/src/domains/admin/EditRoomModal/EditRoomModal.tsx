@@ -12,7 +12,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState, useEffect } from 'react';
 import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
-import useEditRoom from './hooks/useEditRooom';
+import useEditRoom from './hooks/useEditRoom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useModalContext } from '@/contexts/useModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
