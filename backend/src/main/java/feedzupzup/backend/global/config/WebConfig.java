@@ -25,7 +25,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
-                        "https://feedzupzup.com"
+                        "https://feedzupzup.com",
+                        "https://dev.feedzupzup.com"
                 )
                 .allowedOriginPatterns(
                         "http://192.168.*.*:3000",
