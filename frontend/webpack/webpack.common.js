@@ -1,7 +1,4 @@
-import {
-  default as CopyPlugin,
-  default as CopyWebpackPlugin,
-} from 'copy-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -46,6 +43,9 @@ export default {
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
         type: 'asset/resource',
+        generator: {
+          filename: 'images/[name].[hash][ext]',
+        },
       },
       {
         test: /.css$/i,
@@ -56,6 +56,9 @@ export default {
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
+      meta: {
+        'Cache-Control': 'no-cache, max-age=0',
+      },
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -64,12 +67,9 @@ export default {
         { from: 'public/512x512.png', to: '.' },
         { from: 'public/192x192.png', to: '.' },
         { from: 'public/service-worker.js', to: '.' },
-      ],
-    }),
-    new CopyPlugin({
-      patterns: [
         {
           from: 'public',
+          to: '.',
           globOptions: {
             ignore: ['**/index.html'],
           },
