@@ -3,8 +3,13 @@ package feedzupzup.backend.global.config;
 import feedzupzup.backend.auth.presentation.interceptor.AdminCheckInterceptor;
 import feedzupzup.backend.auth.presentation.resolver.AdminOrganizationArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.AdminSessionArgumentResolver;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -34,6 +39,25 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("Content-Type", "Authorization", "Accept", "X-Requested-With")
                 .allowCredentials(true);
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:3000",
+                "https://feedzupzup.com",
+                "https://dev.feedzupzup.com"
+        ));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://192.168.*.*:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Accept", "X-Requested-With"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L); // preflight 캐시 시간
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Override
