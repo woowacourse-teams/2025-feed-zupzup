@@ -14,9 +14,8 @@ import {
   useCategorySelection,
 } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
 import useCreateOrganization from '@/domains/admin/CreateRoomModal/hooks/useCreateOrganization';
-import useSubmitDisabled from '@/domains/admin/CreateRoomModal/hooks/useSubmitDisabled';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -37,10 +36,9 @@ export default function CreateRoomModal({
     onClose,
   });
 
-  const { disabled } = useSubmitDisabled({
-    organizationName,
-    selectedCategories,
-  });
+  const isDisabled = useMemo(() => {
+    return !organizationName.trim() || selectedCategories.length === 0;
+  }, [organizationName, selectedCategories.length]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -74,7 +72,7 @@ export default function CreateRoomModal({
           취소
         </BasicButton>
         <BasicButton
-          variant={disabled ? 'disabled' : 'primary'}
+          variant={isDisabled ? 'disabled' : 'primary'}
           width={'48%'}
           padding={'8px 8px'}
           height={'40px'}
@@ -88,7 +86,7 @@ export default function CreateRoomModal({
               ),
             })
           }
-          disabled={disabled}
+          disabled={isDisabled}
         >
           {isPending ? '제출 중입니다' : '방 만들기'}
         </BasicButton>
