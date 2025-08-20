@@ -18,8 +18,8 @@ jobs:
           git fetch --tags
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
-          echo "LAST_TAG not found, using first commit"
-          LAST_TAG=$(git rev-list --max-parents=0 HEAD)
+            echo "⚠️ No tag found. Using previous commit instead."
+            LAST_TAG=$(git rev-parse HEAD~1)
           fi
           echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
 
@@ -54,10 +54,10 @@ jobs:
       - name: Generate release notes
         run: |
           echo "## ${{ env.new_tag }} ($(date +'%Y-%m-%d'))" > release_notes.md
-          if [ -n "${{ env.last_tag }}" ]; then
-            git log ${{ env.last_tag }}..HEAD --pretty=format:"- %s" >> release_notes.md
+          if [ -n "${{ env.LAST_TAG }}" ]; then
+            git log ${{ env.LAST_TAG }}..HEAD --pretty=format:"- %s" >> release_notes.md
           else
-            git log --pretty=format:"- %s" >> release_notes.md
+            git log -1 --pretty=format:"- %s" >> release_notes.md
           fi
 
       - name: Check if tag already exists
@@ -78,14 +78,18 @@ jobs:
 
       - name: Update CHANGELOG.md
         run: |
-          if [ -f CHANGELOG.md ]; then
-          cat release_notes.md CHANGELOG.md > tmp.md
+          if [ -f CHANGELOG.md ] && grep -q "## ${{ env.new_tag }}" CHANGELOG.md; then
+            echo "CHANGELOG already contains ${{ env.new_tag }}, skipping update."
           else
-          cat release_notes.md > tmp.md
-          fi
-          mv tmp.md CHANGELOG.md
-          git config user.name "github-actions"
-          git config user.email "actions@github.com"
-          git add CHANGELOG.md
-          git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
-          git push origin fe/production
+            if [ -f CHANGELOG.md ]; then
+              cat release_notes.md CHANGELOG.md > tmp.md
+            else
+              cat release_notes.md > tmp.md
+            fi
+            mv tmp.md CHANGELOG.md
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add CHANGELOG.md
+            git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
+            git push origin fe/production
+            fi
