@@ -3,11 +3,11 @@ import { Theme } from '@/theme';
 
 export const basicButton = (
   theme: Theme,
-  width?: string | number,
+  width?: string,
   variant: 'primary' | 'secondary' | 'disabled' = 'primary',
-  height?: string | number,
-  gap?: string | number,
-  padding?: string | number
+  height?: string,
+  gap?: string,
+  padding?: string
 ) => css`
   display: flex;
   justify-content: center;
