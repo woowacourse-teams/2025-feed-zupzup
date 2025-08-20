@@ -13,7 +13,7 @@ export default function useSubmitDisabled({
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
-    setDisabled(!organizationName || selectedCategories.length === 0);
+    setDisabled(!organizationName.trim() || selectedCategories.length === 0);
   }, [organizationName, selectedCategories]);
 
   return { disabled };
