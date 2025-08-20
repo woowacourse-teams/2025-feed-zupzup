@@ -16,7 +16,7 @@ export default function useOrganizationName({
     queryKey: QUERY_KEYS.organizationData(organizationId),
     queryFn: async () => {
       const response = await getOrganizationName({ organizationId });
-      return response!.data;
+      return response.data;
     },
   });
 
