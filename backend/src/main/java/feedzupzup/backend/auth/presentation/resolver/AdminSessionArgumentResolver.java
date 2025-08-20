@@ -21,14 +21,16 @@ public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolv
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AdminAuthenticationPrincipal.class) &&
-               parameter.getParameterType().equals(AdminSession.class);
+                parameter.getParameterType().equals(AdminSession.class);
     }
 
     @Override
-    public Object resolveArgument(final MethodParameter parameter, 
-                                  final ModelAndViewContainer mavContainer,
-                                  final NativeWebRequest webRequest, 
-                                  final WebDataBinderFactory binderFactory) {
+    public Object resolveArgument(
+            final MethodParameter parameter,
+            final ModelAndViewContainer mavContainer,
+            final NativeWebRequest webRequest,
+            final WebDataBinderFactory binderFactory
+    ) {
         final HttpServletRequest request = extractHttpServletRequest(webRequest);
         return sessionManager.getAdminSession(request);
     }

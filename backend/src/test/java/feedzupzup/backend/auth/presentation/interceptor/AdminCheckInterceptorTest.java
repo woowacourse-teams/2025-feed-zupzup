@@ -8,11 +8,9 @@ import static org.mockito.BDDMockito.given;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
-import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +48,7 @@ class AdminCheckInterceptorTest {
     }
 
     @Test
-    @DisplayName("adminId가 존재하지 않는 관리자면 UuAuthorizeException이 발생한다")
+    @DisplayName("adminId가 존재하지 않는 관리자면 UnauthorizeException이 발생한다")
     void preHandle_AdminNotExists() {
         // Given
         Long adminId = 1L;
