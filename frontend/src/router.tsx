@@ -1,4 +1,4 @@
-import { ROUTES } from '@/constants/routes';
+import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
 import Login from '@/domains/admin/Login/Login';
 import SignUp from '@/domains/admin/SignUp/SignUp';
@@ -11,6 +11,7 @@ import App from './App';
 import AdminHome from './domains/admin/AdminHome/AdminHome';
 import Settings from './domains/admin/Settings/Settings';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
+import { isAuthenticated } from './utils/isAuthenticated';
 
 export const router = createBrowserRouter([
   {
@@ -19,8 +20,10 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: (
-          <Navigate to='/d0b1b979-7ae8-11f0-8408-0242ac120002/submit' replace />
+        element: isAuthenticated() ? (
+          <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />
+        ) : (
+          <Navigate to='/login' replace />
         ),
       },
       {
