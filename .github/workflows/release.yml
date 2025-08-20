@@ -91,6 +91,7 @@ jobs:
           git push origin fe/production
 
       - name: Build
+        working-directory: ./frontend
         run: |
           echo "NPM_PACKAGE_VERSION=${{ env.new_tag }}" >> $GITHUB_ENV
           npm install
