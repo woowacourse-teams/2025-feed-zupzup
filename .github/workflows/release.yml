@@ -38,10 +38,10 @@ jobs:
             MAJOR=$((MAJOR+1))
             MINOR=0
             PATCH=0
-          elif echo "$COMMITS" | grep -qE "^feat"; then
+          elif echo "$COMMITS" | grep -qE "^feat:"; then
             MINOR=$((MINOR+1))
             PATCH=0
-          elif echo "$COMMITS" | grep -qE "^fix"; then
+          elif echo "$COMMITS" | grep -qE "^fix:"; then
             PATCH=$((PATCH+1))
           else
             PATCH=$((PATCH+1))
@@ -63,8 +63,8 @@ jobs:
       - name: Check if tag already exists
         run: |
           if git rev-parse ${{ env.new_tag }} >/dev/null 2>&1; then
-          echo "❌ Tag ${{ env.new_tag }} already exists. Skipping release."
-          exit 0
+            echo "❌ Tag ${{ env.new_tag }} already exists. Skipping release."
+            exit 78
           fi
 
       - name: Create GitHub Release
@@ -92,4 +92,4 @@ jobs:
             git add CHANGELOG.md
             git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
             git push origin fe/production
-            fi
+          fi
