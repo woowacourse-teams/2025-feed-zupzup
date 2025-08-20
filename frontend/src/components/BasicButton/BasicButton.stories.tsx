@@ -55,7 +55,7 @@ export const WithIcon: Story = {
 export const CustomWidth: Story = {
   args: {
     children: '커스텀 너비',
-    width: 200,
+    width: '200px',
     variant: 'primary',
   },
 };

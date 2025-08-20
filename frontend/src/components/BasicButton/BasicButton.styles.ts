@@ -12,10 +12,10 @@ export const basicButton = (
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: ${typeof gap === 'number' ? `${gap}px` : gap || '14px'};
-  width: ${typeof width === 'number' ? `${width}px` : width || '100%'};
+  gap: ${gap || '14px'};
+  width: ${width || '100%'};
   height: ${height ?? '54px'};
-  padding: ${padding ? padding : '24px 28px'};
+  padding: ${padding || '24px 28px'};
   background-color: ${variant === 'primary'
     ? theme.colors.purple[100]
     : variant === 'disabled'
@@ -55,14 +55,12 @@ export const basicButton = (
 export const basicButtonText = (
   theme: Theme,
   variant: 'primary' | 'secondary' | 'disabled' = 'primary',
-  fontSize?: string | number
+  fontSize?: string
 ) => css`
   ${theme.typography.pretendard.small};
 
   margin: 0;
-  font-size: ${typeof fontSize === 'number'
-    ? `${fontSize}px`
-    : fontSize || '16px'};
+  font-size: ${fontSize || '16px'};
   color: ${variant === 'primary'
     ? theme.colors.white[100]
     : variant === 'disabled'

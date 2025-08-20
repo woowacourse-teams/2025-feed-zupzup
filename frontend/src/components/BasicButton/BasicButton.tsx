@@ -9,12 +9,12 @@ import Button from '@/components/@commons/Button/Button';
 
 export interface BasicButtonProps extends React.ComponentProps<'button'> {
   children: React.ReactNode;
-  width?: string | number;
-  height?: string | number;
-  padding?: string | number;
-  fontSize?: string | number;
+  width?: string;
+  height?: string;
+  padding?: string;
+  fontSize?: string;
   icon?: React.ReactNode;
-  gap?: string | number;
+  gap?: string;
   variant?: 'primary' | 'secondary' | 'disabled';
 }
 

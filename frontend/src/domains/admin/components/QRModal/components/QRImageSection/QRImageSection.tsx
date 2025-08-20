@@ -38,8 +38,8 @@ export default function QRImageSection({ url }: QRImageSectionProps) {
       <BasicButton
         variant='secondary'
         padding='8px 8px'
-        fontSize={12}
-        height={30}
+        fontSize={'12px'}
+        height={'30px'}
         width='70%'
         icon={<DownloadIcon />}
         onClick={handleDownload}
