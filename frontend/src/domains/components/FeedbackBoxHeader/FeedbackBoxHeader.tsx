@@ -1,4 +1,4 @@
-import { CategoryType } from '@/analytics/types';
+import { CategoryListType } from '@/constants/categoryList';
 import {
   headerInfoBox,
   imgContainer,
@@ -14,7 +14,7 @@ interface FeedbackBoxHeaderProps {
   feedbackId: number;
   userName?: string;
   type: FeedbackStatusType;
-  category: CategoryType;
+  category: CategoryListType;
 }
 
 export default function FeedbackBoxHeader({

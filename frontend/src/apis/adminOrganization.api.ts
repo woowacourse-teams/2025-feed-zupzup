@@ -1,4 +1,4 @@
-import { CategoryType } from '@/analytics/types';
+import { CategoryListType } from './../constants/categoryList';
 import { apiClient } from '@/apis/apiClient';
 import { ApiResponse } from '@/types/apiResponse';
 
@@ -13,7 +13,7 @@ type GetAdminOrganizationResponse = ApiResponse<AdminOrganizationType[]>;
 
 type RequestData = {
   organizationName: string;
-  categories: CategoryType[];
+  categories: CategoryListType[];
 };
 
 type AdminOrganizationUUIDType = {

@@ -3,13 +3,13 @@ import { SuggestionFeedback } from '@/types/feedback.types';
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
 import { StatusType } from '@/types/status.types';
-import { CategoryType } from '@/analytics/types';
+import { CategoryListType } from '@/constants/categoryList';
 
 interface FeedbackSubmitParams {
   content: string;
   userName: string;
   isSecret: boolean;
-  category: CategoryType | null;
+  category: CategoryListType | null;
   organizationId: string;
 }
 

@@ -1,12 +1,13 @@
-import { BaseEvent, CategoryType } from '../types';
+import { CategoryListType } from '@/constants/categoryList';
+import { BaseEvent } from '../types';
 
 interface OnboardingEventFactory {
-  categorySelect: (category: CategoryType) => BaseEvent;
+  categorySelect: (category: CategoryListType) => BaseEvent;
   viewSuggestionsFromOnboarding: () => BaseEvent;
 }
 
 export const onboardingEvents: OnboardingEventFactory = {
-  categorySelect: (category: CategoryType): BaseEvent => ({
+  categorySelect: (category: CategoryListType): BaseEvent => ({
     name: 'category_select',
     parameters: {
       event_category: 'onboarding',
