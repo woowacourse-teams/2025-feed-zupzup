@@ -3,22 +3,25 @@ name: Release
 on:
   push:
     branches:
-      - fe/release # minor
+      - fe/release
 
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
+      # 1) 가장 가까운 직전 태그 가져오기
       - name: Get last tag
         run: |
           git fetch --tags
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          LAST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
           echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
 
+      # 2) 커밋 메시지를 기반으로 새로운 버전 결정
       - name: Decide new version (SemVer by commit messages)
         id: semver
         run: |
@@ -53,7 +56,8 @@ jobs:
           NEW_TAG="v$MAJOR.$MINOR.$PATCH"
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
 
-      - name: Ensure unique tag (auto bump if exists)
+      # 3) 중복 태그 방지 (이미 있으면 자동 Patch bump)
+      - name: Ensure unique tag
         run: |
           git fetch --tags
           NEW_TAG=${{ env.new_tag }}
@@ -70,15 +74,18 @@ jobs:
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
 
+      # 4) 새로운 릴리즈 노트 생성 (직전 태그 이후 커밋만)
       - name: Generate release notes
         run: |
           echo "## ${{ env.new_tag }} ($(date +'%Y-%m-%d'))" > release_notes.md
+          echo "" >> release_notes.md
           if [ -n "${{ env.LAST_TAG }}" ]; then
             git log ${{ env.LAST_TAG }}..HEAD --pretty=format:"- %s" >> release_notes.md
           else
             git log HEAD --pretty=format:"- %s" >> release_notes.md
           fi
 
+      # 5) GitHub Release 생성
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -88,6 +95,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # 6) CHANGELOG.md 업데이트 (중복 방지)
       - name: Update CHANGELOG.md
         if: github.actor != 'github-actions[bot]'
         run: |
