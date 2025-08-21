@@ -31,17 +31,6 @@ public class NotificationService {
                 );
     }
 
-    private void updateExistingToken(final NotificationToken token, final String newToken) {
-        token.updateNotificationToken(newToken);
-        log.info("토큰 업데이트");
-    }
-
-    private void createNewToken(final NotificationTokenRequest request, final Long adminId) {
-        final Admin admin = getAdminById(adminId);
-        notificationTokenRepository.save(request.toNotificationToken(admin));
-        log.info("새 토큰 등록");
-    }
-
     public AlertsSettingResponse getAlertsSetting(final Long adminId) {
         final Admin admin = getAdminById(adminId);
         return AlertsSettingResponse.from(admin.isAlertsOn());
@@ -56,5 +45,16 @@ public class NotificationService {
     private Admin getAdminById(Long adminId) {
         return adminRepository.findById(adminId)
                 .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
+    }
+
+    private void updateExistingToken(final NotificationToken token, final String newToken) {
+        token.updateNotificationToken(newToken);
+        log.info("토큰 업데이트");
+    }
+
+    private void createNewToken(final NotificationTokenRequest request, final Long adminId) {
+        final Admin admin = getAdminById(adminId);
+        notificationTokenRepository.save(request.toNotificationToken(admin));
+        log.info("새 토큰 등록");
     }
 }
