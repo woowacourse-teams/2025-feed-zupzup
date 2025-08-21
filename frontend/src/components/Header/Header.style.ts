@@ -55,3 +55,9 @@ export const moreMenu = css`
   right: 10px;
   z-index: 10;
 `;
+
+export const MoreButton = css`
+  width: 50px;
+  height: 50px;
+  text-align: center;
+`;

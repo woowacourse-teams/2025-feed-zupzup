@@ -7,6 +7,7 @@ import {
   headerSection,
   headerSubtitle,
   headerTitle,
+  MoreButton,
   moreMenu,
   moreMenuContainer,
 } from './Header.style';
@@ -49,7 +50,7 @@ export default function Header() {
           css={moreMenuContainer}
           ref={moreButtonRef as React.RefObject<HTMLDivElement>}
         >
-          <Button onClick={toggleMoreMenu}>
+          <Button onClick={toggleMoreMenu} customCSS={MoreButton}>
             <MoreVerticalIcon />
           </Button>
           {isOpenMoreMenu && (
