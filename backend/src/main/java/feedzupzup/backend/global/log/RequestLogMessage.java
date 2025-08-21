@@ -9,13 +9,14 @@ public record RequestLogMessage(
         String clientIp,
         String requestBody
 ) {
+
     public static RequestLogMessage createInstance(
             final ContentCachingRequestWrapper requestWrapper
     ) {
         return new RequestLogMessage(
                 requestWrapper.getMethod(),
                 requestWrapper.getRequestURI(),
-                requestWrapper.getRemoteAddr(),
+                requestWrapper.getHeader("X-Real-IP"),
                 getRequestBody(requestWrapper)
         );
     }
