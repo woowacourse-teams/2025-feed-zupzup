@@ -49,6 +49,6 @@ public class SiteUrl {
     }
 
     public String buildPath(final String path) {
-        return qrProperties.baseUrl() + path + "/submit";
+        return qrProperties.baseUrl() + "/" + path + "/submit";
     }
 }
