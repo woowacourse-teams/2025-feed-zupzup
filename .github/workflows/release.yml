@@ -14,6 +14,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug LAST_TAG
+        run: |
+          echo "Found LAST_TAG: $LAST_TAG"
+          git describe --tags --abbrev=0 || echo "❌ No tag found"
+          git tag --sort=-creatordate | head -n 5
+
       # 1) 가장 가까운 직전 태그 가져오기
       - name: Get last tag
         run: |
