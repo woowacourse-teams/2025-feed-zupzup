@@ -17,8 +17,14 @@ import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
+import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
+import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
+import { goTopButton } from '@/domains/user/userDashboard/UserDashboard.style';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export default function AdminDashboard() {
+  const theme = useAppTheme();
   const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
     useFeedbackFilterSort();
   const { organizationId } = useOrganizationId();
@@ -53,6 +59,8 @@ export default function AdminDashboard() {
     handleConfirmFeedback,
     handleDeleteFeedback,
   } = useAdminModal({ organizationId });
+
+  const { showButton, scrollToTop } = useScrollUp();
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
@@ -95,6 +103,15 @@ export default function AdminDashboard() {
       />
 
       {hasNext && <div id='scroll-observer' style={{ minHeight: '1px' }} />}
+
+      {showButton && (
+        <FloatingButton
+          icon={<ArrowUpIcon />}
+          onClick={scrollToTop}
+          inset={{ bottom: '80px' }}
+          customCSS={goTopButton(theme)}
+        />
+      )}
 
       {modalState.type === 'delete' && (
         <ConfirmModal
