@@ -3,11 +3,12 @@ package feedzupzup.backend.notification.application;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.notification.domain.NotificationToken;
 import feedzupzup.backend.notification.domain.NotificationTokenRepository;
-import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
 import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
 import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
-import feedzupzup.backend.notification.exception.NotificationException.NotificationTokenExistsException;
+import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,12 +25,16 @@ public class NotificationService {
 
     @Transactional
     public void registerToken(final NotificationTokenRequest request, final Long adminId) {
-        notificationTokenRepository.findByAdminId(adminId).ifPresent(notificationToken -> {
-            notificationToken.updateNotificationToken(request.notificationToken());
+        Optional<NotificationToken> existingToken = notificationTokenRepository.findByAdminId(adminId);
+        if (existingToken.isPresent()) {
+            existingToken.get().updateNotificationToken(request.notificationToken());
             log.info("토큰 업데이트");
-        });
+            return;
+        }
+        
         final Admin admin = getAdminById(adminId);
         notificationTokenRepository.save(request.toNotificationToken(admin));
+        log.info("새 토큰 등록");
     }
 
     public AlertsSettingResponse getAlertsSetting(final Long adminId) {
