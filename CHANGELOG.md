@@ -1,4 +1,5 @@
-## vddc51f43cd65b53fa92ee779b53ed66ba76f06aa.2.0 (2025-08-21)
+## v0.1.0 (2025-08-21)
+- feat: 시맨틱 릴리즈 버저닝 테스트2## vddc51f43cd65b53fa92ee779b53ed66ba76f06aa.2.0 (2025-08-21)
 - fix: 릴리즈 브랜치 수정
 - fix: release.yml에서 브랜치 이름을 fe/production에서 fe/release로 변경
 - Merge pull request #617 from woowacourse-teams/test/#610-fe-test-release
