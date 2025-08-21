@@ -1,9 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { apiClient } from '@/apis/apiClient';
+import { apiClient, ApiError } from '@/apis/apiClient';
 import { ApiResponse } from '@/types/apiResponse';
+import { useApiErrorHandler } from './useApiErrorHandler';
 
 const DEFAULT_SIZE = 10;
-const MAX_RETRY_COUNT = 3;
+const MAX_RETRY_COUNT = 1;
 
 interface UseCursorInfiniteScrollParams<Key extends string> {
   url: string; // 예: /api/items?foo=bar
@@ -27,6 +28,8 @@ export default function useCursorInfiniteScroll<
   size = DEFAULT_SIZE,
   enabled = true,
 }: UseCursorInfiniteScrollParams<Key>) {
+  const { handleApiError } = useApiErrorHandler();
+
   const query = useInfiniteQuery({
     queryKey: ['infinity', key, url, size],
     enabled: enabled && Boolean(url),
@@ -43,6 +46,10 @@ export default function useCursorInfiniteScroll<
   });
 
   const items = query.data?.pages.flatMap((p) => p[key] as T[]) ?? [];
+
+  if (query.isError) {
+    handleApiError(query.error as ApiError);
+  }
 
   return {
     items,
