@@ -67,7 +67,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             // then
             assertAll(
                     () -> assertThat(response.imageUrl()).isEqualTo("https://example.com/qr-image.png"),
-                    () -> assertThat(response.siteUrl()).contains("uuid=" + organization.getUuid())
+                    () -> assertThat(response.siteUrl()).contains(organization.getUuid().toString())
             );
         }
 

@@ -20,6 +20,7 @@ public class SiteUrl {
     }
 
     public static class SiteUrlBuilder {
+
         private final String baseUrl;
         private final Map<String, String> queryParams;
 
@@ -45,5 +46,9 @@ public class SiteUrl {
 
             return baseUrl + "?" + queryString;
         }
+    }
+
+    public String buildPath(final String path) {
+        return qrProperties.baseUrl() + path + "/submit";
     }
 }
