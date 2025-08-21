@@ -18,23 +18,32 @@ jobs:
           git fetch --tags
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
-            echo "⚠️ No tag found. Using previous commit instead."
-            LAST_TAG=$(git rev-parse HEAD~1)
+            echo "⚠️ No tag found. This is the first release."
           fi
           echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
 
       - name: Decide new version (SemVer by commit messages)
         id: semver
         run: |
-          LAST_TAG=${{ env.LAST_TAG }} 
+          LAST_TAG=${{ env.LAST_TAG }}
           VERSION=$(echo $LAST_TAG | sed 's/^v//')
+
+          # 태그가 없으면 0.0.0에서 시작
+          if [ -z "$VERSION" ]; then
+            VERSION="0.0.0"
+          fi
+
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
 
-          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s%n%b")
+          if [ -n "$LAST_TAG" ]; then
+            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s%n%b")
+          else
+            COMMITS=$(git log -1 --pretty=format:"%s%n%b")
+          fi
 
-          if echo "$COMMITS" | grep -q "BREAKING CHANGE"; then
+          if echo "$COMMITS" | grep -qi "BREAKING CHANGE"; then
             MAJOR=$((MAJOR+1))
             MINOR=0
             PATCH=0
@@ -62,6 +71,7 @@ jobs:
 
       - name: Check if tag already exists
         run: |
+          git fetch --tags
           if git rev-parse ${{ env.new_tag }} >/dev/null 2>&1; then
             echo "❌ Tag ${{ env.new_tag }} already exists. Skipping release."
             exit 78
@@ -77,6 +87,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update CHANGELOG.md
+        if: github.actor != 'github-actions[bot]' # 루프 방지
         run: |
           if [ -f CHANGELOG.md ] && grep -q "## ${{ env.new_tag }}" CHANGELOG.md; then
             echo "CHANGELOG already contains ${{ env.new_tag }}, skipping update."
@@ -91,5 +102,5 @@ jobs:
             git config user.email "actions@github.com"
             git add CHANGELOG.md
             git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
-            git push origin fe/release
-            fi
+            git push origin HEAD:fe/release
+          fi
