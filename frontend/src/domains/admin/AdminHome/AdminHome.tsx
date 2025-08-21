@@ -18,8 +18,6 @@ import { AdminAuthData } from '@/types/adminAuth';
 import { getLocalStorage } from '@/utils/localStorage';
 
 const ADMIN = '관리자1';
-const COMPLETED_COUNT = 17;
-const TOTAL_COUNT = 29;
 
 export default function AdminHome() {
   const theme = useAppTheme();
@@ -35,11 +33,7 @@ export default function AdminHome() {
 
   return (
     <div css={homeLayout}>
-      <AdminHomeHeader
-        adminName={adminName}
-        completedCount={COMPLETED_COUNT}
-        totalCount={TOTAL_COUNT}
-      />
+      <AdminHomeHeader adminName={adminName} />
       <div css={adminOrganizationListContainer(theme)}>
         <div css={infoContainer}>
           <p css={listTitle(theme)}>피드백 방 목록</p>
