@@ -1,4 +1,18 @@
 ## v1.0.0 (2025-08-21)
+- feat: 시맨틱 릴리즈 버저닝 테스트 (minor)
+- docs: update changelog for v1.0.1
+- fix: 시맨틱 릴리즈 버저닝 테스트
+- fix: 시맨틱 릴리즈 버저닝 테스트
+- docs: update changelog for v1.0.0
+- BREAKING CHANGE : 시맨틱 릴리즈 버저닝 테스트 (Major)
+- docs: update changelog for v0.2.0
+-  fix: 시맨틱 릴리즈 버저닝 테스트
+- docs: update changelog for v0.1.0
+- feat: 시맨틱 릴리즈 버저닝 테스트2
+- fix: release.yml에서 태그가 없을 경우 첫 번째 릴리스로 처리하도록 수정
+- docs: update changelog for vddc51f43cd65b53fa92ee779b53ed66ba76f06aa.2.0
+- fix: 릴리즈 브랜치 수정
+- Merge pull request #617 from woowacourse-teams/test/#610-fe-test-release## v1.0.0 (2025-08-21)
 - fix: 시맨틱 릴리즈 버저닝 테스트
 - fix: 개선된 버전 태그 생성 로직 및 중복 태그 처리
 - fix: 시맨틱 릴리즈 버저닝 테스트
