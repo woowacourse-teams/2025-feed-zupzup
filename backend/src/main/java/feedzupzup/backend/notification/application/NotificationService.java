@@ -9,9 +9,11 @@ import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
 import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import feedzupzup.backend.notification.exception.NotificationException.NotificationTokenExistsException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -22,9 +24,10 @@ public class NotificationService {
 
     @Transactional
     public void registerToken(final NotificationTokenRequest request, final Long adminId) {
-        if (notificationTokenRepository.existsByAdminId(adminId)) {
-            throw new NotificationTokenExistsException("이미 등록된 알림 토큰이 있습니다.");
-        }
+        notificationTokenRepository.findByAdminId(adminId).ifPresent(notificationToken -> {
+            notificationToken.updateNotificationToken(request.notificationToken());
+            log.info("토큰 업데이트");
+        });
         final Admin admin = getAdminById(adminId);
         notificationTokenRepository.save(request.toNotificationToken(admin));
     }

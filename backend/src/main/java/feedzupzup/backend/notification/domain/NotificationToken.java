@@ -34,4 +34,8 @@ public class NotificationToken extends BaseTimeEntity {
         this.admin = admin;
         this.registrationToken = registrationToken;
     }
+
+    public void updateNotificationToken(@NonNull final String registrationToken) {
+        this.registrationToken = registrationToken;
+    }
 }
