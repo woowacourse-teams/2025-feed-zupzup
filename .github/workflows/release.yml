@@ -79,8 +79,7 @@ jobs:
           done
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
-
-      # 4) 새로운 릴리즈 노트 생성 (직전 태그 이후 커밋만)
+      # 4) 새로운 릴리즈 노트 생성
       - name: Generate release notes
         run: |
           echo "## ${{ env.new_tag }} ($(date +'%Y-%m-%d'))" > release_notes.md
@@ -91,17 +90,7 @@ jobs:
             git log HEAD --pretty=format:"- %s" >> release_notes.md
           fi
 
-      # 5) GitHub Release 생성
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ env.new_tag }}
-          name: Release ${{ env.new_tag }}
-          body_path: release_notes.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # 6) CHANGELOG.md 업데이트 (중복 방지)
+      # 5) CHANGELOG.md 업데이트 → 커밋 & 푸시
       - name: Update CHANGELOG.md
         if: github.actor != 'github-actions[bot]'
         run: |
@@ -120,3 +109,13 @@ jobs:
             git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
             git push origin HEAD:fe/release
           fi
+
+      # 6) GitHub Release 생성 (CHANGELOG 커밋 이후 시점에 태그 달림)
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.new_tag }}
+          name: Release ${{ env.new_tag }}
+          body_path: release_notes.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
