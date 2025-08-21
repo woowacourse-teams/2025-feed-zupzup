@@ -33,8 +33,8 @@ export default function QRUrlSection({ url }: QRUrlSectionProps) {
             variant='secondary'
             padding='8px 0px'
             gap='0'
-            fontSize={12}
-            height={30}
+            fontSize={'12px'}
+            height={'30px'}
             icon={<CopyIcon />}
             onClick={handleCopy}
           >

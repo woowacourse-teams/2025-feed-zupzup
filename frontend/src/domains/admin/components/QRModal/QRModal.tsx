@@ -27,7 +27,7 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
       <BasicButton
         variant='secondary'
         padding={'8px 16px'}
-        height={30}
+        height={'30px'}
         onClick={onClose}
       >
         취소
