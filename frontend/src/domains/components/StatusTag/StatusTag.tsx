@@ -1,0 +1,25 @@
+import Tag from '@/components/Tag/Tag';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { container, content } from './StatusTag.styles';
+import CompleteIcon from '@/components/icons/CompleteIcon';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
+
+export interface StatusTagProps {
+  type: FeedbackStatusType;
+}
+
+export default function StatusTag({ type = 'WAITING' }: StatusTagProps) {
+  const theme = useAppTheme();
+
+  return (
+    <Tag customCSS={container(theme, type)}>
+      {type === 'WAITING' ? (
+        '접수'
+      ) : (
+        <span css={content}>
+          <CompleteIcon /> 완료
+        </span>
+      )}
+    </Tag>
+  );
+}
