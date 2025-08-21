@@ -7,14 +7,14 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,6 +57,15 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     ) {
         final UpdateFeedbackCommentResponse response = adminFeedbackService.updateFeedbackComment(
                 adminSession.adminId(), request, feedbackId);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<FeedbackStatisticResponse> getAllFeedbackStatistics(
+            final AdminSession adminSession
+    ) {
+        final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(
+                adminSession.adminId());
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

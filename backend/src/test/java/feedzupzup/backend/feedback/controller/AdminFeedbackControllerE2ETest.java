@@ -19,6 +19,7 @@ import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
@@ -596,5 +597,185 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[1].likeCount", equalTo(5))
                 .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()))
                 .body("data.feedbacks[2].likeCount", equalTo(3));
+    }
+
+    @Test
+    @DisplayName("관리자가 전체 피드백 통계를 성공적으로 조회한다")
+    void admin_get_all_feedback_statistics_success() {
+        // given
+        final Organization organization1 = OrganizationFixture.createAllBlackBox();
+        final Organization organization2 = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization1);
+        organizationRepository.save(organization2);
+
+        // 관리자를 두 조직에 등록
+        final Organizer organizer1 = new Organizer(organization1, admin, OrganizerRole.OWNER);
+        final Organizer organizer2 = new Organizer(organization2, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer1);
+        organizerRepository.save(organizer2);
+
+        final OrganizationCategory orgCategory1 = OrganizationCategoryFixture.createOrganizationCategory(
+                organization1, SUGGESTION);
+        final OrganizationCategory orgCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
+                organization2, SUGGESTION);
+        organizationCategoryRepository.save(orgCategory1);
+        organizationCategoryRepository.save(orgCategory2);
+
+        // organization1에 피드백 3개 (완료 2개, 대기 1개)
+        final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(organization1,
+                ProcessStatus.CONFIRMED, orgCategory1);
+        final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(organization1,
+                ProcessStatus.CONFIRMED, orgCategory1);
+        final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithStatus(organization1, ProcessStatus.WAITING,
+                orgCategory1);
+
+        // organization2에 피드백 2개 (완료 1개, 대기 1개)
+        final Feedback confirmedFeedback3 = FeedbackFixture.createFeedbackWithStatus(organization2,
+                ProcessStatus.CONFIRMED, orgCategory2);
+        final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithStatus(organization2, ProcessStatus.WAITING,
+                orgCategory2);
+
+        feedBackRepository.save(confirmedFeedback1);
+        feedBackRepository.save(confirmedFeedback2);
+        feedBackRepository.save(waitingFeedback1);
+        feedBackRepository.save(confirmedFeedback3);
+        feedBackRepository.save(waitingFeedback2);
+
+        // when & then - 총 5개 피드백 중 3개 완료 (60%)
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/feedbacks/statistics")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.totalCount", equalTo(5))
+                .body("data.confirmedCount", equalTo(3))
+                .body("data.reflectionRate", equalTo(60));
+    }
+
+    @Test
+    @DisplayName("관리자에게 피드백이 없는 경우 모든 통계가 0으로 반환된다")
+    void admin_get_all_feedback_statistics_no_feedbacks() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/feedbacks/statistics")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.totalCount", equalTo(0))
+                .body("data.confirmedCount", equalTo(0))
+                .body("data.reflectionRate", equalTo(0));
+    }
+
+    @Test
+    @DisplayName("관리자 통계에서 삭제된 피드백은 제외된다")
+    void admin_get_all_feedback_statistics_excludes_deleted() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory orgCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(orgCategory);
+
+        // 피드백 2개 생성 (완료 1개, 대기 1개)
+        final Feedback confirmedFeedback = FeedbackFixture.createFeedbackWithStatus(
+                organization, ProcessStatus.CONFIRMED, orgCategory);
+        final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(
+                organization, ProcessStatus.WAITING, orgCategory);
+
+        feedBackRepository.save(confirmedFeedback);
+        final Feedback savedWaiting = feedBackRepository.save(waitingFeedback);
+
+        // 하나의 피드백 삭제
+        feedBackRepository.deleteById(savedWaiting.getId());
+
+        // when & then - 삭제된 피드백은 제외되어 총 1개 (완료 1개, 100%)
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/feedbacks/statistics")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.totalCount", equalTo(1))
+                .body("data.confirmedCount", equalTo(1))
+                .body("data.reflectionRate", equalTo(100));
+    }
+
+    @Test
+    @DisplayName("관리자 통계에서 반영률이 올바르게 반올림된다")
+    void admin_get_all_feedback_statistics_reflection_rate_rounding() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory orgCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(orgCategory);
+
+        // 총 3개 피드백 중 1개 완료 (33.33...% → 33%)
+        final Feedback confirmedFeedback = FeedbackFixture.createFeedbackWithStatus(
+                organization, ProcessStatus.CONFIRMED, orgCategory);
+        final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithStatus(
+                organization, ProcessStatus.WAITING, orgCategory);
+        final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithStatus(
+                organization, ProcessStatus.WAITING, orgCategory);
+
+        feedBackRepository.save(confirmedFeedback);
+        feedBackRepository.save(waitingFeedback1);
+        feedBackRepository.save(waitingFeedback2);
+
+        // when & then - 1/3 = 33.33...% → 33%로 반올림
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/feedbacks/statistics")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.totalCount", equalTo(3))
+                .body("data.confirmedCount", equalTo(1))
+                .body("data.reflectionRate", equalTo(33));
+    }
+
+    @Test
+    @DisplayName("인증되지 않은 사용자가 피드백 통계를 조회하면 401 에러가 발생한다")
+    void admin_get_all_feedback_statistics_unauthorized() {
+        // when & then
+        given()
+                .log().all()
+                .when()
+                .get("/admin/feedback-statistics")
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }

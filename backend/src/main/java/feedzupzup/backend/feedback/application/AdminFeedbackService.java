@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.application;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -12,6 +13,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
@@ -55,7 +57,8 @@ public class AdminFeedbackService {
         feedbackLikeService.flushLikeCountBuffer();
 
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
+        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
+                pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
         feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
@@ -81,7 +84,7 @@ public class AdminFeedbackService {
 
     private void hasAccessToFeedback(final Long adminId, final Long feedbackId) {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
-            throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
+            throw new ForbiddenException("admin" + adminId + "는 해당 요청에 대한 권한이 없습니다.");
         }
     }
 
@@ -92,7 +95,17 @@ public class AdminFeedbackService {
 
     private void validateAuthentication(final Long adminId, final Long feedbackId) {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
-            throw new ForbiddenException("admin" + adminId +"는 해당 요청에 대한 권한이 없습니다.");
+            throw new ForbiddenException("admin" + adminId + "는 해당 요청에 대한 권한이 없습니다.");
         }
+    }
+
+    public FeedbackStatisticResponse calculateFeedbackStatistics(final Long adminId) {
+        final FeedbackAmount feedbackAmount = feedBackRepository.findFeedbackStatisticsByAdminId(adminId);
+
+        final long totalCount = feedbackAmount.totalCount();
+        final long confirmedCount = feedbackAmount.confirmedCount();
+        final int reflectionRate = feedbackAmount.calculateReflectionRate();
+
+        return new FeedbackStatisticResponse(confirmedCount, totalCount, reflectionRate);
     }
 }
