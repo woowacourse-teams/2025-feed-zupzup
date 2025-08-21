@@ -2,8 +2,8 @@ import { AdminAuthResponse, postAdminLogin } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import useNavigation from '@/domains/hooks/useNavigation';
 import { setLocalStorage } from '@/utils/localStorage';
-import { useNavigate } from 'react-router-dom';
 
 interface UseLoginProps {
   loginValue: {
@@ -13,7 +13,7 @@ interface UseLoginProps {
 }
 
 export default function useLogin({ loginValue }: UseLoginProps) {
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
   const { showErrorModal } = useErrorModalContext();
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -27,7 +27,7 @@ export default function useLogin({ loginValue }: UseLoginProps) {
         password: loginValue.password,
         onSuccess: (response: AdminAuthResponse) => {
           setLocalStorage('auth', response.data);
-          navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
+          goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
         },
       });
     } catch (error: ApiError | unknown) {

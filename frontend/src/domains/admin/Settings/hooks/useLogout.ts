@@ -1,11 +1,11 @@
 import { postAdminLogout } from '@/apis/admin.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import useNavigation from '@/domains/hooks/useNavigation';
 import { resetLocalStorage } from '@/utils/localStorage';
-import { useNavigate } from 'react-router-dom';
 
 export function useLogout() {
   const { showErrorModal } = useErrorModalContext();
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
 
   const handleLogout = async () => {
     try {
@@ -14,7 +14,7 @@ export function useLogout() {
         throw new Error('로그아웃 실패');
       }
       resetLocalStorage('auth');
-      navigate('/login');
+      goPath('/login');
     } catch (e) {
       showErrorModal(e, '에러');
     }

@@ -24,16 +24,16 @@ import {
   FeedbackFilterType,
 } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
-import { useNavigate } from 'react-router-dom';
 import FeedbackStatusMessage from './components/FeedbackStatusMessage/FeedbackStatusMessage';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 export default function UserDashboard() {
   const { organizationId } = useOrganizationId();
   const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
   const theme = useAppTheme();
 
   const {
@@ -75,7 +75,7 @@ export default function UserDashboard() {
 
   const handleNavigateToOnboarding = () => {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
-    navigate('/');
+    goPath('/');
   };
 
   const getFeedbackIsLike = (feedbackId: number) => {

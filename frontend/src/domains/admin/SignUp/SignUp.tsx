@@ -20,9 +20,9 @@ import {
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
 import Toast from '@/domains/components/Toast/Toast';
+import useNavigation from '@/domains/hooks/useNavigation';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 type SignUpFieldName = 'name' | 'id' | 'password';
 
@@ -40,7 +40,7 @@ const SIGNUP_VALIDATORS = {
 
 export default function SignUp() {
   const theme = useAppTheme();
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
   const [toast, setToast] = useState<string | null>(null);
 
   const {
@@ -110,7 +110,7 @@ export default function SignUp() {
         <div css={signUpCaptionContainer(theme)}>
           <p>
             이미 계정이 있으신가요?
-            <strong onClick={() => navigate('/' + ROUTES.LOGIN)}>
+            <strong onClick={() => goPath('/' + ROUTES.LOGIN)}>
               로그인하기
             </strong>
           </p>

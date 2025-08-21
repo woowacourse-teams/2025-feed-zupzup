@@ -3,7 +3,6 @@ import { SuggestionFeedback } from '@/types/feedback.types';
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
 import { useCallback, useState } from 'react';
 import { StatusType } from '@/types/status.types';
-import { useNavigate } from 'react-router-dom';
 import { CategoryType } from '@/analytics/types';
 
 interface FeedbackSubmitParams {
@@ -15,7 +14,6 @@ interface FeedbackSubmitParams {
 }
 
 export default function useFeedbackSubmit() {
-  const navigate = useNavigate();
   const [submitStatus, setSubmitStatus] = useState<StatusType>('idle');
 
   const submitFeedback = useCallback(
@@ -54,7 +52,7 @@ export default function useFeedbackSubmit() {
         setSubmitStatus('error');
       }
     },
-    [navigate, submitStatus]
+    [submitStatus]
   );
 
   const resetStatus = useCallback(() => {

@@ -14,14 +14,14 @@ import {
 import Button from '../@commons/Button/Button';
 
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
-import { useNavigate } from 'react-router-dom';
 import MoreMenu from '@/components/Header/MoreMenu/MoreMenu';
 import useMoreMenuManager from '@/components/Header/hooks/useMoreMenuManager';
 import { useLayoutConfig } from '@/hooks/useLayoutConfig';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 export default function Header() {
   const theme = useAppTheme();
-  const navigate = useNavigate();
+  const { goBack } = useNavigation();
   const { layoutConfig } = useLayoutConfig();
 
   const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu } =
@@ -29,15 +29,11 @@ export default function Header() {
 
   const { title, subtitle, hasMoreIcon, showBackButton } = layoutConfig.header;
 
-  const handleBackButtonClick = () => {
-    navigate(-1);
-  };
-
   return (
     <header css={header(theme)}>
       <div css={arrowTitleContainer}>
         {showBackButton && (
-          <Button onClick={handleBackButtonClick}>
+          <Button onClick={goBack}>
             <ArrowLeftIcon color={theme.colors.white[100]} />
           </Button>
         )}

@@ -7,7 +7,7 @@ import {
   emptyAdminOrganization,
 } from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList.style';
 import StatusBox from '@/domains/components/StatusBox/StatusBox';
-import { useNavigate } from 'react-router-dom';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 interface AdminOrganizationListProps {
   adminOrganizations: AdminOrganizationType[];
@@ -18,7 +18,7 @@ export default function AdminOrganizationList({
   adminOrganizations,
   isLoading,
 }: AdminOrganizationListProps) {
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
 
   if (isLoading) {
     return (
@@ -48,7 +48,7 @@ export default function AdminOrganizationList({
             organizationName={organizations.name}
             waitingCount={organizations.waitingCount}
             postedAt={organizations.postedAt}
-            onClick={() => navigate(`/admin/${organizations.uuid}/dashboard`)}
+            onClick={() => goPath(`/admin/${organizations.uuid}/dashboard`)}
           />
         ))
       )}
