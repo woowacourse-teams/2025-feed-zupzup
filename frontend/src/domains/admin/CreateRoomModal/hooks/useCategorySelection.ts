@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { CategoryListType, CATEGORY_LIST } from '@/constants/categoryList';
+import { CategoryListType } from '@/constants/categoryList';
 import { MAX_CATEGORIES } from '@/constants/maxCategories';
+import { createCategoryIconPairs } from '@/domains/utils/createCategoryList';
 
 export interface SelectedCategoryItem {
   icon: string | React.ReactNode;
@@ -22,21 +23,7 @@ export function useCategorySelection({
     if (!initialCategories || initialCategories.length === 0) return;
 
     const initialSelectedCategories: SelectedCategoryItem[] =
-      initialCategories.reduce(
-        (acc: SelectedCategoryItem[], categoryString) => {
-          const categoryItem = CATEGORY_LIST.find(
-            (item) => item.category === categoryString
-          );
-          if (categoryItem) {
-            acc.push({
-              icon: categoryItem.icon,
-              category: categoryItem.category,
-            });
-          }
-          return acc;
-        },
-        []
-      ) as SelectedCategoryItem[];
+      createCategoryIconPairs(initialCategories);
 
     setSelectedCategories(initialSelectedCategories);
   }, [initialCategories]);
