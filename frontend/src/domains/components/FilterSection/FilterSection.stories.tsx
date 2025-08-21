@@ -26,8 +26,9 @@ type Story = StoryObj<typeof FilterSection>;
 
 export const Default: Story = {
   render: () => {
-    const [selectedFilter, setSelectedFilter] =
-      useState<FeedbackFilterType | null>(null);
+    const [selectedFilter, setSelectedFilter] = useState<
+      FeedbackFilterType | ''
+    >('');
     const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
 
     return (
@@ -71,7 +72,7 @@ export const WithMineFilter: Story = {
 
 export const WithLikesSort: Story = {
   args: {
-    selectedFilter: null,
+    selectedFilter: '',
     selectedSort: 'LIKES',
     onFilterChange: () => {},
     onSortChange: () => {},
@@ -80,7 +81,7 @@ export const WithLikesSort: Story = {
 
 export const WithOldestSort: Story = {
   args: {
-    selectedFilter: null,
+    selectedFilter: '',
     selectedSort: 'OLDEST',
     onFilterChange: () => {},
     onSortChange: () => {},

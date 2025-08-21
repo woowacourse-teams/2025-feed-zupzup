@@ -1,12 +1,20 @@
+import { postAdminLogout } from '@/apis/admin.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import useNavigation from '@/domains/hooks/useNavigation';
+import { resetLocalStorage } from '@/utils/localStorage';
 
 export function useLogout() {
   const { showErrorModal } = useErrorModalContext();
+  const { goPath } = useNavigation();
 
   const handleLogout = async () => {
     try {
-      // 여기에서 API 호출 예정
-      // 로그인 화면으로 가는리다이렉트 로직도 추가할 예정
+      const response = await postAdminLogout();
+      if (response.status !== 200) {
+        throw new Error('로그아웃 실패');
+      }
+      resetLocalStorage('auth');
+      goPath('/login');
     } catch (e) {
       showErrorModal(e, '에러');
     }

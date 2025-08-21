@@ -13,24 +13,31 @@ import {
   skipIcon,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useNavigate } from 'react-router-dom';
 import { Analytics, onboardingEvents } from '@/analytics';
-import { CategoryType } from '@/analytics/types';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import useNavigation from '@/domains/hooks/useNavigation';
+import { createCategoryIconPairs } from '@/domains/utils/createCategoryList';
+import { CategoryListType } from '@/constants/categoryList';
 
 interface OnBoardingProps {
-  onCategoryClick: (newCategory: CategoryType) => void;
+  onCategoryClick: (newCategory: CategoryListType) => void;
 }
 
 export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const theme = useAppTheme();
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
+  const { organizationId } = useOrganizationId();
 
-  const { groupName } = useOrganizationName();
+  const { groupName, categories } = useOrganizationName({
+    organizationId,
+  });
+
+  const categoryIconPairs = createCategoryIconPairs(categories);
 
   const handleViewSuggestionsClick = () => {
     Analytics.track(onboardingEvents.viewSuggestionsFromOnboarding());
 
-    navigate('/dashboard');
+    goPath(`/${organizationId}/dashboard`);
   };
 
   return (
@@ -45,26 +52,14 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           <p css={question(theme)}>건의하고 싶은 카테고리를 선택해주세요</p>
         </div>
         <div css={buttonContainer}>
-          <CategoryButton
-            icon='🚨'
-            text='신고'
-            onClick={() => onCategoryClick('신고')}
-          />
-          <CategoryButton
-            icon='🙋‍♀️'
-            text='질문'
-            onClick={() => onCategoryClick('질문')}
-          />
-          <CategoryButton
-            icon='💬'
-            text='건의'
-            onClick={() => onCategoryClick('건의')}
-          />
-          <CategoryButton
-            icon='💡'
-            text='기타'
-            onClick={() => onCategoryClick('기타')}
-          />
+          {categoryIconPairs.map((category) => (
+            <CategoryButton
+              key={category.category}
+              icon={category.icon}
+              text={category.category}
+              onClick={() => onCategoryClick(category.category)}
+            />
+          ))}
         </div>
       </div>
       <BasicButton

@@ -8,7 +8,7 @@ import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { SerializedStyles } from '@emotion/react';
 import { secretText } from './UserFeedbackBox.styles';
 import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
-import { CategoryType } from '@/analytics/types';
+import { CategoryListType } from '@/constants/categoryList';
 
 interface UserFeedbackBox {
   userName: string;
@@ -22,7 +22,7 @@ interface UserFeedbackBox {
   customCSS: (SerializedStyles | null)[];
   isMyFeedback: boolean;
   comment: null | string;
-  category: CategoryType;
+  category: CategoryListType;
 }
 
 export default function UserFeedbackBox({

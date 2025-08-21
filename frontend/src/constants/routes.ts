@@ -3,18 +3,16 @@ export type RouteValue = (typeof ROUTES)[RouteKey];
 
 export const ROUTES = {
   HOME: '/',
-  USER_DASHBOARD: '/dashboard',
-  FEEDBACK_PAGE: '/feedback',
-  ONBOARDING: '/onboarding',
+  SUBMIT: ':id/submit',
+  DASHBOARD: ':id/dashboard',
+  FEEDBACK_PAGE: 'feedback',
 
   ADMIN: '/admin',
-  ADMIN_HOME: '/admin-home',
-  ADMIN_SETTINGS: '/admin-settings',
-  ADMIN_DASHBOARD: '/admin-dashboard',
+  ADMIN_HOME: 'home',
+  ADMIN_SETTINGS: 'settings',
 
-  NOTIFICATIONS: '/notifications',
-  SETTINGS: '/settings',
-
-  LOGIN: '/login',
-  SIGN_UP: '/signup',
+  LOGIN: 'login',
+  SIGN_UP: 'signup',
 } as const;
+
+export const ADMIN_BASE = ROUTES.ADMIN + '/';

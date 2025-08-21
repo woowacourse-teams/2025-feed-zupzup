@@ -1,31 +1,40 @@
 import { apiClient } from '@/apis/apiClient';
+import { ApiResponse } from '@/types/apiResponse';
+
 import type {
   FCMTokenRequest,
   NotificationSettingRequest,
-  ApiResponse,
+  NotificationSettingsResponse,
 } from '@/types/notification.types';
 
-export const registerFCMToken = async (token: string): Promise<ApiResponse> => {
+export const postFCMToken = async (
+  notificationToken: string
+): Promise<ApiResponse> => {
   const response = await apiClient.post<ApiResponse, FCMTokenRequest>(
-    '/admin/notifications/tokens',
-    { token }
+    '/admin/notifications/token',
+    { notificationToken }
   );
   return response as ApiResponse;
 };
 
-interface UpdateNotificationSettingsParams {
-  organizationId: number;
-  enabled: boolean;
+export const getNotificationSettings =
+  async (): Promise<NotificationSettingsResponse> => {
+    const response = await apiClient.get<NotificationSettingsResponse>(
+      '/admin/notifications/settings'
+    );
+    return response as NotificationSettingsResponse;
+  };
+
+interface PatchNotificationSettingsParams {
+  alertsOn: boolean;
 }
 
-export const updateNotificationSettings = async ({
-  organizationId,
-  enabled,
-}: UpdateNotificationSettingsParams): Promise<ApiResponse> => {
-  const response = await apiClient.put<ApiResponse, NotificationSettingRequest>(
-    `/admin/organizations/${organizationId}/notifications`,
-    { enabled }
-  );
-
+export const patchNotificationSettings = async ({
+  alertsOn,
+}: PatchNotificationSettingsParams): Promise<ApiResponse> => {
+  const response = await apiClient.patch<
+    ApiResponse,
+    NotificationSettingRequest
+  >('/admin/notifications/settings', { alertsOn });
   return response as ApiResponse;
 };

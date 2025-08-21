@@ -9,12 +9,12 @@ import Button from '@/components/@commons/Button/Button';
 
 export interface BasicButtonProps extends React.ComponentProps<'button'> {
   children: React.ReactNode;
-  width?: string | number;
-  height?: string | number;
-  padding?: string | number;
-  fontSize?: string | number;
+  width?: string;
+  height?: string;
+  padding?: string;
+  fontSize?: string;
   icon?: React.ReactNode;
-  gap?: string | number;
+  gap?: string;
   variant?: 'primary' | 'secondary' | 'disabled';
 }
 
@@ -28,6 +28,7 @@ export default function BasicButton({
   onClick,
   gap = '14px',
   variant = 'primary',
+  disabled,
 }: BasicButtonProps) {
   const theme = useAppTheme();
 
@@ -35,6 +36,7 @@ export default function BasicButton({
     <Button
       css={basicButton(theme, width, variant, height, gap, padding)}
       onClick={onClick}
+      disabled={disabled}
     >
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant, fontSize)}>{children}</span>

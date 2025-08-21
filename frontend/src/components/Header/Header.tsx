@@ -7,37 +7,34 @@ import {
   headerSection,
   headerSubtitle,
   headerTitle,
+  MoreButton,
   moreMenu,
   moreMenuContainer,
 } from './Header.style';
-import { useLocation } from 'react-router-dom';
+
 import Button from '../@commons/Button/Button';
-import { LAYOUT_CONFIGS } from '@/constants/layoutConfig';
+
 import ArrowLeftIcon from '../icons/ArrowLeftIcon';
-import { useNavigate } from 'react-router-dom';
 import MoreMenu from '@/components/Header/MoreMenu/MoreMenu';
 import useMoreMenuManager from '@/components/Header/hooks/useMoreMenuManager';
+import { useLayoutConfig } from '@/hooks/useLayoutConfig';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 export default function Header() {
-  const location = useLocation();
   const theme = useAppTheme();
-  const navigate = useNavigate();
+  const { goBack } = useNavigation();
+  const { layoutConfig } = useLayoutConfig();
 
   const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu } =
     useMoreMenuManager();
 
-  const { title, subtitle, hasMoreIcon, showBackButton } =
-    LAYOUT_CONFIGS[location.pathname].header;
-
-  const handleBackButtonClick = () => {
-    navigate(-1);
-  };
+  const { title, subtitle, hasMoreIcon, showBackButton } = layoutConfig.header;
 
   return (
     <header css={header(theme)}>
       <div css={arrowTitleContainer}>
         {showBackButton && (
-          <Button onClick={handleBackButtonClick}>
+          <Button onClick={goBack}>
             <ArrowLeftIcon color={theme.colors.white[100]} />
           </Button>
         )}
@@ -53,7 +50,7 @@ export default function Header() {
           css={moreMenuContainer}
           ref={moreButtonRef as React.RefObject<HTMLDivElement>}
         >
-          <Button onClick={toggleMoreMenu}>
+          <Button onClick={toggleMoreMenu} customCSS={MoreButton}>
             <MoreVerticalIcon />
           </Button>
           {isOpenMoreMenu && (

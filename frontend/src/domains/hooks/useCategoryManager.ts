@@ -1,5 +1,5 @@
 import { Analytics, onboardingEvents } from '@/analytics';
-import { CategoryType } from '@/analytics/types';
+import { CategoryListType } from '@/constants/categoryList';
 import { useState } from 'react';
 
 interface useCategoryManagerProps {
@@ -9,8 +9,8 @@ interface useCategoryManagerProps {
 export default function useCategoryManager({
   moveNextStep,
 }: useCategoryManagerProps) {
-  const [category, setCategory] = useState<CategoryType | null>(null);
-  const handleCategoryChange = (newCategory: CategoryType) => {
+  const [category, setCategory] = useState<CategoryListType | null>(null);
+  const handleCategoryChange = (newCategory: CategoryListType) => {
     Analytics.track(onboardingEvents.categorySelect(newCategory));
 
     setCategory(newCategory);

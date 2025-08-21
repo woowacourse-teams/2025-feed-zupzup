@@ -18,7 +18,7 @@ export interface LayoutConfig {
 }
 
 export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
-  [ROUTES.ADMIN]: {
+  [`${ROUTES.ADMIN}/${ROUTES.DASHBOARD}`]: {
     header: {
       show: true,
       title: '피드백 관리',
@@ -27,10 +27,10 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       showBackButton: true,
     },
     bottomNav: {
-      show: true,
+      show: false,
     },
   },
-  [ROUTES.ADMIN_SETTINGS]: {
+  [`${ROUTES.ADMIN}/${ROUTES.ADMIN_SETTINGS}`]: {
     header: {
       show: true,
       title: '설정',
@@ -42,19 +42,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
     },
   },
-  [ROUTES.NOTIFICATIONS]: {
-    header: {
-      show: true,
-      title: '알림 설정',
-      subtitle: '알림 확인 및 관리',
-      hasMoreIcon: false,
-      showBackButton: true,
-    },
-    bottomNav: {
-      show: false,
-    },
-  },
-  [ROUTES.ADMIN_HOME]: {
+  [`${ROUTES.ADMIN}/${ROUTES.ADMIN_HOME}`]: {
     header: {
       show: false,
     },
