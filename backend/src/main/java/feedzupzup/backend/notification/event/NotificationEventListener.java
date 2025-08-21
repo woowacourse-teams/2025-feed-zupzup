@@ -29,22 +29,26 @@ public class NotificationEventListener {
     @Async
     @EventListener
     public void handleFeedbackCreatedEvent(FeedbackCreatedEvent event) {
+        log.info("알림 이벤트 수신: organizationId={}", event.organizationId());
         try {
             Organization organization = organizationRepository.findById(event.organizationId())
                     .orElseThrow(() -> new ResourceNotFoundException("조직을 찾을 수 없습니다."));
 
             List<Organizer> organizers = organizerRepository.findByOrganizationId(event.organizationId());
+            log.info("조직 관리자 수: {}", organizers.size());
             List<Long> adminIds = organizers.stream()
                     .filter(Organizer::isAlertsOn)
                     .map(Organizer::getId)
                     .toList();
-            
+            log.info("알림 활성화된 관리자 수: {}", adminIds.size());
+
             if (!adminIds.isEmpty()) {
                 String organizationName = organization.getName().getValue();
                 List<NotificationPayload> payloads = adminIds.stream()
                         .map(adminId -> new NotificationPayload(adminId, event.title(), organizationName))
                         .toList();
                 pushNotifier.sendBatchMessage(payloads);
+                log.info(organizationName + "알림 전송 완료");
             }
         } catch (NotificationException e) {
             log.error("알림 전송 중 오류 발생: {}", e.getMessage(), e);

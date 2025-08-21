@@ -37,12 +37,13 @@ public class Admin extends BaseTimeEntity {
     private LoginId loginId;
 
     @Column(nullable = false)
-    private boolean alertsOn = true;
+    private boolean alertsOn;
 
     public Admin(@NonNull final LoginId loginId, @NonNull final EncodedPassword password, @NonNull final AdminName adminName) {
         this.loginId = loginId;
         this.password = password;
         this.adminName = adminName;
+        this.alertsOn = false;
     }
 
     public String getPasswordValue() {
