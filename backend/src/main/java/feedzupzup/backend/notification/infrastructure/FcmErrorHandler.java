@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.SendResponse;
 import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ public class FcmErrorHandler {
 
     private final NotificationTokenRepository notificationTokenRepository;
 
+    @Transactional
     public void handleFailures(final BatchResponse response, final List<Long> adminIds) {
         List<SendResponse> responses = response.getResponses();
         List<Long> deletableAdminIds = new ArrayList<>();
@@ -57,6 +59,7 @@ public class FcmErrorHandler {
         }
 
         if (!deletableAdminIds.isEmpty()) {
+            log.info("토큰 삭제 adminId : {}", deletableAdminIds);
             notificationTokenRepository.deleteAllByAdminIdIn(deletableAdminIds);
         }
     }
