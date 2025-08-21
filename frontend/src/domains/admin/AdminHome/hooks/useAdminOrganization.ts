@@ -22,6 +22,7 @@ export default function useAdminOrganization() {
       const res = await getAdminOrganization();
       return res.data;
     },
+    retry: false,
   });
 
   useEffect(() => {

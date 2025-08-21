@@ -15,6 +15,7 @@ export default function useAdminStatistics() {
   const { data, isLoading, error } = useQuery({
     queryKey: QUERY_KEYS.adminFeedbackStatistics,
     queryFn: getFeedbackStatistics,
+    retry: false,
   });
 
   const { handleApiError } = useApiErrorHandler();
