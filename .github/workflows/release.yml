@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - fe/release
+      - fe/release # 릴리즈 브랜치 이름
 
 jobs:
   release:
@@ -28,7 +28,7 @@ jobs:
           LAST_TAG=${{ env.LAST_TAG }}
           VERSION=$(echo $LAST_TAG | sed 's/^v//')
 
-          # 태그가 없으면 0.0.0에서 시작
+          # 태그가 없으면 무조건 0.0.0에서 시작
           if [ -z "$VERSION" ]; then
             VERSION="0.0.0"
           fi
