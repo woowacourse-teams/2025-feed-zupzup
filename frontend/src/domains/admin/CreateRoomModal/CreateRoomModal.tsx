@@ -1,6 +1,6 @@
-import { CategoryType } from '@/analytics/types';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import Modal from '@/components/Modal/Modal';
+import { CategoryListType } from '@/constants/categoryList';
 import RoomCategoryList from '@/domains/admin/components/RoomCategoryList/RoomCategoryList';
 import RoomCategoryTagList from '@/domains/admin/components/RoomCategoryTagList/RoomCategoryTagList';
 import RoomNameInput from '@/domains/admin/components/RoomNameInput/RoomNameInput';
@@ -82,7 +82,7 @@ export default function CreateRoomModal({
               organizationName: organizationName,
               categories: selectedCategories.map(
                 (category: SelectedCategoryItem) =>
-                  category.category as CategoryType
+                  category.category as CategoryListType
               ),
             })
           }

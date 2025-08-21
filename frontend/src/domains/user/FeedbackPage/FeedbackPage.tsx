@@ -19,12 +19,12 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { Analytics, suggestionFormEvents } from '@/analytics';
-import { CategoryType } from '@/analytics/types';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import useNavigation from '@/domains/hooks/useNavigation';
+import { CategoryListType } from '@/constants/categoryList';
 
 interface FeedbackPageProps {
-  category: CategoryType | null;
+  category: CategoryListType | null;
   movePrevStep: () => void;
 }
 
