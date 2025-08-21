@@ -38,7 +38,7 @@ public class NotificationEventListener {
             log.info("조직 관리자 수: {}", organizers.size());
             List<Long> adminIds = organizers.stream()
                     .filter(Organizer::isAlertsOn)
-                    .map(Organizer::getId)
+                    .map(Organizer::getAdminId)
                     .toList();
             log.info("알림 활성화된 관리자 수: {}", adminIds.size());
 
