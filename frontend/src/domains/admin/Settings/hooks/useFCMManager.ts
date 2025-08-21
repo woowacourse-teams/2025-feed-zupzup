@@ -68,6 +68,7 @@ export const useFCMManager = () => {
         unsubscribe();
       };
     } catch (error) {
+      console.error('[FCM Hook] 포그라운드 메시지 리스너 설정 오류:', error);
       return () => {};
     }
   }, []);
