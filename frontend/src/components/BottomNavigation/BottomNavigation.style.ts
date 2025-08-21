@@ -23,9 +23,9 @@ export const bottomNavStyle = (theme: Theme) => css`
     transition: transform 0.3s ease;
   }
 
-  &.keyboard-open {
+  /* &.keyboard-open {
     transform: translateY(100%);
-  }
+  } */
 `;
 
 export const navItemStyle = (theme: Theme, isActive: boolean) => css`
