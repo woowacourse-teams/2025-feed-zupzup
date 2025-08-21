@@ -11,6 +11,7 @@ import {
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import AdminOrganizationList from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList';
 import useAdminOrganization from '@/domains/admin/AdminHome/hooks/useAdminOrganization';
+import useAdminStatistics from '@/domains/admin/AdminHome/hooks/useAdminStatistics';
 import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -18,8 +19,6 @@ import { AdminAuthData } from '@/types/adminAuth';
 import { getLocalStorage } from '@/utils/localStorage';
 
 const ADMIN = '관리자1';
-const COMPLETED_COUNT = 17;
-const TOTAL_COUNT = 29;
 
 export default function AdminHome() {
   const theme = useAppTheme();
@@ -32,13 +31,16 @@ export default function AdminHome() {
   };
 
   const { adminOrganizations, isLoading } = useAdminOrganization();
+  const { statistics, isStatisticsLoading } = useAdminStatistics();
 
   return (
     <div css={homeLayout}>
       <AdminHomeHeader
         adminName={adminName}
-        completedCount={COMPLETED_COUNT}
-        totalCount={TOTAL_COUNT}
+        completedCount={statistics?.confirmedCount || 0}
+        totalCount={statistics?.totalCount || 0}
+        reflectionRate={statistics?.reflectionRate || 0}
+        isStatisticsLoading={isStatisticsLoading || false}
       />
       <div css={adminOrganizationListContainer(theme)}>
         <div css={infoContainer}>

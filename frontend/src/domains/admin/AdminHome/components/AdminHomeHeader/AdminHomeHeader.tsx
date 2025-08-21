@@ -15,18 +15,19 @@ interface AdminHomeHeaderProps {
   adminName: string;
   completedCount: number;
   totalCount: number;
+  reflectionRate: number;
+  isStatisticsLoading: boolean;
 }
 
 export default function AdminHomeHeader({
   adminName,
   completedCount,
   totalCount,
+  reflectionRate,
+  isStatisticsLoading,
 }: AdminHomeHeaderProps) {
   const theme = useAppTheme();
 
-  const completeStatus = Number(
-    ((completedCount / totalCount) * 100).toFixed(1)
-  );
   const remainingCount = totalCount - completedCount;
 
   return (
@@ -37,16 +38,20 @@ export default function AdminHomeHeader({
       </div>
 
       <div css={feedbackProgressStatus(theme)}>
-        <div css={progressStatus(theme)}>
-          <p>전체 처리 현황</p>
-          <p>
-            {completedCount} / {totalCount}
-          </p>
-        </div>
-        <StatusBar status={completeStatus} />
-        <p css={progressStatusSummary(theme)}>
-          {completeStatus}% 완료 - {remainingCount}개 남음
-        </p>
+        {!isStatisticsLoading && (
+          <>
+            <div css={progressStatus(theme)}>
+              <p>전체 처리 현황</p>
+              <p>
+                {completedCount} / {totalCount}
+              </p>
+            </div>
+            <StatusBar status={reflectionRate} />
+            <p css={progressStatusSummary(theme)}>
+              {reflectionRate}% 완료 - {remainingCount}개 남음
+            </p>
+          </>
+        )}
       </div>
     </div>
   );
