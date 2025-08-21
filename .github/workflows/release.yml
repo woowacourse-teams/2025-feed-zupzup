@@ -18,8 +18,7 @@ jobs:
           git fetch --tags
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
-            echo "⚠️ No tag found. Using HEAD as fallback."
-            LAST_TAG=$(git rev-parse HEAD)
+            echo "⚠️ No tag found. This is the first release."
           fi
           echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
 
@@ -29,7 +28,7 @@ jobs:
           LAST_TAG=${{ env.LAST_TAG }}
           VERSION=$(echo $LAST_TAG | sed 's/^v//')
 
-          # 기본값 보장
+          # 기본값 보장 (첫 릴리즈 시 0.0.0으로 시작)
           if [ -z "$VERSION" ]; then
             VERSION="0.0.0"
           fi
@@ -38,7 +37,11 @@ jobs:
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
 
-          COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s%n%b")
+          if [ -n "$LAST_TAG" ]; then
+            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"%s%n%b")
+          else
+            COMMITS=$(git log HEAD --pretty=format:"%s%n%b")
+          fi
 
           if echo "$COMMITS" | grep -qi "BREAKING CHANGE"; then
             MAJOR=$((MAJOR+1))
@@ -63,7 +66,7 @@ jobs:
           if [ -n "${{ env.LAST_TAG }}" ]; then
             git log ${{ env.LAST_TAG }}..HEAD --pretty=format:"- %s" >> release_notes.md
           else
-            git log -1 --pretty=format:"- %s" >> release_notes.md
+            git log HEAD --pretty=format:"- %s" >> release_notes.md
           fi
 
       - name: Check if tag already exists
