@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - fe/release
+      - be/release
 
 jobs:
   release:
@@ -12,19 +13,31 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
+          fetch-tags: true
+
+      # 브랜치별 prefix 설정
+      - name: Set prefix based on branch
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "fe/release" ]]; then
+            echo "PREFIX=fe-" >> $GITHUB_ENV
+          elif [[ "${GITHUB_REF_NAME}" == "be/release" ]]; then
+            echo "PREFIX=be-" >> $GITHUB_ENV
+          else
+            echo "PREFIX=" >> $GITHUB_ENV
+          fi
 
       - name: Debug LAST_TAG
         run: |
-          echo "Found LAST_TAG: $LAST_TAG"
-          git describe --tags --abbrev=0 || echo "❌ No tag found"
-          git tag --sort=-creatordate | head -n 5
+          git fetch --tags
+          echo "🔎 PREFIX=${{ env.PREFIX }}"
+          git tag --sort=-creatordate | grep "^${{ env.PREFIX }}" | head -n 5 || echo "❌ No tags found"
 
-      # 1) 가장 가까운 직전 태그 가져오기
+      # 1) 가장 가까운 직전 태그 가져오기 (브랜치 prefix 기준)
       - name: Get last tag
         run: |
-          git fetch --tags
-          LAST_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          LAST_TAG=$(git tag --sort=-creatordate | grep "^${{ env.PREFIX }}" | head -n 1 || echo "")
           echo "LAST_TAG=$LAST_TAG" >> $GITHUB_ENV
 
       # 2) 커밋 메시지를 기반으로 새로운 버전 결정
@@ -32,7 +45,8 @@ jobs:
         id: semver
         run: |
           LAST_TAG=${{ env.LAST_TAG }}
-          VERSION=$(echo $LAST_TAG | sed 's/^v//')
+          PREFIX=${{ env.PREFIX }}
+          VERSION=$(echo $LAST_TAG | sed "s/^$PREFIX//")
 
           if [ -z "$VERSION" ]; then
             VERSION="0.0.0"
@@ -59,27 +73,27 @@ jobs:
             PATCH=$((PATCH+1))
           fi
 
-          NEW_TAG="v$MAJOR.$MINOR.$PATCH"
+          NEW_TAG="${PREFIX}v$MAJOR.$MINOR.$PATCH"
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
 
-      # 3) 중복 태그 방지 (이미 있으면 자동 Patch bump)
+      # 3) 중복 태그 방지
       - name: Ensure unique tag
         run: |
-          git fetch --tags
           NEW_TAG=${{ env.new_tag }}
 
           while git rev-parse $NEW_TAG >/dev/null 2>&1; do
             echo "⚠️ Tag $NEW_TAG already exists. Bumping patch version."
-            VERSION=$(echo $NEW_TAG | sed 's/^v//')
+            VERSION=$(echo $NEW_TAG | sed "s/^${{ env.PREFIX }}v//")
             MAJOR=$(echo $VERSION | cut -d. -f1)
             MINOR=$(echo $VERSION | cut -d. -f2)
             PATCH=$(echo $VERSION | cut -d. -f3)
             PATCH=$((PATCH+1))
-            NEW_TAG="v$MAJOR.$MINOR.$PATCH"
+            NEW_TAG="${{ env.PREFIX }}v$MAJOR.$MINOR.$PATCH"
           done
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
-      # 4) 새로운 릴리즈 노트 생성
+
+      # 4) 릴리즈 노트 생성
       - name: Generate release notes
         run: |
           echo "## ${{ env.new_tag }} ($(date +'%Y-%m-%d'))" > release_notes.md
@@ -90,7 +104,7 @@ jobs:
             git log HEAD --pretty=format:"- %s" >> release_notes.md
           fi
 
-      # 5) CHANGELOG.md 업데이트 → 커밋 & 푸시
+      # 5) CHANGELOG.md 업데이트
       - name: Update CHANGELOG.md
         if: github.actor != 'github-actions[bot]'
         run: |
@@ -107,10 +121,10 @@ jobs:
             git config user.email "actions@github.com"
             git add CHANGELOG.md
             git commit -m "docs: update changelog for ${{ env.new_tag }}" || echo "No changes to commit"
-            git push origin HEAD:fe/release
+            git push origin HEAD:${GITHUB_REF_NAME}
           fi
 
-      # 6) GitHub Release 생성 (CHANGELOG 커밋 이후 시점에 태그 달림)
+      # 6) GitHub Release 생성
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
