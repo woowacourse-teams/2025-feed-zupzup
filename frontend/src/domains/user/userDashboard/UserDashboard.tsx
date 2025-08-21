@@ -75,7 +75,7 @@ export default function UserDashboard() {
 
   const handleNavigateToOnboarding = () => {
     Analytics.track(userDashboardEvents.viewSuggestionsFromDashboard());
-    goPath('/');
+    goPath(`/${organizationId}/submit`);
   };
 
   const getFeedbackIsLike = (feedbackId: number) => {
