@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - fe/release # 릴리즈 브랜치 이름
+      - fe/release # 릴리즈 브랜치 이름 (patch 진행)
 
 jobs:
   release:
