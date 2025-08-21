@@ -102,7 +102,7 @@ class QRControllerE2ETest extends E2EHelper {
                     .body("message", equalTo("OK"))
                     .body("data", notNullValue())
                     .body("data.imageUrl", equalTo("https://example.com/qr-image.png"))
-                    .body("data.siteUrl", containsString("uuid=" + savedOrganization.getUuid()));
+                    .body("data.siteUrl", containsString(savedOrganization.getUuid().toString()));
         }
 
         @Test

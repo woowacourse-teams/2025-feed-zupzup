@@ -35,9 +35,9 @@ public class QRService {
         final Organization organization = getOrganization(organizationUuid);
         final QR qr = getQr(organization);
 
-        final String siteUrl = buildSiteUrl(organizationUuid);
+        final String url = siteUrl.buildPath(organizationUuid.toString());
 
-        return QRResponse.of(qr, siteUrl);
+        return QRResponse.of(qr, url);
     }
 
     @Transactional
@@ -49,9 +49,9 @@ public class QRService {
                     "해당 ID(id = " + organizationUuid + ")인 단체의 QR 코드는 이미 존재합니다.");
         }
 
-        final String siteUrl = buildSiteUrl(organizationUuid);
+        final String url = siteUrl.buildPath(organizationUuid.toString());
 
-        final byte[] qrCode = qrCodeGenerator.generateQRCode(siteUrl);
+        final byte[] qrCode = qrCodeGenerator.generateQRCode(url);
         final String imageUrl = s3UploadService.uploadFile(
                 new QRCodeUploadRequest(
                         qrProperties.image().extension(),
@@ -85,12 +85,5 @@ public class QRService {
         return qrRepository.findByOrganizationId(organization.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organization.getUuid() + ")인 단체의 QR 코드를 찾을 수 없습니다."));
-    }
-
-    private String buildSiteUrl(final UUID organizationUuid) {
-        final String paramKey = "uuid";
-        return siteUrl.builder()
-                .addParam(paramKey, organizationUuid.toString())
-                .build();
     }
 }
