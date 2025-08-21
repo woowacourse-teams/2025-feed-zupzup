@@ -16,7 +16,7 @@ export function createFeedbacksUrl({
   const baseUrl = `${isAdmin ? '/admin' : ''}/organizations/${organizationId}/feedbacks`;
   const params = new URLSearchParams();
 
-  params.set('orderBy', sort);
+  params.set('sortBy', sort);
   params.set('status', filter);
 
   return `${baseUrl}?${params.toString()}`;
