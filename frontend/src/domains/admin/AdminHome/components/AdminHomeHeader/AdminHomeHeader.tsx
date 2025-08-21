@@ -9,26 +9,18 @@ import {
   progressStatusSummary,
 } from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader.style';
 import StatusBar from '@/domains/admin/AdminHome/components/StatusBar/StatusBar';
+import useAdminStatistics from '@/domains/admin/AdminHome/hooks/useAdminStatistics';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface AdminHomeHeaderProps {
   adminName: string;
-  completedCount: number;
-  totalCount: number;
-  reflectionRate: number;
-  isStatisticsLoading: boolean;
 }
 
-export default function AdminHomeHeader({
-  adminName,
-  completedCount,
-  totalCount,
-  reflectionRate,
-  isStatisticsLoading,
-}: AdminHomeHeaderProps) {
+export default function AdminHomeHeader({ adminName }: AdminHomeHeaderProps) {
   const theme = useAppTheme();
 
-  const remainingCount = totalCount - completedCount;
+  const { statistics, isStatisticsLoading } = useAdminStatistics();
+  const remainingCount = statistics.totalCount - statistics.confirmedCount;
 
   return (
     <div css={headerLayout(theme)}>
@@ -43,12 +35,12 @@ export default function AdminHomeHeader({
             <div css={progressStatus(theme)}>
               <p>전체 처리 현황</p>
               <p>
-                {completedCount} / {totalCount}
+                {statistics.confirmedCount} / {statistics.totalCount}
               </p>
             </div>
-            <StatusBar status={reflectionRate} />
+            <StatusBar status={statistics.reflectionRate || 0} />
             <p css={progressStatusSummary(theme)}>
-              {reflectionRate}% 완료 - {remainingCount}개 남음
+              {statistics.reflectionRate}% 완료 - {remainingCount}개 남음
             </p>
           </>
         )}

@@ -11,7 +11,6 @@ import {
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import AdminOrganizationList from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList';
 import useAdminOrganization from '@/domains/admin/AdminHome/hooks/useAdminOrganization';
-import useAdminStatistics from '@/domains/admin/AdminHome/hooks/useAdminStatistics';
 import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -31,17 +30,10 @@ export default function AdminHome() {
   };
 
   const { adminOrganizations, isLoading } = useAdminOrganization();
-  const { statistics, isStatisticsLoading } = useAdminStatistics();
 
   return (
     <div css={homeLayout}>
-      <AdminHomeHeader
-        adminName={adminName}
-        completedCount={statistics?.confirmedCount || 0}
-        totalCount={statistics?.totalCount || 0}
-        reflectionRate={statistics?.reflectionRate || 0}
-        isStatisticsLoading={isStatisticsLoading || false}
-      />
+      <AdminHomeHeader adminName={adminName} />
       <div css={adminOrganizationListContainer(theme)}>
         <div css={infoContainer}>
           <p css={listTitle(theme)}>피드백 방 목록</p>
