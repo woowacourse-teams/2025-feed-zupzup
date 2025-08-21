@@ -8,7 +8,6 @@ import feedzupzup.backend.notification.domain.NotificationTokenRepository;
 import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
 import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,13 +24,19 @@ public class NotificationService {
 
     @Transactional
     public void registerToken(final NotificationTokenRequest request, final Long adminId) {
-        Optional<NotificationToken> existingToken = notificationTokenRepository.findByAdminId(adminId);
-        if (existingToken.isPresent()) {
-            existingToken.get().updateNotificationToken(request.notificationToken());
-            log.info("토큰 업데이트");
-            return;
-        }
-        
+        notificationTokenRepository.findByAdminId(adminId)
+                .ifPresentOrElse(
+                        existingToken -> updateExistingToken(existingToken, request.notificationToken()),
+                        () -> createNewToken(request, adminId)
+                );
+    }
+
+    private void updateExistingToken(final NotificationToken token, final String newToken) {
+        token.updateNotificationToken(newToken);
+        log.info("토큰 업데이트");
+    }
+
+    private void createNewToken(final NotificationTokenRequest request, final Long adminId) {
         final Admin admin = getAdminById(adminId);
         notificationTokenRepository.save(request.toNotificationToken(admin));
         log.info("새 토큰 등록");
