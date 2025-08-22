@@ -1,90 +1,77 @@
 package feedzupzup.backend.feedback.fixture;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.PostedAt;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
-import feedzupzup.backend.feedback.domain.UserName;
+import feedzupzup.backend.feedback.domain.vo.PostedAt;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.UserName;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.util.CurrentDateTime;
 
 public class FeedbackFixture {
 
-    public static Feedback createFeedbackWithStatus(final ProcessStatus status, final OrganizationCategory category) {
+    public static Feedback createFeedbackWithStatus(final Organization organization, final ProcessStatus status, final OrganizationCategory category) {
         return Feedback.builder()
-                .content("상태별 피드백")
+                .content(new Content("상태별 피드백"))
                 .isSecret(false)
                 .status(status)
-                .organizationId(1L)
+                .organization(organization)
                 .userName(new UserName("테스트유저"))
-                .postedAt(PostedAt.createTimeInSeoul())
+                .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithOrganizationId(final Long organizationId, final OrganizationCategory category) {
+    public static Feedback createFeedbackWithOrganization(final Organization organization, final OrganizationCategory category) {
         return Feedback.builder()
-                .content("장소별 피드백")
+                .content(new Content("장소별 피드백"))
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .organizationId(organizationId)
+                .organization(organization)
                 .userName(new UserName("테스트유저"))
-                .postedAt(PostedAt.createTimeInSeoul())
+                .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithSecret(final boolean isSecret, final OrganizationCategory category) {
+    public static Feedback createFeedbackWithSecret(final Organization organization, final boolean isSecret, final OrganizationCategory category) {
         return Feedback.builder()
-                .content("장소별 피드백")
+                .content(new Content("장소별 피드백"))
                 .isSecret(isSecret)
                 .status(ProcessStatus.WAITING)
-                .organizationId(1L)
+                .organization(organization)
                 .userName(new UserName("테스트유저"))
-                .postedAt(PostedAt.createTimeInSeoul())
+                .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
                 .build();
     }
 
-    public static Feedback createFeedbackWithContent(final String content, final OrganizationCategory category) {
+    public static Feedback createFeedbackWithContent(final Organization organization, final String content, final OrganizationCategory category) {
         return Feedback.builder()
-                .content(content)
+                .content(new Content(content))
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .organizationId(1L)
+                .organization(organization)
                 .userName(new UserName("테스트유저"))
-                .postedAt(PostedAt.createTimeInSeoul())
+                .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
                 .build();
     }
 
     public static Feedback createFeedbackWithLikes(
-            final Long organizationId,
+            final Organization organization,
             final OrganizationCategory organizationCategory,
             final int likeCount
     ) {
         return Feedback.builder()
-                .content("좋아요 테스트용 피드백")
+                .content(new Content("좋아요 테스트용 피드백"))
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
-                .organizationId(organizationId)
+                .organization(organization)
                 .likeCount(likeCount)
                 .userName(new UserName("테스트유저"))
-                .postedAt(PostedAt.createTimeInSeoul())
-                .organizationCategory(organizationCategory)
-                .build();
-    }
-
-    public static Feedback createFeedbackWithPostedAtAndStatus(
-            final PostedAt postedAt,
-            final ProcessStatus status,
-            final OrganizationCategory organizationCategory
-    ) {
-        return Feedback.builder()
-                .content("통계 테스트용 피드백")
-                .isSecret(false)
-                .status(status)
-                .organizationId(1L)
-                .userName(new UserName("테스트유저"))
-                .postedAt(postedAt)
+                .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(organizationCategory)
                 .build();
     }

@@ -11,6 +11,7 @@ import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;
 import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,11 +38,11 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
             final Organization savedOrganization = organizationRepository.save(organization);
 
             // when
-            final UserOrganizationResponse response = userOrganizationService.getOrganizationById(
-                    savedOrganization.getId());
+            final UserOrganizationResponse response = userOrganizationService.getOrganizationByUuid(
+                    savedOrganization.getUuid());
 
             // then
-            assertThat(response.organizationName()).isEqualTo(organization.getName());
+            assertThat(response.organizationName()).isEqualTo(organization.getName().getValue());
             assertThat(response.totalCheeringCount()).isEqualTo(organization.getCheeringCountValue());
         }
 
@@ -49,10 +50,10 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
         @DisplayName("존재하지 않는 단체 ID로 조회 시 예외를 발생시킨다")
         void get_organization_by_id_not_found() {
             // given
-            final Long nonExistentOrganizationId = 999L;
+            final UUID nonExistentOrganizationId = UUID.randomUUID();
 
             // when & then
-            assertThatThrownBy(() -> userOrganizationService.getOrganizationById(nonExistentOrganizationId))
+            assertThatThrownBy(() -> userOrganizationService.getOrganizationByUuid(nonExistentOrganizationId))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .hasMessage("해당 ID(id = " + nonExistentOrganizationId + ")인 단체를 찾을 수 없습니다.");
         }
@@ -68,7 +69,8 @@ class UserOrganizationServiceTest extends ServiceIntegrationHelper {
         final CheeringRequest request = new CheeringRequest(100);
 
         // when
-        final CheeringResponse response = userOrganizationService.cheer(request, savedOrganization.getId());
+        final CheeringResponse response = userOrganizationService.cheer(
+                request, savedOrganization.getUuid());
 
         // then
         assertThat(response.cheeringTotalCount()).isEqualTo(100);

@@ -9,22 +9,30 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Category {
 
-    FACILITY("시설"),
-    CURRICULUM("커리큘럼"),
-    ADMINISTRATION("행정"),
+    REPORT("신고"),
+    QUESTION("질문"),
+    SUGGESTION("건의"),
+    FEEDBACK("피드백"),
+    COMPLIMENT("칭찬"),
+    SHARING("정보공유"),
     ETC("기타"),
     ;
 
     private final String koreanName;
 
-    public boolean isSameCategory(String value) {
+    public boolean isSameCategory(final String value) {
         return this.koreanName.equals(value);
     }
 
-    public static Category findCategoryBy(String value) {
+    public static Category findCategoryBy(final String value) {
         return Arrays.stream(Category.values())
                 .filter(result -> result.isSameCategory(value))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 카테고리입니다."));
+    }
+
+    public static boolean hasCategory(final String value) {
+        return Arrays.stream(Category.values())
+                .anyMatch(category -> category.isSameCategory(value));
     }
 }

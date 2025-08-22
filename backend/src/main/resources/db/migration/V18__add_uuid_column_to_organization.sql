@@ -1,0 +1,5 @@
+ALTER TABLE organization ADD COLUMN uuid BINARY(16) UNIQUE;
+
+UPDATE organization SET uuid = UNHEX(REPLACE(UUID(), '-', '')) WHERE uuid IS NULL;
+
+ALTER TABLE organization MODIFY COLUMN uuid BINARY(16) NOT NULL UNIQUE;

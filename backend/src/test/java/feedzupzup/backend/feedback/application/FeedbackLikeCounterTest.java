@@ -1,12 +1,12 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.category.domain.Category.FACILITY;
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
-import feedzupzup.backend.category.fixture.CategoryFixture;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -45,13 +45,13 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 5);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 3);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -82,11 +82,11 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 10);
         final Feedback saved = feedBackRepository.save(feedback);
 
@@ -117,11 +117,11 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 5);
         final Feedback saved = feedBackRepository.save(feedback);
 
@@ -147,13 +147,13 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback saved1 = feedBackRepository.save(feedback1);
         final Feedback saved2 = feedBackRepository.save(feedback2);
@@ -178,12 +178,12 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
         for (int i = 1; i <= feedbackCount; i++) {
-            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                     organizationCategory, 0);
             final Feedback saved = feedBackRepository.save(feedback);
 
@@ -208,11 +208,11 @@ class FeedbackLikeCounterTest extends ServiceIntegrationHelper {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        final OrganizationCategory organizationCategory = CategoryFixture.createOrganizationCategory(
-                organization, FACILITY);
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization.getId(),
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 0);
         final Feedback saved = feedBackRepository.save(feedback);
 

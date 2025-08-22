@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
-import feedzupzup.backend.feedback.domain.ProcessStatus;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -63,12 +63,12 @@ public record AdminFeedbackListResponse(
         private static AdminFeedbackItem from(final Feedback feedback) {
             return new AdminFeedbackItem(
                     feedback.getId(),
-                    feedback.getContent(),
+                    feedback.getContent().getValue(),
                     feedback.getStatus(),
                     feedback.isSecret(),
                     feedback.getLikeCount(),
-                    feedback.getUserName(),
-                    feedback.getPostedAt().getPostedAt(),
+                    feedback.getUserName().getValue(),
+                    feedback.getPostedAt().getValue(),
                     feedback.getOrganizationCategory().getCategory().getKoreanName(),
                     feedback.getComment() != null ? feedback.getComment().getValue() : null
             );
