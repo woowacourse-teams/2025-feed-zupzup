@@ -1,0 +1,52 @@
+language: ko-KR
+
+reviews:
+  profile: chill
+  high_level_summary: true
+  sequence_diagrams: false
+  auto_review:
+    enabled: true
+  path_instructions:
+    - path: "backend/**/*.java"
+      instructions: |
+        다음 팀 컨벤션 규칙을 엄격히 적용하여 리뷰하세요:
+        
+        **네이밍 규칙:**
+        - 검증/boolean 반환 메서드는 긍정문 사용 (isNotValid, hasNotRank 등 금지)
+        - dto 네이밍 대신 request/response로 구분
+        - dto는 record로 생성
+        
+        **코드 스타일:**
+        - Google Code Style 기반 (Tab/Indent: 4, Continuation: 8)
+        - 클래스와 선언부 필드 사이 개행
+        - 메서드 매개변수와 지역 변수에 final 사용
+        - Enum 값 정의 시 후행 쉼표 사용
+        - 초기화되지 않은 상태로 변수를 선언하지 않는다
+        
+        **Lombok 사용 규칙:**
+        - @Data 사용 금지
+        - @Getter, @NoArgsConstructor, @RequiredArgsConstructor, @Builder(필드 4개 이상시)만 허용
+        - 어노테이션이 여럿 있는 경우, 중요한 것을 가장 상단에 배치한다. (Lombok의 어노테이션을 가장 하단에 배치한다)
+        
+        **서비스/컨트롤러:**
+        - 클래스 최상단에 @Transactional(readOnly = true) 작성
+        - @RequestMapping을 클래스 레벨에서 사용 금지
+        
+        **엔티티:**
+        - @Column의 nullable=false인 경우 명시
+        - @Embeddable 내부에 @Embedded 사용 금지
+        - nullable 하지 않다면, 생성자의 매개변수에도 @NonNull을 붙인다
+        
+        **메서드 순서:**
+        - public 메서드 먼저, private은 사용하는 메서드 아래 배치
+        - 필드 순서: static final → final → instance variable
+    - path: "backend/**/*.sql"
+      instructions: |
+        - 시간과 관련된 DB 스키마를 설정할 경우에는, TIMESTAMP가 아닌 DATETIME을 사용한다
+        - Boolean Type을 사용할 경우, BIT를 사용해 통일성을 지킨다
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "backend/docs/team-conventions.md"
