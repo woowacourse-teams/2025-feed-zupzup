@@ -10,7 +10,6 @@ import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;

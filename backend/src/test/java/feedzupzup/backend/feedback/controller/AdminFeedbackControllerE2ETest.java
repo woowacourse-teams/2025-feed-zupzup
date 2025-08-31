@@ -17,7 +17,6 @@ import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;

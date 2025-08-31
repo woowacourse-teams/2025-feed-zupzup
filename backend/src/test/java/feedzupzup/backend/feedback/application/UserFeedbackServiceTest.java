@@ -15,9 +15,7 @@ import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
@@ -27,7 +25,6 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

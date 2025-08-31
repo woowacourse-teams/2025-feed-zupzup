@@ -3,7 +3,6 @@ package feedzupzup.backend.feedback.application;
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
-    private final FeedbackLikeCounter feedbackLikeCounter;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
     private final FeedbackLikeService feedbackLikeService;
@@ -65,14 +63,11 @@ public class UserFeedbackService {
             final ProcessStatus status,
             final FeedbackSortBy sortBy
     ) {
-        feedbackLikeService.flushLikeCountBuffer();
 
         final Pageable pageable = createPageable(size);
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
         List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-
-        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
 
         return UserFeedbackListResponse.of(
                 feedbackPage.getFeedbacks(),
@@ -86,15 +81,13 @@ public class UserFeedbackService {
             final FeedbackSortBy sortBy,
             final List<Long> myFeedbackIds
     ) {
-        feedbackLikeService.flushLikeCountBuffer();
 
         final List<Feedback> feedbacks = feedBackRepository.findByOrganizationUuidAndIdIn(
                 organizationUuid, myFeedbackIds);
 
         final FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
         final List<Feedback> sortedFeedbacks = feedbackSortStrategy.sort(feedbacks);
-        
-        feedbackLikeCounter.applyBufferedLikeCount(sortedFeedbacks);
+
         return MyFeedbackListResponse.of(sortedFeedbacks);
     }
 
