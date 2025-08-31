@@ -166,7 +166,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Feedback feedback = feedBackRepository.findById(feedbackId).get();
 
             //then
-            assertThat(feedback.getLikeCount()).isEqualTo(2);
+            assertThat(feedback.getLikeCount().getValue()).isEqualTo(2);
         }
 
         @Test

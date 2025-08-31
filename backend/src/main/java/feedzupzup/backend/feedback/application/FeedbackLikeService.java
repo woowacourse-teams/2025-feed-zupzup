@@ -19,14 +19,14 @@ public class FeedbackLikeService {
     public LikeResponse like(final Long feedbackId) {
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.updateLikeCount(1);
-        return new LikeResponse(feedback.getLikeCount());
+        return LikeResponse.from(feedback);
     }
 
     @Transactional
     public LikeResponse unLike(final Long feedbackId) {
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.updateLikeCount(-1);
-        return new LikeResponse(feedback.getLikeCount());
+        return LikeResponse.from(feedback);
     }
 
     private Feedback findFeedbackBy(final Long feedbackId) {
