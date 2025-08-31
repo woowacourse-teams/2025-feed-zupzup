@@ -14,23 +14,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FeedbackLikeService {
 
     private final FeedbackLikeRepository feedbackLikeRepository;
     private final FeedbackRepository feedBackRepository;
 
+    @Transactional
     public LikeResponse like(final Long feedbackId) {
-        validateExistFeedback(feedbackId);
-        final int beforeLikeCount = feedbackLikeRepository.getLikeCount(feedbackId);
-        final int afterLikeCount = feedbackLikeRepository.increaseAndGet(feedbackId);
-        return new LikeResponse(beforeLikeCount, afterLikeCount);
+        final Feedback feedback = findFeedbackBy(feedbackId);
+        feedback.updateLikeCount(1);
+        return new LikeResponse(feedback.getLikeCount());
     }
 
     public LikeResponse unLike(final Long feedbackId) {
         validateExistFeedback(feedbackId);
         final int beforeLikeCount = feedbackLikeRepository.getLikeCount(feedbackId);
         final int afterLikeCount = feedbackLikeRepository.decreaseAndGet(feedbackId);
-        return new LikeResponse(beforeLikeCount, afterLikeCount);
+        return new LikeResponse(afterLikeCount);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -42,6 +43,11 @@ public class FeedbackLikeService {
             feedback.updateLikeCount(feedback.getLikeCount() + likeCounts.get(feedback.getId()));
         }
         feedbackLikeRepository.clear();
+    }
+
+    private Feedback findFeedbackBy(final Long feedbackId) {
+        return feedBackRepository.findById(feedbackId)
+                .orElseThrow(() -> new ResourceNotFoundException("feedbackId " + feedbackId + "는 존재하지 않습니다."));
     }
 
     private void validateExistFeedback(Long feedbackId) {
