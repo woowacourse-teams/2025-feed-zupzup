@@ -27,11 +27,11 @@ public class FeedbackLikeService {
         return new LikeResponse(feedback.getLikeCount());
     }
 
+    @Transactional
     public LikeResponse unLike(final Long feedbackId) {
-        validateExistFeedback(feedbackId);
-        final int beforeLikeCount = feedbackLikeRepository.getLikeCount(feedbackId);
-        final int afterLikeCount = feedbackLikeRepository.decreaseAndGet(feedbackId);
-        return new LikeResponse(afterLikeCount);
+        final Feedback feedback = findFeedbackBy(feedbackId);
+        feedback.updateLikeCount(-1);
+        return new LikeResponse(feedback.getLikeCount());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
