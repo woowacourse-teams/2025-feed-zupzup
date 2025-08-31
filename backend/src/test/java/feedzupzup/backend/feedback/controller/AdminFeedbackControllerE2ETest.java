@@ -42,9 +42,6 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     private FeedbackRepository feedBackRepository;
 
     @Autowired
-    private FeedbackLikeRepository feedbackLikeRepository;
-
-    @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
@@ -65,8 +62,6 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
 
     @BeforeEach
     void setUp() {
-        feedbackLikeRepository.clear();
-
         final Password password = new Password("password123");
         admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password),
                 new AdminName("testName"));
@@ -308,156 +303,6 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks.size()", equalTo(0))
                 .body("data.hasNext", equalTo(false))
                 .body("data.nextCursorId", equalTo(null));
-    }
-
-    @Test
-    @DisplayName("관리자 피드백 목록에서 DB 좋아요 수와 인메모리 좋아요 수가 합산되어 반영된다")
-    void admin_get_feedbacks_reflects_memory_likes() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
-        organizerRepository.save(organizer);
-
-        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                organization, SUGGESTION);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
-                organization,
-                organizationCategory,
-                5
-        ); // DB에 5개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
-                organization,
-                organizationCategory,
-                3
-        ); // DB에 3개 좋아요
-        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(
-                organization,
-                organizationCategory,
-                0
-        ); // DB에 0개 좋아요
-
-        final Feedback saved1 = feedBackRepository.save(feedback1);
-        final Feedback saved2 = feedBackRepository.save(feedback2);
-        final Feedback saved3 = feedBackRepository.save(feedback3);
-
-        // 인메모리에 좋아요 추가
-        feedbackLikeRepository.increaseAndGet(saved1.getId()); // 인메모리에 1개 추가 -> 총 6개
-        feedbackLikeRepository.increaseAndGet(saved1.getId()); // 인메모리에 1개 더 추가 -> 총 7개
-        feedbackLikeRepository.increaseAndGet(saved2.getId()); // 인메모리에 1개 추가 -> 총 4개
-        feedbackLikeRepository.increaseAndGet(saved3.getId()); // 인메모리에 1개 추가 -> 총 1개
-        feedbackLikeRepository.increaseAndGet(saved3.getId()); // 인메모리에 1개 더 추가 -> 총 2개
-        feedbackLikeRepository.increaseAndGet(saved3.getId()); // 인메모리에 1개 더 추가 -> 총 3개
-
-        // when & then - 좋아요 수가 DB + 인메모리 합산 값으로 반영되는지 확인
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .queryParam("size", 10)
-                .queryParam("sortBy", "LATEST")
-                .when()
-                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks.size()", equalTo(3))
-                .body("data.feedbacks[0].likeCount", equalTo(3)) // saved3: 0(DB) + 3(인메모리) = 3 (최신순)
-                .body("data.feedbacks[1].likeCount", equalTo(4)) // saved2: 3(DB) + 1(인메모리) = 4
-                .body("data.feedbacks[2].likeCount", equalTo(7)); // saved1: 5(DB) + 2(인메모리) = 7
-    }
-
-    @Test
-    @DisplayName("관리자 피드백 목록에서 인메모리 좋아요가 없는 피드백은 DB 좋아요 수만 반영된다")
-    void admin_get_feedbacks_reflects_only_db_likes_when_no_memory_likes() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
-        organizerRepository.save(organizer);
-
-        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                organization, SUGGESTION);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(
-                organization,
-                organizationCategory,
-                10
-        ); // DB에 10개 좋아요
-        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(
-                organization,
-                organizationCategory,
-                0
-        );  // DB에 0개 좋아요
-
-        feedBackRepository.save(feedback1);
-        feedBackRepository.save(feedback2);
-
-        // when & then - 인메모리 좋아요 추가 없이 조회, DB 좋아요 수만 반영되는지 확인
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .queryParam("size", 10)
-                .queryParam("sortBy", "LATEST")
-                .when()
-                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks.size()", equalTo(2))
-                .body("data.feedbacks[0].likeCount", equalTo(0))  // DB 좋아요 수만 (최신순)
-                .body("data.feedbacks[1].likeCount", equalTo(10)); // DB 좋아요 수만
-    }
-
-    @Test
-    @DisplayName("관리자 피드백 목록에서 인메모리에만 좋아요가 있는 피드백도 정상적으로 반영된다")
-    void admin_get_feedbacks_reflects_only_memory_likes() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
-        organizerRepository.save(organizer);
-
-        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                organization, SUGGESTION);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(
-                organization,
-                organizationCategory,
-                0
-        ); // DB에 0개 좋아요
-        final Feedback saved = feedBackRepository.save(feedback);
-
-        // 인메모리에만 좋아요 추가
-        for (int i = 0; i < 5; i++) {
-            feedbackLikeRepository.increaseAndGet(saved.getId()); // 인메모리에 총 5개 추가
-        }
-
-        // when & then - 인메모리 좋아요 수만 반영되는지 확인
-        given()
-                .log().all()
-                .cookie(SESSION_ID, sessionCookie)
-                .queryParam("size", 10)
-                .queryParam("sortBy", "LATEST")
-                .when()
-                .get("/admin/organizations/{organizationUuid}/feedbacks", organization.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.feedbacks.size()", equalTo(1))
-                .body("data.feedbacks[0].likeCount", equalTo(5)); // 인메모리 좋아요 수만
     }
 
     @Test

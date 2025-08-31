@@ -18,7 +18,6 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
-import feedzupzup.backend.feedback.infrastructure.FeedbackLikeInMemoryRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -40,14 +39,6 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
 
     @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
-
-    @Autowired
-    private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
-
-    @BeforeEach
-    void clearBuffer() {
-        feedbackLikeInMemoryRepository.clear();
-    }
 
     @Test
     @DisplayName("사용자가 특정 장소의 피드백 목록을 성공적으로 조회한다")
