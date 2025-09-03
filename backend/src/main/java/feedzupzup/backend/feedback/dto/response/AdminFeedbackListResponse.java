@@ -66,7 +66,7 @@ public record AdminFeedbackListResponse(
                     feedback.getContent().getValue(),
                     feedback.getStatus(),
                     feedback.isSecret(),
-                    feedback.getLikeCount(),
+                    feedback.getLikeCount().getValue(),
                     feedback.getUserName().getValue(),
                     feedback.getPostedAt().getValue(),
                     feedback.getOrganizationCategory().getCategory().getKoreanName(),

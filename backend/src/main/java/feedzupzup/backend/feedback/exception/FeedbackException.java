@@ -8,4 +8,13 @@ public class FeedbackException extends DomainException {
     public FeedbackException(final ErrorCode errorCode, final String message) {
         super(errorCode, message);
     }
+
+    public static class FeedbackNegativeException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.INVALID_VALUE_RANGE;
+
+        public FeedbackNegativeException(final String message) {
+            super(errorCode, message);
+        }
+    }
 }

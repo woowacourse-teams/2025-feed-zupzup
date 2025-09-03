@@ -15,7 +15,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
                     o.uuid,
                     o.name.value,
                     SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING THEN 1L ELSE 0L END),
-                    MAX(f.postedAt.postedAt)
+                    MAX(f.postedAt.value)
                 )
                 FROM Admin a
                 JOIN Organizer or ON a.id = or.admin.id
@@ -23,7 +23,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
                 LEFT JOIN Feedback f ON o.id = f.organization.id
                 WHERE a.id = :adminId
                 GROUP BY o.id
-                ORDER BY MAX(f.postedAt.postedAt) DESC
+                ORDER BY MAX(f.postedAt.value) DESC
             """)
     List<AdminOrganizationInfo> getAdminOrganizationInfos(Long adminId);
 
