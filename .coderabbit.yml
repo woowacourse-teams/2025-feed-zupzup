@@ -6,6 +6,7 @@ reviews:
   sequence_diagrams: false
   auto_review:
     enabled: true
+    base_branches: ["be/develop"]
   path_instructions:
     - path: "backend/**/*.java"
       instructions: |
