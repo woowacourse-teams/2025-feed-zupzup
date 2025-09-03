@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.domain.vo;
 
+import feedzupzup.backend.feedback.exception.FeedbackException;
+import feedzupzup.backend.feedback.exception.FeedbackException.FeedbackNegativeException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -29,7 +31,7 @@ public class LikeCount {
 
     private void validateLikeCount(final int value) {
         if (value < 0) {
-            throw new IllegalArgumentException("좋아요는 음수가 될 수 없습니다.");
+            throw new FeedbackNegativeException("좋아요는 음수가 될 수 없습니다.");
         }
     }
 }
