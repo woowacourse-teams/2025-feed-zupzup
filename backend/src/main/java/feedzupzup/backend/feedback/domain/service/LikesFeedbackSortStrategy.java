@@ -31,7 +31,7 @@ public class LikesFeedbackSortStrategy implements FeedbackSortStrategy {
     @Override
     public List<Feedback> sort(final List<Feedback> feedbacks) {
         return feedbacks.stream()
-                .sorted(Comparator.comparing(Feedback::getLikeCount).reversed()
+                .sorted(Comparator.comparing(Feedback::getLikeCountValue).reversed()
                         .thenComparing(Feedback::getId))
                 .toList();
     }

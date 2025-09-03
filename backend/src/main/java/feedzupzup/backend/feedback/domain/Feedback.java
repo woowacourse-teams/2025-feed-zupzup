@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.domain;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Comment;
 import feedzupzup.backend.feedback.domain.vo.Content;
+import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.domain.vo.UserName;
@@ -50,14 +51,13 @@ public class Feedback extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Organization organization;
 
-    private int likeCount;
+    @Embedded
+    private LikeCount likeCount;
 
     @Embedded
-    @Column(nullable = false)
     private UserName userName;
 
     @Embedded
-    @Column(nullable = false)
     private PostedAt postedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -75,7 +75,7 @@ public class Feedback extends BaseTimeEntity {
             final boolean isSecret,
             final @NonNull ProcessStatus status,
             final @NonNull Organization organization,
-            final int likeCount,
+            final @NonNull LikeCount likeCount,
             final @NonNull UserName userName,
             final @NonNull PostedAt postedAt,
             final @NonNull OrganizationCategory organizationCategory,
@@ -96,15 +96,12 @@ public class Feedback extends BaseTimeEntity {
         this.status = status;
     }
 
-    public void updateSecret(final boolean isSecret) {
-        this.isSecret = isSecret;
+    public void increaseLikeCount() {
+        this.likeCount = this.likeCount.increase();
     }
 
-    public void updateLikeCount(int likeCount) {
-        if (likeCount < 0) {
-            likeCount = 0;
-        }
-        this.likeCount = likeCount;
+    public void decreaseLikeCount() {
+        this.likeCount= this.likeCount.decrease();
     }
 
     public void updateCommentAndStatus(final Comment comment) {
@@ -114,5 +111,9 @@ public class Feedback extends BaseTimeEntity {
 
     public boolean isWaiting() {
         return this.status == ProcessStatus.WAITING;
+    }
+
+    public int getLikeCountValue() {
+        return this.likeCount.getValue();
     }
 }

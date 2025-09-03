@@ -4,7 +4,6 @@ import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
-import feedzupzup.backend.feedback.domain.FeedbackLikeCounter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
@@ -32,7 +31,6 @@ public class AdminFeedbackService {
     private final AdminRepository adminRepository;
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
-    private final FeedbackLikeCounter feedbackLikeCounter;
     private final FeedbackLikeService feedbackLikeService;
 
     @Transactional
@@ -54,14 +52,11 @@ public class AdminFeedbackService {
     ) {
         final Pageable pageable = Pageable.ofSize(size + 1);
 
-        feedbackLikeService.flushLikeCountBuffer();
-
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
         List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
                 pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
-        feedbackLikeCounter.applyBufferedLikeCount(feedbackPage.getFeedbacks());
         return AdminFeedbackListResponse.from(feedbackPage);
     }
 

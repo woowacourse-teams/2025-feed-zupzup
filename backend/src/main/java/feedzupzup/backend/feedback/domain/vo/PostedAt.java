@@ -1,21 +1,21 @@
 package feedzupzup.backend.feedback.domain.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostedAt {
 
-    private LocalDateTime postedAt;
+    @Column(name = "posted_at", nullable = false)
+    private LocalDateTime value;
 
     public PostedAt(final LocalDateTime postedAt) {
-        this.postedAt = postedAt;
-    }
-
-    public LocalDateTime getValue() {
-        return postedAt;
+        this.value = postedAt;
     }
 }
