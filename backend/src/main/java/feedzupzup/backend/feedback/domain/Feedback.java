@@ -52,15 +52,12 @@ public class Feedback extends BaseTimeEntity {
     private Organization organization;
 
     @Embedded
-    @Column(nullable = false)
     private LikeCount likeCount;
 
     @Embedded
-    @Column(nullable = false)
     private UserName userName;
 
     @Embedded
-    @Column(nullable = false)
     private PostedAt postedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
