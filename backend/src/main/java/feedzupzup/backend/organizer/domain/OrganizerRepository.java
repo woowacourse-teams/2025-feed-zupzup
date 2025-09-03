@@ -15,4 +15,8 @@ public interface OrganizerRepository extends JpaRepository<Organizer, Long> {
 
     boolean existsOrganizerByAdmin_IdAndOrganization_Uuid(Long adminId, UUID organizationUuid);
 
+    void deleteAllByAdmin_Id(Long adminId);
+
+    @Query("SELECT o FROM Organizer o JOIN FETCH o.organization WHERE o.admin.id = :adminId")
+    List<Organizer> findAllFetchedByAdminId(Long adminId);
 }

@@ -108,4 +108,9 @@ public class AdminFeedbackService {
 
         return new FeedbackStatisticResponse(confirmedCount, totalCount, reflectionRate);
     }
+
+    @Transactional
+    public void deleteAllByOrganizationIds(final List<Long> organizationIds) {
+        feedBackRepository.deleteAllByOrganizationIdIn(organizationIds);
+    }
 }

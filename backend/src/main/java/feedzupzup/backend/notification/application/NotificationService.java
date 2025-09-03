@@ -24,7 +24,7 @@ public class NotificationService {
 
     @Transactional
     public void registerToken(final NotificationTokenRequest request, final Long adminId) {
-        notificationTokenRepository.findByAdminId(adminId)
+        notificationTokenRepository.findByAdmin_Id(adminId)
                 .ifPresentOrElse(
                         existingToken -> updateExistingToken(existingToken, request.notificationToken()),
                         () -> createNewToken(request, adminId)
@@ -40,6 +40,11 @@ public class NotificationService {
     public void updateAlertsSetting(final UpdateAlertsSettingRequest request, final Long adminId) {
         final Admin admin = getAdminById(adminId);
         admin.updateAlertsSetting(request.alertsOn());
+    }
+
+    @Transactional
+    public void deleteAllByAdminId(final Long adminId) {
+        notificationTokenRepository.deleteAllByAdmin_Id(adminId);
     }
 
     private Admin getAdminById(Long adminId) {

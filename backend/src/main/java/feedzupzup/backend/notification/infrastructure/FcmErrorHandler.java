@@ -60,7 +60,7 @@ public class FcmErrorHandler {
 
         if (!deletableAdminIds.isEmpty()) {
             log.info("토큰 삭제 adminId : {}", deletableAdminIds);
-            notificationTokenRepository.deleteAllByAdminIdIn(deletableAdminIds);
+            notificationTokenRepository.deleteAllByAdmin_IdIn(deletableAdminIds);
         }
     }
 }

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface NotificationTokenRepository extends JpaRepository<NotificationToken, Long> {
 
-    boolean existsByAdminId(Long adminId);
+    Optional<NotificationToken> findByAdmin_Id(Long adminId);
     
-    Optional<NotificationToken> findByAdminId(Long adminId);
-    
-    void deleteAllByAdminIdIn(List<Long> adminIds);
+    void deleteAllByAdmin_IdIn(List<Long> adminIds);
+
+    void deleteAllByAdmin_Id(Long adminId);
 }
