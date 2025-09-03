@@ -18,14 +18,14 @@ public class FeedbackLikeService {
     @Transactional
     public LikeResponse like(final Long feedbackId) {
         final Feedback feedback = findFeedbackBy(feedbackId);
-        feedback.updateLikeCount(1);
+        feedback.increaseLikeCount();
         return LikeResponse.from(feedback);
     }
 
     @Transactional
     public LikeResponse unLike(final Long feedbackId) {
         final Feedback feedback = findFeedbackBy(feedbackId);
-        feedback.updateLikeCount(-1);
+        feedback.decreaseLikeCount();
         return LikeResponse.from(feedback);
     }
 

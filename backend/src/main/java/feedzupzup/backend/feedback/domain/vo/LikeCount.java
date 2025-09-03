@@ -15,14 +15,21 @@ public class LikeCount {
     private int value;
 
     public LikeCount(final int value) {
+        validateLikeCount(value);
         this.value = value;
     }
 
-    public LikeCount updateLikeCount(int likeCount) {
-        int newLikeCount = this.value + likeCount;
-        if (newLikeCount < 0) {
-            newLikeCount = 0;
+    public LikeCount increase() {
+        return new LikeCount(this.value + 1);
+    }
+
+    public LikeCount decrease() {
+        return new LikeCount(this.value - 1);
+    }
+
+    private void validateLikeCount(final int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("좋아요는 음수가 될 수 없습니다.");
         }
-        return new LikeCount(newLikeCount);
     }
 }

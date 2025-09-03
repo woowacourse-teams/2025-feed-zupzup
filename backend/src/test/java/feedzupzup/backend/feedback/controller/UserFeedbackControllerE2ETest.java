@@ -333,12 +333,18 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
                 organizationCategory);
         confirmedFeedback1.updateStatus(CONFIRMED);
-        confirmedFeedback1.updateLikeCount(5); // 좋아요 5개
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
 
         final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
                 organizationCategory);
         confirmedFeedback2.updateStatus(CONFIRMED);
-        confirmedFeedback2.updateLikeCount(3); // 좋아요 3개
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
 
         // 대기 중인 피드백 3개
         final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,

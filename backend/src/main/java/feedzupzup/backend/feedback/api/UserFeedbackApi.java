@@ -20,6 +20,7 @@ import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,7 +65,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
     })
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/feedbacks/{feedbackId}/like")
+    @PatchMapping("/feedbacks/{feedbackId}/like")
     SuccessResponse<LikeResponse> like(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
     );
@@ -76,7 +77,7 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "409", ref = "#/components/responses/Conflict")
     })
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/feedbacks/{feedbackId}/like")
+    @PatchMapping("/feedbacks/{feedbackId}/unlike")
     SuccessResponse<LikeResponse> unlike(
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
     );

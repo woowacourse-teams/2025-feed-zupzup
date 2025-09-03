@@ -54,7 +54,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -86,7 +86,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -105,7 +105,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
+                .patch("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -129,7 +129,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(1));
@@ -138,7 +138,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(2));
@@ -147,7 +147,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(3));
@@ -177,7 +177,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .delete("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -196,7 +196,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .delete("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
+                .patch("/feedbacks/{feedbackId}/unlike", nonExistentFeedbackId)
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -220,7 +220,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(3));
@@ -229,7 +229,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .delete("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(2));
@@ -253,7 +253,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(1));
@@ -261,7 +261,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(2));
@@ -269,7 +269,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
-                .delete("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(1));
@@ -277,7 +277,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(2));
@@ -285,7 +285,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
-                .delete("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(1));
@@ -310,7 +310,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .post("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)

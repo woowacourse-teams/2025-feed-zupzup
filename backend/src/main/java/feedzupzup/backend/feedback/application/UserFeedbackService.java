@@ -34,7 +34,6 @@ public class UserFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
-    private final FeedbackLikeService feedbackLikeService;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
