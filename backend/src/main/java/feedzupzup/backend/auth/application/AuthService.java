@@ -36,6 +36,7 @@ public class AuthService {
         validateDuplicateLoginId(request.toLoginId());
         final EncodedPassword encodedPassword = passwordEncoder.encode(request.toPassword());
         final Admin savedAdmin = adminRepository.save(request.toAdmin(encodedPassword));
+        savedAdmin.login();
         return SignUpResponse.from(savedAdmin);
     }
 
@@ -56,7 +57,15 @@ public class AuthService {
             throw new InvalidPasswordException("로그인 정보가 올바르지 않습니다");
         }
 
+        admin.login();
         return LoginResponse.from(admin);
+    }
+
+    @Transactional
+    public void logout(final Long adminId) {
+        final Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
+        admin.logout();
     }
 
 }

@@ -7,6 +7,8 @@ import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,11 +49,15 @@ public class Admin extends BaseTimeEntity {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
+    @Enumerated(EnumType.STRING)
+    private LoginStatus loginStatus;
+
     public Admin(@NonNull final LoginId loginId, @NonNull final EncodedPassword password, @NonNull final AdminName adminName) {
         this.loginId = loginId;
         this.password = password;
         this.adminName = adminName;
         this.alertsOn = false;
+        this.loginStatus = LoginStatus.LOGOUT;
     }
 
     public String getPasswordValue() {
@@ -60,5 +66,17 @@ public class Admin extends BaseTimeEntity {
 
     public void updateAlertsSetting(boolean alertsOn) {
         this.alertsOn = alertsOn;
+    }
+
+    public void login() {
+        this.loginStatus = LoginStatus.LOGIN;
+    }
+
+    public void logout() {
+        this.loginStatus = LoginStatus.LOGOUT;
+    }
+
+    public boolean isLoggedIn() {
+        return loginStatus.isLoggedIn();
     }
 }
