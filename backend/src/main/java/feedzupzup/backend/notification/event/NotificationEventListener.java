@@ -37,6 +37,7 @@ public class NotificationEventListener {
             List<Organizer> organizers = organizerRepository.findByOrganizationId(event.organizationId());
             log.info("조직 관리자 수: {}", organizers.size());
             List<Long> adminIds = organizers.stream()
+                    .filter(Organizer::isLoggedIn)
                     .filter(Organizer::isAlertsOn)
                     .map(Organizer::getAdminId)
                     .toList();

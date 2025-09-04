@@ -10,7 +10,6 @@ import feedzupzup.backend.notification.domain.NotificationToken;
 import feedzupzup.backend.notification.domain.NotificationTokenRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -42,11 +41,11 @@ public class FcmPushNotifier implements PushNotifier {
         
         for (NotificationPayload payload : payloads) {
             log.info("adminId: {}", payload.adminId());
-            Optional<NotificationToken> tokenOpt = notificationTokenRepository.findByAdmin_Id(payload.adminId());
-            if (tokenOpt.isPresent()) {
-                log.info("tokenOpt: {}", tokenOpt.get().getRegistrationToken());
+            List<NotificationToken> userTokens = notificationTokenRepository.findByAdminId(payload.adminId());
+            for (NotificationToken token : userTokens) {
+                log.info("tokenOpt: {}", token.getRegistrationToken());
                 validPayloads.add(payload);
-                tokens.add(tokenOpt.get().getRegistrationToken());
+                tokens.add(token.getRegistrationToken());
             }
         }
 
