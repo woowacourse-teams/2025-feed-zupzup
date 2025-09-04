@@ -5,7 +5,7 @@ import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { setLocalStorage } from '@/utils/localStorage';
 import { FormEvent, useState } from 'react';
-
+import { NotificationService } from '@/services/notificationService';
 interface UseSignupProps {
   confirmPasswordErrors: string;
   errors: {
@@ -49,6 +49,7 @@ export default function useSignup({
         onSuccess: (response: AdminAuthResponse) => {
           setLocalStorage('auth', response.data);
           goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
+          NotificationService.removeToken();
         },
       });
     } catch (error) {
