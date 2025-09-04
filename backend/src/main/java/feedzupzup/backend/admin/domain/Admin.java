@@ -19,10 +19,10 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE admin SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Admin extends BaseTimeEntity {
 
     @Id

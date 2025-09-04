@@ -27,7 +27,7 @@ public interface AdminApi {
     @ResponseStatus(NO_CONTENT)
     @DeleteMapping("/admin")
     SuccessResponse<Void> withdraw(
-            @Parameter(hidden = true) HttpServletRequest httpRequest,
-            @Parameter(hidden = true) @AdminAuthenticationPrincipal AdminSession adminSession
+            @Parameter(hidden = true) final HttpServletRequest httpRequest,
+            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
     );
 }
