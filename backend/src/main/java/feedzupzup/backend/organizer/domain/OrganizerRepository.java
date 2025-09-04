@@ -11,12 +11,12 @@ public interface OrganizerRepository extends JpaRepository<Organizer, Long> {
     @Query("SELECT o FROM Organizer o JOIN FETCH o.admin WHERE o.organization.id = :organizationId")
     List<Organizer> findByOrganizationId(@Param("organizationId") Long organizationId);
 
-    boolean existsOrganizerByAdmin_IdAndOrganization_Id(Long adminId, Long organizationId);
-
     boolean existsOrganizerByAdmin_IdAndOrganization_Uuid(Long adminId, UUID organizationUuid);
 
     void deleteAllByAdmin_Id(Long adminId);
 
     @Query("SELECT o FROM Organizer o JOIN FETCH o.organization WHERE o.admin.id = :adminId")
     List<Organizer> findAllFetchedByAdminId(Long adminId);
+
+    void deleteAllByOrganization_Id(Long organizationId);
 }

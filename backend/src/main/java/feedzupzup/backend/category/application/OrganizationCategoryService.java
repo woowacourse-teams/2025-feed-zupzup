@@ -21,6 +21,11 @@ public class OrganizationCategoryService {
     }
 
     @Transactional
+    public void deleteByOrganizationId(final Long organizationId) {
+        organizationCategoryRepository.deleteByOrganizationId(organizationId);
+    }
+
+    @Transactional
     public void saveAll(final Set<OrganizationCategory> organizationCategories) {
         organizationCategoryRepository.saveAll(organizationCategories);
     }

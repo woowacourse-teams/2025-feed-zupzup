@@ -108,4 +108,9 @@ public class AdminFeedbackService {
     public void deleteAllByOrganizationIds(final List<Long> organizationIds) {
         feedBackRepository.deleteAllByOrganizationIdIn(organizationIds);
     }
+
+    @Transactional
+    public void deleteByOrganizationId(final Long organizationId) {
+        feedBackRepository.deleteAllByOrganizationId(organizationId);
+    }
 }

@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface OrganizationCategoryRepository extends JpaRepository<OrganizationCategory, Long> {
 
     void deleteAllByOrganizationIdIn(Collection<Long> organizationIds);
+    
+    void deleteByOrganizationId(Long organizationId);
 }

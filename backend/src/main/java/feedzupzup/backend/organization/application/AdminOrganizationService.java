@@ -107,4 +107,17 @@ public class AdminOrganizationService {
         qrService.deleteAllByOrganizationIds(organizationIds);
         organizationRepository.deleteAllById(organizationIds);
     }
+
+    @Transactional
+    public void deleteOrganization(final UUID organizationUuid) {
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
+        final Long organizationId = organization.getId();
+
+        organizerRepository.deleteAllByOrganization_Id(organizationId);
+        organizationCategoryService.deleteByOrganizationId(organizationId);
+        adminFeedbackService.deleteByOrganizationId(organizationId);
+        qrService.deleteByOrganizationId(organizationId);
+        organizationRepository.delete(organization);
+    }
 }
