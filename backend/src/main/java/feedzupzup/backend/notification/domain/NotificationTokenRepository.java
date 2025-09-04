@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface NotificationTokenRepository extends JpaRepository<NotificationToken, Long> {
 
-    Optional<NotificationToken> findByAdmin_Id(Long adminId);
+    Optional<NotificationToken> findByAdminIdAndRegistrationToken(Long adminId, String registrationToken);
+    
+    List<NotificationToken> findByAdminId(Long adminId);
     
     void deleteAllByAdmin_IdIn(List<Long> adminIds);
 
