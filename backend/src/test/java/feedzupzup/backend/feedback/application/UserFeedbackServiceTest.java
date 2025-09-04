@@ -38,8 +38,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackRepository feedBackRepository;
-
-
+    
     @Autowired
     private OrganizationRepository organizationRepository;
 

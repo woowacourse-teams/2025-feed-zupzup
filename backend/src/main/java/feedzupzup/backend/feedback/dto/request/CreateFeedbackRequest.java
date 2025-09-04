@@ -8,7 +8,7 @@ import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.domain.vo.UserName;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.util.CurrentDateTime;
+import feedzupzup.backend.global.util.CurrentDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
