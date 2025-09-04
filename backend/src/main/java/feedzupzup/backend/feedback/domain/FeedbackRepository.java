@@ -90,4 +90,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             WHERE org.admin.id = :adminId AND f.deletedAt IS NULL
             """)
     FeedbackAmount findFeedbackStatisticsByAdminId(Long adminId);
+
+    void deleteAllByOrganizationIdIn(List<Long> organizationIds);
 }

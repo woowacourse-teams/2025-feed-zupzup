@@ -1,4 +1,4 @@
-package feedzupzup.backend.util;
+package feedzupzup.backend.global.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
