@@ -7,6 +7,7 @@ import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { useModalContext } from '@/contexts/useModal';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
+import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
@@ -14,6 +15,7 @@ interface MoreMenuProps {
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { openModal, closeModal, isOpen } = useModalContext();
+  const { deleteOrganization, isLoading: isDeleting } = useDeleteOrganization();
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal isOpen={isOpen} onClose={closeModal} />);
@@ -31,10 +33,11 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
         isOpen={isOpen}
         onClose={closeModal}
         title='방 삭제 확인'
-        message='정말로 방을 삭제하시겠습니까?'
-        onConfirm={() => {
-          console.log('방 삭제');
-        }}
+        message={
+          isDeleting ? '삭제 중입니다.' : '정말로 방을 삭제하시겠습니까?'
+        }
+        onConfirm={deleteOrganization}
+        disabled={isDeleting}
       />
     );
     closeMoreMenu();
