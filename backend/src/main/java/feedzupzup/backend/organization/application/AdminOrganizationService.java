@@ -19,6 +19,7 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.service.QRService;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -110,8 +111,11 @@ public class AdminOrganizationService {
 
     @Transactional
     public void deleteOrganization(final UUID organizationUuid) {
-        final Organization organization = organizationRepository.findByUuid(organizationUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
+        final Optional<Organization> organizationOpt = organizationRepository.findByUuid(organizationUuid);
+        if (organizationOpt.isEmpty()) {
+            return;
+        }
+        final Organization organization = organizationOpt.get();
         final Long organizationId = organization.getId();
 
         organizerRepository.deleteAllByOrganization_Id(organizationId);
