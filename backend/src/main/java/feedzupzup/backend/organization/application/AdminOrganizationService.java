@@ -19,6 +19,7 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.service.QRService;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -106,5 +107,21 @@ public class AdminOrganizationService {
         adminFeedbackService.deleteAllByOrganizationIds(organizationIds);
         qrService.deleteAllByOrganizationIds(organizationIds);
         organizationRepository.deleteAllById(organizationIds);
+    }
+
+    @Transactional
+    public void deleteOrganization(final UUID organizationUuid) {
+        final Optional<Organization> organizationOpt = organizationRepository.findByUuid(organizationUuid);
+        if (organizationOpt.isEmpty()) {
+            return;
+        }
+        final Organization organization = organizationOpt.get();
+        final Long organizationId = organization.getId();
+
+        organizerRepository.deleteAllByOrganization_Id(organizationId);
+        organizationCategoryService.deleteByOrganizationId(organizationId);
+        adminFeedbackService.deleteByOrganizationId(organizationId);
+        qrService.deleteByOrganizationId(organizationId);
+        organizationRepository.delete(organization);
     }
 }

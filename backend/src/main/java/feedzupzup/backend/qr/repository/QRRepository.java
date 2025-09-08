@@ -12,4 +12,6 @@ public interface QRRepository extends JpaRepository<QR, Long> {
     boolean existsByOrganizationId(Long id);
 
     void deleteAllByOrganizationIdIn(List<Long> organizationIds);
+    
+    void deleteByOrganizationId(Long organizationId);
 }

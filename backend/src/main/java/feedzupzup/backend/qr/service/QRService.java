@@ -92,4 +92,9 @@ public class QRService {
     public void deleteAllByOrganizationIds(final List<Long> organizationIds) {
         qrRepository.deleteAllByOrganizationIdIn(organizationIds);
     }
+
+    @Transactional
+    public void deleteByOrganizationId(final Long organizationId) {
+        qrRepository.deleteByOrganizationId(organizationId);
+    }
 }

@@ -92,4 +92,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     FeedbackAmount findFeedbackStatisticsByAdminId(Long adminId);
 
     void deleteAllByOrganizationIdIn(List<Long> organizationIds);
+    
+    void deleteAllByOrganizationId(Long organizationId);
 }

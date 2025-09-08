@@ -2,7 +2,6 @@ package feedzupzup.backend.organization.controller;
 
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
-import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.api.AdminOrganizationApi;
 import feedzupzup.backend.organization.application.AdminOrganizationService;
@@ -12,7 +11,6 @@ import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationRespo
 import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
-import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +54,13 @@ public class AdminOrganizationController implements AdminOrganizationApi {
         final List<AdminInquireOrganizationResponse> response =
                 adminOrganizationService.getOrganizationsInfo(adminSession.adminId());
         return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<Void> deleteOrganization(
+            final LoginOrganizerInfo loginOrganizerInfo
+    ) {
+        adminOrganizationService.deleteOrganization(loginOrganizerInfo.organizationUuid());
+        return SuccessResponse.success(HttpStatus.NO_CONTENT);
     }
 }
