@@ -56,7 +56,7 @@ class AdminServiceTest extends ServiceIntegrationHelper {
 
         // then
         assertThat(adminRepository.findById(admin.getId())).isEmpty();
-        assertThat(notificationTokenRepository.findByAdminIdAndRegistrationToken(admin.getId(), "test-token")).isEmpty();
+        assertThat(notificationTokenRepository.findByAdminIdAndValue(admin.getId(), "test-token")).isEmpty();
         assertThat(organizerRepository.findAllFetchedByAdminId(admin.getId())).isEmpty();
     }
 }

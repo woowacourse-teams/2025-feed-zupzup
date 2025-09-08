@@ -1,5 +1,6 @@
 package feedzupzup.backend.notification.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.notification.domain.NotificationToken;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,10 +11,12 @@ public record NotificationTokenRequest(
         
         @Schema(description = "FCM 토큰", example = "eXAMPLE123:APA91bF...")
         @NotBlank(message = "알림 토큰은 필수입니다.")
-        String notificationToken
+        @JsonProperty("notificationToken")
+        String value
 ) {
 
     public NotificationToken toNotificationToken(final Admin admin) {
-        return new NotificationToken(admin, notificationToken);
+        String cleanToken = value.replace("\"", "");
+        return new NotificationToken(admin, cleanToken);
     }
 }

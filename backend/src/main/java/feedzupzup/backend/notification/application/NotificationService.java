@@ -24,9 +24,9 @@ public class NotificationService {
 
     @Transactional
     public void registerToken(final NotificationTokenRequest request, final Long adminId) {
-        notificationTokenRepository.findByAdminIdAndRegistrationToken(adminId, request.notificationToken())
+        notificationTokenRepository.findByAdminIdAndValue(adminId, request.value())
                 .ifPresentOrElse(
-                        existingToken -> updateExistingToken(existingToken, request.notificationToken()),
+                        existingToken -> updateExistingToken(existingToken, request.value()),
                         () -> createNewToken(request, adminId)
                 );
     }

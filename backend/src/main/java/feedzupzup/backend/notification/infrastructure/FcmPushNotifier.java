@@ -43,9 +43,9 @@ public class FcmPushNotifier implements PushNotifier {
             log.info("adminId: {}", payload.adminId());
             List<NotificationToken> userTokens = notificationTokenRepository.findByAdminId(payload.adminId());
             for (NotificationToken token : userTokens) {
-                log.info("tokenOpt: {}", token.getRegistrationToken());
+                log.info("tokenOpt: {}", token.getValue());
                 validPayloads.add(payload);
-                tokens.add(token.getRegistrationToken());
+                tokens.add(token.getValue());
             }
         }
 
