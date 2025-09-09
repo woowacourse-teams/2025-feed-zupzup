@@ -51,6 +51,8 @@ export default function UserDashboard() {
     isAdmin: false,
   });
 
+  const shouldUseInfiniteScroll = selectedFilter !== 'MINE';
+
   const {
     items: feedbacks,
     fetchMore,
@@ -64,6 +66,7 @@ export default function UserDashboard() {
     url: apiUrl,
     key: 'feedbacks',
     size: 10,
+    enabled: shouldUseInfiniteScroll,
   });
 
   useGetFeedback({ fetchMore, hasNext, loading });
