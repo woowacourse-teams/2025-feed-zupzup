@@ -2,6 +2,7 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import TerserPlugin from 'terser-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -77,4 +78,22 @@ export default {
       ],
     }),
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            drop_debugger: true,
+          },
+          mangle: true,
+          output: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      }),
+    ],
+  },
 };
