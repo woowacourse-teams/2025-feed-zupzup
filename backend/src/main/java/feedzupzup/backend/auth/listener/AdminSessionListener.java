@@ -18,16 +18,15 @@ public class AdminSessionListener implements HttpSessionListener {
     @Value("${admin.session.key}")
     private String adminIdSessionKey;
     
-    public AdminSessionListener(ActiveSessionStore activeSessionStore) {
+    public AdminSessionListener(final ActiveSessionStore activeSessionStore) {
         this.activeSessionStore = activeSessionStore;
     }
 
     @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
-        Long adminId = (Long) se.getSession().getAttribute(adminIdSessionKey);
+    public void sessionDestroyed(final HttpSessionEvent session) {
+        Long adminId = (Long) session.getSession().getAttribute(adminIdSessionKey);
         if (adminId != null) {
             activeSessionStore.removeActiveSession(adminId);
-            log.debug("Session destroyed for adminId: {}", adminId);
         }
     }
 }
