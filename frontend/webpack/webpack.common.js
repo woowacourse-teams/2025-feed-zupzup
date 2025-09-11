@@ -68,6 +68,7 @@ export default {
         { from: 'public/512x512.png', to: '.' },
         { from: 'public/192x192.png', to: '.' },
         { from: 'public/service-worker.js', to: '.' },
+        { from: 'src/assets/fonts', to: 'assets/fonts' },
         {
           from: 'public',
           to: '.',
