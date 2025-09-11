@@ -20,9 +20,7 @@ import java.util.Set;
 public class FcmErrorHandler {
 
     private static final Set<MessagingErrorCode> DELETABLE_ERRORS = Set.of(
-            MessagingErrorCode.UNREGISTERED,
-            MessagingErrorCode.INVALID_ARGUMENT,
-            MessagingErrorCode.SENDER_ID_MISMATCH
+            MessagingErrorCode.UNREGISTERED
     );
     
     private static final Set<MessagingErrorCode> RETRYABLE_ERRORS = Set.of(
@@ -34,9 +32,9 @@ public class FcmErrorHandler {
     private final NotificationTokenRepository notificationTokenRepository;
 
     @Transactional
-    public void handleFailures(final BatchResponse response, final List<Long> adminIds) {
+    public void handleFailures(final BatchResponse response, final List<String> tokens) {
         List<SendResponse> responses = response.getResponses();
-        List<Long> deletableAdminIds = new ArrayList<>();
+        List<String> deletableTokens = new ArrayList<>();
 
         for (int i = 0; i < responses.size(); i++) {
             SendResponse sendResponse = responses.get(i);
@@ -44,23 +42,23 @@ public class FcmErrorHandler {
                 continue;
             }
 
-            Long adminId = adminIds.get(i);
+            String token = tokens.get(i);
             FirebaseMessagingException exception = sendResponse.getException();
             MessagingErrorCode errorCode = exception.getMessagingErrorCode();
 
             if (DELETABLE_ERRORS.contains(errorCode)) {
-                deletableAdminIds.add(adminId);
+                deletableTokens.add(token);
             } else if (RETRYABLE_ERRORS.contains(errorCode)) {
-                log.warn("재시도 가능한 에러 - adminId: {}, error: {}", adminId, errorCode);
+                log.warn("재시도 가능한 에러 - token: {}, error: {}", token, errorCode);
                 // TODO: 추후 지수 백오프를 이용한 재시도 로직 구현 고려
             } else {
-                log.warn("처리되지 않은 FCM 에러 - adminId: {}, error: {}", adminId, errorCode);
+                log.warn("처리되지 않은 FCM 에러 - token: {}, error: {}", token, errorCode);
             }
         }
 
-        if (!deletableAdminIds.isEmpty()) {
-            log.info("토큰 삭제 adminId : {}", deletableAdminIds);
-            notificationTokenRepository.deleteAllByAdmin_IdIn(deletableAdminIds);
+        if (!deletableTokens.isEmpty()) {
+            log.info("토큰 삭제 tokens : {}", deletableTokens);
+            notificationTokenRepository.deleteAllByValueIn(deletableTokens);
         }
     }
 }

@@ -51,13 +51,13 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
         given(failResponse.getException()).willReturn(exception);
         given(exception.getMessagingErrorCode()).willReturn(MessagingErrorCode.UNREGISTERED);
         
-        List<Long> adminIds = List.of(admin.getId());
+        List<String> tokens = List.of("invalid-token");
 
         // when
-        fcmErrorHandler.handleFailures(batchResponse, adminIds);
+        fcmErrorHandler.handleFailures(batchResponse, tokens);
 
         // then
-        assertThat(notificationTokenRepository.findByAdminIdAndRegistrationToken(admin.getId(), "invalid-token")).isEmpty();
+        assertThat(notificationTokenRepository.findByAdminIdAndValue(admin.getId(), "invalid-token")).isEmpty();
     }
 
     @Test
@@ -74,13 +74,13 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
         given(batchResponse.getResponses()).willReturn(List.of(successResponse));
         given(successResponse.isSuccessful()).willReturn(true);
         
-        List<Long> adminIds = List.of(admin.getId());
+        List<String> tokens = List.of("valid-token");
 
         // when
-        fcmErrorHandler.handleFailures(batchResponse, adminIds);
+        fcmErrorHandler.handleFailures(batchResponse, tokens);
 
         // then
-        assertThat(notificationTokenRepository.findByAdminIdAndRegistrationToken(admin.getId(), "valid-token")).isPresent();
+        assertThat(notificationTokenRepository.findByAdminIdAndValue(admin.getId(), "valid-token")).isPresent();
     }
 
     private Admin createAndSaveAdmin(String adminName, String loginId) {

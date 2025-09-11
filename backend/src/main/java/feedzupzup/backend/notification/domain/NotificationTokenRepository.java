@@ -14,4 +14,6 @@ public interface NotificationTokenRepository extends JpaRepository<NotificationT
     void deleteAllByAdmin_IdIn(List<Long> adminIds);
 
     void deleteAllByAdmin_Id(Long adminId);
+    
+    void deleteAllByValueIn(List<String> values);
 }

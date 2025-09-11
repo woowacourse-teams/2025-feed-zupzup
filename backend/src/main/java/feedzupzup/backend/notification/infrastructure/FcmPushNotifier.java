@@ -30,21 +30,17 @@ public class FcmPushNotifier implements PushNotifier {
             return;
         }
 
-        // 첫 번째 payload에서 title과 organizationName 가져오기 (모두 동일하다고 가정)
         String title = payloads.get(0).title();
         String organizationName = payloads.get(0).organizationName();
         String message = String.format("%s에 피드백이 등록되었습니다.", organizationName);
-        
-        // adminId로 토큰 조회 및 유효한 payload만 필터링
-        List<NotificationPayload> validPayloads = new ArrayList<>();
+
         List<String> tokens = new ArrayList<>();
-        
+
         for (NotificationPayload payload : payloads) {
             log.info("adminId: {}", payload.adminId());
             List<NotificationToken> userTokens = notificationTokenRepository.findByAdminId(payload.adminId());
             for (NotificationToken token : userTokens) {
                 log.info("tokenOpt: {}", token.getValue());
-                validPayloads.add(payload);
                 tokens.add(token.getValue());
             }
         }
@@ -55,17 +51,15 @@ public class FcmPushNotifier implements PushNotifier {
         }
 
         log.info("배치 FCM 전송 시작: {}개 토큰", tokens.size());
-        
-        // FCM 500개 제한으로 청크 분할
+
         int chunkSize = 500;
         for (int i = 0; i < tokens.size(); i += chunkSize) {
             List<String> tokenChunk = tokens.subList(i, Math.min(i + chunkSize, tokens.size()));
-            List<NotificationPayload> payloadChunk = validPayloads.subList(i, Math.min(i + chunkSize, validPayloads.size()));
-            sendBatch(tokenChunk, payloadChunk, title, message);
+            sendBatch(tokenChunk, title, message);
         }
     }
 
-    private void sendBatch(List<String> tokens, List<NotificationPayload> payloads, String title, String message) {
+    private void sendBatch(List<String> tokens, String title, String message) {
         try {
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(Notification.builder()
@@ -77,12 +71,8 @@ public class FcmPushNotifier implements PushNotifier {
 
             BatchResponse response = firebaseMessaging.sendEachForMulticast(multicastMessage);
 
-            // 실패 처리
             if (response.getFailureCount() > 0) {
-                List<Long> adminIds = payloads.stream()
-                        .map(NotificationPayload::adminId)
-                        .toList();
-                fcmErrorHandler.handleFailures(response, adminIds);
+                fcmErrorHandler.handleFailures(response, tokens);
             }
 
         } catch (Exception e) {

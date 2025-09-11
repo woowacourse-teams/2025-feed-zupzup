@@ -1,5 +1,6 @@
 package feedzupzup.backend.notification.event;
 
+import feedzupzup.backend.auth.application.SessionValidationService;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.notification.application.PushNotifier;
@@ -25,6 +26,7 @@ public class NotificationEventListener {
     private final PushNotifier pushNotifier;
     private final OrganizerRepository organizerRepository;
     private final OrganizationRepository organizationRepository;
+    private final SessionValidationService sessionValidationService;
 
     @Async
     @EventListener
@@ -35,17 +37,16 @@ public class NotificationEventListener {
                     .orElseThrow(() -> new ResourceNotFoundException("조직을 찾을 수 없습니다."));
 
             List<Organizer> organizers = organizerRepository.findByOrganizationId(event.organizationId());
-            log.info("조직 관리자 수: {}", organizers.size());
-            List<Long> adminIds = organizers.stream()
-                    .filter(Organizer::isLoggedIn)
-                    .filter(Organizer::isAlertsOn)
+            
+            List<Long> candidateAdminIds = organizers.stream()
                     .map(Organizer::getAdminId)
                     .toList();
-            log.info("알림 활성화된 관리자 수: {}", adminIds.size());
-
-            if (!adminIds.isEmpty()) {
+            
+            List<Long> validSessionAdminIds = sessionValidationService.getValidSessionAdminIds(candidateAdminIds);
+            log.info(validSessionAdminIds.toString());
+            if (!validSessionAdminIds.isEmpty()) {
                 String organizationName = organization.getName().getValue();
-                List<NotificationPayload> payloads = adminIds.stream()
+                List<NotificationPayload> payloads = validSessionAdminIds.stream()
                         .map(adminId -> new NotificationPayload(adminId, event.title(), organizationName))
                         .toList();
                 pushNotifier.sendBatchMessage(payloads);
