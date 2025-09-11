@@ -43,7 +43,7 @@ public class NotificationEventListener {
                     .toList();
             
             List<Long> validSessionAdminIds = sessionValidationService.getValidSessionAdminIds(candidateAdminIds);
-            log.info(validSessionAdminIds.toString());
+            log.debug("알림 대상 관리자 수: {}", validSessionAdminIds.size());
             if (!validSessionAdminIds.isEmpty()) {
                 String organizationName = organization.getName().getValue();
                 List<NotificationPayload> payloads = validSessionAdminIds.stream()

@@ -16,19 +16,14 @@ public class SessionValidationService {
     private final ActiveSessionStore activeSessionStore;
 
     public List<Long> getValidSessionAdminIds(final List<Long> adminIds) {
-        return adminIds.stream()
-                .filter(this::hasValidSession)
-                .filter(this::isAlertsEnabled)
+        List<Long> activeSessionAdminIds = adminIds.stream()
+                .filter(activeSessionStore::hasActiveSession)
                 .toList();
-    }
+        
+        if (activeSessionAdminIds.isEmpty()) {
+            return List.of();
+        }
 
-    private boolean hasValidSession(final Long adminId) {
-        return activeSessionStore.hasActiveSession(adminId);
-    }
-
-    private boolean isAlertsEnabled(final Long adminId) {
-        return adminRepository.findById(adminId)
-                .map(Admin::isAlertsOn)
-                .orElse(false);
+        return adminRepository.findAlertsEnabledAdminIds(activeSessionAdminIds);
     }
 }
