@@ -22,11 +22,12 @@ export default function useAdminStatistics() {
   const { showErrorModal } = useErrorModalContext();
 
   if (error) {
-    handleApiError(error as ApiError);
     showErrorModal(
       '관리자 통계 정보를 불러오는 데 실패했습니다. 다시 시도해 주세요',
       '관리자 통계 에러'
     );
+    handleApiError(error as ApiError);
+
     return {
       statistics: DEFAULT_STATISTICS,
       isLoading: false,

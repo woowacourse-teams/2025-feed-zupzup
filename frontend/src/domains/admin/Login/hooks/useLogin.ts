@@ -4,6 +4,7 @@ import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { setLocalStorage } from '@/utils/localStorage';
+import { NotificationService } from '@/services/notificationService';
 
 interface UseLoginProps {
   loginValue: {
@@ -20,6 +21,7 @@ export default function useLogin({ loginValue }: UseLoginProps) {
     event.preventDefault();
 
     setLocalStorage('auth', null);
+    NotificationService.removeToken();
 
     try {
       await postAdminLogin({

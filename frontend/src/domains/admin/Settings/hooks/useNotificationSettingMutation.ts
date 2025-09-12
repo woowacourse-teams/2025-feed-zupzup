@@ -3,8 +3,8 @@ import { NotificationService } from '@/services/notificationService';
 import { patchNotificationSettings } from '@/apis/notifications.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { NotificationSettingsResponse } from '@/types/notification.types';
-import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { ApiError } from '@/apis/apiClient';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 
 interface UpdateNotificationSettingParams {
   enabled: boolean;
@@ -20,7 +20,7 @@ export const useNotificationSettingMutation = ({
   updateState,
 }: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
-  const { handleApiError } = useApiErrorHandler();
+  const { showErrorModal } = useErrorModalContext();
 
   return useMutation({
     mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {
@@ -60,7 +60,7 @@ export const useNotificationSettingMutation = ({
       if (context?.previousLocalState !== undefined) {
         updateState(context.previousLocalState);
       }
-      handleApiError(error as ApiError);
+      showErrorModal(error as ApiError, '알림 설정 실패');
     },
   });
 };
