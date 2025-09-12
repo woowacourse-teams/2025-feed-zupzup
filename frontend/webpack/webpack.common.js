@@ -49,6 +49,13 @@ export default {
         },
       },
       {
+        test: /\.(woff|woff2)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts/[name].[hash][ext]',
+        },
+      },
+      {
         test: /.css$/i,
         use: ['style-loader', 'css-loader'],
       },

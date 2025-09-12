@@ -3,7 +3,9 @@ html::-webkit-scrollbar {
 }
 @font-face {
   font-family: 'BMHANNAPro';
-  src: url('@/assets/fonts/BMHANNAPro.woff') format('woff');
+  src:
+    url('@/assets/fonts/BMHANNAPro.woff2') format('woff2'),
+    url('@/assets/fonts/BMHANNAPro.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -11,7 +13,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'BMHANNAAir';
-  src: url('@/assets/fonts/BMHANNAAir.woff') format('woff');
+  src:
+    url('@/assets/fonts/BMHANNAAir.woff2') format('woff2'),
+    url('@/assets/fonts/BMHANNAAir.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -19,7 +23,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('@/assets/fonts/Pretendard-Thin.woff') format('woff');
+  src:
+    url('@/assets/fonts/Pretendard-Thin.woff2') format('woff2'),
+    url('@/assets/fonts/Pretendard-Thin.woff') format('woff');
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -27,7 +33,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('@/assets/fonts/Pretendard-Regular.woff') format('woff');
+  src:
+    url('@/assets/fonts/Pretendard-Regular.woff2') format('woff2'),
+    url('@/assets/fonts/Pretendard-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -35,7 +43,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('@/assets/fonts/Pretendard-Bold.woff') format('woff');
+  src:
+    url('@/assets/fonts/Pretendard-Bold.woff2') format('woff2'),
+    url('@/assets/fonts/Pretendard-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
