@@ -22,7 +22,7 @@ public class UserController implements UserApi {
         if (visitorId == null) {
             final Cookie cookie = CookieUtilization.createCookie(
                     CookieUtilization.VISITOR_KEY,
-                    UUID.randomUUID().toString()
+                    UUID.randomUUID()
             );
             response.addCookie(cookie);
             return SuccessResponse.success(HttpStatus.CREATED);

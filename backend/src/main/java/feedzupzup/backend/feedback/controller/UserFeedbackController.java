@@ -13,6 +13,9 @@ import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
+import feedzupzup.backend.global.util.CookieUtilization;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +53,29 @@ public class UserFeedbackController implements UserFeedbackApi {
             final UUID organizationUuid,
             final CreateFeedbackRequest request
     ) {
-        final CreateFeedbackResponse response = userFeedbackService.create(request, organizationUuid);
+        final CreateFeedbackResponse response = userFeedbackService.create(request,
+                organizationUuid);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 
     @Override
-    public SuccessResponse<LikeResponse> like(final Long feedbackId) {
-        final LikeResponse response = feedbackLikeService.like(feedbackId);
-        return SuccessResponse.success(HttpStatus.OK, response);
+    public SuccessResponse<LikeResponse> like(
+            final HttpServletResponse response,
+            final Long feedbackId,
+            final UUID visitorId
+    ) {
+        if (visitorId == null) {
+            UUID cookieId = UUID.randomUUID();
+            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, cookieId);
+            final Cookie cookie = CookieUtilization.createCookie(
+                    CookieUtilization.VISITOR_KEY,
+                    cookieId
+            );
+            response.addCookie(cookie);
+            return SuccessResponse.success(HttpStatus.OK, likeResponse);
+        }
+        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, visitorId);
+        return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
     @Override

@@ -6,17 +6,17 @@ import java.util.Set;
 
 public class LikeFeedbacks {
 
-    private final Set<Integer> likeFeedbacks = new HashSet<>();
+    private final Set<Long> likeFeedbacks = new HashSet<>();
 
-    public void add(final int value) {
+    public void add(final long value) {
         likeFeedbacks.add(value);
     }
 
-    public boolean hasFeedbackId(final int value) {
+    public boolean hasFeedbackId(final long value) {
         return likeFeedbacks.contains(value);
     }
 
-    public Set<Integer> getLikeFeedbacks() {
+    public Set<Long> getLikeFeedbacks() {
         return Collections.unmodifiableSet(likeFeedbacks);
     }
 }
