@@ -14,7 +14,8 @@ class UserLikeFeedbacksRepositoryTest {
     @Test
     void when_like_then_save_feedbackId() {
         // when
-        userLikeFeedbacksRepository.save(UUID.randomUUID(), 1);
+        final UUID uuid = UUID.randomUUID();
+        userLikeFeedbacksRepository.save(uuid, 1);
 
         // then
         assertThat(userLikeFeedbacksRepository.getUserLikeFeedbacks().size()).isEqualTo(1);

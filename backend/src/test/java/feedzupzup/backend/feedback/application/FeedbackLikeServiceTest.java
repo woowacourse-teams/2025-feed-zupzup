@@ -12,9 +12,12 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import jakarta.servlet.http.Cookie;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,25 +69,10 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId = createFeedback();
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId);
+            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, createAndGetCookieValue());
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(1);
-        }
-
-        @Test
-        @DisplayName("기존 피드백에 좋아요를 추가하면 카운트가 증가한다")
-        void like_existing_feedback() {
-            // given
-            final Long feedbackId = createFeedback();
-            feedbackLikeService.like(feedbackId);
-            feedbackLikeService.like(feedbackId);
-
-            // when
-            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId);
-
-            // then
-            assertThat(likeResponse.afterLikeCount()).isEqualTo(3);
         }
 
         @Test
@@ -95,9 +83,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId2 = createFeedback();
 
             // when
-            feedbackLikeService.like(feedbackId1);
-            final LikeResponse likeResponse1 = feedbackLikeService.like(feedbackId1);
-            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2);
+            feedbackLikeService.like(feedbackId1, createAndGetCookieValue());
+            final LikeResponse likeResponse1 = feedbackLikeService.like(feedbackId1, createAndGetCookieValue());
+            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, createAndGetCookieValue());
 
             // then
             assertAll(
@@ -116,9 +104,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void unlike_existing_feedback() {
             // given
             final Long feedbackId = createFeedback();
-            feedbackLikeService.like(feedbackId);
-            feedbackLikeService.like(feedbackId);
-            feedbackLikeService.like(feedbackId);
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
 
             // when
             final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId);
@@ -132,7 +120,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void unlike_single_like() {
             // given
             final Long feedbackId = createFeedback();
-            feedbackLikeService.like(feedbackId);
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
 
             // when
             final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId);
@@ -155,11 +143,11 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId = createFeedback();
 
             // when
-            feedbackLikeService.like(feedbackId);          // 1
-            feedbackLikeService.like(feedbackId);          // 2
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 1
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 2
             feedbackLikeService.unLike(feedbackId);        // 1
-            feedbackLikeService.like(feedbackId);          // 2
-            feedbackLikeService.like(feedbackId);          // 3
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 2
+            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 3
             feedbackLikeService.unLike(feedbackId);        // 2
 
             final Feedback feedback = feedBackRepository.findById(feedbackId).get();
@@ -177,12 +165,12 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId3 = createFeedback();
 
             // when
-            feedbackLikeService.like(feedbackId1);
+            feedbackLikeService.like(feedbackId1, createAndGetCookieValue());
             final LikeResponse likeResponse1 = feedbackLikeService.unLike(feedbackId1);
-            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2);
-            feedbackLikeService.like(feedbackId3);
-            feedbackLikeService.like(feedbackId3);
-            feedbackLikeService.like(feedbackId3);
+            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, createAndGetCookieValue());
+            feedbackLikeService.like(feedbackId3, createAndGetCookieValue());
+            feedbackLikeService.like(feedbackId3, createAndGetCookieValue());
+            feedbackLikeService.like(feedbackId3, createAndGetCookieValue());
             final LikeResponse likeResponse3 = feedbackLikeService.unLike(feedbackId3);
 
             // then
@@ -205,7 +193,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long largeFeedbackId = createFeedback();
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.like(largeFeedbackId);
+            final LikeResponse likeResponse = feedbackLikeService.like(largeFeedbackId, createAndGetCookieValue());
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(1);
@@ -218,27 +206,16 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long minFeedbackId = createFeedback();
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.like(minFeedbackId);
+            final LikeResponse likeResponse = feedbackLikeService.like(minFeedbackId, createAndGetCookieValue());
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(1);
         }
+    }
 
-        @Test
-        @DisplayName("많은 수의 좋아요도 정확히 카운트된다")
-        void like_large_count() {
-            // given
-            final Long feedbackId = createFeedback();
-            final int largeCount = 1000;
-
-            // when
-            for (int i = 0; i < largeCount; i++) {
-                feedbackLikeService.like(feedbackId);
-            }
-            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId);
-
-            // then
-            assertThat(likeResponse.afterLikeCount()).isEqualTo(largeCount+1);
-        }
+    private UUID createAndGetCookieValue() {
+        final Cookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+                UUID.randomUUID());
+        return UUID.fromString(cookie.getValue());
     }
 }

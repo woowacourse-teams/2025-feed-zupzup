@@ -12,14 +12,18 @@ import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
+import jakarta.servlet.http.Cookie;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.util.CookieGenerator;
 
 class FeedbackLikeControllerE2ETest extends E2EHelper {
 
@@ -79,8 +83,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 좋아요 2개 추가
-        feedbackLikeService.like(savedFeedback.getId());
-        feedbackLikeService.like(savedFeedback.getId());
+        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
+        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
 
         // when & then
         given()
@@ -317,5 +321,11 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
                 .body("data.afterLikeCount", equalTo(1));
+    }
+
+    private UUID createAndGetCookieValue() {
+        final Cookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+                UUID.randomUUID());
+        return UUID.fromString(cookie.getValue());
     }
 }
