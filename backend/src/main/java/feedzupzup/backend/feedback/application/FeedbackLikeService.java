@@ -20,7 +20,6 @@ public class FeedbackLikeService {
 
     @Transactional
     public LikeResponse like(final Long feedbackId, final UUID visitorId) {
-        userLikeFeedbacksRepository.saveUser(visitorId);
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         if (userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {

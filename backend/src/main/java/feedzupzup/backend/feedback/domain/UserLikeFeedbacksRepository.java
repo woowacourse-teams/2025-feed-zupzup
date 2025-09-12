@@ -10,13 +10,14 @@ public class UserLikeFeedbacksRepository {
 
     private final Map<UUID, LikeFeedbacks> userLikeFeedbacks = new HashMap<>();
 
-    public void saveUser(UUID uuid) {
-        userLikeFeedbacks.computeIfAbsent(uuid, key -> new LikeFeedbacks());
-    }
-
     public void save(UUID uuid, long feedbackId) {
+        saveUserIfNotExist(uuid);
         final LikeFeedbacks likeFeedbacks = userLikeFeedbacks.get(uuid);
         likeFeedbacks.add(feedbackId);
+    }
+
+    private void saveUserIfNotExist(final UUID uuid) {
+        userLikeFeedbacks.computeIfAbsent(uuid, key -> new LikeFeedbacks());
     }
 
     public boolean isAlreadyLike(final UUID uuid, final long feedbackId) {
