@@ -18,7 +18,6 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
-import feedzupzup.backend.feedback.infrastructure.FeedbackLikeInMemoryRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -40,14 +39,6 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
 
     @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
-
-    @Autowired
-    private FeedbackLikeInMemoryRepository feedbackLikeInMemoryRepository;
-
-    @BeforeEach
-    void clearBuffer() {
-        feedbackLikeInMemoryRepository.clear();
-    }
 
     @Test
     @DisplayName("사용자가 특정 장소의 피드백 목록을 성공적으로 조회한다")
@@ -342,12 +333,18 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
                 organizationCategory);
         confirmedFeedback1.updateStatus(CONFIRMED);
-        confirmedFeedback1.updateLikeCount(5); // 좋아요 5개
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
 
         final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
                 organizationCategory);
         confirmedFeedback2.updateStatus(CONFIRMED);
-        confirmedFeedback2.updateLikeCount(3); // 좋아요 3개
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
+        confirmedFeedback1.increaseLikeCount();
 
         // 대기 중인 피드백 3개
         final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,

@@ -2,8 +2,8 @@ package feedzupzup.backend.organization.application;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
-import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
-import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
+import feedzupzup.backend.category.application.OrganizationCategoryService;
+import feedzupzup.backend.feedback.application.AdminFeedbackService;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
@@ -17,7 +17,9 @@ import feedzupzup.backend.organization.event.OrganizationCreatedEvent;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
+import feedzupzup.backend.qr.service.QRService;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +35,10 @@ public class AdminOrganizationService {
     private final OrganizationRepository organizationRepository;
     private final OrganizerRepository organizerRepository;
     private final AdminRepository adminRepository;
-    private final OrganizationCategoryRepository organizationCategoryRepository;
+    private final OrganizationCategoryService organizationCategoryService;
     private final ApplicationEventPublisher eventPublisher;
+    private final AdminFeedbackService adminFeedbackService;
+    private final QRService qrService;
 
     @Transactional
     public AdminCreateOrganizationResponse createOrganization(
@@ -50,7 +54,7 @@ public class AdminOrganizationService {
 
         final Admin admin = findAdminBy(adminId);
         final Organizer organizer = new Organizer(
-                organization,
+                savedOrganization,
                 admin,
                 OrganizerRole.OWNER
         );
@@ -80,7 +84,7 @@ public class AdminOrganizationService {
             final Set<String> categories,
             final Organization organization
     ) {
-        organizationCategoryRepository.saveAll(organization.getOrganizationCategories().getOrganizationCategories());
+        organizationCategoryService.saveAll(organization.getOrganizationCategories().getOrganizationCategories());
         organization.addOrganizationCategories(categories);
     }
 
@@ -95,5 +99,29 @@ public class AdminOrganizationService {
         final Set<String> categories = request.categories();
         organization.updateOrganizationCategoriesAndName(categories, request.organizationName());
         return AdminUpdateOrganizationResponse.from(organization);
+    }
+
+    @Transactional
+    public void deleteAllByOrganizerIds(final List<Long> organizationIds) {
+        organizationCategoryService.deleteAllByOrganizationIds(organizationIds);
+        adminFeedbackService.deleteAllByOrganizationIds(organizationIds);
+        qrService.deleteAllByOrganizationIds(organizationIds);
+        organizationRepository.deleteAllById(organizationIds);
+    }
+
+    @Transactional
+    public void deleteOrganization(final UUID organizationUuid) {
+        final Optional<Organization> organizationOpt = organizationRepository.findByUuid(organizationUuid);
+        if (organizationOpt.isEmpty()) {
+            return;
+        }
+        final Organization organization = organizationOpt.get();
+        final Long organizationId = organization.getId();
+
+        organizerRepository.deleteAllByOrganization_Id(organizationId);
+        organizationCategoryService.deleteByOrganizationId(organizationId);
+        adminFeedbackService.deleteByOrganizationId(organizationId);
+        qrService.deleteByOrganizationId(organizationId);
+        organizationRepository.delete(organization);
     }
 }

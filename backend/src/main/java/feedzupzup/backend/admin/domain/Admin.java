@@ -10,14 +10,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
-@Getter
+@SQLDelete(sql = "UPDATE admin SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Admin extends BaseTimeEntity {
 
     @Id
@@ -38,6 +43,9 @@ public class Admin extends BaseTimeEntity {
 
     @Column(nullable = false)
     private boolean alertsOn;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
     public Admin(@NonNull final LoginId loginId, @NonNull final EncodedPassword password, @NonNull final AdminName adminName) {
         this.loginId = loginId;

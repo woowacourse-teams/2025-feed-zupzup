@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,5 +70,16 @@ public interface AdminOrganizationApi {
     @GetMapping("/admin/organizations")
     SuccessResponse<List<AdminInquireOrganizationResponse>> getOrganizations(
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
+    );
+
+    @Operation(summary = "단체 삭제", description = "단체를 삭제할 수 있습니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "삭제 성공", useReturnTypeSchema = true)
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/admin/organizations/{organizationUuid}")
+    SuccessResponse<Void> deleteOrganization(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo
     );
 }

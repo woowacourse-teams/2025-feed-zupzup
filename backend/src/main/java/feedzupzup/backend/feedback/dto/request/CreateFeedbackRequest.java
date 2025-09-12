@@ -3,11 +3,12 @@ package feedzupzup.backend.feedback.dto.request;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.domain.vo.UserName;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.util.CurrentDateTime;
+import feedzupzup.backend.global.util.CurrentDateTime;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
@@ -31,6 +32,7 @@ public record CreateFeedbackRequest(
         return Feedback.builder()
                 .content(new Content(content))
                 .organization(organization)
+                .likeCount(new LikeCount(0))
                 .status(ProcessStatus.WAITING)
                 .isSecret(isSecret)
                 .userName(new UserName(userName))

@@ -13,6 +13,7 @@ import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
 import feedzupzup.backend.s3.service.S3PresignedDownloadService;
 import feedzupzup.backend.s3.service.S3UploadService;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -85,5 +86,15 @@ public class QRService {
         return qrRepository.findByOrganizationId(organization.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organization.getUuid() + ")인 단체의 QR 코드를 찾을 수 없습니다."));
+    }
+
+    @Transactional
+    public void deleteAllByOrganizationIds(final List<Long> organizationIds) {
+        qrRepository.deleteAllByOrganizationIdIn(organizationIds);
+    }
+
+    @Transactional
+    public void deleteByOrganizationId(final Long organizationId) {
+        qrRepository.deleteByOrganizationId(organizationId);
     }
 }

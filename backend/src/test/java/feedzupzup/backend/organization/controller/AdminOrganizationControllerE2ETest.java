@@ -213,4 +213,81 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .body("data.updateName", equalTo("새로운 조직"))
                 .body("data.updateCategories.size()", equalTo(3));
     }
+
+    @Test
+    @DisplayName("관리자가 자신이 소유한 조직을 성공적으로 삭제한다")
+    void deleteOrganization_Success() {
+        // given
+        final Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+
+        Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+        organizerRepository.save(new Organizer(organization, admin, OrganizerRole.OWNER));
+
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie(SESSION_ID);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .delete("/admin/organizations/{organizationUuid}", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("관리자가 권한이 없는 조직을 삭제하려 할 때 403 에러가 발생한다")
+    void deleteOrganization_Fail_Forbidden() {
+        // given
+        final Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+
+        // 다른 관리자의 조직 (권한 없음)
+        Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie(SESSION_ID);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .delete("/admin/organizations/{organizationUuid}", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    @DisplayName("인증되지 않은 사용자가 조직을 삭제하려 할 때 401 에러가 발생한다")
+    void deleteOrganization_Fail_Unauthorized() {
+        // given
+        Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+
+        // when & then
+        given()
+                .log().all()
+                .when()
+                .delete("/admin/organizations/{organizationUuid}", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
 }

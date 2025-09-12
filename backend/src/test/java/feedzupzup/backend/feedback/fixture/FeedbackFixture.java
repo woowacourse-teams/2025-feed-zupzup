@@ -3,11 +3,12 @@ package feedzupzup.backend.feedback.fixture;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.domain.vo.UserName;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.util.CurrentDateTime;
+import feedzupzup.backend.global.util.CurrentDateTime;
 
 public class FeedbackFixture {
 
@@ -16,6 +17,7 @@ public class FeedbackFixture {
                 .content(new Content("상태별 피드백"))
                 .isSecret(false)
                 .status(status)
+                .likeCount(new LikeCount(0))
                 .organization(organization)
                 .userName(new UserName("테스트유저"))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
@@ -29,6 +31,7 @@ public class FeedbackFixture {
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
                 .organization(organization)
+                .likeCount(new LikeCount(0))
                 .userName(new UserName("테스트유저"))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
@@ -41,6 +44,7 @@ public class FeedbackFixture {
                 .isSecret(isSecret)
                 .status(ProcessStatus.WAITING)
                 .organization(organization)
+                .likeCount(new LikeCount(0))
                 .userName(new UserName("테스트유저"))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
@@ -52,6 +56,7 @@ public class FeedbackFixture {
                 .content(new Content(content))
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
+                .likeCount(new LikeCount(0))
                 .organization(organization)
                 .userName(new UserName("테스트유저"))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
@@ -69,7 +74,7 @@ public class FeedbackFixture {
                 .isSecret(false)
                 .status(ProcessStatus.WAITING)
                 .organization(organization)
-                .likeCount(likeCount)
+                .likeCount(new LikeCount(likeCount))
                 .userName(new UserName("테스트유저"))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(organizationCategory)
