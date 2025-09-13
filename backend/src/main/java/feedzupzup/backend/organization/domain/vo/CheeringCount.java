@@ -16,7 +16,7 @@ public class CheeringCount {
 
     private static final long ONCE_MAX_CHEERING_VALUE = 1_000;
 
-    @Column(name = "cheering_count")
+    @Column(name = "cheering_count", nullable = false)
     private long value;
 
     public CheeringCount(final long value) {

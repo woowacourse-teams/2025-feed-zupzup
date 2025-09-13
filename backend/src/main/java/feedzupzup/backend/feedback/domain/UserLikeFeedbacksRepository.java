@@ -1,14 +1,15 @@
 package feedzupzup.backend.feedback.domain;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserLikeFeedbacksRepository {
 
-    private final Map<UUID, LikeFeedbacks> userLikeFeedbacks = new HashMap<>();
+    private final Map<UUID, LikeFeedbacks> userLikeFeedbacks = new ConcurrentHashMap<>();
 
     public void save(UUID uuid, long feedbackId) {
         saveUserIfNotExist(uuid);
@@ -34,6 +35,6 @@ public class UserLikeFeedbacksRepository {
     }
 
     public Map<UUID, LikeFeedbacks> getUserLikeFeedbacks() {
-        return userLikeFeedbacks;
+        return Collections.unmodifiableMap(userLikeFeedbacks);
     }
 }
