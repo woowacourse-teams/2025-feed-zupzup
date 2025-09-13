@@ -4,6 +4,7 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class FeedbackLikeService {
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         if (userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
-            throw new IllegalArgumentException(
+            throw new DuplicateLikeException(
                     "해당 유저" + visitorId + "는 이미 해당 feedbackId" + feedbackId + "에 좋아요를 눌렀습니다.");
         }
 
