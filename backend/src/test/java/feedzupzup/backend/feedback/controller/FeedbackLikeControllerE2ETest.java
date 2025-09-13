@@ -99,6 +99,33 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
+    @DisplayName("해당 피드백에 대한 좋아요 기록이 없는 유저가 취소를 요청할 경우, 400 에러를 반환해야 한다")
+    void not_exist_like_history_user_then_return_400() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
+                organizationCategory, 5);
+        final Feedback savedFeedback = feedBackRepository.save(feedback);
+
+        final UUID cookieValue = createAndGetCookieValue();
+
+        // when & then
+        given()
+                .log().all()
+                .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue)
+                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
     @DisplayName("존재하지 않는 피드백에 좋아요를 시도하면 404 에러가 발생한다")
     void like_non_existent_feedback_not_found() {
         // given

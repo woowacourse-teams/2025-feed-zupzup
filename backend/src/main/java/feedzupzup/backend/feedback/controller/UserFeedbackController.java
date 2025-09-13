@@ -84,7 +84,7 @@ public class UserFeedbackController implements UserFeedbackApi {
             final Long feedbackId,
             final UUID visitorId
     ) {
-        final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId, visitorId);
+        final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, visitorId);
         final Cookie cookie = CookieUtilization.createCookie(
                 CookieUtilization.VISITOR_KEY,
                 visitorId

@@ -36,7 +36,7 @@ public class FeedbackLikeService {
     }
 
     @Transactional
-    public LikeResponse unLike(final Long feedbackId, final UUID visitorId) {
+    public LikeResponse unlike(final Long feedbackId, final UUID visitorId) {
         if (visitorId == null || !userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
             throw new InvalidLikeException(
                     "해당 유저 " + visitorId + "는 해당 feedbackId" + feedbackId + "에 대한 좋아요 기록이 존재하지 않습니다."
