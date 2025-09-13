@@ -16,6 +16,11 @@ public class LikeFeedbacks {
         return likeFeedbacks.contains(value);
     }
 
+    public void remove(final long value) {
+        likeFeedbacks.remove(value);
+    }
+
+
     public Set<Long> getLikeFeedbacks() {
         return Collections.unmodifiableSet(likeFeedbacks);
     }

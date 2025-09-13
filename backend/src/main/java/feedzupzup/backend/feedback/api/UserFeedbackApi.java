@@ -83,7 +83,9 @@ public interface UserFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/feedbacks/{feedbackId}/unlike")
     SuccessResponse<LikeResponse> unlike(
-            @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId
+            final HttpServletResponse response,
+            @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
+            @Parameter(hidden = true) @CookieValue(name = CookieUtilization.VISITOR_KEY, required = false) UUID visitorId
     );
 
     @Operation(summary = "피드백 통계 계산", description = "피드백의 통계를 계산합니다.")

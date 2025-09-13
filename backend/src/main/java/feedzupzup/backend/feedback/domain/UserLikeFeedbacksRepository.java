@@ -16,6 +16,11 @@ public class UserLikeFeedbacksRepository {
         likeFeedbacks.add(feedbackId);
     }
 
+    public void deleteLikeHistory(UUID uuid, long feedbackId) {
+        final LikeFeedbacks likeFeedbacks = userLikeFeedbacks.get(uuid);
+        likeFeedbacks.remove(feedbackId);
+    }
+
     private void saveUserIfNotExist(final UUID uuid) {
         userLikeFeedbacks.computeIfAbsent(uuid, key -> new LikeFeedbacks());
     }

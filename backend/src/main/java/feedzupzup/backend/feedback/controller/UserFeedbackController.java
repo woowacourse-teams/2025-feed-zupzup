@@ -79,9 +79,18 @@ public class UserFeedbackController implements UserFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<LikeResponse> unlike(final Long feedbackId) {
-        final LikeResponse response = feedbackLikeService.unLike(feedbackId);
-        return SuccessResponse.success(HttpStatus.OK, response);
+    public SuccessResponse<LikeResponse> unlike(
+            final HttpServletResponse response,
+            final Long feedbackId,
+            final UUID visitorId
+    ) {
+        final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId, visitorId);
+        final Cookie cookie = CookieUtilization.createCookie(
+                CookieUtilization.VISITOR_KEY,
+                visitorId
+        );
+        response.addCookie(cookie);
+        return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
     @Override

@@ -130,12 +130,16 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void unlike_existing_feedback() {
             // given
             final Long feedbackId = createFeedback();
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
+            final UUID cookieValue1 = createAndGetCookieValue();
+            final UUID cookieValue2 = createAndGetCookieValue();
+            final UUID cookieValue3 = createAndGetCookieValue();
+
+            feedbackLikeService.like(feedbackId, cookieValue1);
+            feedbackLikeService.like(feedbackId, cookieValue2);
+            feedbackLikeService.like(feedbackId, cookieValue3);
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId);
+            final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId, cookieValue1);
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(2);
@@ -146,10 +150,11 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void unlike_single_like() {
             // given
             final Long feedbackId = createFeedback();
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());
+            final UUID cookieValue1 = createAndGetCookieValue();
+            feedbackLikeService.like(feedbackId, cookieValue1);
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId);
+            final LikeResponse likeResponse = feedbackLikeService.unLike(feedbackId, cookieValue1);
 
             // then
             assertThat(likeResponse.afterLikeCount()).isZero();
@@ -167,14 +172,19 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void like_and_unlike_combination() {
             // given
             final Long feedbackId = createFeedback();
+            final UUID cookieValue1 = createAndGetCookieValue();
+            final UUID cookieValue2 = createAndGetCookieValue();
+            final UUID cookieValue3 = createAndGetCookieValue();
+            final UUID cookieValue4 = createAndGetCookieValue();
+
 
             // when
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 1
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 2
-            feedbackLikeService.unLike(feedbackId);        // 1
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 2
-            feedbackLikeService.like(feedbackId, createAndGetCookieValue());          // 3
-            feedbackLikeService.unLike(feedbackId);        // 2
+            feedbackLikeService.like(feedbackId, cookieValue1);          // 1
+            feedbackLikeService.like(feedbackId, cookieValue2);          // 2
+            feedbackLikeService.unLike(feedbackId, cookieValue1);        // 1
+            feedbackLikeService.like(feedbackId, cookieValue3);          // 2
+            feedbackLikeService.like(feedbackId, cookieValue4);          // 3
+            feedbackLikeService.unLike(feedbackId, cookieValue2);        // 2
 
             final Feedback feedback = feedBackRepository.findById(feedbackId).get();
 
@@ -190,14 +200,21 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId2 = createFeedback();
             final Long feedbackId3 = createFeedback();
 
+            final UUID cookieValue1 = createAndGetCookieValue();
+            final UUID cookieValue2 = createAndGetCookieValue();
+            final UUID cookieValue3 = createAndGetCookieValue();
+            final UUID cookieValue4 = createAndGetCookieValue();
+            final UUID cookieValue5 = createAndGetCookieValue();
+
+
             // when
-            feedbackLikeService.like(feedbackId1, createAndGetCookieValue());
-            final LikeResponse likeResponse1 = feedbackLikeService.unLike(feedbackId1);
-            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, createAndGetCookieValue());
-            feedbackLikeService.like(feedbackId3, createAndGetCookieValue());
-            feedbackLikeService.like(feedbackId3, createAndGetCookieValue());
-            feedbackLikeService.like(feedbackId3, createAndGetCookieValue());
-            final LikeResponse likeResponse3 = feedbackLikeService.unLike(feedbackId3);
+            feedbackLikeService.like(feedbackId1, cookieValue1);
+            final LikeResponse likeResponse1 = feedbackLikeService.unLike(feedbackId1, cookieValue1);
+            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, cookieValue2);
+            feedbackLikeService.like(feedbackId3, cookieValue3);
+            feedbackLikeService.like(feedbackId3, cookieValue4);
+            feedbackLikeService.like(feedbackId3, cookieValue5);
+            final LikeResponse likeResponse3 = feedbackLikeService.unLike(feedbackId3, cookieValue3);
 
             // then
             assertAll(

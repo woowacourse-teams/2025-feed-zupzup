@@ -5,6 +5,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
+import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class FeedbackLikeService {
         final Feedback feedback = findFeedbackBy(feedbackId);
         if (userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
             throw new DuplicateLikeException(
-                    "해당 유저" + visitorId + "는 이미 해당 feedbackId" + feedbackId + "에 좋아요를 눌렀습니다.");
+                    "해당 유저 " + visitorId + "는 이미 해당 feedbackId" + feedbackId + "에 좋아요를 눌렀습니다.");
         }
 
         feedback.increaseLikeCount();
@@ -35,9 +36,16 @@ public class FeedbackLikeService {
     }
 
     @Transactional
-    public LikeResponse unLike(final Long feedbackId) {
+    public LikeResponse unLike(final Long feedbackId, final UUID visitorId) {
+        if (visitorId == null || !userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
+            throw new InvalidLikeException(
+                    "해당 유저 " + visitorId + "는 해당 feedbackId" + feedbackId + "에 대한 좋아요 기록이 존재하지 않습니다."
+            );
+        }
+
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.decreaseLikeCount();
+        userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
         return LikeResponse.from(feedback);
     }
 
