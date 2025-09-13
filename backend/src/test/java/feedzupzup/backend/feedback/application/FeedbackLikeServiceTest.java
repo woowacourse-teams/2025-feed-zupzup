@@ -2,6 +2,8 @@ package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
@@ -60,6 +62,36 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     @Nested
     @DisplayName("좋아요 증가 테스트")
     class LikeIncreaseTest {
+
+        @Test
+        @DisplayName("하나의 쿠키에서 동일한 게시글에 좋아요를 연속해서 누를 경우, 예외가 발생해야 한다")
+        void same_cookie_continuous_like_same_feedback_then_throw_exception() {
+            // given
+            final Long feedbackId = createFeedback();
+            final UUID cookieValue = createAndGetCookieValue();
+            feedbackLikeService.like(feedbackId, cookieValue);
+
+            // when & then
+            assertThatThrownBy(() -> feedbackLikeService.like(feedbackId, cookieValue))
+                    .isInstanceOf(IllegalArgumentException.class);
+
+        }
+
+        @Test
+        @DisplayName("하나의 쿠키에서 다른 게시글에 좋아요를 연속해서 누를 경우, 성공해야 한다")
+        void same_cookie_continuous_like_another_feedback_then_success() {
+            // given
+            final Long feedbackId1 = createFeedback();
+            final Long feedbackId2 = createFeedback();
+
+            final UUID cookieValue = createAndGetCookieValue();
+
+            feedbackLikeService.like(feedbackId1, cookieValue);
+
+            // when & then
+            assertThatCode(() -> feedbackLikeService.like(feedbackId2, cookieValue))
+                    .doesNotThrowAnyException();
+        }
 
         @Test
         @DisplayName("새로운 피드백에 좋아요를 추가하면 1이 된다")
