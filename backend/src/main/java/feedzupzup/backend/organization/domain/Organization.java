@@ -65,7 +65,7 @@ public class Organization extends BaseTimeEntity {
         this.cheeringCount.add(other);
     }
 
-    public int getCheeringCountValue() {
+    public long getCheeringCountValue() {
         return cheeringCount.getValue();
     }
 
