@@ -53,7 +53,7 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           <p css={questionTitle(theme)}>카테고리 선택</p>
           <p css={question(theme)}>건의하고 싶은 카테고리를 선택해주세요</p>
         </div>
-        <div css={buttonContainer}>
+        <div css={[buttonContainer, { opacity: isLoading ? 0 : 1 }]}>
           {categoryIconPairs.map((category) => (
             <CategoryButton
               key={category.category}
