@@ -23,6 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 
 class FeedbackLikeControllerE2ETest extends E2EHelper {
 
@@ -335,7 +336,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     private UUID createAndGetCookieValue() {
-        final Cookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+        final ResponseCookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
     }

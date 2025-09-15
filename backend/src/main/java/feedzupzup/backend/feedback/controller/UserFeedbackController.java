@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
+import com.google.common.net.HttpHeaders;
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -67,11 +69,11 @@ public class UserFeedbackController implements UserFeedbackApi {
         if (visitorId == null) {
             UUID cookieId = UUID.randomUUID();
             final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, cookieId);
-            final Cookie cookie = CookieUtilization.createCookie(
+            final ResponseCookie cookie = CookieUtilization.createCookie(
                     CookieUtilization.VISITOR_KEY,
                     cookieId
             );
-            response.addCookie(cookie);
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
             return SuccessResponse.success(HttpStatus.OK, likeResponse);
         }
         final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, visitorId);
@@ -85,11 +87,11 @@ public class UserFeedbackController implements UserFeedbackApi {
             final UUID visitorId
     ) {
         final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, visitorId);
-        final Cookie cookie = CookieUtilization.createCookie(
+        final ResponseCookie cookie = CookieUtilization.createCookie(
                 CookieUtilization.VISITOR_KEY,
                 visitorId
         );
-        response.addCookie(cookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
