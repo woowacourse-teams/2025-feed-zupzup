@@ -28,7 +28,7 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   const { goPath } = useNavigation();
   const { organizationId } = useOrganizationId();
 
-  const { groupName, categories } = useOrganizationName({
+  const { groupName, categories, isLoading } = useOrganizationName({
     organizationId,
   });
 
@@ -44,8 +44,10 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
     <section css={container}>
       <div>
         <p css={title(theme)}>
-          <span css={place(theme)}>{groupName}</span>에<br /> 오신 것을
-          환영합니다
+          <span css={[place(theme), { opacity: isLoading ? 0 : 1 }]}>
+            {groupName} <span css={title(theme)}>에</span>
+          </span>
+          <br /> 오신 것을 환영합니다
         </p>
         <div css={questionContainer(theme)}>
           <p css={questionTitle(theme)}>카테고리 선택</p>

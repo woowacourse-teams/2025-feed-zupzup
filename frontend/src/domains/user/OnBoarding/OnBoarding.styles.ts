@@ -24,6 +24,7 @@ export const title = (theme: Theme) => css`
   ${theme.typography.pretendard.h1}
 
   margin-top: 8%;
+  color: ${theme.colors.black[100]};
 `;
 
 export const place = (theme: Theme) => css`
@@ -31,6 +32,7 @@ export const place = (theme: Theme) => css`
 
   font-size: 32px;
   color: ${theme.colors.purple[100]};
+  transition: opacity 0.3s ease;
 `;
 
 export const questionTitle = (theme: Theme) => css`
