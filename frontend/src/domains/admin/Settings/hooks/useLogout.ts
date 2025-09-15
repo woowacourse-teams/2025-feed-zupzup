@@ -17,7 +17,7 @@ export function useLogout() {
         throw new Error('로그아웃 실패');
       }
       resetLocalStorage('auth');
-      goPath('/login');
+      goPath('/');
     } catch (e) {
       showErrorModal(e, '에러');
     }
