@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CheeringCount {
 
-    private static final long ONCE_MAX_CHEERING_VALUE = 1_000;
+    private static final long ONCE_MAX_CHEERING_VALUE = 100;
 
     @Column(name = "cheering_count", nullable = false)
     private long value;
@@ -33,8 +33,7 @@ public class CheeringCount {
     public void add(final CheeringCount other) {
         validateNonNegative(other.value);
         if (other.value > ONCE_MAX_CHEERING_VALUE) {
-            this.value += ONCE_MAX_CHEERING_VALUE;
-            return;
+            throw new OrganizationNumberException("응원 횟수는 한 번에 " + ONCE_MAX_CHEERING_VALUE +"를 초과할 수 없습니다.");
         }
         this.value += other.value;
     }
