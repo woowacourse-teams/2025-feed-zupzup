@@ -51,7 +51,7 @@ export async function postUserFeedback({
 }
 
 export async function postLike({ feedbackId, onSuccess, onError }: LikeParams) {
-  await apiClient.post(
+  await apiClient.patch(
     `/feedbacks/${feedbackId}/like`,
     {},
     {
@@ -66,10 +66,14 @@ export async function deleteLike({
   onSuccess,
   onError,
 }: LikeParams) {
-  const response = await apiClient.delete(`/feedbacks/${feedbackId}/like`, {
-    onSuccess,
-    onError,
-  });
+  const response = await apiClient.patch(
+    `/feedbacks/${feedbackId}/unlike`,
+    {},
+    {
+      onSuccess,
+      onError,
+    }
+  );
   return response;
 }
 
