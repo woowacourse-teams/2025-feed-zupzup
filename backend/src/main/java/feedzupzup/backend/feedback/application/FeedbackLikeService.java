@@ -22,6 +22,9 @@ public class FeedbackLikeService {
 
     @Transactional
     public LikeResponse like(final Long feedbackId, final UUID visitorId) {
+        if (visitorId == null) {
+            throw new InvalidLikeException("잘못된 요청입니다.");
+        }
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         if (userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
