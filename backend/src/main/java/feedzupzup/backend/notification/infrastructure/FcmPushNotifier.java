@@ -3,8 +3,8 @@ package feedzupzup.backend.notification.infrastructure;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.Notification;
 import feedzupzup.backend.notification.application.PushNotifier;
+import feedzupzup.backend.notification.domain.Notification;
 import feedzupzup.backend.notification.domain.NotificationPayload;
 import feedzupzup.backend.notification.domain.NotificationRepository;
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ public class FcmPushNotifier implements PushNotifier {
 
         for (NotificationPayload payload : payloads) {
             log.info("adminId: {}", payload.adminId());
-            List<feedzupzup.backend.notification.domain.Notification> userTokens = notificationRepository.findByAdminId(payload.adminId());
-            for (feedzupzup.backend.notification.domain.Notification token : userTokens) {
+            List<Notification> userTokens = notificationRepository.findByAdminId(payload.adminId());
+            for (Notification token : userTokens) {
                 log.info("tokenOpt: {}", token.getToken());
                 tokens.add(token.getToken());
             }
@@ -61,7 +61,7 @@ public class FcmPushNotifier implements PushNotifier {
     private void sendBatch(List<String> tokens, String title, String message) {
         try {
             MulticastMessage multicastMessage = MulticastMessage.builder()
-                    .setNotification(Notification.builder()
+                    .setNotification(com.google.firebase.messaging.Notification.builder()
                             .setTitle(title)
                             .setBody(message)
                             .build())
