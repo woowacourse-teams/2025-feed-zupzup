@@ -4,9 +4,6 @@ import feedzupzup.backend.auth.application.ActiveSessionStore;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-@Component
 public class AdminSessionListener implements HttpSessionListener {
 
     private final ActiveSessionStore activeSessionStore;
