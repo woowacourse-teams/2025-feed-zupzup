@@ -21,7 +21,7 @@ export const background = css`
 export const mainBellCenter = css`
   position: absolute;
   left: 50%;
-  top: 50%;
+  top: 60%;
   width: 64px;
   height: 64px;
   margin-left: -32px; /* width의 절반만큼 왼쪽으로 */

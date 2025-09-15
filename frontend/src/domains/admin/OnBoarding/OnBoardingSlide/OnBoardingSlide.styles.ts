@@ -5,7 +5,7 @@ export const container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: center;
   width: 100%;
   min-height: 500px;
@@ -15,8 +15,8 @@ export const contentContainer = css`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 80px;
-  width: 100%;
+  margin-bottom: 40px;
+  width: 90%;
 `;
 
 export const titleBadge = (theme: Theme) => css`

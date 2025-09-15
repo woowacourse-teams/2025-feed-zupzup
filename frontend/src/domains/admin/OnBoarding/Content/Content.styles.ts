@@ -36,5 +36,5 @@ export const contentContainer = css`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 80px;
+  margin-bottom: 40px;
 `;
