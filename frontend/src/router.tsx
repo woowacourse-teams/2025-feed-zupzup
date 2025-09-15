@@ -40,7 +40,6 @@ export const router = createBrowserRouter([
         element: (
           <AuthRedirectRoute>
             <Login />
-            {/* <OnBoarding /> */}
           </AuthRedirectRoute>
         ),
       },
