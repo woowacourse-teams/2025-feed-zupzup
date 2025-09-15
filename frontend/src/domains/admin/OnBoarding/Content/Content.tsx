@@ -3,8 +3,8 @@ import QRFeedbackScene from '../scenes/QRFeedbackScene';
 import IntuitiveInterfaceScene from '../scenes/IntuitiveInterfaceScene';
 import RealTimeNotificationScene from '../scenes/RealTimeNotificationScene';
 import AnalyticsManagementScene from '../scenes/AnalyticsManagementScene';
-import { useState } from 'react';
 import { OnboardingSlide } from '../OnBoardingSlide/OnBoardingSlide';
+import { useSlideTimer } from '../hooks/useSlideTimer';
 import {
   container,
   slideContainer,
@@ -58,19 +58,10 @@ const slides = [
 ];
 
 export default function Content() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
-  //   }, 4000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  const handleDotClick = (index: number) => {
-    setCurrentSlide(index);
-  };
+  const { currentSlide, handleSlideChange } = useSlideTimer({
+    totalSlides: slides.length,
+    intervalDuration: 4000,
+  });
 
   return (
     <div css={contentContainer}>
@@ -99,7 +90,7 @@ export default function Content() {
         {slides.map((_, index) => (
           <motion.button
             key={index}
-            onClick={() => handleDotClick(index)}
+            onClick={() => handleSlideChange(index)}
             css={paginationDot}
             style={{
               backgroundColor: index === currentSlide ? '#7356ff' : '#d1d5db',
