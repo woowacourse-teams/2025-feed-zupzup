@@ -17,7 +17,7 @@ import lombok.NonNull;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationToken extends BaseTimeEntity {
+public class Notification extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +30,12 @@ public class NotificationToken extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin admin;
 
-    public NotificationToken(@NonNull Admin admin, @NonNull final String value) {
+    public Notification(@NonNull Admin admin, @NonNull final String value) {
         this.admin = admin;
         this.value = value;
     }
 
-    public void updateNotificationToken(@NonNull final String value) {
+    public void updateNotification(@NonNull final String value) {
         this.value = value;
     }
 }

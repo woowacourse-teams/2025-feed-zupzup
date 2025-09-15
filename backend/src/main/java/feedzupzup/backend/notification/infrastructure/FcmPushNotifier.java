@@ -6,8 +6,7 @@ import com.google.firebase.messaging.MulticastMessage;
 import com.google.firebase.messaging.Notification;
 import feedzupzup.backend.notification.application.PushNotifier;
 import feedzupzup.backend.notification.domain.NotificationPayload;
-import feedzupzup.backend.notification.domain.NotificationToken;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import feedzupzup.backend.notification.domain.NotificationRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class FcmPushNotifier implements PushNotifier {
 
-    private final NotificationTokenRepository notificationTokenRepository;
+    private final NotificationRepository notificationRepository;
     private final FirebaseMessaging firebaseMessaging;
     private final FcmErrorHandler fcmErrorHandler;
 
@@ -38,8 +37,8 @@ public class FcmPushNotifier implements PushNotifier {
 
         for (NotificationPayload payload : payloads) {
             log.info("adminId: {}", payload.adminId());
-            List<NotificationToken> userTokens = notificationTokenRepository.findByAdminId(payload.adminId());
-            for (NotificationToken token : userTokens) {
+            List<feedzupzup.backend.notification.domain.Notification> userTokens = notificationRepository.findByAdminId(payload.adminId());
+            for (feedzupzup.backend.notification.domain.Notification token : userTokens) {
                 log.info("tokenOpt: {}", token.getValue());
                 tokens.add(token.getValue());
             }

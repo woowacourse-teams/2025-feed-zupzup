@@ -5,11 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface NotificationTokenRepository extends JpaRepository<NotificationToken, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    Optional<NotificationToken> findByAdminIdAndValue(Long adminId, String value);
-    
-    List<NotificationToken> findByAdminId(Long adminId);
+    Optional<Notification> findByAdminIdAndValue(Long adminId, String value);
+
+    List<Notification> findByAdminId(Long adminId);
     
     void deleteAllByAdmin_IdIn(List<Long> adminIds);
 

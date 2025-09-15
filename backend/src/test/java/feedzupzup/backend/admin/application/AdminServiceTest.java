@@ -6,8 +6,8 @@ import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.fixture.AdminFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.notification.domain.NotificationToken;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import feedzupzup.backend.notification.domain.Notification;
+import feedzupzup.backend.notification.domain.NotificationRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -27,7 +27,7 @@ class AdminServiceTest extends ServiceIntegrationHelper {
     private AdminRepository adminRepository;
 
     @Autowired
-    private NotificationTokenRepository notificationTokenRepository;
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -42,8 +42,8 @@ class AdminServiceTest extends ServiceIntegrationHelper {
         Admin admin = AdminFixture.create();
         adminRepository.save(admin);
 
-        NotificationToken notificationToken = new NotificationToken(admin, "test-token");
-        notificationTokenRepository.save(notificationToken);
+        Notification notificationToken = new Notification(admin, "test-token");
+        notificationRepository.save(notificationToken);
 
         Organization organization = OrganizationFixture.createAllBlackBox();
         Organization savedOrganization = organizationRepository.save(organization);
@@ -56,7 +56,7 @@ class AdminServiceTest extends ServiceIntegrationHelper {
 
         // then
         assertThat(adminRepository.findById(admin.getId())).isEmpty();
-        assertThat(notificationTokenRepository.findByAdminIdAndValue(admin.getId(), "test-token")).isEmpty();
+        assertThat(notificationRepository.findByAdminIdAndValue(admin.getId(), "test-token")).isEmpty();
         assertThat(organizerRepository.findAllFetchedByAdminId(admin.getId())).isEmpty();
     }
 }

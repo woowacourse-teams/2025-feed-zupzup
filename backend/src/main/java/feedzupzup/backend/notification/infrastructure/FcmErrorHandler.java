@@ -4,7 +4,7 @@ import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MessagingErrorCode;
 import com.google.firebase.messaging.SendResponse;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import feedzupzup.backend.notification.domain.NotificationRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class FcmErrorHandler {
             MessagingErrorCode.INTERNAL
     );
 
-    private final NotificationTokenRepository notificationTokenRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void handleFailures(final BatchResponse response, final List<String> tokens) {
@@ -58,7 +58,7 @@ public class FcmErrorHandler {
 
         if (!deletableTokens.isEmpty()) {
             log.info("토큰 삭제 tokens : {}", deletableTokens);
-            notificationTokenRepository.deleteAllByValueIn(deletableTokens);
+            notificationRepository.deleteAllByValueIn(deletableTokens);
         }
     }
 }

@@ -1,6 +1,5 @@
 package feedzupzup.backend.auth.application;
 
-import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ public class SessionValidationService {
         List<Long> activeSessionAdminIds = adminIds.stream()
                 .filter(activeSessionStore::hasActiveSession)
                 .toList();
-        
+
         if (activeSessionAdminIds.isEmpty()) {
             return List.of();
         }

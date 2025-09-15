@@ -3,9 +3,9 @@ package feedzupzup.backend.notification.application;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.notification.domain.NotificationToken;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
-import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
+import feedzupzup.backend.notification.domain.Notification;
+import feedzupzup.backend.notification.domain.NotificationRepository;
+import feedzupzup.backend.notification.dto.request.NotificationRequest;
 import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private final NotificationTokenRepository notificationTokenRepository;
+    private final NotificationRepository notificationRepository;
     private final AdminRepository adminRepository;
 
     @Transactional
-    public void registerToken(final NotificationTokenRequest request, final Long adminId) {
-        notificationTokenRepository.findByAdminIdAndValue(adminId, request.value())
+    public void registerToken(final NotificationRequest request, final Long adminId) {
+        notificationRepository.findByAdminIdAndValue(adminId, request.token())
                 .ifPresentOrElse(
-                        existingToken -> updateExistingToken(existingToken, request.value()),
+                        existingToken -> updateExistingToken(existingToken, request.token()),
                         () -> createNewToken(request, adminId)
                 );
     }
@@ -44,7 +44,7 @@ public class NotificationService {
 
     @Transactional
     public void deleteAllByAdminId(final Long adminId) {
-        notificationTokenRepository.deleteAllByAdmin_Id(adminId);
+        notificationRepository.deleteAllByAdmin_Id(adminId);
     }
 
     private Admin getAdminById(Long adminId) {
@@ -52,14 +52,14 @@ public class NotificationService {
                 .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminId));
     }
 
-    private void updateExistingToken(final NotificationToken token, final String newToken) {
-        token.updateNotificationToken(newToken);
+    private void updateExistingToken(final Notification token, final String newToken) {
+        token.updateNotification(newToken);
         log.info("토큰 업데이트");
     }
 
-    private void createNewToken(final NotificationTokenRequest request, final Long adminId) {
+    private void createNewToken(final NotificationRequest request, final Long adminId) {
         final Admin admin = getAdminById(adminId);
-        notificationTokenRepository.save(request.toNotificationToken(admin));
+        notificationRepository.save(request.toNotification(admin));
         log.info("새 토큰 등록");
     }
 }

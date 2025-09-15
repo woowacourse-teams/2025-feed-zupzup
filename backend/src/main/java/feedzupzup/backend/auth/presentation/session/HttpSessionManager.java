@@ -24,7 +24,7 @@ public class HttpSessionManager {
     public AdminSession getAdminSession(final HttpServletRequest request) {
         final HttpSession session = getExistingSession(request);
         final Long adminId = getAdminIdFromSession(session);
-        
+
         activeSessionStore.addActiveSession(adminId);
         return new AdminSession(adminId);
     }
