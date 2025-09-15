@@ -1,6 +1,5 @@
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
-import Login from '@/domains/admin/Login/Login';
 import SignUp from '@/domains/admin/SignUp/SignUp';
 import Home from '@/domains/Home';
 import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
@@ -12,6 +11,8 @@ import AdminHome from './domains/admin/AdminHome/AdminHome';
 import Settings from './domains/admin/Settings/Settings';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import { isAuthenticated } from './utils/isAuthenticated';
+import Login from './domains/admin/Login/Login';
+import OnBoarding from './domains/admin/OnBoarding/OnBoarding';
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +24,7 @@ export const router = createBrowserRouter([
         element: isAuthenticated() ? (
           <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />
         ) : (
-          <Navigate to='/login' replace />
+          <OnBoarding />
         ),
       },
       {
@@ -39,6 +40,7 @@ export const router = createBrowserRouter([
         element: (
           <AuthRedirectRoute>
             <Login />
+            {/* <OnBoarding /> */}
           </AuthRedirectRoute>
         ),
       },
