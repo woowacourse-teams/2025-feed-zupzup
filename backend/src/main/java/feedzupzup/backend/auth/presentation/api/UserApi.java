@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -19,9 +20,8 @@ public interface UserApi {
             @ApiResponse(responseCode = "200", description = "이미 쿠키가 존재해, 발급 하지 않음", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "201", description = "쿠키 발급 성공", useReturnTypeSchema = true)
     })
-
     @PostMapping("/user/set-cookie")
-    SuccessResponse<Void> setCookie(
+    ResponseEntity<SuccessResponse<Void>> setCookie(
             final HttpServletResponse response,
             @Parameter(hidden = true) @CookieValue(name = CookieUtilization.VISITOR_KEY, required = false) String visitorId
     );
