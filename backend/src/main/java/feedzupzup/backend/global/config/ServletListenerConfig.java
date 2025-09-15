@@ -1,4 +1,4 @@
-package feedzupzup.backend.config;
+package feedzupzup.backend.global.config;
 
 import feedzupzup.backend.auth.application.ActiveSessionStore;
 import feedzupzup.backend.auth.listener.AdminSessionListener;
