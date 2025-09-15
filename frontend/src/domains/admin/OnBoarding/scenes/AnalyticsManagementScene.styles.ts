@@ -2,8 +2,9 @@ import { css } from '@emotion/react';
 
 export const container = css`
   position: relative;
-  width: 256px;
-  height: 192px;
+  width: 90%;
+  height: 100%;
+  aspect-ratio: 16/9;
   margin: 0 auto;
 `;
 

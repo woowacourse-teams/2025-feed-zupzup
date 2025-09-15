@@ -10,7 +10,6 @@ export const container = css`
 
 export const cardContainer = css`
   width: 100%;
-  max-width: 384px;
   height: 100%;
   background-color: #ffffff;
   border-radius: 24px;

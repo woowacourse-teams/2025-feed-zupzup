@@ -3,7 +3,7 @@ import QRFeedbackScene from '../scenes/QRFeedbackScene';
 import IntuitiveInterfaceScene from '../scenes/IntuitiveInterfaceScene';
 import RealTimeNotificationScene from '../scenes/RealTimeNotificationScene';
 import AnalyticsManagementScene from '../scenes/AnalyticsManagementScene';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { OnboardingSlide } from '../OnBoardingSlide/OnBoardingSlide';
 import {
   container,
@@ -60,13 +60,13 @@ const slides = [
 export default function Content() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentSlide((prev) => (prev + 1) % slides.length);
+  //   }, 4000);
 
-    return () => clearInterval(interval);
-  }, []);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const handleDotClick = (index: number) => {
     setCurrentSlide(index);

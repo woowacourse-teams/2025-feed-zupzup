@@ -23,7 +23,7 @@ export function OnboardingSlide({
   const theme = useAppTheme();
 
   return (
-    <div css={container(theme)}>
+    <div css={container}>
       <div css={contentContainer}>
         <div css={titleBadge(theme)}>
           <span css={titleText(theme)}>{title}</span>

@@ -1,13 +1,13 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 
-export const container = (theme: Theme) => css`
+export const container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 48px 32px;
+  width: 100%;
   min-height: 500px;
 `;
 
@@ -16,6 +16,7 @@ export const contentContainer = css`
   flex-direction: column;
   gap: 16px;
   margin-bottom: 80px;
+  width: 100%;
 `;
 
 export const titleBadge = (theme: Theme) => css`
@@ -46,4 +47,5 @@ export const iconContainer = css`
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 `;
