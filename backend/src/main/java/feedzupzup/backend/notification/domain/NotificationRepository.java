@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    Optional<Notification> findByAdminIdAndValue(Long adminId, String value);
+    Optional<Notification> findByAdminIdAndToken(Long adminId, String token);
 
     List<Notification> findByAdminId(Long adminId);
     
@@ -15,5 +15,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     void deleteAllByAdmin_Id(Long adminId);
     
-    void deleteAllByValueIn(List<String> values);
+    void deleteAllByTokenIn(List<String> tokens);
 }

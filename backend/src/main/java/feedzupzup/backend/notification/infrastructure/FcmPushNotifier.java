@@ -39,8 +39,8 @@ public class FcmPushNotifier implements PushNotifier {
             log.info("adminId: {}", payload.adminId());
             List<feedzupzup.backend.notification.domain.Notification> userTokens = notificationRepository.findByAdminId(payload.adminId());
             for (feedzupzup.backend.notification.domain.Notification token : userTokens) {
-                log.info("tokenOpt: {}", token.getValue());
-                tokens.add(token.getValue());
+                log.info("tokenOpt: {}", token.getToken());
+                tokens.add(token.getToken());
             }
         }
 

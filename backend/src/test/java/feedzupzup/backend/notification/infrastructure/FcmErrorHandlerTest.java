@@ -57,7 +57,7 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
         fcmErrorHandler.handleFailures(batchResponse, tokens);
 
         // then
-        assertThat(notificationRepository.findByAdminIdAndValue(admin.getId(), "invalid-token")).isEmpty();
+        assertThat(notificationRepository.findByAdminIdAndToken(admin.getId(), "invalid-token")).isEmpty();
     }
 
     @Test
@@ -80,7 +80,7 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
         fcmErrorHandler.handleFailures(batchResponse, tokens);
 
         // then
-        assertThat(notificationRepository.findByAdminIdAndValue(admin.getId(), "valid-token")).isPresent();
+        assertThat(notificationRepository.findByAdminIdAndToken(admin.getId(), "valid-token")).isPresent();
     }
 
     private Admin createAndSaveAdmin(String adminName, String loginId) {

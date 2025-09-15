@@ -25,17 +25,17 @@ public class Notification extends BaseTimeEntity {
 
     // TODO. 추후 기기당 토큰의 중복을 허용할지 여부를 결정해야 함
     @Column(nullable = false)
-    private String value;
+    private String token;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Admin admin;
 
-    public Notification(@NonNull Admin admin, @NonNull final String value) {
+    public Notification(@NonNull Admin admin, @NonNull final String token) {
         this.admin = admin;
-        this.value = value;
+        this.token = token;
     }
 
-    public void updateNotification(@NonNull final String value) {
-        this.value = value;
+    public void updateNotification(@NonNull final String token) {
+        this.token = token;
     }
 }

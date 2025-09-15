@@ -58,7 +58,7 @@ public class FcmErrorHandler {
 
         if (!deletableTokens.isEmpty()) {
             log.info("토큰 삭제 tokens : {}", deletableTokens);
-            notificationRepository.deleteAllByValueIn(deletableTokens);
+            notificationRepository.deleteAllByTokenIn(deletableTokens);
         }
     }
 }
