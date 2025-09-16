@@ -5,7 +5,8 @@ export const QUERY_KEYS = {
   qrImageDownload: ['qrImageDownload'],
   qrCode: (id: string) => ['qrCode', id],
   organizationData: ['organizationData'],
-  adminOrganizations: () => ['adminOrganizations'] as const,
-  adminFeedbackStatistics: ['adminFeedbackStatistics'] as const,
+  adminOrganizations: (name: string) => ['adminOrganizations', name] as const,
+  adminFeedbackStatistics: (name: string) =>
+    ['adminFeedbackStatistics', name] as const,
   adminAuth: ['adminAuth'] as const,
 };
