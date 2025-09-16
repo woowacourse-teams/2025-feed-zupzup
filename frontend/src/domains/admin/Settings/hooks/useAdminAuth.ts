@@ -1,26 +1,26 @@
-import { AdminAuthResponse, getAdminAuth } from '@/apis/admin.api';
+import { getAdminAuth } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
-import { AdminAuthData } from '@/types/adminAuth';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 export default function useAdminAuth() {
-  const [adminAuth, setAdminAuth] = useState<AdminAuthData | null>(null);
   const { handleApiError } = useApiErrorHandler();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await getAdminAuth({
-          onSuccess: (response: AdminAuthResponse) =>
-            setAdminAuth(response.data),
-        });
-      } catch (error) {
-        handleApiError(error as ApiError);
-        setAdminAuth(null);
-      }
-    })();
-  }, []);
+  const {
+    data: adminAuth,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.adminAuth],
+    queryFn: getAdminAuth,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
+
+  if (isError) {
+    handleApiError(error as ApiError);
+  }
 
   return { adminAuth };
 }

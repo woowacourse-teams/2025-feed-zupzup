@@ -14,10 +14,6 @@ interface PostAdminSignupParams {
   onSuccess: (response: AdminAuthResponse) => void;
 }
 
-interface GetAdminAuthProps {
-  onSuccess: (response: AdminAuthResponse) => void;
-}
-
 type PostAdminLogoutResponse = ApiResponse<string>;
 export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 
@@ -59,8 +55,7 @@ export async function postAdminSignup({
   );
 }
 
-export async function getAdminAuth({ onSuccess }: GetAdminAuthProps) {
-  await apiClient.get('/admin/me', {
-    onSuccess,
-  });
+export async function getAdminAuth() {
+  const res = await apiClient.get<AdminAuthResponse>('/admin/me');
+  return res as AdminAuthResponse;
 }

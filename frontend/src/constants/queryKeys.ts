@@ -7,4 +7,5 @@ export const QUERY_KEYS = {
   organizationData: ['organizationData'],
   adminOrganizations: () => ['adminOrganizations'] as const,
   adminFeedbackStatistics: ['adminFeedbackStatistics'] as const,
+  adminAuth: ['adminAuth'] as const,
 };
