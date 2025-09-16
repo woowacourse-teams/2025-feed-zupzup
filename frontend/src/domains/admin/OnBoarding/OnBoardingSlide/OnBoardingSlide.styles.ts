@@ -16,13 +16,12 @@ export const contentContainer = css`
   flex-direction: column;
   gap: 16px;
   margin-bottom: 40px;
-  width: 90%;
 `;
 
-export const titleBadge = (theme: Theme) => css`
+export const titleBadge = css`
   display: inline-block;
   padding: 8px 16px;
-  background-color: ${theme.colors.gray[100]};
+  background-color: #f3f4f6;
   border-radius: 8px;
 `;
 

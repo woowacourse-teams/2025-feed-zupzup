@@ -25,7 +25,7 @@ export function OnboardingSlide({
   return (
     <div css={container}>
       <div css={contentContainer}>
-        <div css={titleBadge(theme)}>
+        <div css={titleBadge}>
           <span css={titleText(theme)}>{title}</span>
         </div>
         <h1 css={subtitleText(theme)}>{subtitle}</h1>
