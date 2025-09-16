@@ -1,0 +1,14 @@
+{
+  "name": "feed-zupzup-k6-tests",
+  "version": "1.0.0",
+  "description": "K6 load testing scripts for Feed ZupZup backend",
+  "scripts": {
+    "test:user-feedbacks": "K6_WEB_DASHBOARD=true k6 run scripts/get-user-feedbacks-load-test.js"
+  },
+  "keywords": [
+    "k6",
+    "load-testing",
+    "performance"
+  ],
+  "author": "Feed ZupZup Team"
+}
