@@ -1,6 +1,7 @@
 import Button from '@/components/@commons/Button/Button';
 import { floatingButton } from '@/domains/components/FloatingButton/FloatingButton.style';
 import { SerializedStyles } from '@emotion/react';
+import React from 'react';
 
 export interface Position {
   top?: string;
@@ -16,7 +17,7 @@ interface FloatingButtonProps {
   customCSS?: SerializedStyles | SerializedStyles[];
 }
 
-export default function FloatingButton({
+function FloatingButton({
   icon,
   onClick,
   inset,
@@ -28,3 +29,5 @@ export default function FloatingButton({
     </Button>
   );
 }
+
+export default React.memo(FloatingButton);

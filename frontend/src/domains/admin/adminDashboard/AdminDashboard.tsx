@@ -33,7 +33,6 @@ export default function AdminDashboard() {
   return (
     <section css={dashboardLayout}>
       <DashboardOverview />
-
       <FilterSection
         selectedFilter={selectedFilter}
         onFilterChange={handleFilterChange}
@@ -41,14 +40,12 @@ export default function AdminDashboard() {
         onSortChange={handleSortChange}
         isAdmin={true}
       />
-
       <AdminFeedbackList
         selectedFilter={selectedFilter}
         selectedSort={selectedSort}
         openFeedbackCompleteModal={openFeedbackCompleteModal}
         openFeedbackDeleteModal={openFeedbackDeleteModal}
       />
-
       {showButton && (
         <FloatingButton
           icon={<ArrowUpIcon />}
@@ -57,7 +54,6 @@ export default function AdminDashboard() {
           customCSS={goTopButton(theme)}
         />
       )}
-
       {modalState.type === 'delete' && (
         <ConfirmModal
           title='삭제하시겠습니까?'
@@ -67,7 +63,6 @@ export default function AdminDashboard() {
           onConfirm={handleDeleteFeedback}
         />
       )}
-
       {modalState.type === 'confirm' && (
         <AnswerModal
           isOpen={true}
