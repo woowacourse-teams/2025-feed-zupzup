@@ -43,7 +43,7 @@ export default function useCursorInfiniteScroll<
       }),
     getNextPageParam: (lastPage) =>
       lastPage?.hasNext ? lastPage?.nextCursorId : undefined,
-    staleTime: 2 * 60 * 1000,
+    staleTime: 0,
     gcTime: 5 * 60 * 1000,
   });
 
