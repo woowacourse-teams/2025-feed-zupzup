@@ -1,34 +1,31 @@
-import { useState, useEffect } from 'react';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { getQRCode } from '@/apis/qr.api';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import { QRCodeData } from '@/types/qr.types';
+import { useQuery } from '@tanstack/react-query';
+
+const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const useQRCode = () => {
-  const [data, setData] = useState<QRCodeData>({
-    imageUrl: '',
-    siteUrl: '',
-  });
-  const [loading, setLoading] = useState(false);
   const { showErrorModal } = useErrorModalContext();
   const { organizationId } = useOrganizationId();
 
-  useEffect(() => {
-    const fetchQRCode = async () => {
-      setLoading(true);
+  const {
+    data: QRcode,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.qrCode(organizationId)],
+    queryFn: () => getQRCode({ organizationId }),
+    staleTime: ONE_DAY,
+    gcTime: ONE_DAY,
+    enabled: !!organizationId,
+  });
 
-      try {
-        const result = await getQRCode({ organizationId });
-        setData(result.data);
-      } catch (err) {
-        showErrorModal(err, 'QR 코드 조회 실패');
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (isError) {
+    showErrorModal(error, 'QR 코드 조회 실패');
+  }
 
-    fetchQRCode();
-  }, []);
-
-  return { data, loading };
+  return { data: QRcode?.data, isLoading };
 };

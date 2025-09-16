@@ -10,9 +10,9 @@ interface QRModalProps {
 }
 
 export default function QRModal({ isOpen, onClose }: QRModalProps) {
-  const { data, loading } = useQRCode();
+  const { data, isLoading } = useQRCode();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <div>로딩 중...</div>
