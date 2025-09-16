@@ -2,9 +2,12 @@ import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+const isAnalyze = process.env.ANALYZE === 'true';
 
 export default {
   entry: './src/index.tsx',
@@ -76,5 +79,14 @@ export default {
         },
       ],
     }),
+    ...(isAnalyze
+      ? [
+          new BundleAnalyzerPlugin({
+            analyzerMode: 'server',
+            openAnalyzer: true,
+            reportFilename: 'bundle-report.html',
+          }),
+        ]
+      : []),
   ],
 };
