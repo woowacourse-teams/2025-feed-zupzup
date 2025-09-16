@@ -1,6 +1,6 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { apiClient, ApiError } from '@/apis/apiClient';
 import { ApiResponse } from '@/types/apiResponse';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useApiErrorHandler } from './useApiErrorHandler';
 
 const DEFAULT_SIZE = 10;

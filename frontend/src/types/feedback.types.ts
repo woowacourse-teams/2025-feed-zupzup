@@ -19,7 +19,7 @@ export interface FeedbackResponse<T> {
   nextCursorId: number;
 }
 
-interface SuggestionFeedbackData {
+export interface SuggestionFeedbackData {
   feedbackId: number;
   content: string;
   status: FeedbackStatusType;

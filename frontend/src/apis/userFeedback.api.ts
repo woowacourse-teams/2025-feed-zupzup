@@ -1,19 +1,19 @@
 import { apiClient } from '@/apis/apiClient';
 import { CategoryListType } from '@/constants/categoryList';
+import { ApiResponse } from '@/types/apiResponse';
 import {
   FeedbackType,
   SortType,
   SuggestionFeedback,
+  SuggestionFeedbackData,
 } from '@/types/feedback.types';
 
-interface UserFeedbackParams {
+export interface UserFeedbackParams {
   organizationId: string;
   userName: string;
   isSecret: boolean;
   content: string;
   category: CategoryListType | null;
-  onSuccess: (data: SuggestionFeedback) => void;
-  onError: () => void;
 }
 
 interface LikeParams {
@@ -35,19 +35,17 @@ export async function postUserFeedback({
   userName,
   content,
   category,
-  onSuccess,
-  onError,
 }: UserFeedbackParams) {
-  await apiClient.post<SuggestionFeedback, FeedbackRequestBody>(
-    `/organizations/${organizationId}/feedbacks`,
-    {
-      content,
-      isSecret,
-      userName,
-      category,
-    },
-    { onError, onSuccess }
-  );
+  const response = await apiClient.post<
+    ApiResponse<SuggestionFeedbackData>,
+    FeedbackRequestBody
+  >(`/organizations/${organizationId}/feedbacks`, {
+    content,
+    isSecret,
+    userName,
+    category,
+  });
+  return response;
 }
 
 export async function postLike({ feedbackId, onSuccess, onError }: LikeParams) {

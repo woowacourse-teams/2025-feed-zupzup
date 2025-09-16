@@ -93,12 +93,12 @@ export default function FeedbackPage({
 
       setIsModalOpen(true);
 
-      await submitFeedback({
-        content: feedback,
-        userName: username,
-        isSecret: isLocked,
-        category,
+      submitFeedback({
         organizationId,
+        content: feedback,
+        isSecret: isLocked,
+        userName: username,
+        category,
       });
     } catch (error) {
       setIsModalOpen(false);
