@@ -1,6 +1,6 @@
 import CheerButton from '@/domains/components/CheerButton/CheerButton';
 import DashboardPanel from '@/domains/components/DashboardPanel/DashboardPanel';
-import Toast from '@/domains/components/Toast/Toast';
+
 import {
   headerContainer,
   cheerButtonLayout,
@@ -15,12 +15,10 @@ import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
 import useCheerButton from '@/domains/hooks/useCheerButton';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import { useState } from 'react';
 
 export default function DashboardOverview() {
   const { organizationId } = useOrganizationId();
   const theme = useAppTheme();
-  const [toast, setToast] = useState<string | null>(null);
 
   const { groupName, totalCheeringCount } = useOrganizationName({
     organizationId,
@@ -56,15 +54,10 @@ export default function DashboardOverview() {
 
   const { handleCheerButton, animate, isDisabled } = useCheerButton({
     organizationId,
-    setToast,
   });
 
   return (
     <>
-      {toast && (
-        <Toast message={toast} onClose={() => setToast(null)} duration={2000} />
-      )}
-
       <div css={headerContainer}>
         <div css={headerText}>
           <p css={titleText(theme)}>{groupName}</p>

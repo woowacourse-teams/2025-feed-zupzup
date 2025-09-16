@@ -7,6 +7,8 @@ import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
 import { ModalProvider } from './contexts/useModal';
+import { useToast } from '@/contexts/useToast';
+import Toast from './domains/components/Toast/Toast';
 
 const gaId = process.env.GA_ID;
 
@@ -29,6 +31,7 @@ if (gaId) {
 function AppContent() {
   usePageTracking();
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
+  const { toastData, hideToast } = useToast();
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
 
   return (
@@ -45,6 +48,13 @@ function AppContent() {
             isOpen={isError}
             title={title}
             message={message}
+          />
+        )}
+        {toastData && (
+          <Toast
+            message={toastData.message}
+            onClose={hideToast}
+            duration={toastData.duration}
           />
         )}
       </div>
