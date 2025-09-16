@@ -17,4 +17,22 @@ public class FeedbackException extends DomainException {
             super(errorCode, message);
         }
     }
+
+    public static class DuplicateLikeException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.LIKE_ALREADY_EXISTS;
+
+        public DuplicateLikeException(final String message) {
+            super(errorCode, message);
+        }
+    }
+
+    public static class InvalidLikeException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.INVALID_LIKE_REQUEST;
+
+        public InvalidLikeException(final String message) {
+            super(errorCode, message);
+        }
+    }
 }

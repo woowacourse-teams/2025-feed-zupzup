@@ -38,7 +38,7 @@ class OrganizationControllerE2ETest extends E2EHelper {
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
                 .body("data.organizationName", equalTo(organization.getName().getValue()))
-                .body("data.totalCheeringCount", equalTo(organization.getCheeringCountValue()));
+                .body("data.totalCheeringCount", equalTo((int) organization.getCheeringCountValue()));
     }
 
     @Test
