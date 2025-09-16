@@ -23,7 +23,7 @@ export default function LikeButton({
 
   return (
     <Button onClick={handleLikeButton} css={likeButton}>
-      {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
+      {isLiked ? <FillHeartIcon color={'#FF9C9E'} /> : <EmptyHeartIcon />}
       {tempLikeCount}
     </Button>
   );

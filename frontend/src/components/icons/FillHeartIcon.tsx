@@ -1,4 +1,4 @@
-export default function FillHeartIcon() {
+export default function FillHeartIcon({ color }: { color: string }) {
   return (
     <svg
       width='20'
@@ -9,7 +9,7 @@ export default function FillHeartIcon() {
     >
       <path
         d='M17 12.2222C18.49 10.6 20 8.65555 20 6.11111C20 4.49034 19.4205 2.93596 18.3891 1.7899C17.3576 0.643848 15.9587 0 14.5 0C12.74 0 11.5 0.555556 10 2.22222C8.5 0.555556 7.26 0 5.5 0C4.04131 0 2.64236 0.643848 1.61091 1.7899C0.579463 2.93596 0 4.49034 0 6.11111C0 8.66667 1.5 10.6111 3 12.2222L10 20L17 12.2222Z'
-        fill='#FF9C9E'
+        fill={color}
       />
     </svg>
   );

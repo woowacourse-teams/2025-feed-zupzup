@@ -4,19 +4,39 @@ import { useState } from 'react';
 
 interface UseCheerButtonProps {
   organizationId: string;
+  setToast: (message: string | null) => void;
 }
 
 export default function useCheerButton({
   organizationId,
+  setToast,
 }: UseCheerButtonProps) {
   const [count, setCount] = useState(0);
   const [animate, setAnimate] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const handleCheerButton = () => {
+    if (isDisabled) {
+      return;
+    }
     setCount(count + 1);
     setAnimate(false);
     requestAnimationFrame(() => setAnimate(true));
-    debouncedSearch(count + 1);
+
+    const newCount = count + 1;
+
+    if (newCount === 100) {
+      setToast(
+        '응원은 한 번에 100개까지만 가능해요! 잠시 후 다시 시도해주세요.'
+      );
+      setIsDisabled(true);
+
+      setTimeout(() => {
+        setIsDisabled(false);
+      }, 5000);
+    }
+
+    debouncedSearch(newCount);
   };
 
   const debouncedSearch = useDebounce(
@@ -34,5 +54,6 @@ export default function useCheerButton({
     count,
     animate,
     handleCheerButton,
+    isDisabled,
   };
 }
