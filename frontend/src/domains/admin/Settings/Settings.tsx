@@ -30,8 +30,8 @@ export default function Settings() {
   return (
     <div css={settingsContainer}>
       <ProfileBox
-        name={adminAuth?.adminName || '관리자'}
-        id={adminAuth?.loginId || 'admin'}
+        name={adminAuth?.data.adminName || '관리자'}
+        id={adminAuth?.data.loginId || 'admin'}
       />
 
       <SettingListBox
