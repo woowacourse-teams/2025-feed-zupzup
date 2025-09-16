@@ -8,7 +8,13 @@ import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-export default function useAdminOrganization() {
+interface UseAdminOrganizationParams {
+  adminName: string;
+}
+
+export default function useAdminOrganization({
+  adminName,
+}: UseAdminOrganizationParams) {
   const { handleApiError } = useApiErrorHandler();
 
   const {
@@ -17,7 +23,7 @@ export default function useAdminOrganization() {
     isError,
     error,
   } = useQuery<AdminOrganizationType[]>({
-    queryKey: QUERY_KEYS.adminOrganizations(),
+    queryKey: QUERY_KEYS.adminOrganizations(adminName),
     queryFn: async () => {
       const res = await getAdminOrganization();
       return res.data;
