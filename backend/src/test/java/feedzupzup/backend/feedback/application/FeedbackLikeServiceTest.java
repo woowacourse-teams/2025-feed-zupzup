@@ -20,7 +20,6 @@ import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import jakarta.servlet.http.Cookie;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -65,9 +64,11 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             // given
             final Long feedbackId = createFeedback();
             final UUID cookieValue = createAndGetCookieValue();
+
+            // when
             feedbackLikeService.like(feedbackId, cookieValue);
 
-            // when & then
+            // then
             assertThatThrownBy(() -> feedbackLikeService.like(feedbackId, cookieValue))
                     .isInstanceOf(DuplicateLikeException.class);
         }
