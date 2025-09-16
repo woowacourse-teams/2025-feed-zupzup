@@ -5,10 +5,11 @@ import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBo
 import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { SerializedStyles } from '@emotion/react';
 import { secretText } from './UserFeedbackBox.styles';
 import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
 import { CategoryListType } from '@/constants/categoryList';
+import React from 'react';
+import { highlightStyle } from '../../UserDashboard.style';
 
 interface UserFeedbackBox {
   userName: string;
@@ -19,13 +20,13 @@ interface UserFeedbackBox {
   postedAt: string;
   feedbackId: number;
   likeCount: number;
-  customCSS: (SerializedStyles | null)[];
+  isHighlighted: boolean;
   isMyFeedback: boolean;
   comment: null | string;
   category: CategoryListType;
 }
 
-export default function UserFeedbackBox({
+function UserFeedbackBox({
   userName,
   type,
   content,
@@ -34,7 +35,7 @@ export default function UserFeedbackBox({
   postedAt,
   feedbackId,
   likeCount,
-  customCSS,
+  isHighlighted,
   isMyFeedback = false,
   comment,
   category,
@@ -42,7 +43,10 @@ export default function UserFeedbackBox({
   const theme = useAppTheme();
 
   return (
-    <FeedbackBoxBackGround type={type} customCSS={customCSS}>
+    <FeedbackBoxBackGround
+      type={type}
+      customCSS={[isHighlighted ? highlightStyle : null]}
+    >
       <FeedbackBoxHeader
         userName={userName + (isMyFeedback ? ' (나)' : '')}
         type={type}
@@ -76,3 +80,5 @@ export default function UserFeedbackBox({
     </FeedbackBoxBackGround>
   );
 }
+
+export default React.memo(UserFeedbackBox);
