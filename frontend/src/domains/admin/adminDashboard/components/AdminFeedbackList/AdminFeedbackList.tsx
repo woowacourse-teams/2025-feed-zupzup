@@ -11,7 +11,7 @@ import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import useGetFeedback from '../../hooks/useGetFeedback';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -28,12 +28,16 @@ function AdminFeedbackList({
 }: AdminFeedbackListProps) {
   const { organizationId } = useOrganizationId();
 
-  const apiUrl = createFeedbacksUrl({
-    organizationId,
-    sort: selectedSort,
-    filter: selectedFilter,
-    isAdmin: true,
-  });
+  const apiUrl = useMemo(
+    () =>
+      createFeedbacksUrl({
+        organizationId,
+        sort: selectedSort,
+        filter: selectedFilter,
+        isAdmin: true,
+      }),
+    [organizationId, selectedSort, selectedFilter]
+  );
 
   const {
     items: feedbacks,
