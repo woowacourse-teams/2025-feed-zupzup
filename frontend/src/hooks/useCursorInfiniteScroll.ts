@@ -43,6 +43,8 @@ export default function useCursorInfiniteScroll<
       }),
     getNextPageParam: (lastPage) =>
       lastPage?.hasNext ? lastPage?.nextCursorId : undefined,
+    staleTime: 2 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 
   const items = query.data?.pages.flatMap((p) => p[key] as T[]) ?? [];
