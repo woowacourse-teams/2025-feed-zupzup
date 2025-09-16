@@ -7,11 +7,10 @@ export interface PostAdminLoginParams {
   password: string;
 }
 
-interface PostAdminSignupParams {
+export interface PostAdminSignupParams {
   loginId: string;
   password: string;
   adminName: string;
-  onSuccess: (response: AdminAuthResponse) => void;
 }
 
 type PostAdminLogoutResponse = ApiResponse<string>;
@@ -30,9 +29,11 @@ export async function postAdminLogin({
   );
 }
 
-export async function postAdminLogout(): Promise<PostAdminLogoutResponse> {
-  const response = await apiClient.post('/admin/logout', {});
-
+export async function postAdminLogout() {
+  const response = await apiClient.post<PostAdminLogoutResponse, object>(
+    '/admin/logout',
+    {}
+  );
   return response as PostAdminLogoutResponse;
 }
 
@@ -40,22 +41,19 @@ export async function postAdminSignup({
   loginId,
   password,
   adminName,
-  onSuccess,
 }: PostAdminSignupParams) {
-  await apiClient.post(
-    '/admin/sign-up',
-    {
-      loginId,
-      password,
-      adminName,
-    },
-    {
-      onSuccess,
-    }
-  );
+  const response = await apiClient.post<
+    AdminAuthResponse,
+    PostAdminSignupParams
+  >('/admin/sign-up', {
+    loginId,
+    password,
+    adminName,
+  });
+  return response as AdminAuthResponse;
 }
 
 export async function getAdminAuth() {
-  const res = await apiClient.get<AdminAuthResponse>('/admin/me');
-  return res as AdminAuthResponse;
+  const response = await apiClient.get<AdminAuthResponse>('/admin/me');
+  return response as AdminAuthResponse;
 }
