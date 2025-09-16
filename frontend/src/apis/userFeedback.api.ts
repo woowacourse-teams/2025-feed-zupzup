@@ -75,10 +75,16 @@ export async function deleteLike({
   return response;
 }
 
-interface GetMyFeedbacksParams {
+export interface GetMyFeedbacksParams {
   organizationId: string;
   feedbackIds?: number[];
   orderBy?: SortType;
+}
+
+export interface GetMyFeedbacksResponse {
+  data: {
+    feedbacks: FeedbackType[];
+  };
 }
 
 export async function getMyFeedbacks({
@@ -99,8 +105,7 @@ export async function getMyFeedbacks({
   const queryString = queryParams.toString();
   const url = `/organizations/${organizationId}/feedbacks/my${queryString ? `?${queryString}` : ''}`;
 
-  const response = await apiClient.get<{
-    data: { feedbacks: FeedbackType[] };
-  }>(url);
-  return response;
+  const response = await apiClient.get<GetMyFeedbacksResponse>(url);
+
+  return response as GetMyFeedbacksResponse;
 }
