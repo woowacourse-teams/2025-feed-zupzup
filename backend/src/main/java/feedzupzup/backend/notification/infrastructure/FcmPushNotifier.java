@@ -3,14 +3,12 @@ package feedzupzup.backend.notification.infrastructure;
 import com.google.firebase.messaging.BatchResponse;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.MulticastMessage;
-import com.google.firebase.messaging.Notification;
 import feedzupzup.backend.notification.application.PushNotifier;
+import feedzupzup.backend.notification.domain.Notification;
 import feedzupzup.backend.notification.domain.NotificationPayload;
-import feedzupzup.backend.notification.domain.NotificationToken;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import feedzupzup.backend.notification.domain.NotificationRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class FcmPushNotifier implements PushNotifier {
 
-    private final NotificationTokenRepository notificationTokenRepository;
+    private final NotificationRepository notificationRepository;
     private final FirebaseMessaging firebaseMessaging;
     private final FcmErrorHandler fcmErrorHandler;
 
@@ -31,22 +29,18 @@ public class FcmPushNotifier implements PushNotifier {
             return;
         }
 
-        // 첫 번째 payload에서 title과 organizationName 가져오기 (모두 동일하다고 가정)
         String title = payloads.get(0).title();
         String organizationName = payloads.get(0).organizationName();
         String message = String.format("%s에 피드백이 등록되었습니다.", organizationName);
-        
-        // adminId로 토큰 조회 및 유효한 payload만 필터링
-        List<NotificationPayload> validPayloads = new ArrayList<>();
+
         List<String> tokens = new ArrayList<>();
-        
+
         for (NotificationPayload payload : payloads) {
             log.info("adminId: {}", payload.adminId());
-            Optional<NotificationToken> tokenOpt = notificationTokenRepository.findByAdmin_Id(payload.adminId());
-            if (tokenOpt.isPresent()) {
-                log.info("tokenOpt: {}", tokenOpt.get().getRegistrationToken());
-                validPayloads.add(payload);
-                tokens.add(tokenOpt.get().getRegistrationToken());
+            List<Notification> userTokens = notificationRepository.findByAdminId(payload.adminId());
+            for (Notification token : userTokens) {
+                log.info("tokenOpt: {}", token.getToken());
+                tokens.add(token.getToken());
             }
         }
 
@@ -56,20 +50,18 @@ public class FcmPushNotifier implements PushNotifier {
         }
 
         log.info("배치 FCM 전송 시작: {}개 토큰", tokens.size());
-        
-        // FCM 500개 제한으로 청크 분할
+
         int chunkSize = 500;
         for (int i = 0; i < tokens.size(); i += chunkSize) {
             List<String> tokenChunk = tokens.subList(i, Math.min(i + chunkSize, tokens.size()));
-            List<NotificationPayload> payloadChunk = validPayloads.subList(i, Math.min(i + chunkSize, validPayloads.size()));
-            sendBatch(tokenChunk, payloadChunk, title, message);
+            sendBatch(tokenChunk, title, message);
         }
     }
 
-    private void sendBatch(List<String> tokens, List<NotificationPayload> payloads, String title, String message) {
+    private void sendBatch(List<String> tokens, String title, String message) {
         try {
             MulticastMessage multicastMessage = MulticastMessage.builder()
-                    .setNotification(Notification.builder()
+                    .setNotification(com.google.firebase.messaging.Notification.builder()
                             .setTitle(title)
                             .setBody(message)
                             .build())
@@ -78,12 +70,8 @@ public class FcmPushNotifier implements PushNotifier {
 
             BatchResponse response = firebaseMessaging.sendEachForMulticast(multicastMessage);
 
-            // 실패 처리
             if (response.getFailureCount() > 0) {
-                List<Long> adminIds = payloads.stream()
-                        .map(NotificationPayload::adminId)
-                        .toList();
-                fcmErrorHandler.handleFailures(response, adminIds);
+                fcmErrorHandler.handleFailures(response, tokens);
             }
 
         } catch (Exception e) {

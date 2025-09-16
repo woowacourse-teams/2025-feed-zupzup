@@ -1,0 +1,1 @@
+ALTER TABLE notification_token DROP INDEX uk_notification_token_admin_id;
