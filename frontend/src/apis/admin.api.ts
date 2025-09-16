@@ -2,10 +2,9 @@ import { apiClient } from '@/apis/apiClient';
 import { AdminAuthData } from '@/types/adminAuth';
 import { ApiResponse } from '@/types/apiResponse';
 
-interface PostAdminLoginParams {
+export interface PostAdminLoginParams {
   loginId: string;
   password: string;
-  onSuccess: (response: AdminAuthResponse) => void;
 }
 
 interface PostAdminSignupParams {
@@ -25,16 +24,12 @@ export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 export async function postAdminLogin({
   loginId,
   password,
-  onSuccess,
 }: PostAdminLoginParams) {
-  await apiClient.post(
+  return await apiClient.post<AdminAuthResponse, PostAdminLoginParams>(
     '/admin/login',
     {
       loginId,
       password,
-    },
-    {
-      onSuccess,
     }
   );
 }
