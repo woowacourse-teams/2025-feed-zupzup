@@ -23,6 +23,6 @@ export default function useDeleteOrganization() {
 
   return {
     deleteOrganization: mutate.mutateAsync,
-    isLoading: mutate.isPending,
+    isDeleting: mutate.isPending,
   };
 }
