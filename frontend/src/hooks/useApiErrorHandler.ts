@@ -14,6 +14,8 @@ export function useApiErrorHandler() {
       showErrorModal(error, '로그인 권한 없음');
     } else if (error.status === 403) {
       showErrorModal(error, '권한없음');
+    } else {
+      showErrorModal(error, '에러');
     }
   };
 
