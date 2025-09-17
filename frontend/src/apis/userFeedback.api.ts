@@ -4,7 +4,6 @@ import { ApiResponse } from '@/types/apiResponse';
 import {
   FeedbackType,
   SortType,
-  SuggestionFeedback,
   SuggestionFeedbackData,
 } from '@/types/feedback.types';
 
@@ -18,8 +17,6 @@ export interface UserFeedbackParams {
 
 interface LikeParams {
   feedbackId: number;
-  onSuccess: (data: SuggestionFeedback) => void;
-  onError: () => void;
 }
 
 interface FeedbackRequestBody {
@@ -48,30 +45,12 @@ export async function postUserFeedback({
   return response;
 }
 
-export async function postLike({ feedbackId, onSuccess, onError }: LikeParams) {
-  await apiClient.patch(
-    `/feedbacks/${feedbackId}/like`,
-    {},
-    {
-      onSuccess,
-      onError,
-    }
-  );
+export async function postLike({ feedbackId }: LikeParams) {
+  await apiClient.patch(`/feedbacks/${feedbackId}/like`, {});
 }
 
-export async function deleteLike({
-  feedbackId,
-  onSuccess,
-  onError,
-}: LikeParams) {
-  const response = await apiClient.patch(
-    `/feedbacks/${feedbackId}/unlike`,
-    {},
-    {
-      onSuccess,
-      onError,
-    }
-  );
+export async function deleteLike({ feedbackId }: LikeParams) {
+  const response = await apiClient.patch(`/feedbacks/${feedbackId}/unlike`, {});
   return response;
 }
 
