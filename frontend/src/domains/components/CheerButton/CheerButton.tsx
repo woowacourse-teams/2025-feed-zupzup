@@ -33,8 +33,8 @@ export default function CheerButton({
       css={cheerButtonStyle}
       disabled={disabled}
     >
-      <span css={[iconWrapperStyle, animate && clickedStyle]}>
-        <FillHeartIcon color={disabled ? '#d3d3d3' : '#FF9C9E'} />
+      <span css={[iconWrapperStyle(theme, disabled), animate && clickedStyle]}>
+        <FillHeartIcon />
       </span>
       <p css={textStyle(theme)}>응원 {totalCheeringCount + accCount}</p>
     </Button>
