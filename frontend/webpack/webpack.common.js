@@ -29,6 +29,7 @@ export default {
           loader: 'babel-loader',
           options: {
             presets: [
+              '@babel/preset-typescript',
               [
                 '@babel/preset-react',
                 {
@@ -42,7 +43,7 @@ export default {
         },
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        test: /\.(png|svg|jpg|jpeg|gif|webp)$/i,
         type: 'asset/resource',
         generator: {
           filename: 'images/[name].[hash][ext]',
