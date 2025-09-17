@@ -1,6 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import useNavigation from '@/domains/hooks/useNavigation';
-import { css } from '@emotion/react';
+import { buttonContainer } from './ActionButtons.styles';
 
 export default function ActionButtons() {
   const { goPath } = useNavigation();
@@ -15,9 +15,3 @@ export default function ActionButtons() {
     </div>
   );
 }
-
-export const buttonContainer = css`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`;
