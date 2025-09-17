@@ -33,7 +33,9 @@ export const useNotificationSettingsPage = () => {
       return;
     }
 
-    updateMutation.mutate({ enabled });
+    setTimeout(() => {
+      updateMutation.mutate({ enabled });
+    }, 250);
   };
 
   return {
