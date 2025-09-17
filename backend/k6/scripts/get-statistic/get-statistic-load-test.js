@@ -1,11 +1,7 @@
 import http from 'k6/http';
 import {check, sleep} from 'k6';
 import {Rate} from 'k6/metrics';
-import {
-  ORGANIZATION_UUIDS,
-  PROCESS_STATUS,
-  SORT_OPTIONS
-} from '../../utils/common.js';
+import {ORGANIZATION_UUIDS} from '../../utils/common.js';
 import {BASE_URL} from '../../utils/secret.js';
 
 // 에러율 추적을 위한 커스텀 메트릭
@@ -28,24 +24,7 @@ export default function () {
   const orgUuid = ORGANIZATION_UUIDS[Math.floor(
       Math.random() * ORGANIZATION_UUIDS.length)];
 
-  // 랜덤 파라미터 생성
-  const size = 10;
-  const sortBy = SORT_OPTIONS[Math.floor(Math.random() * SORT_OPTIONS.length)];
-  const status = Math.random() > 0.5 ? PROCESS_STATUS[Math.floor(
-      Math.random() * PROCESS_STATUS.length)] : '';
-  const cursorId = Math.random() > 0.7 ? Math.floor(Math.random() * 4000000) + 1
-      : '';
-
-  // 쿼리 파라미터 구성
-  let queryParams = `size=${size}&sortBy=${sortBy}`;
-  if (status) {
-    queryParams += `&status=${status}`;
-  }
-  if (cursorId) {
-    queryParams += `&cursorId=${cursorId}`;
-  }
-
-  const url = `${BASE_URL}/organizations/${orgUuid}/feedbacks?${queryParams}`;
+  const url = `${BASE_URL}/organizations/${orgUuid}/statistic`;
 
   // API 요청
   const response = http.get(url, {
@@ -78,7 +57,19 @@ export default function () {
     'response has data': (r) => {
       try {
         const body = JSON.parse(r.body);
-        return body.data && body.data.hasOwnProperty('feedbacks');
+        return body.data && body.data.hasOwnProperty('totalCount');
+      } catch {
+        return false;
+      }
+    },
+    'response has statistics fields': (r) => {
+      try {
+        const body = JSON.parse(r.body);
+        const data = body.data;
+        return data &&
+            data.hasOwnProperty('totalCount') &&
+            data.hasOwnProperty('waitingCount') &&
+            data.hasOwnProperty('confirmedCount');
       } catch {
         return false;
       }
