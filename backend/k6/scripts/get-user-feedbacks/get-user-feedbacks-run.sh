@@ -1,13 +1,9 @@
 #!/bin/bash
 
 # InfluxDB 환경 변수 설정
-source <(node -e "
-const { INFLUXDB_URL, INFLUXDB_DB, INFLUXDB_USERNAME, INFLUXDB_PASSWORD } = require('./utils/secret.js');
-console.log(\`export INFLUXDB_URL=\${INFLUXDB_URL}\`);
-console.log(\`export INFLUXDB_DB=\${INFLUXDB_DB}\`);
-console.log(\`export INFLUXDB_USERNAME=\${INFLUXDB_USERNAME}\`);
-console.log(\`export INFLUXDB_PASSWORD=\${INFLUXDB_PASSWORD}\`);
-")
+if [ -f .env ]; then
+  export $(cat .env | xargs)
+fi
 
 K6_WEB_DASHBOARD=true k6 run \
   --out influxdb=${INFLUXDB_URL} \
