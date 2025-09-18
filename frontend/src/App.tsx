@@ -7,7 +7,6 @@ import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
 import { ModalProvider } from './contexts/useModal';
-
 const gaId = process.env.GA_ID;
 
 if (gaId) {

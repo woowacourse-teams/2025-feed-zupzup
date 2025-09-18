@@ -12,13 +12,13 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
-
 import useCheerButton from '@/domains/hooks/useCheerButton';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 export default function DashboardOverview() {
   const { organizationId } = useOrganizationId();
   const theme = useAppTheme();
+
   const { groupName, totalCheeringCount } = useOrganizationName({
     organizationId,
   });
@@ -50,7 +50,8 @@ export default function DashboardOverview() {
       color: theme.colors.green[100],
     },
   ];
-  const { handleCheerButton, animate } = useCheerButton({
+
+  const { handleCheerButton, animate, isDisabled } = useCheerButton({
     organizationId,
   });
 
@@ -67,6 +68,7 @@ export default function DashboardOverview() {
               totalCheeringCount={totalCheeringCount}
               onClick={handleCheerButton}
               animate={animate}
+              disabled={isDisabled}
             />
           </div>
         </div>
