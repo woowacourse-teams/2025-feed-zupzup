@@ -1,6 +1,8 @@
+import { ApiError } from '@/apis/apiClient';
 import { deleteLike, postLike } from '@/apis/userFeedback.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
+import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
 interface useLikeButtonManagerProps {
@@ -34,40 +36,42 @@ export default function useLikeButtonManager({
     setLocalStorage<number[]>('feedbackIds', filteredFeedbackIds);
   };
 
+  const { mutate: likeMutation } = useMutation({
+    mutationFn: postLike,
+    onSuccess: () => {
+      addLikeFeedbackIds(feedbackId || 0);
+      setIsLiked(true);
+    },
+    onError: (e: ApiError) => {
+      setIsLiked(false);
+      setTempLikeCount((prev) => prev - 1);
+      showErrorModal(e, '에러');
+    },
+  });
+
+  const { mutate: deleteLikeMutation } = useMutation({
+    mutationFn: deleteLike,
+    onSuccess: () => {
+      removeLikeFeedbackIds(feedbackId || 0);
+      setIsLiked(false);
+    },
+    onError: (e: ApiError) => {
+      setIsLiked(false);
+      setTempLikeCount((prev) => prev + 1);
+      showErrorModal(e, '에러');
+    },
+  });
+
   const handleLikeButton = async () => {
     if (like === null || like === undefined) return;
     if (feedbackId === undefined) return;
 
     if (!isLiked) {
       setTempLikeCount((prev) => prev + 1);
-      setIsLiked(true);
-      try {
-        await postLike({
-          feedbackId,
-          onSuccess: () => addLikeFeedbackIds(feedbackId),
-          onError: () => {
-            setIsLiked(false);
-            setTempLikeCount((prev) => prev - 1);
-          },
-        });
-      } catch (e) {
-        showErrorModal(e, '에러');
-      }
+      likeMutation({ feedbackId });
     } else {
       setTempLikeCount((prev) => prev - 1);
-      setIsLiked(false);
-      try {
-        await deleteLike({
-          feedbackId,
-          onSuccess: () => removeLikeFeedbackIds(feedbackId),
-          onError: () => {
-            setIsLiked(false);
-            setTempLikeCount((prev) => prev + 1);
-          },
-        });
-      } catch (e) {
-        showErrorModal(e, '에러');
-      }
+      deleteLikeMutation({ feedbackId });
     }
   };
 

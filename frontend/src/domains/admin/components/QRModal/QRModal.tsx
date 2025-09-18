@@ -10,9 +10,9 @@ interface QRModalProps {
 }
 
 export default function QRModal({ isOpen, onClose }: QRModalProps) {
-  const { data, loading } = useQRCode();
+  const { data, isLoading } = useQRCode();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Modal isOpen={isOpen} onClose={onClose}>
         <div>로딩 중...</div>
@@ -22,8 +22,8 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <QRImageSection url={data?.imageUrl} />
-      <QRUrlSection url={data?.siteUrl} />
+      <QRImageSection url={data?.imageUrl || ''} />
+      <QRUrlSection url={data?.siteUrl || ''} />
       <BasicButton
         variant='secondary'
         padding={'8px 16px'}

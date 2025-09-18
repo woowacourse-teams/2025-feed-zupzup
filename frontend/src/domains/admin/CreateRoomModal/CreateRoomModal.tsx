@@ -15,6 +15,8 @@ import {
 } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
 import useCreateOrganization from '@/domains/admin/CreateRoomModal/hooks/useCreateOrganization';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { AdminAuthData } from '@/types/adminAuth';
+import { getLocalStorage } from '@/utils/localStorage';
 import { useMemo, useState } from 'react';
 
 interface CreateRoomModalProps {
@@ -32,8 +34,12 @@ export default function CreateRoomModal({
   const { selectedCategories, handleCategoryClick, handleCategoryTagClick } =
     useCategorySelection();
 
+  const adminName =
+    getLocalStorage<AdminAuthData>('auth')?.adminName || '관리자1';
+
   const { createRoom, isPending } = useCreateOrganization({
     onClose,
+    name: adminName,
   });
 
   const isDisabled = useMemo(() => {
