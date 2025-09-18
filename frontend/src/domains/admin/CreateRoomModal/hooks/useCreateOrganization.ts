@@ -6,10 +6,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface UseCreateOrganizationParams {
   onClose: () => void;
+  name: string;
 }
 
 export default function useCreateOrganization({
   onClose,
+  name,
 }: UseCreateOrganizationParams) {
   const { handleApiError } = useApiErrorHandler();
   const queryClient = useQueryClient();
@@ -18,7 +20,7 @@ export default function useCreateOrganization({
     mutationFn: postAdminOrganization,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: QUERY_KEYS.adminOrganizations(),
+        queryKey: QUERY_KEYS.adminOrganizations(name),
       });
     },
     onError: (error: ApiError) => {

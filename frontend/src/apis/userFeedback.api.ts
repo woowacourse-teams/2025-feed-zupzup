@@ -1,25 +1,22 @@
 import { apiClient } from '@/apis/apiClient';
 import { CategoryListType } from '@/constants/categoryList';
+import { ApiResponse } from '@/types/apiResponse';
 import {
   FeedbackType,
   SortType,
-  SuggestionFeedback,
+  SuggestionFeedbackData,
 } from '@/types/feedback.types';
 
-interface UserFeedbackParams {
+export interface UserFeedbackParams {
   organizationId: string;
   userName: string;
   isSecret: boolean;
   content: string;
   category: CategoryListType | null;
-  onSuccess: (data: SuggestionFeedback) => void;
-  onError: () => void;
 }
 
 interface LikeParams {
   feedbackId: number;
-  onSuccess: (data: SuggestionFeedback) => void;
-  onError: () => void;
 }
 
 interface FeedbackRequestBody {
@@ -35,52 +32,38 @@ export async function postUserFeedback({
   userName,
   content,
   category,
-  onSuccess,
-  onError,
 }: UserFeedbackParams) {
-  await apiClient.post<SuggestionFeedback, FeedbackRequestBody>(
-    `/organizations/${organizationId}/feedbacks`,
-    {
-      content,
-      isSecret,
-      userName,
-      category,
-    },
-    { onError, onSuccess }
-  );
-}
-
-export async function postLike({ feedbackId, onSuccess, onError }: LikeParams) {
-  await apiClient.patch(
-    `/feedbacks/${feedbackId}/like`,
-    {},
-    {
-      onSuccess,
-      onError,
-    }
-  );
-}
-
-export async function deleteLike({
-  feedbackId,
-  onSuccess,
-  onError,
-}: LikeParams) {
-  const response = await apiClient.patch(
-    `/feedbacks/${feedbackId}/unlike`,
-    {},
-    {
-      onSuccess,
-      onError,
-    }
-  );
+  const response = await apiClient.post<
+    ApiResponse<SuggestionFeedbackData>,
+    FeedbackRequestBody
+  >(`/organizations/${organizationId}/feedbacks`, {
+    content,
+    isSecret,
+    userName,
+    category,
+  });
   return response;
 }
 
-interface GetMyFeedbacksParams {
+export async function postLike({ feedbackId }: LikeParams) {
+  await apiClient.patch(`/feedbacks/${feedbackId}/like`, {});
+}
+
+export async function deleteLike({ feedbackId }: LikeParams) {
+  const response = await apiClient.patch(`/feedbacks/${feedbackId}/unlike`, {});
+  return response;
+}
+
+export interface GetMyFeedbacksParams {
   organizationId: string;
   feedbackIds?: number[];
   orderBy?: SortType;
+}
+
+export interface GetMyFeedbacksResponse {
+  data: {
+    feedbacks: FeedbackType[];
+  };
 }
 
 export async function getMyFeedbacks({
@@ -101,8 +84,7 @@ export async function getMyFeedbacks({
   const queryString = queryParams.toString();
   const url = `/organizations/${organizationId}/feedbacks/my${queryString ? `?${queryString}` : ''}`;
 
-  const response = await apiClient.get<{
-    data: { feedbacks: FeedbackType[] };
-  }>(url);
-  return response;
+  const response = await apiClient.get<GetMyFeedbacksResponse>(url);
+
+  return response as GetMyFeedbacksResponse;
 }

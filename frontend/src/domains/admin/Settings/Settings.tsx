@@ -31,8 +31,8 @@ export default function Settings() {
     <div css={settingsContainer}>
       <ProfileBox
         isLoading={isAdminAuthLoading}
-        name={adminAuth?.adminName || ''}
-        id={adminAuth?.loginId || ''}
+        name={adminAuth?.data.adminName || ''}
+        id={adminAuth?.data.loginId || ''}
       />
 
       <SettingListBox

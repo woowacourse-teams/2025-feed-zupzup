@@ -1,8 +1,12 @@
+import { Analytics, userDashboardEvents } from '@/analytics';
+import { ArrowIcon } from '@/components/icons/arrowIcon';
 import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
+import useNavigation from '@/domains/hooks/useNavigation';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import useScrollUp from '@/domains/user/userDashboard/hooks/useScrollUp';
 import {
   dashboardLayout,
@@ -11,10 +15,6 @@ import {
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import UserFeedbackList from './components/UserFeedbackList/UserFeedbackList';
-import { ArrowIcon } from '@/components/icons/arrowIcon';
-import useNavigation from '@/domains/hooks/useNavigation';
-import { Analytics, userDashboardEvents } from '@/analytics';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 export default function UserDashboard() {
   const theme = useAppTheme();

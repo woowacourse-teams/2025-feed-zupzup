@@ -3,7 +3,17 @@ export const QUERY_KEYS = {
   infiniteFeedbacks: ['infinity', 'feedbacks'],
   notificationSettings: () => ['notificationSettings'] as const,
   qrImageDownload: ['qrImageDownload'],
+  qrCode: (id: string) => ['qrCode', id],
   organizationData: ['organizationData'],
-  adminOrganizations: () => ['adminOrganizations'] as const,
-  adminFeedbackStatistics: ['adminFeedbackStatistics'] as const,
+  adminOrganizations: (name: string) => ['adminOrganizations', name] as const,
+  adminFeedbackStatistics: (name: string) =>
+    ['adminFeedbackStatistics', name] as const,
+  adminAuth: ['adminAuth'] as const,
+  myFeedbacks: (
+    organizationId: string,
+    feedbackIds: number[],
+    selectedSort: string
+  ) => ['myFeedbacks', organizationId, feedbackIds, selectedSort] as const,
+  infiniteList: (key: string, url: string, size: number) =>
+    ['infinity', key, url, size] as const,
 };

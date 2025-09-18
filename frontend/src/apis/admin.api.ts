@@ -2,21 +2,15 @@ import { apiClient } from '@/apis/apiClient';
 import { AdminAuthData } from '@/types/adminAuth';
 import { ApiResponse } from '@/types/apiResponse';
 
-interface PostAdminLoginParams {
+export interface PostAdminLoginParams {
   loginId: string;
   password: string;
-  onSuccess: (response: AdminAuthResponse) => void;
 }
 
-interface PostAdminSignupParams {
+export interface PostAdminSignupParams {
   loginId: string;
   password: string;
   adminName: string;
-  onSuccess: (response: AdminAuthResponse) => void;
-}
-
-interface GetAdminAuthProps {
-  onSuccess: (response: AdminAuthResponse) => void;
 }
 
 type PostAdminLogoutResponse = ApiResponse<string>;
@@ -25,23 +19,21 @@ export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 export async function postAdminLogin({
   loginId,
   password,
-  onSuccess,
 }: PostAdminLoginParams) {
-  await apiClient.post(
+  return await apiClient.post<AdminAuthResponse, PostAdminLoginParams>(
     '/admin/login',
     {
       loginId,
       password,
-    },
-    {
-      onSuccess,
     }
   );
 }
 
-export async function postAdminLogout(): Promise<PostAdminLogoutResponse> {
-  const response = await apiClient.post('/admin/logout', {});
-
+export async function postAdminLogout() {
+  const response = await apiClient.post<PostAdminLogoutResponse, object>(
+    '/admin/logout',
+    {}
+  );
   return response as PostAdminLogoutResponse;
 }
 
@@ -49,23 +41,19 @@ export async function postAdminSignup({
   loginId,
   password,
   adminName,
-  onSuccess,
 }: PostAdminSignupParams) {
-  await apiClient.post(
-    '/admin/sign-up',
-    {
-      loginId,
-      password,
-      adminName,
-    },
-    {
-      onSuccess,
-    }
-  );
+  const response = await apiClient.post<
+    AdminAuthResponse,
+    PostAdminSignupParams
+  >('/admin/sign-up', {
+    loginId,
+    password,
+    adminName,
+  });
+  return response as AdminAuthResponse;
 }
 
-export async function getAdminAuth({ onSuccess }: GetAdminAuthProps) {
-  await apiClient.get('/admin/me', {
-    onSuccess,
-  });
+export async function getAdminAuth() {
+  const response = await apiClient.get<AdminAuthResponse>('/admin/me');
+  return response as AdminAuthResponse;
 }
