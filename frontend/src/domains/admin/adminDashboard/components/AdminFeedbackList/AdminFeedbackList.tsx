@@ -11,7 +11,7 @@ import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import useGetFeedback from '../../hooks/useGetFeedback';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import React, { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -20,7 +20,7 @@ interface AdminFeedbackListProps {
   openFeedbackDeleteModal: (feedbackId: number) => void;
 }
 
-function AdminFeedbackList({
+export default memo(function AdminFeedbackList({
   selectedFilter,
   selectedSort,
   openFeedbackCompleteModal,
@@ -88,6 +88,4 @@ function AdminFeedbackList({
       </div>
     </div>
   );
-}
-
-export default React.memo(AdminFeedbackList);
+});

@@ -13,7 +13,7 @@ import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
 import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
-import React, { useCallback, useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { getLocalStorage } from '@/utils/localStorage';
 
 interface UserFeedbackListProps {
@@ -21,7 +21,7 @@ interface UserFeedbackListProps {
   selectedSort: SortType;
 }
 
-function UserFeedbackList({
+export default memo(function UserFeedbackList({
   selectedFilter,
   selectedSort,
 }: UserFeedbackListProps) {
@@ -109,6 +109,4 @@ function UserFeedbackList({
       </div>
     </>
   );
-}
-
-export default React.memo(UserFeedbackList);
+});

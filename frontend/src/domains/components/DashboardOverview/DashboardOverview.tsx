@@ -1,14 +1,12 @@
 import OverviewHeader from './OverviewHeader/OverviewHeader';
 import DashboardPanelContent from './DashboardPanelContent/DashboardPanelContent';
-import React from 'react';
+import { memo } from 'react';
 
-function DashboardOverview() {
+export default memo(function DashboardOverview() {
   return (
     <>
       <OverviewHeader />
       <DashboardPanelContent />
     </>
   );
-}
-
-export default React.memo(DashboardOverview);
+});

@@ -10,7 +10,7 @@ import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { FeedbackType } from '@/types/feedback.types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
-import React from 'react';
+import { memo } from 'react';
 
 interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
@@ -19,7 +19,7 @@ interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   onDelete: (feedbackId: number) => void;
 }
 
-function AdminFeedbackBox({
+export default memo(function AdminFeedbackBox({
   type,
   feedbackId,
   onConfirm,
@@ -71,6 +71,4 @@ function AdminFeedbackBox({
       />
     </FeedbackBoxBackGround>
   );
-}
-
-export default React.memo(AdminFeedbackBox);
+});

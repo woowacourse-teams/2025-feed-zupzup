@@ -11,7 +11,7 @@ import {
 } from './FilterSection.styles';
 import Button from '@/components/@commons/Button/Button';
 import { FeedbackFilterType, SortType } from '@/types/feedback.types';
-import React from 'react';
+import { memo } from 'react';
 
 export interface FilterSectionProps {
   selectedFilter: FeedbackFilterType | '';
@@ -36,7 +36,7 @@ const sortOptions = [
   { value: 'LIKES' as SortType, label: '좋아요순' },
 ];
 
-function FilterSection({
+export default memo(function FilterSection({
   selectedFilter,
   onFilterChange,
   selectedSort,
@@ -85,6 +85,4 @@ function FilterSection({
       </div>
     </div>
   );
-}
-
-export default React.memo(FilterSection);
+});

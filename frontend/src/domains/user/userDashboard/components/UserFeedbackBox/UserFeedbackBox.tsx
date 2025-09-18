@@ -8,7 +8,7 @@ import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { secretText } from './UserFeedbackBox.styles';
 import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
 import { CategoryListType } from '@/constants/categoryList';
-import React from 'react';
+import { memo } from 'react';
 import { highlightStyle } from '../../UserDashboard.style';
 
 interface UserFeedbackBox {
@@ -26,7 +26,7 @@ interface UserFeedbackBox {
   category: CategoryListType;
 }
 
-function UserFeedbackBox({
+export default memo(function UserFeedbackBox({
   userName,
   type,
   content,
@@ -79,6 +79,4 @@ function UserFeedbackBox({
       />
     </FeedbackBoxBackGround>
   );
-}
-
-export default React.memo(UserFeedbackBox);
+});
