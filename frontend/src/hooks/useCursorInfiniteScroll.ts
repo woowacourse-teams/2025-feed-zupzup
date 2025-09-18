@@ -2,6 +2,7 @@ import { apiClient, ApiError } from '@/apis/apiClient';
 import { ApiResponse } from '@/types/apiResponse';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useApiErrorHandler } from './useApiErrorHandler';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 const DEFAULT_SIZE = 10;
 const MAX_RETRY_COUNT = 1;
@@ -31,7 +32,7 @@ export default function useCursorInfiniteScroll<
   const { handleApiError } = useApiErrorHandler();
 
   const query = useInfiniteQuery({
-    queryKey: ['infinity', key, url, size],
+    queryKey: QUERY_KEYS.infiniteList(key, url, size),
     enabled: enabled && Boolean(url),
     retry: MAX_RETRY_COUNT,
     initialPageParam: null as number | null,

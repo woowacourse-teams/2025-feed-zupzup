@@ -13,7 +13,7 @@ export default function useAdminAuth() {
     error,
     isLoading,
   } = useQuery({
-    queryKey: [QUERY_KEYS.adminAuth],
+    queryKey: QUERY_KEYS.adminAuth,
     queryFn: getAdminAuth,
     staleTime: 0,
     gcTime: 5 * 60 * 1000,

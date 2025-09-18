@@ -16,7 +16,7 @@ export const useQRCode = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: [QUERY_KEYS.qrCode(organizationId)],
+    queryKey: QUERY_KEYS.qrCode(organizationId),
     queryFn: () => getQRCode({ organizationId }),
     staleTime: ONE_DAY,
     gcTime: ONE_DAY,

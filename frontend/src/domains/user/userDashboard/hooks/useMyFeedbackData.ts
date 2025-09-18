@@ -24,9 +24,12 @@ export function useMyFeedbackData(selectedSort: SortType) {
     ApiError,
     FeedbackType[]
   >({
-    queryKey: [
-      QUERY_KEYS.myFeedbacks(organizationId!, feedbackIds, selectedSort),
-    ],
+    queryKey: QUERY_KEYS.myFeedbacks(
+      organizationId!,
+      feedbackIds,
+      selectedSort
+    ),
+
     queryFn: () =>
       getMyFeedbacks({
         organizationId,

@@ -14,4 +14,6 @@ export const QUERY_KEYS = {
     feedbackIds: number[],
     selectedSort: string
   ) => ['myFeedbacks', organizationId, feedbackIds, selectedSort] as const,
+  infiniteList: (key: string, url: string, size: number) =>
+    ['infinity', key, url, size] as const,
 };
