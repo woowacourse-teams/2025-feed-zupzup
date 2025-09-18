@@ -3,6 +3,7 @@ import {
   getMyFeedbacks,
   GetMyFeedbacksResponse,
 } from '@/apis/userFeedback.api';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { FeedbackType, SortType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
@@ -23,7 +24,9 @@ export function useMyFeedbackData(selectedSort: SortType) {
     ApiError,
     FeedbackType[]
   >({
-    queryKey: ['myFeedbacks', organizationId, feedbackIds, selectedSort],
+    queryKey: [
+      QUERY_KEYS.myFeedbacks(organizationId!, feedbackIds, selectedSort),
+    ],
     queryFn: () =>
       getMyFeedbacks({
         organizationId,

@@ -9,4 +9,9 @@ export const QUERY_KEYS = {
   adminFeedbackStatistics: (name: string) =>
     ['adminFeedbackStatistics', name] as const,
   adminAuth: ['adminAuth'] as const,
+  myFeedbacks: (
+    organizationId: string,
+    feedbackIds: number[],
+    selectedSort: string
+  ) => ['myFeedbacks', organizationId, feedbackIds, selectedSort] as const,
 };
