@@ -27,8 +27,20 @@ export default function useLogin({ loginValue }: UseLoginProps) {
       await postAdminLogin({
         loginId: loginValue.id,
         password: loginValue.password,
-        onSuccess: (response: AdminAuthResponse) => {
+        onSuccess: async (response: AdminAuthResponse) => {
           setLocalStorage('auth', response.data);
+
+          if (
+            NotificationService.checkIsSupported() &&
+            NotificationService.getCurrentPermission() === 'default'
+          ) {
+            try {
+              await NotificationService.enable();
+            } catch (error) {
+              console.log('알림 권한 요청 실패 (무시됨):', error);
+            }
+          }
+
           goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
         },
       });
