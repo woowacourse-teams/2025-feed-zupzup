@@ -1,6 +1,6 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 
@@ -18,20 +18,24 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { showErrorModal } = useErrorModalContext();
 
-  const openFeedbackCompleteModal = (feedbackId: number) =>
-    setModalState({ type: 'confirm', feedbackId });
+  const openFeedbackCompleteModal = useCallback(
+    (feedbackId: number) => setModalState({ type: 'confirm', feedbackId }),
+    []
+  );
 
-  const openFeedbackDeleteModal = (feedbackId: number) =>
-    setModalState({ type: 'delete', feedbackId });
+  const openFeedbackDeleteModal = useCallback(
+    (feedbackId: number) => setModalState({ type: 'delete', feedbackId }),
+    []
+  );
 
-  const closeModal = () => setModalState({ type: null });
+  const closeModal = useCallback(() => setModalState({ type: null }), []);
 
-  const invalidateFeedbackQueries = () => {
+  const invalidateFeedbackQueries = useCallback(() => {
     queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.organizationStatistics(organizationId),
     });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.infiniteFeedbacks });
-  };
+  }, [queryClient, organizationId]);
 
   const confirmMutation = useMutation({
     mutationFn: ({
@@ -59,21 +63,24 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
     onSuccess: invalidateFeedbackQueries,
   });
 
-  const handleConfirmFeedback = async (comment: string) => {
-    const { feedbackId } = modalState;
-    if (!feedbackId) return;
+  const handleConfirmFeedback = useCallback(
+    async (comment: string) => {
+      const { feedbackId } = modalState;
+      if (!feedbackId) return;
 
-    await confirmMutation.mutateAsync({ feedbackId, comment });
-    closeModal();
-  };
+      await confirmMutation.mutateAsync({ feedbackId, comment });
+      closeModal();
+    },
+    [modalState.feedbackId, confirmMutation.mutateAsync, closeModal]
+  );
 
-  const handleDeleteFeedback = async () => {
+  const handleDeleteFeedback = useCallback(async () => {
     const { feedbackId } = modalState;
     if (!feedbackId) return;
 
     await deleteMutation.mutateAsync({ feedbackId });
     closeModal();
-  };
+  }, [modalState.feedbackId, deleteMutation.mutateAsync, closeModal]);
 
   return {
     modalState,
