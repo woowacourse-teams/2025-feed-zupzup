@@ -15,7 +15,7 @@ export default function useOrganizationName({
   const { showErrorModal } = useErrorModalContext();
   const { handleApiError } = useApiErrorHandler();
 
-  const { data, error } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: [...QUERY_KEYS.organizationData, organizationId],
     queryFn: async () => {
       const response = await getOrganizationName({ organizationId });
@@ -35,5 +35,6 @@ export default function useOrganizationName({
     groupName: data?.organizationName || '피드줍줍',
     totalCheeringCount: data?.totalCheeringCount || 0,
     categories: data?.categories || [],
+    isLoading,
   };
 }

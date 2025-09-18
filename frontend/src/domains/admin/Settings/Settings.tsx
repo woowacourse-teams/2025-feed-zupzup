@@ -16,7 +16,7 @@ export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
     useNotificationSettingsPage();
-  const { adminAuth } = useAdminAuth();
+  const { adminAuth, isLoading: isAdminAuthLoading } = useAdminAuth();
   const { handleLogout } = useLogout();
 
   const closeModal = () => {
@@ -30,8 +30,9 @@ export default function Settings() {
   return (
     <div css={settingsContainer}>
       <ProfileBox
-        name={adminAuth?.data.adminName || '관리자'}
-        id={adminAuth?.data.loginId || 'admin'}
+        isLoading={isAdminAuthLoading}
+        name={adminAuth?.data.adminName || ''}
+        id={adminAuth?.data.loginId || ''}
       />
 
       <SettingListBox

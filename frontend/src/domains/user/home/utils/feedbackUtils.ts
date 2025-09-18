@@ -11,9 +11,3 @@ export function generateRandomUsername(): string {
     ];
   return `${randomAdjective} ${randomAnimal}`;
 }
-
-export function generateRandomAvatar(): string {
-  return FEEDBACK_FORM_CONSTANTS.AVATARS[
-    Math.floor(Math.random() * FEEDBACK_FORM_CONSTANTS.AVATARS.length)
-  ] as (typeof FEEDBACK_FORM_CONSTANTS.AVATARS)[number];
-}

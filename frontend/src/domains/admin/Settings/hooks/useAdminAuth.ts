@@ -11,6 +11,7 @@ export default function useAdminAuth() {
     data: adminAuth,
     isError,
     error,
+    isLoading,
   } = useQuery({
     queryKey: [QUERY_KEYS.adminAuth],
     queryFn: getAdminAuth,
@@ -22,5 +23,5 @@ export default function useAdminAuth() {
     handleApiError(error as ApiError);
   }
 
-  return { adminAuth };
+  return { adminAuth, isLoading };
 }

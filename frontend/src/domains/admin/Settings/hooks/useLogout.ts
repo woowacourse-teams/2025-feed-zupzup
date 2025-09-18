@@ -16,7 +16,7 @@ export function useLogout() {
     },
     onSuccess: () => {
       resetLocalStorage('auth');
-      goPath('/login');
+      goPath('/');
     },
     onSettled: () => {
       NotificationService.removeToken();
