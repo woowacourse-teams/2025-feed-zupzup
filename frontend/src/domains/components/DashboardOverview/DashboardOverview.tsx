@@ -1,6 +1,5 @@
 import CheerButton from '@/domains/components/CheerButton/CheerButton';
 import DashboardPanel from '@/domains/components/DashboardPanel/DashboardPanel';
-
 import {
   headerContainer,
   cheerButtonLayout,

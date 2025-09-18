@@ -19,13 +19,16 @@ export default function useCheerButton({
     if (isDisabled) {
       return;
     }
-    setCount(count + 1);
+
+    const newCount = count + 1;
+    const MAX_CHEER_COUNT = 100;
+    const DISABLE_DURATION = 5000;
+
+    setCount(newCount);
     setAnimate(false);
     requestAnimationFrame(() => setAnimate(true));
 
-    const newCount = count + 1;
-
-    if (newCount === 100) {
+    if (newCount >= MAX_CHEER_COUNT) {
       showToast(
         '응원은 한 번에 100개까지만 가능해요! 잠시 후 다시 시도해주세요.'
       );
@@ -33,10 +36,11 @@ export default function useCheerButton({
 
       setTimeout(() => {
         setIsDisabled(false);
-      }, 5000);
+      }, DISABLE_DURATION);
     }
 
-    debouncedSearch(newCount);
+    const countToSend = Math.min(newCount, MAX_CHEER_COUNT);
+    debouncedSearch(countToSend);
   };
 
   const debouncedSearch = useDebounce(
