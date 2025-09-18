@@ -8,6 +8,7 @@
     "dev": "webpack serve --config webpack/webpack.local.js",
     "build:dev": "webpack --config webpack/webpack.dev.js",
     "build:prod": "webpack --config webpack/webpack.prod.js",
+    "analyze": "ANALYZE=true webpack --config webpack/webpack.prod.js",
     "preview:dev": "npm run build:dev && npx serve -s dist -p 5000",
     "preview:prod": "npm run build:prod && npx serve -s dist -p 5001",
     "type-check": "tsc --noEmit",
@@ -86,6 +87,7 @@
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.36.0",
     "webpack": "^5.99.9",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
   },
