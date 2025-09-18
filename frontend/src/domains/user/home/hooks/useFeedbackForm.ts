@@ -27,7 +27,7 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
     handleUsernameChange,
     handleUsernameFocus,
     resetUsername,
-  } = useUsername(isLocked);
+  } = useUsername();
 
   const canSubmit = feedback.trim().length > 0;
 

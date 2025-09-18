@@ -7,10 +7,12 @@ import { useEffect, useState } from 'react';
 export default function useAdminAuth() {
   const [adminAuth, setAdminAuth] = useState<AdminAuthData | null>(null);
   const { handleApiError } = useApiErrorHandler();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
+        setIsLoading(true);
         await getAdminAuth({
           onSuccess: (response: AdminAuthResponse) =>
             setAdminAuth(response.data),
@@ -18,9 +20,11 @@ export default function useAdminAuth() {
       } catch (error) {
         handleApiError(error as ApiError);
         setAdminAuth(null);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
 
-  return { adminAuth };
+  return { adminAuth, isLoading };
 }

@@ -15,7 +15,8 @@ interface MoreMenuProps {
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { openModal, closeModal, isOpen } = useModalContext();
-  const { deleteOrganization, isLoading: isDeleting } = useDeleteOrganization();
+  const { deleteOrganization, isDeleting } = useDeleteOrganization();
+
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal isOpen={isOpen} onClose={closeModal} />);
@@ -34,7 +35,9 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
         onClose={closeModal}
         title='방 삭제 확인'
         message={
-          isDeleting ? '삭제 중입니다.' : '정말로 방을 삭제하시겠습니까?'
+         isDeleting
+            ? '삭제 중입니다.'
+            : '삭제한 방은 되돌릴 수 없습니다. \n정말로 방을 삭제하시겠습니까?'
         }
         onConfirm={deleteOrganization}
         disabled={isDeleting}

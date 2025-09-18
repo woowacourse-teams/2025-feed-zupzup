@@ -2,9 +2,15 @@ import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import App from './App';
+import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
+import SignUp from '@/domains/admin/SignUp/SignUp';
+import Home from '@/domains/Home';
+import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
+import Login from './domains/admin/Login/Login';
+import OnBoarding from './domains/admin/OnBoarding/OnBoarding';
 
 const AdminDashboard = lazy(
   () =>
@@ -60,7 +66,7 @@ export const router = createBrowserRouter([
         element: isAuthenticated() ? (
           <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />
         ) : (
-          <Navigate to='/login' replace />
+          <OnBoarding />
         ),
       },
       { path: ROUTES.SUBMIT, element: <Home /> },

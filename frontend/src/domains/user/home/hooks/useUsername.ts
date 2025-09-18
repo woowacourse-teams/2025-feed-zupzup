@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { generateRandomUsername } from '../utils/feedbackUtils';
 
 export interface UseUsernameReturn {
@@ -9,39 +9,34 @@ export interface UseUsernameReturn {
   handleUsernameFocus: () => void;
 }
 
-export function useUsername(isLocked: boolean): UseUsernameReturn {
+export function useUsername(): UseUsernameReturn {
   const [username, setUsername] = useState(() => generateRandomUsername());
 
   const [isUsernameEdited, setIsUsernameEdited] = useState(false);
 
-  const handleRandomChange = useCallback(() => {
-    if (isLocked) return;
-
+  const handleRandomChange = () => {
     const newUsername = generateRandomUsername();
     setUsername(newUsername as typeof username);
 
     setIsUsernameEdited(false);
-  }, [isLocked]);
+  };
 
-  const handleUsernameChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setUsername(e.target.value as typeof username);
-      setIsUsernameEdited(true);
-    },
-    []
-  );
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value as typeof username);
+    setIsUsernameEdited(true);
+  };
 
-  const handleUsernameFocus = useCallback(() => {
+  const handleUsernameFocus = () => {
     if (!isUsernameEdited) {
       setUsername('' as typeof username);
       setIsUsernameEdited(true);
     }
-  }, [isUsernameEdited]);
+  };
 
-  const resetUsername = useCallback(() => {
+  const resetUsername = () => {
     setUsername(generateRandomUsername());
     setIsUsernameEdited(false);
-  }, []);
+  };
 
   return {
     username,
