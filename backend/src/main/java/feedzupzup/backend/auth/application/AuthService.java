@@ -23,11 +23,13 @@ public class AuthService {
 
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ActiveSessionStore activeSessionStore;
 
     public LoginResponse getAdminLoginInfo(final AdminSession adminSession) {
         final Admin admin = adminRepository.findById(adminSession.adminId())
                 .orElseThrow(() -> new ResourceNotFoundException("관리자 정보를 찾을 수 없습니다. ID: " + adminSession.adminId()));
 
+        activeSessionStore.addActiveSession(adminSession.adminId());
         return LoginResponse.from(admin);
     }
 
@@ -56,7 +58,12 @@ public class AuthService {
             throw new InvalidPasswordException("로그인 정보가 올바르지 않습니다");
         }
 
+        activeSessionStore.addActiveSession(admin.getId());
         return LoginResponse.from(admin);
+    }
+
+    public void logout(final Long adminId) {
+        activeSessionStore.removeActiveSession(adminId);
     }
 
 }

@@ -16,6 +16,7 @@ import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class AdminFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final FeedbackLikeService feedbackLikeService;
+    private final OrganizationRepository organizationRepository;
 
     @Transactional
     @BusinessActionLog
@@ -50,6 +52,9 @@ public class AdminFeedbackService {
             final ProcessStatus status,
             final FeedbackSortBy sortBy
     ) {
+        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
+            throw new ResourceNotFoundException("해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다.");
+        }
         final Pageable pageable = Pageable.ofSize(size + 1);
 
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);

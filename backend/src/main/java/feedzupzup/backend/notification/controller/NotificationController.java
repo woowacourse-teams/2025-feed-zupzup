@@ -5,7 +5,7 @@ import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.notification.api.NotificationApi;
 import feedzupzup.backend.notification.application.NotificationService;
 import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
-import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
+import feedzupzup.backend.notification.dto.request.NotificationRequest;
 import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class NotificationController implements NotificationApi {
     private final NotificationService notificationService;
 
     @Override
-    public SuccessResponse<Void> registerNotificationToken(
-            final NotificationTokenRequest request,
+    public SuccessResponse<Void> registerNotification(
+            final NotificationRequest request,
             final AdminSession adminSession
     ) {
         Long adminId = adminSession.adminId();

@@ -12,7 +12,7 @@ public record UserOrganizationResponse(
         @Schema(description = "단체 이름", example = "우아한테크코스")
         String organizationName,
         @Schema(description = "응원 총 횟수", example = "10")
-        int totalCheeringCount,
+        long totalCheeringCount,
         @Schema(description = "카테고리 리스트", example = "[\"건의\", \"신고\", \"기타\"]")
         Set<String> categories
 ) {

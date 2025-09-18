@@ -61,4 +61,5 @@ public class Admin extends BaseTimeEntity {
     public void updateAlertsSetting(boolean alertsOn) {
         this.alertsOn = alertsOn;
     }
+
 }

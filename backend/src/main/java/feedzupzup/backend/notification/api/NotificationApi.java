@@ -4,7 +4,7 @@ import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.notification.dto.response.AlertsSettingResponse;
-import feedzupzup.backend.notification.dto.request.NotificationTokenRequest;
+import feedzupzup.backend.notification.dto.request.NotificationRequest;
 import feedzupzup.backend.notification.dto.request.UpdateAlertsSettingRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,8 +33,8 @@ public interface NotificationApi {
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/admin/notifications/token")
-    SuccessResponse<Void> registerNotificationToken(
-            @RequestBody @Valid final NotificationTokenRequest request,
+    SuccessResponse<Void> registerNotification(
+            @RequestBody @Valid final NotificationRequest request,
             @AdminAuthenticationPrincipal final AdminSession adminSession
     );
 
