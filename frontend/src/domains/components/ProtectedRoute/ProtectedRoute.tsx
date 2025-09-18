@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({
-  redirectPath = '/login',
+  redirectPath = '/',
 }: ProtectedRouteProps) {
   const location = useLocation();
   const authed = isAuthenticated();
