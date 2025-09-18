@@ -4,7 +4,7 @@ import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useQuery } from '@tanstack/react-query';
 
-const ONE_DAY = 1000 * 60 * 60 * 24;
+export const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const useQRCode = () => {
   const { showErrorModal } = useErrorModalContext();
