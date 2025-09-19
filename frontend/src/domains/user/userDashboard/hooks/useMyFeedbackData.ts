@@ -28,7 +28,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
       feedbackIds,
       selectedSort
     ),
-
+    select: (res) => res.data.feedbacks,
     queryFn: () =>
       getMyFeedbacks({
         organizationId,
