@@ -47,6 +47,7 @@ export default function () {
   });
 
   check(response, {
+    'total requests': () => true,
     'status is 200': (r) => r.status === 200,
     'status is not 200': (r) => r.status !== 200,
     'response time > 500ms': (r) => r.timings.duration > 500,
