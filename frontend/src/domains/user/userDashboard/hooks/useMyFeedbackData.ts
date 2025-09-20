@@ -8,8 +8,7 @@ import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { FeedbackType, SortType } from '@/types/feedback.types';
 import { getLocalStorage } from '@/utils/localStorage';
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo } from 'react';
-import {} from 'react-router-dom';
+import { useMemo } from 'react';
 
 export function useMyFeedbackData(selectedSort: SortType) {
   const { organizationId } = useOrganizationId();
@@ -19,7 +18,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
     []
   );
 
-  const { data: myFeedbacks, refetch: refetchMyFeedbacks } = useQuery<
+  const { data: myFeedbacks } = useQuery<
     GetMyFeedbacksResponse,
     ApiError,
     FeedbackType[]
@@ -29,7 +28,7 @@ export function useMyFeedbackData(selectedSort: SortType) {
       feedbackIds,
       selectedSort
     ),
-
+    select: (res) => res.data.feedbacks,
     queryFn: () =>
       getMyFeedbacks({
         organizationId,
@@ -40,10 +39,6 @@ export function useMyFeedbackData(selectedSort: SortType) {
     staleTime: 0,
     gcTime: 5 * 60 * 1000,
   });
-
-  useEffect(() => {
-    refetchMyFeedbacks();
-  }, [selectedSort, feedbackIds]);
 
   return { myFeedbacks: myFeedbacks || [] };
 }
