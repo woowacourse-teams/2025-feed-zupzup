@@ -6,7 +6,7 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
 import { useLogout } from './hooks/useLogout';
-import { useNotificationSetting } from './hooks/useNotificationSetting';
+import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage';
 import { settingsContainer } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 
@@ -15,8 +15,8 @@ type ModalState = { type: 'logout' } | { type: null };
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
-    useNotificationSetting();
-  const { adminAuth } = useAdminAuth();
+    useNotificationSettingsPage();
+  const { adminAuth, isLoading: isAdminAuthLoading } = useAdminAuth();
   const { handleLogout } = useLogout();
 
   const closeModal = () => {
@@ -30,8 +30,9 @@ export default function Settings() {
   return (
     <div css={settingsContainer}>
       <ProfileBox
-        name={adminAuth?.adminName || '관리자'}
-        id={adminAuth?.loginId || 'admin'}
+        isLoading={isAdminAuthLoading}
+        name={adminAuth?.data.adminName || ''}
+        id={adminAuth?.data.loginId || ''}
       />
 
       <SettingListBox

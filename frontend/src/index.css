@@ -1,16 +1,11 @@
-html {
-  overflow-y: scroll;
-  scrollbar-width: none;
-}
-
 html::-webkit-scrollbar {
   display: none;
 }
-
 @font-face {
   font-family: 'BMHANNAPro';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_seven@1.0/BMHANNAPro.woff')
-    format('woff');
+  src:
+    url('@/assets/fonts/subset-BMHANNAPro.woff2') format('woff2'),
+    url('@/assets/fonts/subset-BMHANNAPro.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -18,8 +13,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'BMHANNAAir';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.0/BMHANNAAir.woff')
-    format('woff');
+  src:
+    url('@/assets/fonts/subset-BMHANNAAir.woff2') format('woff2'),
+    url('@/assets/fonts/subset-BMHANNAAir.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -27,8 +23,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/woff/Pretendard-Thin.woff')
-    format('woff');
+  src:
+    url('@/assets/fonts/subset-Pretendard-Thin.woff2') format('woff2'),
+    url('@/assets/fonts/subset-Pretendard-Thin.woff') format('woff');
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -36,8 +33,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
-    format('woff');
+  src:
+    url('@/assets/fonts/subset-Pretendard-Regular.woff2') format('woff2'),
+    url('@/assets/fonts/subset-Pretendard-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -45,8 +43,9 @@ html::-webkit-scrollbar {
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/woff/Pretendard-Bold.woff')
-    format('woff');
+  src:
+    url('@/assets/fonts/subset-Pretendard-Bold.woff2') format('woff2'),
+    url('@/assets/fonts/subset-Pretendard-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
   font-display: swap;

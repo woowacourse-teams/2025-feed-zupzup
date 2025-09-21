@@ -1,10 +1,13 @@
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
+import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { useModalContext } from '@/contexts/useModal';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
-import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
+import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
+import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
@@ -12,9 +15,10 @@ interface MoreMenuProps {
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { openModal, closeModal, isOpen } = useModalContext();
+  const { deleteOrganization, isDeleting } = useDeleteOrganization();
 
   const handleRoomInfoEditClick = () => {
-    openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<EditRoomModal isOpen={isOpen} onClose={closeModal} />);
     closeMoreMenu();
   };
 
@@ -23,13 +27,36 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     closeMoreMenu();
   };
 
+  const handleDeleteClick = () => {
+    openModal(
+      <ConfirmModal
+        isOpen={isOpen}
+        onClose={closeModal}
+        title='방 삭제 확인'
+        message={
+          isDeleting
+            ? '삭제 중입니다.'
+            : '삭제한 방은 되돌릴 수 없습니다. \n정말로 방을 삭제하시겠습니까?'
+        }
+        onConfirm={deleteOrganization}
+        disabled={isDeleting}
+      />
+    );
+    closeMoreMenu();
+  };
+
   const moreMenuList = [
     {
-      icon: SmallSettingIcon,
+      icon: <SmallSettingIcon />,
       menu: '방정보 수정',
       onClick: handleRoomInfoEditClick,
     },
-    { icon: ShareIcon, menu: 'QR/URL 공유', onClick: handleShareClick },
+    { icon: <ShareIcon />, menu: 'QR/URL 공유', onClick: handleShareClick },
+    {
+      icon: <TrashCanIcon color='#222222' />,
+      menu: '방 삭제',
+      onClick: handleDeleteClick,
+    },
   ];
 
   return (
@@ -37,7 +64,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       {moreMenuList.map((item, index) => (
         <MoreMenuItem
           key={index}
-          icon={<item.icon />}
+          icon={item.icon}
           menu={item.menu}
           onClick={item.onClick}
         />

@@ -27,7 +27,7 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       showBackButton: true,
     },
     bottomNav: {
-      show: true,
+      show: false,
     },
   },
   [`${ROUTES.ADMIN}/${ROUTES.ADMIN_SETTINGS}`]: {

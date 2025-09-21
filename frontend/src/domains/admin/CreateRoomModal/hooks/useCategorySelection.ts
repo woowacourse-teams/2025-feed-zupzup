@@ -1,16 +1,32 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { CategoryListType } from '@/constants/categoryList';
 import { MAX_CATEGORIES } from '@/constants/maxCategories';
+import { createCategoryIconPairs } from '@/domains/utils/createCategoryList';
 
 export interface SelectedCategoryItem {
   icon: string | React.ReactNode;
   category: CategoryListType;
 }
 
-export function useCategorySelection() {
+interface UseCategorySelectionProps {
+  initialCategories?: CategoryListType[];
+}
+
+export function useCategorySelection({
+  initialCategories,
+}: UseCategorySelectionProps = {}) {
   const [selectedCategories, setSelectedCategories] = useState<
     SelectedCategoryItem[]
   >([]);
+
+  useEffect(() => {
+    if (!initialCategories || initialCategories.length === 0) return;
+
+    const initialSelectedCategories: SelectedCategoryItem[] =
+      createCategoryIconPairs(initialCategories);
+
+    setSelectedCategories(initialSelectedCategories);
+  }, [initialCategories]);
 
   const handleCategoryClick = useCallback(
     (icon: React.ReactNode | string, category: CategoryListType) => {

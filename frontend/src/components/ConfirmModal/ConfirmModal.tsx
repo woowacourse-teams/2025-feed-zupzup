@@ -18,6 +18,7 @@ export interface ConfirmModalProps {
   cancelText?: string;
   width?: number;
   height?: number;
+  disabled?: boolean;
 }
 
 export default function ConfirmModal({
@@ -30,6 +31,7 @@ export default function ConfirmModal({
   cancelText = '취소',
   width = 300,
   height,
+  disabled = false,
 }: ConfirmModalProps) {
   const theme = useAppTheme();
 
@@ -58,6 +60,7 @@ export default function ConfirmModal({
           width='calc(50% - 12px)'
           onClick={handleConfirm}
           height='30px'
+          disabled={disabled}
         >
           {confirmText}
         </BasicButton>

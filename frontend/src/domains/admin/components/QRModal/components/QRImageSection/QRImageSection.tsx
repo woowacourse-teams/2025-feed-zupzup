@@ -7,6 +7,8 @@ import {
 } from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection.styles';
 import { QRText } from '@/domains/admin/components/QRModal/QRModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useQRImageDownload } from './hooks/useQRImageDownload';
+import { urlDownload } from '@/domains/utils/urlDownload';
 
 type QRImageSectionProps = {
   url: string;
@@ -14,9 +16,11 @@ type QRImageSectionProps = {
 
 export default function QRImageSection({ url }: QRImageSectionProps) {
   const theme = useAppTheme();
+  const { downloadUrl } = useQRImageDownload();
 
-  const handleDownload = () => {
-    // 이미지 다운 로직
+  const handleDownload = async () => {
+    if (!downloadUrl) return;
+    urlDownload({ downloadUrl, fileName: 'qr-code.png' });
   };
 
   return (
@@ -34,8 +38,8 @@ export default function QRImageSection({ url }: QRImageSectionProps) {
       <BasicButton
         variant='secondary'
         padding='8px 8px'
-        fontSize={12}
-        height={30}
+        fontSize={'12px'}
+        height={'30px'}
         width='70%'
         icon={<DownloadIcon />}
         onClick={handleDownload}

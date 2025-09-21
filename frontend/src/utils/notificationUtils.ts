@@ -10,26 +10,69 @@ export const getStoredNotificationState = (): boolean => {
 
 export const setStoredNotificationState = (enabled: boolean): void => {
   setLocalStorage(NOTIFICATION_KEY, enabled);
+
+  getLocalStorage<boolean>(NOTIFICATION_KEY);
 };
 
 export const getStoredFCMToken = (): string | null => {
-  return getLocalStorage<string>(FCM_TOKEN_KEY) ?? null;
+  const rawValue = getLocalStorage<string>(FCM_TOKEN_KEY);
+
+  if (typeof window !== 'undefined') {
+    const directValue = localStorage.getItem(FCM_TOKEN_KEY);
+
+    if (
+      directValue &&
+      typeof directValue === 'string' &&
+      directValue !== 'null'
+    ) {
+      return directValue;
+    }
+  }
+
+  if (!rawValue || typeof rawValue !== 'string' || rawValue.length === 0) {
+    return null;
+  }
+
+  return rawValue;
 };
 
 export const setStoredFCMToken = (token: string): void => {
+  if (!token || typeof token !== 'string') {
+    console.error('[NotificationUtils] 잘못된 토큰 타입:', {
+      token,
+      type: typeof token,
+    });
+    return;
+  }
+
   setLocalStorage(FCM_TOKEN_KEY, token);
+
+  getLocalStorage<string>(FCM_TOKEN_KEY);
+
+  if (typeof window !== 'undefined') {
+    localStorage.getItem(FCM_TOKEN_KEY);
+  }
 };
 
 export const clearStoredFCMToken = (): void => {
+  getLocalStorage<string>(FCM_TOKEN_KEY);
+
   setLocalStorage(FCM_TOKEN_KEY, null);
+
+  getLocalStorage<string>(FCM_TOKEN_KEY);
+
+  if (typeof window !== 'undefined') {
+    localStorage.getItem(FCM_TOKEN_KEY);
+  }
 };
 
 export const isNotificationSupported = (): boolean => {
-  return (
+  const supported =
     typeof window !== 'undefined' &&
     'serviceWorker' in navigator &&
-    'Notification' in window
-  );
+    'Notification' in window;
+
+  return supported;
 };
 
 export const createNotificationErrorMessage = (error: unknown): string => {

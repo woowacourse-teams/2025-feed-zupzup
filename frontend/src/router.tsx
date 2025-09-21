@@ -1,59 +1,97 @@
-import { ROUTES } from '@/constants/routes';
-import AdminDashboard from '@/domains/admin/adminDashboard/AdminDashboard';
-import Login from '@/domains/admin/Login/Login';
-import SignUp from '@/domains/admin/SignUp/SignUp';
-import Home from '@/domains/Home';
-import UserDashboard from '@/domains/user/userDashboard/UserDashboard';
-import { getAuthRedirectElement } from '@/utils/authenticated';
-import ProtectedRoute from '@/utils/protectedRoute';
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import App from './App';
-import AdminHome from './domains/admin/AdminHome/AdminHome';
-import Settings from './domains/admin/Settings/Settings';
+import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
+import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
+import { isAuthenticated } from './utils/isAuthenticated';
+import OnBoarding from './domains/admin/OnBoarding/OnBoarding';
+
+const AdminDashboard = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "admin-dashboard" */ '@/domains/admin/adminDashboard/AdminDashboard'
+    )
+);
+const Login = lazy(
+  () => import(/* webpackChunkName: "login" */ '@/domains/admin/Login/Login')
+);
+const SignUp = lazy(
+  () => import(/* webpackChunkName: "signup" */ '@/domains/admin/SignUp/SignUp')
+);
+const Home = lazy(
+  () => import(/* webpackChunkName: "home" */ '@/domains/Home')
+);
+const UserDashboard = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "user-dashboard" */ '@/domains/user/userDashboard/UserDashboard'
+    )
+);
+const AdminHome = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "admin-home" */ './domains/admin/AdminHome/AdminHome'
+    )
+);
+const Settings = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "admin-settings" */ './domains/admin/Settings/Settings'
+    )
+);
+const NotFoundPage = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "not-found" */ './components/NotFoundPage/NotFoundPage'
+    )
+);
 
 export const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
-    element: <App />,
+    element: (
+      <Suspense fallback={<div>Loading...</div>}>
+        <App />
+      </Suspense>
+    ),
     children: [
       {
         index: true,
-        element: <Navigate to='/1/submit' replace />,
+        element: isAuthenticated() ? (
+          <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />
+        ) : (
+          <OnBoarding />
+        ),
       },
-      {
-        path: ROUTES.SUBMIT,
-        element: <Home />,
-      },
-      {
-        path: ROUTES.DASHBOARD,
-        element: <UserDashboard />,
-      },
+      { path: ROUTES.SUBMIT, element: <Home /> },
+      { path: ROUTES.DASHBOARD, element: <UserDashboard /> },
       {
         path: ROUTES.LOGIN,
-        element: getAuthRedirectElement(<Login />),
+        element: (
+          <AuthRedirectRoute>
+            <Login />
+          </AuthRedirectRoute>
+        ),
       },
       {
         path: ROUTES.SIGN_UP,
-        element: getAuthRedirectElement(<SignUp />),
+        element: (
+          <AuthRedirectRoute>
+            <SignUp />
+          </AuthRedirectRoute>
+        ),
       },
       {
         path: ROUTES.ADMIN,
         element: <ProtectedRoute redirectPath='/login' />,
         children: [
-          {
-            path: ROUTES.ADMIN_HOME,
-            element: <AdminHome />,
-          },
-          {
-            path: ROUTES.DASHBOARD,
-            element: <AdminDashboard />,
-          },
-          {
-            path: ROUTES.ADMIN_SETTINGS,
-            element: <Settings />,
-          },
+          { path: ROUTES.ADMIN_HOME, element: <AdminHome /> },
+          { path: ROUTES.DASHBOARD, element: <AdminDashboard /> },
+          { path: ROUTES.ADMIN_SETTINGS, element: <Settings /> },
         ],
       },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ]);

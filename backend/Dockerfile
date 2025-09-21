@@ -1,5 +1,8 @@
 FROM openjdk:21-jdk
 
-COPY build/libs/*SNAPSHOT.jar /code-zupzup-server.jar
+ARG SPRING_ACTIVE_PROFILE
+ENV PROFILE=${SPRING_ACTIVE_PROFILE}
 
-ENTRYPOINT ["java", "-jar", "code-zupzup-server.jar"]
+COPY build/libs/*SNAPSHOT.jar /feed-zupzup-server.jar
+
+ENTRYPOINT ["java", "-Dspring.profiles.active=${PROFILE}", "-jar", "feed-zupzup-server.jar"]

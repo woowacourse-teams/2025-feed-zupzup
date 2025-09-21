@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useKeyboardDetection } from '@/hooks/useKeyboardDetection';
 import {
@@ -10,6 +10,7 @@ import {
   NAVIGATION_ITEMS,
   NavigationItem,
 } from '../../constants/navigationItems';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 interface NavItemProps {
   item: NavigationItem;
@@ -34,14 +35,10 @@ function NavItem({ item, isActive, onNavigate }: NavItemProps) {
 }
 
 export default function BottomNavigation() {
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
   const location = useLocation();
   const theme = useAppTheme();
   const isKeyboardOpen = useKeyboardDetection();
-
-  const handleNavigate = (path: string) => {
-    navigate(path);
-  };
 
   return (
     <nav
@@ -53,7 +50,7 @@ export default function BottomNavigation() {
           key={item.id}
           item={item}
           isActive={location.pathname === item.path}
-          onNavigate={handleNavigate}
+          onNavigate={goPath}
         />
       ))}
     </nav>

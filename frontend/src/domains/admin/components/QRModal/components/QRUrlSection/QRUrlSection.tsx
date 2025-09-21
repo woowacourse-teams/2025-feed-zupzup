@@ -17,7 +17,8 @@ export default function QRUrlSection({ url }: QRUrlSectionProps) {
   const theme = useAppTheme();
 
   const handleCopy = async () => {
-    // 링크 복사 로직
+    await navigator.clipboard.writeText(url);
+    alert('복사되었습니다.');
   };
 
   return (
@@ -32,8 +33,8 @@ export default function QRUrlSection({ url }: QRUrlSectionProps) {
             variant='secondary'
             padding='8px 0px'
             gap='0'
-            fontSize={12}
-            height={30}
+            fontSize={'12px'}
+            height={'30px'}
             icon={<CopyIcon />}
             onClick={handleCopy}
           >

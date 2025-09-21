@@ -17,13 +17,13 @@ export const headerContainer = css`
 `;
 
 export const headerTitle = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.small}
+  ${theme.typography.BMHANNAPro.bodyBold}
 `;
 
 export const headerSubtitle = (theme: Theme) => css`
-  ${theme.typography.BMHANNAPro.caption}
+  ${theme.typography.BMHANNAPro.small}
 
-  color: ${theme.colors.gray[400]}
+  color: ${theme.colors.gray[600]}
 `;
 
 export const contentContainer = (theme: Theme) => css`

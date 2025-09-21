@@ -1,26 +1,27 @@
-import { getAdminAuth, AdminAuthResponse } from '@/apis/admin.api';
+import { getAdminAuth } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { AdminAuthData } from '@/types/adminAuth';
-import { useEffect, useState } from 'react';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
+import { useQuery } from '@tanstack/react-query';
 
 export default function useAdminAuth() {
-  const [adminAuth, setAdminAuth] = useState<AdminAuthData | null>(null);
-  const { showErrorModal } = useErrorModalContext();
+  const { handleApiError } = useApiErrorHandler();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        await getAdminAuth({
-          onSuccess: (response: AdminAuthResponse) =>
-            setAdminAuth(response.data),
-        });
-      } catch (error) {
-        showErrorModal(error as ApiError, '로그인 후 이용해주세요.');
-        setAdminAuth(null);
-      }
-    })();
-  }, []);
+  const {
+    data: adminAuth,
+    isError,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: QUERY_KEYS.adminAuth,
+    queryFn: getAdminAuth,
+    staleTime: 0,
+    gcTime: 5 * 60 * 1000,
+  });
 
-  return { adminAuth };
+  if (isError) {
+    handleApiError(error as ApiError);
+  }
+
+  return { adminAuth, isLoading };
 }

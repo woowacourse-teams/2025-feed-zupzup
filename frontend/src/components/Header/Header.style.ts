@@ -44,14 +44,3 @@ export const captionSection = css`
   flex-direction: column;
   gap: 8px;
 `;
-
-export const moreMenuContainer = css`
-  position: relative;
-`;
-
-export const moreMenu = css`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
-`;

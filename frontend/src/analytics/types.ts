@@ -7,5 +7,3 @@ export interface BaseEvent {
     [key: string]: string | number | boolean | undefined;
   };
 }
-
-export type CategoryType = '신고' | '질문' | '건의' | '기타';

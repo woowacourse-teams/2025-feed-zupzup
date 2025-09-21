@@ -17,8 +17,8 @@ import {
   validateId,
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
+import useNavigation from '@/domains/hooks/useNavigation';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useNavigate } from 'react-router-dom';
 
 const LOGIN_INITIAL_VALUES = {
   id: '',
@@ -32,7 +32,7 @@ const LOGIN_VALIDATORS = {
 
 export default function Login() {
   const theme = useAppTheme();
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
 
   const {
     authValue: loginValue,
@@ -66,10 +66,10 @@ export default function Login() {
         </div>
         <BasicButton>로그인</BasicButton>
         <div css={loginCaptionContainer(theme)}>
-          <p>비밀번호를 잊으셨나요?</p>
+          {/* <p>비밀번호를 잊으셨나요?</p> */}
           <p>
             계정이 없으신가요?
-            <strong onClick={() => navigate('/' + ROUTES.SIGN_UP)}>
+            <strong onClick={() => goPath('/' + ROUTES.SIGN_UP)}>
               회원가입하기
             </strong>
           </p>

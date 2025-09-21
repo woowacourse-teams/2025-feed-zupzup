@@ -1,11 +1,16 @@
-import { AdminAuthResponse, postAdminSignup } from '@/apis/admin.api';
+import {
+  AdminAuthResponse,
+  postAdminSignup,
+  PostAdminSignupParams,
+} from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
+import useNavigation from '@/domains/hooks/useNavigation';
+import { NotificationService } from '@/services/notificationService';
 import { setLocalStorage } from '@/utils/localStorage';
-import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+import { useMutation } from '@tanstack/react-query';
+import { FormEvent } from 'react';
 interface UseSignupProps {
   confirmPasswordErrors: string;
   errors: {
@@ -25,9 +30,24 @@ export default function useSignup({
   signUpValue,
   setToast,
 }: UseSignupProps) {
-  const navigate = useNavigate();
+  const { goPath } = useNavigation();
   const { showErrorModal } = useErrorModalContext();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { mutate: adminSignup, isPending } = useMutation<
+    AdminAuthResponse,
+    ApiError,
+    PostAdminSignupParams
+  >({
+    mutationFn: postAdminSignup,
+    onError: (error) => {
+      showErrorModal(error, '회원가입 요청 실패');
+    },
+    onSuccess: (response) => {
+      setLocalStorage('auth', response.data);
+      goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
+      NotificationService.removeToken();
+    },
+  });
 
   const handleSignUp = async (event: FormEvent) => {
     event.preventDefault();
@@ -40,26 +60,15 @@ export default function useSignup({
       return;
     }
 
-    try {
-      setIsLoading(true);
-      await postAdminSignup({
-        loginId: signUpValue.id,
-        password: signUpValue.password,
-        adminName: signUpValue.name,
-        onSuccess: (response: AdminAuthResponse) => {
-          setLocalStorage('auth', response.data);
-          navigate(ADMIN_BASE + ROUTES.ADMIN_HOME);
-        },
-      });
-    } catch (error) {
-      showErrorModal(error as ApiError, '회원가입 요청 실패');
-    } finally {
-      setIsLoading(false);
-    }
+    adminSignup({
+      loginId: signUpValue.id,
+      password: signUpValue.password,
+      adminName: signUpValue.name,
+    });
   };
 
   return {
     handleSignUp,
-    isLoading,
+    isLoading: isPending,
   };
 }

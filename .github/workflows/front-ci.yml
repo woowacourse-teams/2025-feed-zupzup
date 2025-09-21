@@ -2,9 +2,9 @@ name: Frontend CI
 
 on:
   push:
-    branches: [fe/develop, release, main]
+    branches: [fe/develop, fe/production]
   pull_request:
-    branches: [fe/develop, release, main]
+    branches: [fe/develop, fe/production]
 
 defaults:
   run:

@@ -20,7 +20,8 @@ export const URLBox = (theme: Theme) => css`
   padding: 8px;
   background-color: ${theme.colors.gray[100]};
   border-radius: 8px;
-  overflow: auto;
+  white-space: nowrap;
+  overflow-x: auto;
 `;
 
 export const copyButton = css`
