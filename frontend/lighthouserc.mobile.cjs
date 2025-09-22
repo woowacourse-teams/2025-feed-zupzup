@@ -13,7 +13,15 @@ module.exports = {
       url: paths.length ? paths : ['/'],
       numberOfRuns: 1,
       settings: {
-        preset: 'mobile', // 이거면 충분함
+        preset: 'desktop',
+        formFactor: 'mobile',
+        screenEmulation: {
+          mobile: true,
+          width: 360,
+          height: 640,
+          deviceScaleFactor: 2.625,
+          disabled: false,
+        },
         chromeFlags: [
           '--headless',
           '--no-sandbox',
