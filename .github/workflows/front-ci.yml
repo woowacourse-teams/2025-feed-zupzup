@@ -109,3 +109,330 @@ jobs:
 
       - name: Build project
         run: npm run build:prod
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: [build-dev]
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: "./frontend/package-lock.json"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build:dev
+
+      - name: Run Lighthouse CI for Desktop
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          npm install -g @lhci/cli
+          lhci collect --config=lighthouserc.cjs
+          lhci upload --config=lighthouserc.cjs
+
+      - name: Run Lighthouse CI for Mobile
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          lhci collect --config=lighthouserc.mobile.cjs
+          lhci upload --config=lighthouserc.mobile.cjs
+
+      - name: Format lighthouse score
+        id: format_lighthouse_score
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            process.chdir('./frontend');
+
+            const { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } = require('./lighthouse.config.cjs');
+
+            const getColor = (score) => {
+              if (score >= LHCI_GREEN_MIN_SCORE) return '🟢';
+              else if (score >= LHCI_ORANGE_MIN_SCORE) return '🟠';
+              return '🔴';
+            };
+
+            const getAuditColorAndScore = (score) => getColor(score) + score;
+            const getPerformanceMetricColorAndScore = (category) => {
+              if (!category) return '';
+              return getColor(category.score * 100) + category.displayValue;
+            };
+
+            const formatResult = (res) => Math.round(res * 100);
+
+            const desktopResultsDir = 'lighthouse-results';
+            const mobileResultsDir = 'lighthouse-results-mobile';
+
+            let desktopResults = [];
+            if (fs.existsSync(desktopResultsDir)) {
+              const desktopFiles = fs.readdirSync(desktopResultsDir)
+                .filter(file => file.endsWith('.json'))
+                .map(file => path.join(desktopResultsDir, file));
+              
+              desktopResults = desktopFiles.map(file => {
+                const content = JSON.parse(fs.readFileSync(file, 'utf8'));
+                return {
+                  url: content.finalUrl || content.requestedUrl || content.mainDocumentUrl || '',
+                  jsonPath: file,
+                  report: content
+                };
+              });
+            }
+
+            let mobileResults = [];
+            if (fs.existsSync(mobileResultsDir)) {
+              const mobileFiles = fs.readdirSync(mobileResultsDir)
+                .filter(file => file.endsWith('.json'))
+                .map(file => path.join(mobileResultsDir, file));
+              
+              mobileResults = mobileFiles.map(file => {
+                const content = JSON.parse(fs.readFileSync(file, 'utf8'));
+                return {
+                  url: content.finalUrl || content.requestedUrl || content.mainDocumentUrl || '',
+                  jsonPath: file,
+                  report: content
+                };
+              });
+            }
+
+            const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+            const scoreDescription = `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100 / 🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1} / 🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
+            let comments = '';
+
+            comments += `### Lighthouse report ✨\n`;
+            comments += `${scoreDescription}\n\n`;
+
+            const scores = { desktop: {}, mobile: {} };
+
+            const extractLhciResults = (results, device) => {
+              if (results.length === 0) return;
+              
+              comments += `#### ${device}\n\n`;
+
+              results.forEach((result) => {
+                const { url, report } = result;
+                const { categories, audits } = report;
+
+                if (!url) {
+                  console.log('URL is undefined for result:', result);
+                  return;
+                }
+
+                const pageUrl = url.replace('http://localhost:3000', '');
+                const pageName = getLhciPageNameFromUrl(pageUrl);
+
+                if (!pageName) {
+                  console.log('Page name not found for URL:', pageUrl);
+                  return;
+                }
+
+                const summary = {
+                  performance: categories.performance.score,
+                  accessibility: categories.accessibility.score,
+                  'best-practices': categories['best-practices'].score,
+                  seo: categories.seo.score,
+                  pwa: categories.pwa ? categories.pwa.score : 0
+                };
+
+                Object.keys(summary).forEach((key) => (summary[key] = formatResult(summary[key])));
+
+                const { performance, accessibility, 'best-practices': bestPractices, seo, pwa } = summary;
+
+                const formattedScoreTable = [
+                  `| Category | Score |`,
+                  `| --- | --- |`,
+                  `| ${getColor(performance)} Performance | ${performance} |`,
+                  `| ${getColor(accessibility)} Accessibility | ${accessibility} |`,
+                  `| ${getColor(bestPractices)} Best practices | ${bestPractices} |`,
+                  `| ${getColor(seo)} SEO | ${seo} |`,
+                  `| ${getColor(pwa)} PWA | ${pwa} |`
+                ];
+
+                if (audits['first-contentful-paint']) {
+                  formattedScoreTable.push(`| ${getColor(audits['first-contentful-paint'].score * 100)} First Contentful Paint | ${audits['first-contentful-paint'].displayValue} |`);
+                }
+                if (audits['largest-contentful-paint']) {
+                  formattedScoreTable.push(`| ${getColor(audits['largest-contentful-paint'].score * 100)} Largest Contentful Paint | ${audits['largest-contentful-paint'].displayValue} |`);
+                }
+                if (audits['speed-index']) {
+                  formattedScoreTable.push(`| ${getColor(audits['speed-index'].score * 100)} Speed Index | ${audits['speed-index'].displayValue} |`);
+                }
+                if (audits['total-blocking-time']) {
+                  formattedScoreTable.push(`| ${getColor(audits['total-blocking-time'].score * 100)} Total Blocking Time | ${audits['total-blocking-time'].displayValue} |`);
+                }
+                if (audits['cumulative-layout-shift']) {
+                  formattedScoreTable.push(`| ${getColor(audits['cumulative-layout-shift'].score * 100)} Cumulative Layout Shift | ${audits['cumulative-layout-shift'].displayValue} |`);
+                }
+
+                const score = {
+                  Performance: getAuditColorAndScore(performance),
+                  Accessibility: getAuditColorAndScore(accessibility),
+                  'Best Practices': getAuditColorAndScore(bestPractices),
+                  SEO: getAuditColorAndScore(seo),
+                  PWA: getAuditColorAndScore(pwa),
+                  FCP: getPerformanceMetricColorAndScore(audits['first-contentful-paint']),
+                  LCP: getPerformanceMetricColorAndScore(audits['largest-contentful-paint']),
+                  'Speed Index': getPerformanceMetricColorAndScore(audits['speed-index']),
+                  TBT: getPerformanceMetricColorAndScore(audits['total-blocking-time']),
+                  CLS: getPerformanceMetricColorAndScore(audits['cumulative-layout-shift'])
+                };
+
+                scores[device.toLowerCase()][pageName] = score;
+
+                comments += `<details>\n<summary>${pageName}</summary>\n\n> ${pageUrl}\n\n${formattedScoreTable.join('\n')}\n\n</details>\n\n`;
+              });
+            };
+
+            if (desktopResults.length > 0) {
+              extractLhciResults(desktopResults, 'Desktop');
+            }
+            if (mobileResults.length > 0) {
+              extractLhciResults(mobileResults, 'Mobile');
+            }
+
+            core.setOutput('comments', comments);
+            core.setOutput('monitoringTime', monitoringTime);
+            core.setOutput('scores', scores);
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: previousComments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number
+            });
+
+            const previousLhciComment = previousComments.find((comment) => 
+              comment.body.startsWith(`### Lighthouse report ✨`)
+            );
+
+            const newComment = `${{ steps.format_lighthouse_score.outputs.comments }}`;
+
+            if (previousLhciComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: previousLhciComment.id,
+                body: newComment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: newComment
+              });
+            }
+
+      - name: Install required packages
+        run: npm install google-spreadsheet google-auth-library
+
+      - name: Update Google SpreadSheet
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { GoogleSpreadsheet } = require('google-spreadsheet');
+            const { JWT } = require('google-auth-library');
+
+            process.chdir('./frontend');
+
+            async function updateGoogleSheet() {
+              try {
+                const serviceAccountAuth = new JWT({
+                  email: '${{ secrets.LHCI_GOOGLE_CLIENT_EMAIL }}',
+                  key: '${{ secrets.LHCI_GOOGLE_PRIVATE_KEY }}'.replace(/\\n/g, '\n'),
+                  scopes: [
+                    'https://www.googleapis.com/auth/spreadsheets',
+                    'https://www.googleapis.com/auth/drive.file'
+                  ]
+                });
+
+                const doc = new GoogleSpreadsheet('${{ secrets.LHCI_GOOGLE_SPREAD_SHEET_ID }}', serviceAccountAuth);
+                
+                await doc.loadInfo();
+
+                const { desktop, mobile } = ${{ steps.format_lighthouse_score.outputs.scores }};
+                const monitoringTime = '${{ steps.format_lighthouse_score.outputs.monitoringTime }}';
+
+                const prUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/pull/${context.payload.pull_request.number}`;
+                const prHyperlink = `=HYPERLINK("${prUrl}", "#${context.payload.pull_request.number}")`;
+
+                for (const pageName in desktop) {
+                  const sheet = doc.sheetsByTitle[pageName];
+                  if (!sheet) {
+                    console.warn(`Warning: Sheet '${pageName}' not found in spreadsheet`);
+                    continue;
+                  }
+
+                  const desktopScores = desktop[pageName] || {};
+                  const mobileScores = mobile[pageName] || {};
+                  
+                  const newRow = {
+                    'PR url': prHyperlink,
+                    'Monitoring Time': monitoringTime,
+                    'Performance [D]': desktopScores.Performance || '',
+                    'Accessibility [D]': desktopScores.Accessibility || '',
+                    'Best Practices [D]': desktopScores['Best Practices'] || '',
+                    'SEO [D]': desktopScores.SEO || '',
+                    'PWA [D]': desktopScores.PWA || '',
+                    'FCP [D]': desktopScores.FCP || '',
+                    'LCP [D]': desktopScores.LCP || '',
+                    'Speed Index [D]': desktopScores['Speed Index'] || '',
+                    'TBT [D]': desktopScores.TBT || '',
+                    'CLS [D]': desktopScores.CLS || '',
+                    'Performance [M]': mobileScores.Performance || '',
+                    'Accessibility [M]': mobileScores.Accessibility || '',
+                    'Best Practices [M]': mobileScores['Best Practices'] || '',
+                    'SEO [M]': mobileScores.SEO || '',
+                    'PWA [M]': mobileScores.PWA || '',
+                    'FCP [M]': mobileScores.FCP || '',
+                    'LCP [M]': mobileScores.LCP || '',
+                    'Speed Index [M]': mobileScores['Speed Index'] || '',
+                    'TBT [M]': mobileScores.TBT || '',
+                    'CLS [M]': mobileScores.CLS || ''
+                  };
+
+                  try {
+                    const rows = await sheet.getRows();
+                    const existingRow = rows.find(row => 
+                      row['PR url'] && row['PR url'].includes(`#${context.payload.pull_request.number}`)
+                    );
+
+                    if (existingRow) {
+                      Object.keys(newRow).forEach(key => {
+                        existingRow[key] = newRow[key];
+                      });
+                      await existingRow.save();
+                    } else {
+                      await sheet.addRow(newRow);
+                    }
+                  } catch (err) {
+                    console.error(`Error processing sheet ${pageName}:`, err.message);
+                  }
+                }
+              } catch (error) {
+                console.error('Error details:', error);
+                core.setFailed(`Failed to update Google Sheet: ${error.message}`);
+              }
+            }
+
+            await updateGoogleSheet();
