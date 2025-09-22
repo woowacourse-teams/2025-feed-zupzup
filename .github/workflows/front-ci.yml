@@ -192,88 +192,94 @@ jobs:
               LHCI_RED_MIN_SCORE,
             } = require('./lighthouse.config.cjs');
 
-            const getColor = (score) => {
-              if (score >= LHCI_GREEN_MIN_SCORE) return '🟢';
-              else if (score >= LHCI_ORANGE_MIN_SCORE) return '🟠';
-              return '🔴';
-            };
-            const fmtScore = (n) => `${getColor(n)}${n}`;
+            const color = (n) => (n >= LHCI_GREEN_MIN_SCORE ? '🟢' : n >= LHCI_ORANGE_MIN_SCORE ? '🟠' : '🔴');
             const pct = (v) => Math.round(v * 100);
-
-            const desktopResultsDir = 'lighthouse-results';
-            const mobileResultsDir = 'lighthouse-results-mobile';
-
-            const loadResults = (dir) => {
-              if (!fs.existsSync(dir)) return [];
-              return fs.readdirSync(dir)
-                .filter((f) => f.endsWith('.json'))
-                .map((f) => path.join(dir, f))
-                .map((file) => {
-                  const content = JSON.parse(fs.readFileSync(file, 'utf8'));
-                  return {
-                    url: content.finalUrl || content.requestedUrl || content.mainDocumentUrl || '',
-                    report: content,
-                  };
-                });
+            const fmtScore = (n) => `${color(n)}${n}`;
+            const fmtAudit = (audit) => {
+              if (!audit || typeof audit.score !== 'number') return '—';
+              const score100 = Math.round(audit.score * 100);
+              return `${color(score100)}${audit.displayValue || ''}`.trim();
             };
 
-            const desktopResults = loadResults(desktopResultsDir);
-            const mobileResults = loadResults(mobileResultsDir);
+            const loadJsons = (dir) =>
+              fs.existsSync(dir)
+                ? fs
+                    .readdirSync(dir)
+                    .filter((f) => f.endsWith('.json'))
+                    .map((f) => path.join(dir, f))
+                    .map((file) => {
+                      const report = JSON.parse(fs.readFileSync(file, 'utf8'));
+                      return {
+                        url: report.finalUrl || report.requestedUrl || report.mainDocumentUrl || '',
+                        report,
+                      };
+                    })
+                : [];
+
+            const desktop = loadJsons('lighthouse-results');
+            const mobile = loadJsons('lighthouse-results-mobile');
 
             const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
-            const scoreDescription =
-              `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100 / 🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1} / 🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
+            const legend = `> 🟢: ${LHCI_GREEN_MIN_SCORE}-100 / 🟠: ${LHCI_ORANGE_MIN_SCORE}-${LHCI_GREEN_MIN_SCORE - 1} / 🔴: ${LHCI_RED_MIN_SCORE}-${LHCI_ORANGE_MIN_SCORE - 1}`;
 
-            let comments = `### Lighthouse report ✨\n${scoreDescription}\n\n`;
+            let comments = `### Lighthouse report ✨\n${legend}\n\n`;
             const scores = { desktop: {}, mobile: {} };
 
-            const buildSummaryTable = (results, deviceKey, deviceTitle) => {
+            function addTable(results, deviceKey, title) {
+              comments += `#### ${title}\n\n`;
               if (results.length === 0) {
-                comments += `#### ${deviceTitle}\n\n(결과 없음)\n\n`;
+                comments += `(결과 없음)\n\n`;
                 return;
               }
 
-              // 표 헤더
-              const header =
-                `#### ${deviceTitle}\n\n` +
-                `| Page | Perf | A11y | Best | SEO | PWA |\n` +
-                `|------|------|------|------|-----|-----|\n`;
+              // 표 헤더(카테고리 + 핵심 지표)
+              comments +=
+                `| Page | Perf | A11y | Best | SEO | PWA | FCP | LCP | Speed Index | TBT | CLS |\n` +
+                `|------|------|------|------|-----|-----|-----|-----|-------------|-----|-----|\n`;
 
-              let rows = '';
-
-              results.forEach(({ url, report }) => {
-                if (!url) return;
-
+              for (const { url, report } of results) {
+                if (!url) continue;
                 const pageUrl = url.replace(/^http:\/\/localhost:\d+/, '');
-                const pageName = getLhciPageNameFromUrl(pageUrl);
-                const { categories } = report;
+                const page = getLhciPageNameFromUrl(pageUrl);
 
-                const summary = {
-                  performance: pct(categories.performance.score),
-                  accessibility: pct(categories.accessibility.score),
-                  'best-practices': pct(categories['best-practices'].score),
-                  seo: pct(categories.seo.score),
-                  pwa: categories.pwa ? pct(categories.pwa.score) : 0,
+                const { categories, audits } = report;
+
+                // 요약 카테고리 점수
+                const perf = pct(categories.performance.score);
+                const a11y = pct(categories.accessibility.score);
+                const best = pct(categories['best-practices'].score);
+                const seo = pct(categories.seo.score);
+                const pwa = categories.pwa ? pct(categories.pwa.score) : 0;
+
+                // 핵심 지표 (표시값 + 색상)
+                const FCP = fmtAudit(audits['first-contentful-paint']);
+                const LCP = fmtAudit(audits['largest-contentful-paint']);
+                const SI = fmtAudit(audits['speed-index']);
+                const TBT = fmtAudit(audits['total-blocking-time']);
+                const CLS = fmtAudit(audits['cumulative-layout-shift']);
+
+                comments += `| ${page} | ${fmtScore(perf)} | ${fmtScore(a11y)} | ${fmtScore(best)} | ${fmtScore(seo)} | ${fmtScore(pwa)} | ${FCP} | ${LCP} | ${SI} | ${TBT} | ${CLS} |\n`;
+
+                // 스프레드시트/후처리용 원시 데이터도 함께 저장(필요하면 활용)
+                scores[deviceKey][page] = {
+                  Performance: fmtScore(perf),
+                  Accessibility: fmtScore(a11y),
+                  'Best Practices': fmtScore(best),
+                  SEO: fmtScore(seo),
+                  PWA: fmtScore(pwa),
+                  FCP,
+                  LCP,
+                  'Speed Index': SI,
+                  TBT,
+                  CLS,
                 };
+              }
 
-                // PR 코멘트 표 행
-                rows += `| ${pageName} | ${fmtScore(summary.performance)} | ${fmtScore(summary.accessibility)} | ${fmtScore(summary['best-practices'])} | ${fmtScore(summary.seo)} | ${fmtScore(summary.pwa)} |\n`;
+              comments += `\n`; // 섹션 간 공백
+            }
 
-                // 구글 시트/후처리를 위한 원시 점수도 유지
-                scores[deviceKey][pageName] = {
-                  Performance: fmtScore(summary.performance),
-                  Accessibility: fmtScore(summary.accessibility),
-                  'Best Practices': fmtScore(summary['best-practices']),
-                  SEO: fmtScore(summary.seo),
-                  PWA: fmtScore(summary.pwa),
-                };
-              });
-
-              comments += header + rows + `\n`;
-            };
-
-            buildSummaryTable(desktopResults, 'desktop', 'Desktop');
-            buildSummaryTable(mobileResults, 'mobile', 'Mobile');
+            addTable(desktop, 'desktop', 'Desktop');
+            addTable(mobile, 'mobile', 'Mobile');
 
             core.setOutput('comments', comments);
             core.setOutput('monitoringTime', monitoringTime);
