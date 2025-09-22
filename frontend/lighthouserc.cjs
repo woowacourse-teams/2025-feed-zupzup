@@ -16,7 +16,14 @@ module.exports = {
       settings: {
         preset: 'desktop',
         formFactor: 'desktop',
-        chromeFlags: ['--disable-mobile-emulation'], // 단순하게!
+        chromeFlags: [
+          '--disable-mobile-emulation',
+          '--headless',
+          '--disable-gpu',
+          '--no-sandbox',
+          '--disable-dev-shm-usage',
+        ],
+        chromePath: '/usr/bin/google-chrome',
         screenEmulation: {
           mobile: false,
           width: 1350,

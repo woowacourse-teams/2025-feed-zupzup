@@ -21,6 +21,7 @@ module.exports = {
           '--no-sandbox',
           '--disable-dev-shm-usage',
         ],
+        chromePath: '/usr/bin/google-chrome',
         screenEmulation: {
           mobile: true,
           width: 375,
