@@ -3,27 +3,18 @@ const {
   getLhciUrlFromPageName,
 } = require('./lighthouse.config.cjs');
 
-const urls = LHCI_MONITORING_PAGE_NAMES.map(
-  (name) => `http://localhost:3000${getLhciUrlFromPageName(name)}`
-);
+const paths = LHCI_MONITORING_PAGE_NAMES.map(getLhciUrlFromPageName);
 
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'npm run dev',
-      url: urls,
+      // ✅ 빌드 산출물 폴더를 LHCI가 정적 서빙
+      staticDistDir: './dist',
+      url: paths.length ? paths : ['/', '/guide', '/introduce'],
       numberOfRuns: 1,
       settings: {
         preset: 'desktop',
         formFactor: 'desktop',
-        chromeFlags: [
-          '--disable-mobile-emulation',
-          '--headless',
-          '--disable-gpu',
-          '--no-sandbox',
-          '--disable-dev-shm-usage',
-        ],
-        chromePath: '/usr/bin/google-chrome',
         screenEmulation: {
           mobile: false,
           width: 1350,
@@ -31,6 +22,7 @@ module.exports = {
           deviceScaleFactor: 1,
           disabled: false,
         },
+        chromeFlags: ['--disable-mobile-emulation'],
       },
     },
     assert: {

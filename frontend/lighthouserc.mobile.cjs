@@ -10,23 +10,17 @@ const urls = LHCI_MONITORING_PAGE_NAMES.map(
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'npm run dev',
+      staticDistDir: './dist',
       url: urls,
       numberOfRuns: 1,
       settings: {
+        preset: 'mobile',
         formFactor: 'mobile',
-        chromeFlags: [
-          '--headless',
-          '--disable-gpu',
-          '--no-sandbox',
-          '--disable-dev-shm-usage',
-        ],
-        chromePath: '/usr/bin/google-chrome',
         screenEmulation: {
           mobile: true,
-          width: 375,
-          height: 667,
-          deviceScaleFactor: 2,
+          width: 360,
+          height: 640,
+          deviceScaleFactor: 2.625,
           disabled: false,
         },
       },
