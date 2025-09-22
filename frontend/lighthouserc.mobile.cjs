@@ -22,6 +22,12 @@ module.exports = {
       // lighthouse 검사 설정 (모바일 전용)
       settings: {
         formFactor: 'mobile',
+        chromeFlags: [
+          '--headless',
+          '--disable-gpu',
+          '--no-sandbox',
+          '--disable-dev-shm-usage',
+        ],
         screenEmulation: {
           mobile: true,
           width: 375,

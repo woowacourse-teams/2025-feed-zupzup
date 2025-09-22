@@ -23,7 +23,13 @@ module.exports = {
       settings: {
         preset: 'desktop',
         formFactor: 'desktop',
-        chromeFlags: ['--disable-mobile-emulation'],
+        chromeFlags: [
+          '--disable-mobile-emulation',
+          '--headless',
+          '--disable-gpu',
+          '--no-sandbox',
+          '--disable-dev-shm-usage',
+        ],
         screenEmulation: {
           mobile: false,
           width: 1350,
