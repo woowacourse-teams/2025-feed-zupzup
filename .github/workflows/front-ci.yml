@@ -155,6 +155,15 @@ jobs:
           lhci collect --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
           lhci upload --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
 
+      - name: Debug Lighthouse Results
+        run: |
+          echo "=== Checking lighthouse-results directory ==="
+          ls -la lighthouse-results/ || echo "lighthouse-results directory not found"
+          echo "=== Checking lighthouse-results-mobile directory ==="
+          ls -la lighthouse-results-mobile/ || echo "lighthouse-results-mobile directory not found"
+          echo "=== Current directory contents ==="
+          ls -la
+
       - name: Run Lighthouse CI for Mobile
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
