@@ -185,132 +185,95 @@ jobs:
 
             process.chdir('./frontend');
 
-            const { getLhciPageNameFromUrl, LHCI_GREEN_MIN_SCORE, LHCI_ORANGE_MIN_SCORE, LHCI_RED_MIN_SCORE } = require('./lighthouse.config.cjs');
+            const {
+              getLhciPageNameFromUrl,
+              LHCI_GREEN_MIN_SCORE,
+              LHCI_ORANGE_MIN_SCORE,
+              LHCI_RED_MIN_SCORE,
+            } = require('./lighthouse.config.cjs');
 
             const getColor = (score) => {
               if (score >= LHCI_GREEN_MIN_SCORE) return '🟢';
               else if (score >= LHCI_ORANGE_MIN_SCORE) return '🟠';
               return '🔴';
             };
-
-            const getAuditColorAndScore = (score) => getColor(score) + score;
-            const getPerformanceMetricColorAndScore = (category) => getColor(category.score * 100) + category.displayValue;
-
-            const formatResult = (res) => Math.round(res * 100);
+            const fmtScore = (n) => `${getColor(n)}${n}`;
+            const pct = (v) => Math.round(v * 100);
 
             const desktopResultsDir = 'lighthouse-results';
             const mobileResultsDir = 'lighthouse-results-mobile';
 
-            let desktopResults = [];
-            if (fs.existsSync(desktopResultsDir)) {
-              const desktopFiles = fs.readdirSync(desktopResultsDir)
-                .filter(file => file.endsWith('.json'))
-                .map(file => path.join(desktopResultsDir, file));
-              
-              desktopResults = desktopFiles.map(file => {
-                const content = JSON.parse(fs.readFileSync(file, 'utf8'));
-                return {
-                  url: content.finalUrl || content.requestedUrl || content.mainDocumentUrl || '',
-                  jsonPath: file,
-                  report: content
-                };
-              });
-            }
+            const loadResults = (dir) => {
+              if (!fs.existsSync(dir)) return [];
+              return fs.readdirSync(dir)
+                .filter((f) => f.endsWith('.json'))
+                .map((f) => path.join(dir, f))
+                .map((file) => {
+                  const content = JSON.parse(fs.readFileSync(file, 'utf8'));
+                  return {
+                    url: content.finalUrl || content.requestedUrl || content.mainDocumentUrl || '',
+                    report: content,
+                  };
+                });
+            };
 
-            let mobileResults = [];
-            if (fs.existsSync(mobileResultsDir)) {
-              const mobileFiles = fs.readdirSync(mobileResultsDir)
-                .filter(file => file.endsWith('.json'))
-                .map(file => path.join(mobileResultsDir, file));
-              
-              mobileResults = mobileFiles.map(file => {
-                const content = JSON.parse(fs.readFileSync(file, 'utf8'));
-                return {
-                  url: content.finalUrl || content.requestedUrl || content.mainDocumentUrl || '',
-                  jsonPath: file,
-                  report: content
-                };
-              });
-            }
+            const desktopResults = loadResults(desktopResultsDir);
+            const mobileResults = loadResults(mobileResultsDir);
 
             const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
-            const scoreDescription = `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100` + ' / ' + `🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1}` + ' / ' + `🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
-            let comments = '';
+            const scoreDescription =
+              `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100 / 🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1} / 🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
 
-            comments += `### Lighthouse report ✨\n`;
-            comments += `${scoreDescription}\n\n`;
-
+            let comments = `### Lighthouse report ✨\n${scoreDescription}\n\n`;
             const scores = { desktop: {}, mobile: {} };
 
-            const extractLhciResults = (results, device) => {
-              comments += `#### ${device}\n\n`;
+            const buildSummaryTable = (results, deviceKey, deviceTitle) => {
+              if (results.length === 0) {
+                comments += `#### ${deviceTitle}\n\n(결과 없음)\n\n`;
+                return;
+              }
 
-              results.forEach((result) => {
-                const { url, report } = result;
-                const { categories, audits } = report;
+              // 표 헤더
+              const header =
+                `#### ${deviceTitle}\n\n` +
+                `| Page | Perf | A11y | Best | SEO | PWA |\n` +
+                `|------|------|------|------|-----|-----|\n`;
 
-                if (!url) {
-                  console.log('URL is undefined for result:', result);
-                  return;
-                }
+              let rows = '';
+
+              results.forEach(({ url, report }) => {
+                if (!url) return;
 
                 const pageUrl = url.replace(/^http:\/\/localhost:\d+/, '');
                 const pageName = getLhciPageNameFromUrl(pageUrl);
+                const { categories } = report;
 
                 const summary = {
-                  performance: categories.performance.score,
-                  accessibility: categories.accessibility.score,
-                  'best-practices': categories['best-practices'].score,
-                  seo: categories.seo.score,
-                  pwa: categories.pwa ? categories.pwa.score : 0
+                  performance: pct(categories.performance.score),
+                  accessibility: pct(categories.accessibility.score),
+                  'best-practices': pct(categories['best-practices'].score),
+                  seo: pct(categories.seo.score),
+                  pwa: categories.pwa ? pct(categories.pwa.score) : 0,
                 };
 
-                Object.keys(summary).forEach((key) => (summary[key] = formatResult(summary[key])));
+                // PR 코멘트 표 행
+                rows += `| ${pageName} | ${fmtScore(summary.performance)} | ${fmtScore(summary.accessibility)} | ${fmtScore(summary['best-practices'])} | ${fmtScore(summary.seo)} | ${fmtScore(summary.pwa)} |\n`;
 
-                const { performance, accessibility, 'best-practices': bestPractices, seo, pwa } = summary;
-                const { 'first-contentful-paint': firstContentfulPaint, 'largest-contentful-paint': largestContentfulPaint, 'speed-index': speedIndex, 'total-blocking-time': totalBlockingTime, 'cumulative-layout-shift': cumulativeLayoutShift } = audits;
-
-                const formattedScoreTable = [
-                  `| Category | Score |`,
-                  `| --- | --- |`,
-                  `| ${getColor(performance)} Performance | ${performance} |`,
-                  `| ${getColor(accessibility)} Accessibility | ${accessibility} |`,
-                  `| ${getColor(bestPractices)} Best practices | ${bestPractices} |`,
-                  `| ${getColor(seo)} SEO | ${seo} |`,
-                  `| ${getColor(pwa)} PWA | ${pwa} |`,
-                  `| ${getColor(firstContentfulPaint.score * 100)} First Contentful Paint | ${firstContentfulPaint.displayValue} |`,
-                  `| ${getColor(largestContentfulPaint.score * 100)} Largest Contentful Paint | ${largestContentfulPaint.displayValue} |`,
-                  `| ${getColor(speedIndex.score * 100)} Speed Index | ${speedIndex.displayValue} |`,
-                  `| ${getColor(totalBlockingTime.score * 100)} Total Blocking Time | ${totalBlockingTime.displayValue} |`,
-                  `| ${getColor(cumulativeLayoutShift.score * 100)} Cumulative Layout Shift | ${cumulativeLayoutShift.displayValue} |`,
-                  `\n`
-                ].join('\n');
-
-                const score = {
-                  Performance: getAuditColorAndScore(performance),
-                  Accessibility: getAuditColorAndScore(accessibility),
-                  'Best Practices': getAuditColorAndScore(bestPractices),
-                  SEO: getAuditColorAndScore(seo),
-                  PWA: getAuditColorAndScore(pwa),
-                  FCP: getPerformanceMetricColorAndScore(firstContentfulPaint),
-                  LCP: getPerformanceMetricColorAndScore(largestContentfulPaint),
-                  'Speed Index': getPerformanceMetricColorAndScore(speedIndex),
-                  TBT: getPerformanceMetricColorAndScore(totalBlockingTime),
-                  CLS: getPerformanceMetricColorAndScore(cumulativeLayoutShift)
+                // 구글 시트/후처리를 위한 원시 점수도 유지
+                scores[deviceKey][pageName] = {
+                  Performance: fmtScore(summary.performance),
+                  Accessibility: fmtScore(summary.accessibility),
+                  'Best Practices': fmtScore(summary['best-practices']),
+                  SEO: fmtScore(summary.seo),
+                  PWA: fmtScore(summary.pwa),
                 };
-
-                scores[device.toLowerCase()][pageName] = score;
-
-                comments += `<details>\n<summary>${pageName}</summary>\n\n> ${pageUrl}\n\n${formattedScoreTable}\n</details>\n\n`;
               });
+
+              comments += header + rows + `\n`;
             };
 
-            if (desktopResults.length > 0) {
-              extractLhciResults(desktopResults, 'Desktop');
-            }
-            if (mobileResults.length > 0) {
-              extractLhciResults(mobileResults, 'Mobile');
-            }
+            buildSummaryTable(desktopResults, 'desktop', 'Desktop');
+            buildSummaryTable(mobileResults, 'mobile', 'Mobile');
 
             core.setOutput('comments', comments);
             core.setOutput('monitoringTime', monitoringTime);
