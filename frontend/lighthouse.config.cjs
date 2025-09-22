@@ -1,4 +1,3 @@
-
 module.exports = {
   // Google Spreadsheet ID (나중에 필요시)
   LHCI_GOOGLE_SPREAD_SHEET_ID: process.env.LHCI_GOOGLE_SPREAD_SHEET_ID,

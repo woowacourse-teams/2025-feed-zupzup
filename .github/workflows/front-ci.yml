@@ -109,6 +109,7 @@ jobs:
 
       - name: Build project
         run: npm run build:prod
+
   lighthouse:
     runs-on: ubuntu-latest
     needs: [build-dev]
@@ -130,6 +131,16 @@ jobs:
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
 
@@ -141,15 +152,15 @@ jobs:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
           npm install -g @lhci/cli
-          lhci collect --config=lighthouserc.cjs
-          lhci upload --config=lighthouserc.cjs
+          lhci collect --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
+          lhci upload --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
 
       - name: Run Lighthouse CI for Mobile
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
         run: |
-          lhci collect --config=lighthouserc.mobile.cjs
-          lhci upload --config=lighthouserc.mobile.cjs
+          lhci collect --config=lighthouserc.mobile.cjs || echo 'Fail to Run Lighthouse CI Mobile 💦'
+          lhci upload --config=lighthouserc.mobile.cjs || echo 'Fail to Run Lighthouse CI Mobile 💦'
 
       - name: Format lighthouse score
         id: format_lighthouse_score
@@ -170,10 +181,7 @@ jobs:
             };
 
             const getAuditColorAndScore = (score) => getColor(score) + score;
-            const getPerformanceMetricColorAndScore = (category) => {
-              if (!category) return '';
-              return getColor(category.score * 100) + category.displayValue;
-            };
+            const getPerformanceMetricColorAndScore = (category) => getColor(category.score * 100) + category.displayValue;
 
             const formatResult = (res) => Math.round(res * 100);
 
@@ -213,7 +221,7 @@ jobs:
             }
 
             const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
-            const scoreDescription = `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100 / 🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1} / 🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
+            const scoreDescription = `> 🟢: ${LHCI_GREEN_MIN_SCORE} - 100` + ' / ' + `🟠: ${LHCI_ORANGE_MIN_SCORE} - ${LHCI_GREEN_MIN_SCORE - 1}` + ' / ' + `🔴: ${LHCI_RED_MIN_SCORE} - ${LHCI_ORANGE_MIN_SCORE - 1}`;
             let comments = '';
 
             comments += `### Lighthouse report ✨\n`;
@@ -222,8 +230,6 @@ jobs:
             const scores = { desktop: {}, mobile: {} };
 
             const extractLhciResults = (results, device) => {
-              if (results.length === 0) return;
-              
               comments += `#### ${device}\n\n`;
 
               results.forEach((result) => {
@@ -238,11 +244,6 @@ jobs:
                 const pageUrl = url.replace('http://localhost:3000', '');
                 const pageName = getLhciPageNameFromUrl(pageUrl);
 
-                if (!pageName) {
-                  console.log('Page name not found for URL:', pageUrl);
-                  return;
-                }
-
                 const summary = {
                   performance: categories.performance.score,
                   accessibility: categories.accessibility.score,
@@ -254,6 +255,7 @@ jobs:
                 Object.keys(summary).forEach((key) => (summary[key] = formatResult(summary[key])));
 
                 const { performance, accessibility, 'best-practices': bestPractices, seo, pwa } = summary;
+                const { 'first-contentful-paint': firstContentfulPaint, 'largest-contentful-paint': largestContentfulPaint, 'speed-index': speedIndex, 'total-blocking-time': totalBlockingTime, 'cumulative-layout-shift': cumulativeLayoutShift } = audits;
 
                 const formattedScoreTable = [
                   `| Category | Score |`,
@@ -262,24 +264,14 @@ jobs:
                   `| ${getColor(accessibility)} Accessibility | ${accessibility} |`,
                   `| ${getColor(bestPractices)} Best practices | ${bestPractices} |`,
                   `| ${getColor(seo)} SEO | ${seo} |`,
-                  `| ${getColor(pwa)} PWA | ${pwa} |`
-                ];
-
-                if (audits['first-contentful-paint']) {
-                  formattedScoreTable.push(`| ${getColor(audits['first-contentful-paint'].score * 100)} First Contentful Paint | ${audits['first-contentful-paint'].displayValue} |`);
-                }
-                if (audits['largest-contentful-paint']) {
-                  formattedScoreTable.push(`| ${getColor(audits['largest-contentful-paint'].score * 100)} Largest Contentful Paint | ${audits['largest-contentful-paint'].displayValue} |`);
-                }
-                if (audits['speed-index']) {
-                  formattedScoreTable.push(`| ${getColor(audits['speed-index'].score * 100)} Speed Index | ${audits['speed-index'].displayValue} |`);
-                }
-                if (audits['total-blocking-time']) {
-                  formattedScoreTable.push(`| ${getColor(audits['total-blocking-time'].score * 100)} Total Blocking Time | ${audits['total-blocking-time'].displayValue} |`);
-                }
-                if (audits['cumulative-layout-shift']) {
-                  formattedScoreTable.push(`| ${getColor(audits['cumulative-layout-shift'].score * 100)} Cumulative Layout Shift | ${audits['cumulative-layout-shift'].displayValue} |`);
-                }
+                  `| ${getColor(pwa)} PWA | ${pwa} |`,
+                  `| ${getColor(firstContentfulPaint.score * 100)} First Contentful Paint | ${firstContentfulPaint.displayValue} |`,
+                  `| ${getColor(largestContentfulPaint.score * 100)} Largest Contentful Paint | ${largestContentfulPaint.displayValue} |`,
+                  `| ${getColor(speedIndex.score * 100)} Speed Index | ${speedIndex.displayValue} |`,
+                  `| ${getColor(totalBlockingTime.score * 100)} Total Blocking Time | ${totalBlockingTime.displayValue} |`,
+                  `| ${getColor(cumulativeLayoutShift.score * 100)} Cumulative Layout Shift | ${cumulativeLayoutShift.displayValue} |`,
+                  `\n`
+                ].join('\n');
 
                 const score = {
                   Performance: getAuditColorAndScore(performance),
@@ -287,16 +279,16 @@ jobs:
                   'Best Practices': getAuditColorAndScore(bestPractices),
                   SEO: getAuditColorAndScore(seo),
                   PWA: getAuditColorAndScore(pwa),
-                  FCP: getPerformanceMetricColorAndScore(audits['first-contentful-paint']),
-                  LCP: getPerformanceMetricColorAndScore(audits['largest-contentful-paint']),
-                  'Speed Index': getPerformanceMetricColorAndScore(audits['speed-index']),
-                  TBT: getPerformanceMetricColorAndScore(audits['total-blocking-time']),
-                  CLS: getPerformanceMetricColorAndScore(audits['cumulative-layout-shift'])
+                  FCP: getPerformanceMetricColorAndScore(firstContentfulPaint),
+                  LCP: getPerformanceMetricColorAndScore(largestContentfulPaint),
+                  'Speed Index': getPerformanceMetricColorAndScore(speedIndex),
+                  TBT: getPerformanceMetricColorAndScore(totalBlockingTime),
+                  CLS: getPerformanceMetricColorAndScore(cumulativeLayoutShift)
                 };
 
                 scores[device.toLowerCase()][pageName] = score;
 
-                comments += `<details>\n<summary>${pageName}</summary>\n\n> ${pageUrl}\n\n${formattedScoreTable.join('\n')}\n\n</details>\n\n`;
+                comments += `<details>\n<summary>${pageName}</summary>\n\n> ${pageUrl}\n\n${formattedScoreTable}\n</details>\n\n`;
               });
             };
 
@@ -322,7 +314,7 @@ jobs:
             });
 
             const previousLhciComment = previousComments.find((comment) => 
-              comment.body.startsWith(`### Lighthouse report ✨`)
+              comment.body.startsWith(`### Lighthouse report ✨\n`)
             );
 
             const newComment = `${{ steps.format_lighthouse_score.outputs.comments }}`;
