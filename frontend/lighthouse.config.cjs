@@ -27,10 +27,10 @@ module.exports = {
   // 페이지 이름 - 시트 ID 매핑 (구글 시트용)
   LHCI_PAGE_NAME_TO_SHEET_ID: {
     feedback_submit: 0,
-    feedback_dashboard: 1,
-    admin_home: 2,
-    admin_dashboard: 3,
-    admin_settings: 4,
+    feedback_dashboard: 939688316,
+    admin_home: 1333922864,
+    admin_dashboard: 1766877014,
+    admin_settings: 1981432470,
   },
 
   // URL에서 페이지 이름 찾기
