@@ -3,15 +3,14 @@ const {
   getLhciUrlFromPageName,
 } = require('./lighthouse.config.cjs');
 
-const urls = LHCI_MONITORING_PAGE_NAMES.map(
-  (name) => `http://localhost:3000${getLhciUrlFromPageName(name)}`
-);
+const paths = LHCI_MONITORING_PAGE_NAMES.map(getLhciUrlFromPageName);
 
 module.exports = {
   ci: {
     collect: {
       staticDistDir: './dist',
-      url: urls,
+      isSinglePageApplication: true,
+      url: paths.length ? paths : ['/'],
       numberOfRuns: 1,
       settings: {
         preset: 'mobile',

@@ -8,9 +8,9 @@ const paths = LHCI_MONITORING_PAGE_NAMES.map(getLhciUrlFromPageName);
 module.exports = {
   ci: {
     collect: {
-      // ✅ 빌드 산출물 폴더를 LHCI가 정적 서빙
       staticDistDir: './dist',
-      url: paths.length ? paths : ['/', '/guide', '/introduce'],
+      isSinglePageApplication: true,
+      url: paths.length ? paths : ['/'],
       numberOfRuns: 1,
       settings: {
         preset: 'desktop',
