@@ -13,15 +13,13 @@ module.exports = {
       url: paths.length ? paths : ['/'],
       numberOfRuns: 1,
       settings: {
-        preset: 'mobile',
-        formFactor: 'mobile',
-        screenEmulation: {
-          mobile: true,
-          width: 360,
-          height: 640,
-          deviceScaleFactor: 2.625,
-          disabled: false,
-        },
+        preset: 'mobile', // 이거면 충분함
+        chromeFlags: [
+          '--headless',
+          '--no-sandbox',
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+        ],
       },
     },
     assert: {

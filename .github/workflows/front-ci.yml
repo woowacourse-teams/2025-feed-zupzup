@@ -254,7 +254,7 @@ jobs:
                   return;
                 }
 
-                const pageUrl = url.replace('http://localhost:3000', '');
+                const pageUrl = url.replace(/^http:\/\/localhost:\d+/, '');
                 const pageName = getLhciPageNameFromUrl(pageUrl);
 
                 const summary = {
@@ -349,95 +349,68 @@ jobs:
             }
 
       - name: Install required packages
-        run: npm install google-spreadsheet google-auth-library
+        run: npm install google-spreadsheet
 
       - name: Update Google SpreadSheet
         uses: actions/github-script@v7
         with:
           script: |
             const { GoogleSpreadsheet } = require('google-spreadsheet');
-            const { JWT } = require('google-auth-library');
+            const { LHCI_GOOGLE_SPREAD_SHEET_ID, getLhciSheetIdFromPageName } = require('./lighthouse.config.cjs');
 
-            process.chdir('./frontend');
+            const updateGoogleSheet = async () => {
+              const creds = {
+                client_email: process.env.LHCI_GOOGLE_CLIENT_EMAIL,
+                private_key: process.env.LHCI_GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+              };
 
-            async function updateGoogleSheet() {
-              try {
-                const serviceAccountAuth = new JWT({
-                  email: '${{ secrets.LHCI_GOOGLE_CLIENT_EMAIL }}',
-                  key: '${{ secrets.LHCI_GOOGLE_PRIVATE_KEY }}'.replace(/\\n/g, '\n'),
-                  scopes: [
-                    'https://www.googleapis.com/auth/spreadsheets',
-                    'https://www.googleapis.com/auth/drive.file'
-                  ]
+              const { desktop, mobile } = ${{ steps.format_lighthouse_score.outputs.scores }};
+              const monitoringTime = `${{ steps.format_lighthouse_score.outputs.monitoringTime }}`;
+              const { repo, payload } = context;
+
+              const doc = new GoogleSpreadsheet(LHCI_GOOGLE_SPREAD_SHEET_ID);
+              await doc.useServiceAccountAuth(creds);
+              await doc.loadInfo();
+
+              for (const pageName in desktop) {
+                const sheetId = getLhciSheetIdFromPageName(pageName);
+                const sheet = doc.sheetsById[sheetId];
+                if (!sheet) {
+                  console.warn(`Sheet not found for ${pageName}`);
+                  continue;
+                }
+
+                await sheet.loadHeaderRow();
+
+                const desktopScore = desktop[pageName];
+                const mobileScore = mobile[pageName];
+
+                const prUrl = `https://github.com/${repo.owner}/${repo.repo}/pull/${payload.pull_request.number}`;
+                const prHyperlink = `=HYPERLINK("${prUrl}", "#${payload.pull_request.number}")`;
+
+                const rows = await sheet.getRows();
+                const existing = rows.find(r => r['PR url']?.includes(`#${payload.pull_request.number}`));
+
+                const newRow = {
+                  'PR url': prHyperlink,
+                  'Monitoring Time': monitoringTime,
+                };
+
+                Object.keys(desktopScore).forEach((key) => {
+                  newRow[`${key} [D]`] = desktopScore[key];
+                  newRow[`${key} [M]`] = mobileScore[key];
                 });
 
-                const doc = new GoogleSpreadsheet('${{ secrets.LHCI_GOOGLE_SPREAD_SHEET_ID }}', serviceAccountAuth);
-                
-                await doc.loadInfo();
-
-                const { desktop, mobile } = ${{ steps.format_lighthouse_score.outputs.scores }};
-                const monitoringTime = '${{ steps.format_lighthouse_score.outputs.monitoringTime }}';
-
-                const prUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/pull/${context.payload.pull_request.number}`;
-                const prHyperlink = `=HYPERLINK("${prUrl}", "#${context.payload.pull_request.number}")`;
-
-                for (const pageName in desktop) {
-                  const sheet = doc.sheetsByTitle[pageName];
-                  if (!sheet) {
-                    console.warn(`Warning: Sheet '${pageName}' not found in spreadsheet`);
-                    continue;
-                  }
-
-                  const desktopScores = desktop[pageName] || {};
-                  const mobileScores = mobile[pageName] || {};
-                  
-                  const newRow = {
-                    'PR url': prHyperlink,
-                    'Monitoring Time': monitoringTime,
-                    'Performance [D]': desktopScores.Performance || '',
-                    'Accessibility [D]': desktopScores.Accessibility || '',
-                    'Best Practices [D]': desktopScores['Best Practices'] || '',
-                    'SEO [D]': desktopScores.SEO || '',
-                    'PWA [D]': desktopScores.PWA || '',
-                    'FCP [D]': desktopScores.FCP || '',
-                    'LCP [D]': desktopScores.LCP || '',
-                    'Speed Index [D]': desktopScores['Speed Index'] || '',
-                    'TBT [D]': desktopScores.TBT || '',
-                    'CLS [D]': desktopScores.CLS || '',
-                    'Performance [M]': mobileScores.Performance || '',
-                    'Accessibility [M]': mobileScores.Accessibility || '',
-                    'Best Practices [M]': mobileScores['Best Practices'] || '',
-                    'SEO [M]': mobileScores.SEO || '',
-                    'PWA [M]': mobileScores.PWA || '',
-                    'FCP [M]': mobileScores.FCP || '',
-                    'LCP [M]': mobileScores.LCP || '',
-                    'Speed Index [M]': mobileScores['Speed Index'] || '',
-                    'TBT [M]': mobileScores.TBT || '',
-                    'CLS [M]': mobileScores.CLS || ''
-                  };
-
-                  try {
-                    const rows = await sheet.getRows();
-                    const existingRow = rows.find(row => 
-                      row['PR url'] && row['PR url'].includes(`#${context.payload.pull_request.number}`)
-                    );
-
-                    if (existingRow) {
-                      Object.keys(newRow).forEach(key => {
-                        existingRow[key] = newRow[key];
-                      });
-                      await existingRow.save();
-                    } else {
-                      await sheet.addRow(newRow);
-                    }
-                  } catch (err) {
-                    console.error(`Error processing sheet ${pageName}:`, err.message);
-                  }
+                if (existing) {
+                  Object.assign(existing, newRow);
+                  await existing.save();
+                } else {
+                  await sheet.addRow(newRow);
                 }
-              } catch (error) {
-                console.error('Error details:', error);
-                core.setFailed(`Failed to update Google Sheet: ${error.message}`);
               }
-            }
+            };
 
-            await updateGoogleSheet();
+            await updateGoogleSheet().catch(err => core.setFailed(err.message));
+        env:
+          LHCI_GOOGLE_CLIENT_EMAIL: ${{ secrets.LHCI_GOOGLE_CLIENT_EMAIL }}
+          LHCI_GOOGLE_PRIVATE_KEY: ${{ secrets.LHCI_GOOGLE_PRIVATE_KEY }}
