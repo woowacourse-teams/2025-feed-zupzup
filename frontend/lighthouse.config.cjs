@@ -24,7 +24,6 @@ module.exports = {
     admin_dashboard: '/admin/d0b1b979-7ae8-11f0-8408-0242ac120002/dashboard', // :id → 실제 UUID
     admin_settings: '/admin/settings',
   },
-  // 페이지 이름 - 시트 ID 매핑 (구글 시트용)
   LHCI_PAGE_NAME_TO_SHEET_ID: {
     feedback_submit: 0,
     feedback_dashboard: 939688316,
