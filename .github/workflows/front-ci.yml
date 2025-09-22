@@ -331,7 +331,7 @@ jobs:
         run: npm install google-spreadsheet
 
       - name: Update Google SpreadSheet
-        run: node ./frontend/scripts/update-google-sheet.js
+        run: node ./scripts/update-google-sheet.js
         env:
           LHCI_GOOGLE_CLIENT_EMAIL: ${{ secrets.LHCI_GOOGLE_CLIENT_EMAIL }}
           LHCI_GOOGLE_PRIVATE_KEY: ${{ secrets.LHCI_GOOGLE_PRIVATE_KEY }}
