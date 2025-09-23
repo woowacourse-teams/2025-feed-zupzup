@@ -1,6 +1,3 @@
-//@ts-expect-error: react error
-import React from 'react';
-
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import FeedbackBoxList from './FeedbackBoxList';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
@@ -41,7 +38,7 @@ const userFeedbackWaiting = {
   isLiked: false,
   isSecret: false,
   postedAt: '2024-05-20',
-  customCSS: [],
+  isHighlighted: false,
   userName: '익명의 사용자',
   isMyFeedback: true,
   comment: '감사합니당',
@@ -58,7 +55,7 @@ const userFeedbackConfirmed = {
   isLiked: true,
   isSecret: false,
   postedAt: '2024-05-19',
-  customCSS: [],
+  isHighlighted: false,
   userName: '김개발',
   isMyFeedback: false,
   comment: '감사합니당',
@@ -77,7 +74,7 @@ const adminFeedbackWaiting = {
   likeCount: 5,
   userName: '익명의 사용자',
   postedAt: '2024-05-21',
-  customCSS: [],
+  isHighlighted: false,
   isMyFeedback: false,
   comment: '감사합니당',
   category: '기타' as const,
@@ -94,7 +91,7 @@ const adminFeedbackConfirmed = {
   likeCount: 12,
   userName: '김개발',
   postedAt: '2024-05-18',
-  customCSS: [],
+  isHighlighted: false,
   isMyFeedback: false,
   comment: '감사합니당',
   category: '기타' as const,

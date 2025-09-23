@@ -25,10 +25,12 @@ export default function FeedbackBoxHeader({
 }: FeedbackBoxHeaderProps) {
   const userImage = useAvatarSelector({ feedbackId });
   const theme = useAppTheme();
-
   return (
     <div css={imgContainer}>
-      <img src={userImage} alt='user icon' css={imgLayout} />
+      <picture>
+        <source srcSet={userImage.webp} type='image/webp' />
+        <img src={userImage.png} alt='user icon' css={imgLayout} />
+      </picture>
       <div css={headerInfoBox}>
         <p css={userNameStyle(theme, type)}>{userName}</p>
         <p css={userCategoryStyle(theme, type)}>{category}</p>

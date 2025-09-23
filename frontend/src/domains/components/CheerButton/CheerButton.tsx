@@ -13,12 +13,14 @@ export interface CheerButtonProps {
   totalCheeringCount: number;
   onClick?: () => void;
   animate?: boolean;
+  disabled?: boolean;
 }
 
 export default function CheerButton({
   totalCheeringCount,
   onClick,
   animate = false,
+  disabled = false,
 }: CheerButtonProps) {
   const [accCount, setAccCount] = useState(0);
 
@@ -29,8 +31,9 @@ export default function CheerButton({
         onClick?.();
       }}
       css={cheerButtonStyle}
+      disabled={disabled}
     >
-      <span css={[iconWrapperStyle, animate && clickedStyle]}>
+      <span css={[iconWrapperStyle(theme, disabled), animate && clickedStyle]}>
         <FillHeartIcon />
       </span>
       <p css={textStyle(theme)}>응원 {totalCheeringCount + accCount}</p>

@@ -17,19 +17,6 @@ export const headerCheerButton = css`
   justify-content: flex-start;
 `;
 
-export const panelCaption = (theme: Theme) => css`
-  margin-bottom: 8px;
-  color: ${theme.colors.gray[600]};
-
-  ${theme.typography.pretendard.caption}
-`;
-
-export const panelLayout = css`
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(2, 1fr);
-`;
-
 export const cheerButtonLayout = css`
   display: flex;
   justify-content: flex-end;
@@ -41,4 +28,11 @@ export const titleText = (theme: Theme) => css`
   ${theme.typography.pretendard.bodyBold};
 
   font-weight: 900;
+`;
+
+export const panelCaption = (theme: Theme) => css`
+  margin-bottom: 8px;
+  color: ${theme.colors.gray[600]};
+
+  ${theme.typography.pretendard.caption}
 `;

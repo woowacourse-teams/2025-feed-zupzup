@@ -19,7 +19,7 @@ interface AdminHomeHeaderProps {
 export default function AdminHomeHeader({ adminName }: AdminHomeHeaderProps) {
   const theme = useAppTheme();
 
-  const { statistics, isStatisticsLoading } = useAdminStatistics();
+  const { statistics, isStatisticsLoading } = useAdminStatistics({ adminName });
   const remainingCount = statistics.totalCount - statistics.confirmedCount;
 
   return (
