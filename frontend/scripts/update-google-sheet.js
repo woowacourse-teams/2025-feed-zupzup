@@ -34,9 +34,6 @@ async function updateGoogleSheet() {
       const sheetId = getLhciSheetIdFromPageName(pageName);
       const sheet = doc.sheetsById[sheetId];
       if (!sheet) {
-        console.warn(
-          `⚠️  Sheet not found for pageName="${pageName}", sheetId=${sheetId}`
-        );
         continue;
       }
       await sheet.loadHeaderRow();
@@ -64,16 +61,11 @@ async function updateGoogleSheet() {
       if (existing) {
         Object.assign(existing, rowData);
         await existing.save();
-        console.log(`🔄 Updated: ${pageName} (PR #${prNumber})`);
       } else {
         await sheet.addRow(rowData);
-        console.log(`➕ Added: ${pageName} (PR #${prNumber})`);
       }
     }
-
-    console.log('✅ Google Sheet update finished');
-  } catch (err) {
-    console.error('❌ Failed to update Google Sheet:', err);
+  } catch {
     process.exit(1);
   }
 }

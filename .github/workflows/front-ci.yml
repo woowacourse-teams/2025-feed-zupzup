@@ -5,6 +5,13 @@ on:
     branches: [fe/develop, fe/production]
   pull_request:
     branches: [fe/develop, fe/production]
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+    inputs:
+      run_lighthouse:
+        description: "Run Lighthouse? (for develop only)"
+        required: true
+        default: "true"
 
 defaults:
   run:
@@ -13,61 +20,49 @@ defaults:
 jobs:
   type-check:
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Type Check
         run: npm run type-check
 
   lint:
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Run ESLint
         run: npm run lint
 
   test:
     runs-on: ubuntu-latest
-    if: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Run Tests
         run: npm test
         env:
@@ -75,66 +70,59 @@ jobs:
 
   build-dev:
     runs-on: ubuntu-latest
-    # needs: [type-check, lint, test]
+    needs: [type-check, lint, test]
+    if: github.base_ref == 'fe/develop' || github.ref == 'refs/heads/fe/develop'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Build project
         run: npm run build:dev
 
   build-prod:
     runs-on: ubuntu-latest
     needs: [type-check, lint, test]
-    if: false
+    if: github.base_ref == 'fe/production' || github.ref == 'refs/heads/fe/production'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Build project
         run: npm run build:prod
 
   lighthouse:
     runs-on: ubuntu-latest
-    needs: [build-dev]
-    if: github.event_name == 'pull_request'
-    permissions:
-      contents: read
-      pull-requests: write
-    defaults:
-      run:
-        working-directory: ./frontend
+    needs: [build-dev, build-prod]
+    if: |
+      github.base_ref == 'fe/production' || github.ref == 'refs/heads/fe/production' ||
+      (github.base_ref == 'fe/develop' && github.event.pull_request.merged == true) ||
+      (
+        (github.base_ref == 'fe/develop' || github.ref == 'refs/heads/fe/develop') &&
+        (github.event.inputs.run_lighthouse != 'false')
+      )
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
@@ -149,7 +137,14 @@ jobs:
         run: npm ci
 
       - name: Build project
-        run: npm run build:dev
+        run: |
+          if [[ "${{ github.base_ref }}" == "fe/production" || "${{ github.ref }}" == "refs/heads/fe/production" ]]; then
+            echo "Running production build..."
+            npm run build:prod
+          else
+            echo "Running development build..."
+            npm run build:dev
+          fi
 
       - name: Run Lighthouse CI for Desktop
         env:
@@ -158,15 +153,6 @@ jobs:
           npm install -g @lhci/cli
           lhci collect --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
           lhci upload --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
-
-      - name: Debug Lighthouse Results
-        run: |
-          echo "=== Checking lighthouse-results directory ==="
-          ls -la lighthouse-results/ || echo "lighthouse-results directory not found"
-          echo "=== Checking lighthouse-results-mobile directory ==="
-          ls -la lighthouse-results-mobile/ || echo "lighthouse-results-mobile directory not found"
-          echo "=== Current directory contents ==="
-          ls -la
 
       - name: Run Lighthouse CI for Mobile
         env:
@@ -177,172 +163,11 @@ jobs:
 
       - name: Format lighthouse score
         id: format_lighthouse_score
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-
-            process.chdir('./frontend');
-
-            const {
-              getLhciPageNameFromUrl,
-              LHCI_GREEN_MIN_SCORE,
-              LHCI_ORANGE_MIN_SCORE,
-              LHCI_RED_MIN_SCORE,
-            } = require('./lighthouse.config.cjs');
-
-            const color = (n) => (n >= LHCI_GREEN_MIN_SCORE ? '🟢' : n >= LHCI_ORANGE_MIN_SCORE ? '🟠' : '🔴');
-            const pct = (v) => Math.round(v * 100);
-            const fmtScore = (n) => `${color(n)}${n}`;
-            const fmtAudit = (audit) => {
-              if (!audit || typeof audit.score !== 'number') return '—';
-              const score100 = Math.round(audit.score * 100);
-              return `${color(score100)}${audit.displayValue || ''}`.trim();
-            };
-
-            const loadJsons = (dir) =>
-              fs.existsSync(dir)
-                ? fs
-                    .readdirSync(dir)
-                    .filter((f) => f.endsWith('.json'))
-                    .map((f) => path.join(dir, f))
-                    .map((file) => {
-                      const report = JSON.parse(fs.readFileSync(file, 'utf8'));
-                      return {
-                        url: report.finalUrl || report.requestedUrl || report.mainDocumentUrl || '',
-                        report,
-                      };
-                    })
-                : [];
-
-            const desktop = loadJsons('lighthouse-results');
-            const mobile = loadJsons('lighthouse-results-mobile');
-
-            const monitoringTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
-            const legend = `> 🟢: ${LHCI_GREEN_MIN_SCORE}-100 / 🟠: ${LHCI_ORANGE_MIN_SCORE}-${LHCI_GREEN_MIN_SCORE - 1} / 🔴: ${LHCI_RED_MIN_SCORE}-${LHCI_ORANGE_MIN_SCORE - 1}`;
-
-            let comments = `### Lighthouse report ✨\n${legend}\n\n`;
-            const scores = { desktop: {}, mobile: {} };
-
-            function addTable(results, deviceKey, title) {
-              comments += `#### ${title}\n\n`;
-              if (results.length === 0) {
-                comments += `(결과 없음)\n\n`;
-                return;
-              }
-
-              // HTML 테이블로 핵심 지표 열에 회색 배경 적용
-              comments += `<table>\n`;
-              comments += `<thead>\n`;
-              comments += `<tr>\n`;
-              comments += `<th>Page</th>\n`;
-              comments += `<th>Perf</th>\n`;
-              comments += `<th>A11y</th>\n`;
-              comments += `<th>Best</th>\n`;
-              comments += `<th>SEO</th>\n`;
-              comments += `<th>PWA</th>\n`;
-              comments += `<th style="background-color: #f6f8fa;">FCP</th>\n`;
-              comments += `<th style="background-color: #f6f8fa;">LCP</th>\n`;
-              comments += `<th style="background-color: #f6f8fa;">Speed Index</th>\n`;
-              comments += `<th style="background-color: #f6f8fa;">TBT</th>\n`;
-              comments += `<th style="background-color: #f6f8fa;">CLS</th>\n`;
-              comments += `</tr>\n`;
-              comments += `</thead>\n`;
-              comments += `<tbody>\n`;
-
-              for (const { url, report } of results) {
-                if (!url) continue;
-                const pageUrl = url.replace(/^http:\/\/localhost:\d+/, '');
-                const page = getLhciPageNameFromUrl(pageUrl);
-
-                const { categories, audits } = report;
-
-                // 요약 카테고리 점수
-                const perf = pct(categories.performance.score);
-                const a11y = pct(categories.accessibility.score);
-                const best = pct(categories['best-practices'].score);
-                const seo = pct(categories.seo.score);
-                const pwa = categories.pwa ? pct(categories.pwa.score) : 0;
-
-                // 핵심 지표 (표시값 + 색상)
-                const FCP = fmtAudit(audits['first-contentful-paint']);
-                const LCP = fmtAudit(audits['largest-contentful-paint']);
-                const SI = fmtAudit(audits['speed-index']);
-                const TBT = fmtAudit(audits['total-blocking-time']);
-                const CLS = fmtAudit(audits['cumulative-layout-shift']);
-
-                comments += `<tr>\n`;
-                comments += `<td>${page}</td>\n`;
-                comments += `<td>${fmtScore(perf)}</td>\n`;
-                comments += `<td>${fmtScore(a11y)}</td>\n`;
-                comments += `<td>${fmtScore(best)}</td>\n`;
-                comments += `<td>${fmtScore(seo)}</td>\n`;
-                comments += `<td>${fmtScore(pwa)}</td>\n`;
-                comments += `<td style="background-color: #f6f8fa;">${FCP}</td>\n`;
-                comments += `<td style="background-color: #f6f8fa;">${LCP}</td>\n`;
-                comments += `<td style="background-color: #f6f8fa;">${SI}</td>\n`;
-                comments += `<td style="background-color: #f6f8fa;">${TBT}</td>\n`;
-                comments += `<td style="background-color: #f6f8fa;">${CLS}</td>\n`;
-                comments += `</tr>\n`;
-
-                // 스프레드시트/후처리용 원시 데이터도 함께 저장(필요하면 활용)
-                scores[deviceKey][page] = {
-                  Performance: fmtScore(perf),
-                  Accessibility: fmtScore(a11y),
-                  'Best Practices': fmtScore(best),
-                  SEO: fmtScore(seo),
-                  PWA: fmtScore(pwa),
-                  FCP,
-                  LCP,
-                  'Speed Index': SI,
-                  TBT,
-                  CLS,
-                };
-              }
-
-              comments += `</tbody>\n`;
-              comments += `</table>\n\n`;
-            }
-
-            addTable(desktop, 'desktop', 'Desktop');
-            addTable(mobile, 'mobile', 'Mobile');
-
-            core.setOutput('comments', comments);
-            core.setOutput('monitoringTime', monitoringTime);
-            core.setOutput('scores', scores);
+        run: node ./scripts/format-lighthouse.js
 
       - name: Comment PR
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: previousComments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number
-            });
-
-            const previousLhciComment = previousComments.find((comment) => 
-              comment.body.startsWith(`### Lighthouse report ✨\n`)
-            );
-
-            const newComment = `${{ steps.format_lighthouse_score.outputs.comments }}`;
-
-            if (previousLhciComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: previousLhciComment.id,
-                body: newComment
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.payload.pull_request.number,
-                body: newComment
-              });
-            }
+        if: github.event_name == 'pull_request'
+        run: node ./scripts/comment-lighthouse.js
 
       - name: Install required packages
         run: npm install google-spreadsheet
