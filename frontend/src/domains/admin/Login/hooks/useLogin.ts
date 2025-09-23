@@ -28,11 +28,23 @@ export default function useLogin({ loginValue }: UseLoginProps) {
     PostAdminLoginParams
   >({
     mutationFn: postAdminLogin,
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       setLocalStorage('auth', response?.data || null);
+
+      if (
+        NotificationService.checkIsSupported() &&
+        NotificationService.getCurrentPermission() === 'default'
+      ) {
+        try {
+          await NotificationService.enable();
+        } catch (error) {
+          console.log('알림 권한 요청 실패 (무시됨):', error);
+        }
+      }
+
       goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
     },
-    onError: (error) => {
+    onError: (error: ApiError) => {
       showErrorModal(error as ApiError, '로그인 요청 실패');
     },
   });
