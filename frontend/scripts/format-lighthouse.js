@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import * as core from '@actions/core';
-import config from '../frontend/lighthouse.config.cjs';
+import config from '../lighthouse.config.cjs';
 
 const {
   getLhciPageNameFromUrl,
