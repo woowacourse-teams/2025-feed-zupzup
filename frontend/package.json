@@ -38,6 +38,7 @@
     "react-router-dom": "^7.7.0"
   },
   "devDependencies": {
+    "@actions/core": "^1.11.1",
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
