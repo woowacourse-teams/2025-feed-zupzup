@@ -19,7 +19,7 @@ export default function OverviewHeader() {
     organizationId,
   });
 
-  const { handleCheerButton, animate } = useCheerButton({
+  const { handleCheerButton, animate, isDisabled } = useCheerButton({
     organizationId,
   });
 
@@ -32,6 +32,7 @@ export default function OverviewHeader() {
       <div css={headerCheerButton}>
         <div css={cheerButtonLayout}>
           <CheerButton
+            disabled={isDisabled}
             totalCheeringCount={totalCheeringCount}
             onClick={handleCheerButton}
             animate={animate}
