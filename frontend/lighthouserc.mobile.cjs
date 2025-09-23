@@ -13,7 +13,7 @@ module.exports = {
       url: paths.length ? paths : ['/'],
       numberOfRuns: 1,
       settings: {
-        preset: 'mobile',
+        preset: 'desktop',
         formFactor: 'mobile',
         throttlingMethod: 'simulate',
         screenEmulation: {
