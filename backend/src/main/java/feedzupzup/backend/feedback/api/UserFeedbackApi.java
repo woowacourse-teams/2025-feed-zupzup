@@ -119,9 +119,8 @@ public interface UserFeedbackApi {
             @ApiResponse(responseCode = "401", ref = "#/components/responses/NotFound")
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/organizations/{organizationUuid}/feedbacks/my-likes")
+    @GetMapping("/feedbacks/my-likes")
     SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
-            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
             @Parameter(hidden = true) @CookieValue(name = CookieUtilization.VISITOR_KEY, required = false) UUID visitorId
     );
 }

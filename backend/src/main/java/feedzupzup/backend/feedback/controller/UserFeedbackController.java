@@ -105,11 +105,9 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
-            final UUID organizationUuid,
             final UUID visitorId
     ) {
-        final LikeHistoryResponse response = feedbackLikeService.getLikeHistories(
-                organizationUuid, visitorId);
+        final LikeHistoryResponse response = feedbackLikeService.getLikeHistories(visitorId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 

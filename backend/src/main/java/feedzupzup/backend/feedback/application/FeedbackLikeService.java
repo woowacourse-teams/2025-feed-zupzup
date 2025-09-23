@@ -62,12 +62,12 @@ public class FeedbackLikeService {
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
     }
 
-    public LikeHistoryResponse getLikeHistories(final UUID organizationId, UUID visitorId) {
+    public LikeHistoryResponse getLikeHistories(final UUID visitorId) {
         if (visitorId == null) {
             throw new ResourceNotFoundException("해당 visitorId " + visitorId + "는 존재하지 않습니다");
         }
         final LikeFeedbacks likeFeedbacks = userLikeFeedbacksRepository.getUserLikeFeedbacksFrom(
-                organizationId);
+                visitorId);
 
         return LikeHistoryResponse.from(likeFeedbacks);
     }
