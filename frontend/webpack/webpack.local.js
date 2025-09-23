@@ -14,12 +14,15 @@ export default merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     static: './dist',
+    host: '0.0.0.0',
     port: 3000,
+    allowedHosts: 'all',
     open: {
       app: {
         name: 'google chrome',
       },
     },
+
     hot: true,
     historyApiFallback: true,
     proxy: [
@@ -39,6 +42,16 @@ export default merge(common, {
           proxyRes.headers['Access-Control-Allow-Origin'] =
             'http://localhost:3000';
           proxyRes.headers['Access-Control-Allow-Credentials'] = 'true';
+
+          const setCookie = proxyRes.headers['set-cookie'];
+          if (setCookie) {
+            proxyRes.headers['set-cookie'] = setCookie.map((cookie) => {
+              return cookie
+                .replace(/; Secure(?!=false)/g, '')
+                .replace(/; Secure=false/g, '')
+                .replace(/SameSite=None/g, 'SameSite=Lax');
+            });
+          }
         },
       },
     ],
