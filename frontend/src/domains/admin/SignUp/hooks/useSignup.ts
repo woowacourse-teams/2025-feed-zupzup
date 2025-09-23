@@ -11,6 +11,7 @@ import { NotificationService } from '@/services/notificationService';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
+
 interface UseSignupProps {
   confirmPasswordErrors: string;
   errors: {

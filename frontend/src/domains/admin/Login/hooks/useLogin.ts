@@ -32,7 +32,8 @@ export default function useLogin({ loginValue }: UseLoginProps) {
       setLocalStorage('auth', response?.data || null);
 
       if (
-        NotificationService.checkIsSupported() &&
+        
+        .checkIsSupported() &&
         NotificationService.getCurrentPermission() === 'default'
       ) {
         try {
