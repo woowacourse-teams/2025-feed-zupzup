@@ -121,12 +121,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
+
       - name: Cache node_modules
         uses: actions/cache@v4
         id: npm-cache
@@ -167,11 +169,42 @@ jobs:
 
       - name: Format lighthouse score
         id: format_lighthouse_score
-        run: node ./scripts/format-lighthouse.js
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { formatLighthouse } = await import('${{ github.workspace }}/frontend/scripts/format-lighthouse.js');
+            await formatLighthouse();
 
       - name: Comment PR
         if: github.event_name == 'pull_request'
-        run: node ./scripts/comment-lighthouse.js
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = process.env.LHCI_COMMENTS;
+            if (!body) {
+              core.setFailed('LHCI_COMMENTS is missing');
+              return;
+            }
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number: prNumber,
+            });
+
+            const prev = comments.find(c => c.body?.startsWith('### Lighthouse report ✨\n'));
+            if (prev) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: prev.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: prNumber, body
+              });
+            }
+        env:
+          LHCI_COMMENTS: ${{ steps.format_lighthouse_score.outputs.comments }}
 
       - name: Install required packages
         run: npm install google-spreadsheet
