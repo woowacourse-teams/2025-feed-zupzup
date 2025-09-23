@@ -106,13 +106,17 @@ jobs:
 
   lighthouse:
     runs-on: ubuntu-latest
-    needs: [build-dev, build-prod]
+    needs: [type-check, lint, test]
     if: |
-      github.base_ref == 'fe/production' || github.ref == 'refs/heads/fe/production' ||
-      (github.base_ref == 'fe/develop' && github.event.pull_request.merged == true) ||
       (
-        (github.base_ref == 'fe/develop' || github.ref == 'refs/heads/fe/develop') &&
-        (github.event.inputs.run_lighthouse != 'false')
+        github.base_ref == 'fe/develop' || github.ref == 'refs/heads/fe/develop' ||
+        github.base_ref == 'fe/production' || github.ref == 'refs/heads/fe/production'
+      ) &&
+      !contains(github.event.pull_request.labels.*.name, 'skip-lighthouse') &&
+      (
+        github.event_name == 'push' ||
+        github.event_name == 'workflow_dispatch' ||
+        (github.event_name == 'pull_request' && github.event.action != 'closed')
       )
     steps:
       - name: Checkout code
