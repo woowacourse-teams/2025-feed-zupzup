@@ -4,6 +4,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
@@ -110,5 +111,17 @@ public interface UserFeedbackApi {
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
             @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortBy sortBy,
             @Parameter(description = "내가 쓴 피드백 ID 목록") @RequestParam final List<Long> feedbackIds
+    );
+
+    @Operation(summary = "좋아요 목록 조회", description = "본인이 누른 좋아요 목록들을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/NotFound")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/organizations/{organizationUuid}/feedbacks/my-likes")
+    SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
+            @Parameter(hidden = true) @CookieValue(name = CookieUtilization.VISITOR_KEY, required = false) UUID visitorId
     );
 }

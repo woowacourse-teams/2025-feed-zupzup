@@ -1,8 +1,12 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.auth.exception.AuthException;
+import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.LikeFeedbacks;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
+import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
@@ -56,5 +60,15 @@ public class FeedbackLikeService {
         return feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
+    }
+
+    public LikeHistoryResponse getLikeHistories(final UUID organizationId, UUID visitorId) {
+        if (visitorId == null) {
+            throw new ResourceNotFoundException("해당 visitorId " + visitorId + "는 존재하지 않습니다");
+        }
+        final LikeFeedbacks likeFeedbacks = userLikeFeedbacksRepository.getUserLikeFeedbacksFrom(
+                organizationId);
+
+        return LikeHistoryResponse.from(likeFeedbacks);
     }
 }

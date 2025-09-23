@@ -37,4 +37,8 @@ public class UserLikeFeedbacksRepository {
     public Map<UUID, LikeFeedbacks> getUserLikeFeedbacks() {
         return Collections.unmodifiableMap(userLikeFeedbacks);
     }
+
+    public LikeFeedbacks getUserLikeFeedbacksFrom(final UUID visitorId) {
+        return userLikeFeedbacks.get(visitorId);
+    }
 }
