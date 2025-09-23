@@ -46,6 +46,7 @@ export const title = (theme: Theme) => css`
 export const message = (theme: Theme) => css`
   ${theme.typography.BMHANNAAir.caption};
 
+  white-space: pre-line;
   color: ${theme.colors.gray[600]};
 `;
 

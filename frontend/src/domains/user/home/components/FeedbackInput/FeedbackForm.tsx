@@ -58,13 +58,11 @@ export default function FeedbackForm({
             customCSS={usernameInput(theme)}
             maxLength={10}
             minLength={1}
-            disabled={isLocked}
           />
         </div>
 
         <Button
           onClick={onRandomChange}
-          disabled={isLocked}
           css={randomButton(theme)}
           type='button'
         >

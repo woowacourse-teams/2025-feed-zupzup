@@ -20,6 +20,10 @@ type AdminOrganizationUUIDType = {
   organizationUuid: string;
 };
 
+type DeleteAdminOrganizationType = {
+  organizationUuid: string;
+};
+
 export async function getAdminOrganization() {
   const response = await apiClient.get('/admin/organizations');
 
@@ -36,4 +40,10 @@ export async function postAdminOrganization({
   });
 
   return response as AdminOrganizationUUIDType;
+}
+
+export async function deleteAdminOrganization({
+  organizationUuid,
+}: DeleteAdminOrganizationType): Promise<void> {
+  await apiClient.delete(`/admin/organizations/${organizationUuid}`);
 }

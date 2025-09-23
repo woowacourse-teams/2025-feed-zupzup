@@ -29,7 +29,7 @@ export default function AdminHome() {
     openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
   };
 
-  const { adminOrganizations, isLoading } = useAdminOrganization();
+  const { adminOrganizations, isLoading } = useAdminOrganization({ adminName });
 
   return (
     <div css={homeLayout}>

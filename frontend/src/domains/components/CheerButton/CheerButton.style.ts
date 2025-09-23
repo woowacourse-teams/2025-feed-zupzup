@@ -17,10 +17,11 @@ export const textStyle = (theme: Theme) => css`
   color: ${theme.colors.darkGray[100]};
 `;
 
-export const iconWrapperStyle = css`
+export const iconWrapperStyle = (theme: Theme, disabled: boolean) => css`
   display: flex;
   justify-content: center;
   align-items: center;
+  color: ${disabled ? theme.colors.gray[300] : theme.colors.red[50]};
 `;
 
 export const clickedStyle = css`

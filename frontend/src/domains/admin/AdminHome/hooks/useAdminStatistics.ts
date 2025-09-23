@@ -11,9 +11,15 @@ const DEFAULT_STATISTICS = {
   reflectionRate: 0,
 };
 
-export default function useAdminStatistics() {
+interface UseAdminStatisticsParams {
+  adminName: string;
+}
+
+export default function useAdminStatistics({
+  adminName,
+}: UseAdminStatisticsParams) {
   const { data, isLoading, error } = useQuery({
-    queryKey: QUERY_KEYS.adminFeedbackStatistics,
+    queryKey: QUERY_KEYS.adminFeedbackStatistics(adminName),
     queryFn: getFeedbackStatistics,
     retry: false,
   });
