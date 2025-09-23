@@ -3,7 +3,10 @@ import path from 'node:path';
 import process from 'node:process';
 import * as core from '@actions/core';
 import config from '../lighthouse.config.cjs';
+import { fileURLToPath } from 'node:url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const {
   getLhciPageNameFromUrl,
   LHCI_GREEN_MIN_SCORE,
@@ -51,10 +54,11 @@ function loadJsons(dir) {
 }
 
 export function formatLighthouse() {
-  process.chdir('./frontend');
-
-  const desktop = loadJsons('lighthouse-results');
-  const mobile = loadJsons('lighthouse-results-mobile');
+  const FRONTEND_ROOT = path.resolve(__dirname, '..');
+  const desktop = loadJsons(path.join(FRONTEND_ROOT, 'lighthouse-results'));
+  const mobile = loadJsons(
+    path.join(FRONTEND_ROOT, 'lighthouse-results-mobile')
+  );
 
   const monitoringTime = new Date().toLocaleString('ko-KR', {
     timeZone: 'Asia/Seoul',
