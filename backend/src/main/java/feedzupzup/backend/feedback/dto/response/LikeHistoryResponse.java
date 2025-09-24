@@ -8,7 +8,7 @@ import java.util.Set;
 @Schema(description = "좋아요 기록 조회")
 public record LikeHistoryResponse(
 
-        @Schema(description = "좋아요 횟수", example = "1")
+        @Schema(description = "좋아요 누른 피드백 ID 목록(오름차순)", example = "[1, 3, 5]")
         List<Long> feedbackIds
 )   {
         public static LikeHistoryResponse from(final LikeFeedbacks likeFeedbacks) {
