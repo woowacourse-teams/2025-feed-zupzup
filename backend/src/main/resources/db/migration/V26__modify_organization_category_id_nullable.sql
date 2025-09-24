@@ -1,0 +1,1 @@
+ALTER TABLE feedback MODIFY COLUMN organization_category_id BIGINT NULL;
