@@ -9,13 +9,13 @@ import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.global.util.CookieUtilization;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
@@ -100,6 +100,25 @@ public class UserFeedbackController implements UserFeedbackApi {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
                 organizationUuid
         );
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
+            final HttpServletResponse httpServletResponse,
+            final UUID visitorId
+    ) {
+        if (visitorId == null) {
+            UUID cookieId = UUID.randomUUID();
+            final ResponseCookie cookie = CookieUtilization.createCookie(
+                    CookieUtilization.VISITOR_KEY,
+                    cookieId
+            );
+            httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(cookieId);
+            return SuccessResponse.success(HttpStatus.OK, response);
+        }
+        final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(visitorId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 

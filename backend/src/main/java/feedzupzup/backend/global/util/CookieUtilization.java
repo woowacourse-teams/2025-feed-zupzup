@@ -18,6 +18,7 @@ public class CookieUtilization {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
+                .path("/")
                 .build();
         log.info("쿠키 생성 완료 : {" + "key = " + key + ", value = " + value + "}");
         return responseCookie;
