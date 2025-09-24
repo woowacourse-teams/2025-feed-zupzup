@@ -1,7 +1,5 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.auth.exception.AuthException;
-import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.LikeFeedbacks;
@@ -62,13 +60,9 @@ public class FeedbackLikeService {
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
     }
 
-    public LikeHistoryResponse getLikeHistories(final UUID visitorId) {
-        if (visitorId == null) {
-            throw new ResourceNotFoundException("해당 visitorId " + visitorId + "는 존재하지 않습니다");
-        }
+    public LikeHistoryResponse findLikeHistories(final UUID visitorId) {
         final LikeFeedbacks likeFeedbacks = userLikeFeedbacksRepository.getUserLikeFeedbacksFrom(
                 visitorId);
-
         return LikeHistoryResponse.from(likeFeedbacks);
     }
 }

@@ -121,6 +121,7 @@ public interface UserFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/feedbacks/my-likes")
     SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
+            final HttpServletResponse response,
             @Parameter(hidden = true) @CookieValue(name = CookieUtilization.VISITOR_KEY, required = false) UUID visitorId
     );
 }

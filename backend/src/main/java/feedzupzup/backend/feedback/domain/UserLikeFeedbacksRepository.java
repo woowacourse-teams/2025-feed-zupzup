@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.domain;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.stereotype.Repository;
@@ -39,6 +40,7 @@ public class UserLikeFeedbacksRepository {
     }
 
     public LikeFeedbacks getUserLikeFeedbacksFrom(final UUID visitorId) {
-        return userLikeFeedbacks.get(visitorId);
+        return Optional.ofNullable(userLikeFeedbacks.get(visitorId))
+                .orElse(new LikeFeedbacks());
     }
 }

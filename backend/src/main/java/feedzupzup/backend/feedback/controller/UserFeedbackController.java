@@ -105,9 +105,20 @@ public class UserFeedbackController implements UserFeedbackApi {
 
     @Override
     public SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
+            final HttpServletResponse httpServletResponse,
             final UUID visitorId
     ) {
-        final LikeHistoryResponse response = feedbackLikeService.getLikeHistories(visitorId);
+        if (visitorId == null) {
+            UUID cookieId = UUID.randomUUID();
+            final ResponseCookie cookie = CookieUtilization.createCookie(
+                    CookieUtilization.VISITOR_KEY,
+                    cookieId
+            );
+            httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(cookieId);
+            return SuccessResponse.success(HttpStatus.OK, response);
+        }
+        final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(visitorId);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
