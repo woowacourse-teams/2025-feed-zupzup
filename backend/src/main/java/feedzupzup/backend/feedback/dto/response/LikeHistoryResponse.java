@@ -9,7 +9,7 @@ import java.util.Set;
 public record LikeHistoryResponse(
 
         @Schema(description = "좋아요 횟수", example = "1")
-        List<Long> likeHistories
+        List<Long> feedbackIds
 )   {
         public static LikeHistoryResponse from(final LikeFeedbacks likeFeedbacks) {
             final Set<Long> likes = likeFeedbacks.getLikeFeedbacks();
