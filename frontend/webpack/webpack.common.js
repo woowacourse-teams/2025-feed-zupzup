@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import TerserPlugin from 'terser-webpack-plugin';
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -102,6 +101,65 @@ export default {
   ],
   optimization: {
     minimize: true,
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        react: {
+          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+          name: 'react',
+          chunks: 'all',
+          priority: 40,
+        },
+        router: {
+          test: /[\\/]node_modules[\\/]react-router(.*)[\\/]/,
+          name: 'router',
+          chunks: 'all',
+          priority: 30,
+        },
+        query: {
+          test: /[\\/]node_modules[\\/]@tanstack[\\/]query(.*)[\\/]/,
+          name: 'query',
+          chunks: 'all',
+          priority: 30,
+        },
+        motion: {
+          test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
+          name: 'motion',
+          chunks: 'all',
+          priority: 20,
+        },
+        motionDom: {
+          test: /[\\/]node_modules[\\/]motion-dom[\\/]/,
+          name: 'motionDom',
+          chunks: 'all',
+          priority: 20,
+        },
+        sentry: {
+          test: /[\\/]node_modules[\\/]@sentry[\\/]/,
+          name: 'sentry',
+          chunks: 'all',
+          priority: 20,
+        },
+        sentryInternal: {
+          test: /[\\/]node_modules[\\/]@sentry-internal[\\/]/,
+          name: 'sentryInternal',
+          chunks: 'all',
+          priority: 20,
+        },
+        firebase: {
+          test: /[\\/]node_modules[\\/]@firebase[\\/]/,
+          name: 'firebase',
+          chunks: 'all',
+          priority: 20,
+        },
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          priority: 10,
+        },
+      },
+    },
     minimizer: [
       new TerserPlugin({
         terserOptions: {

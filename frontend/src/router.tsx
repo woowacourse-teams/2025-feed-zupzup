@@ -5,7 +5,6 @@ import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
-import OnBoarding from './domains/admin/OnBoarding/OnBoarding';
 
 const AdminDashboard = lazy(
   () =>
@@ -44,6 +43,13 @@ const NotFoundPage = lazy(
   () =>
     import(
       /* webpackChunkName: "not-found" */ './components/NotFoundPage/NotFoundPage'
+    )
+);
+
+const OnBoarding = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "onboarding" */ './domains/admin/OnBoarding/OnBoarding'
     )
 );
 
