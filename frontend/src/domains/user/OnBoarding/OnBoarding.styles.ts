@@ -61,7 +61,6 @@ export const buttonContainer = css`
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 10px;
-
   margin-top: 8%;
   transition: opacity 0.4s ease-in-out;
 `;
