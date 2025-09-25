@@ -10,7 +10,7 @@ const env = result.parsed || {};
 const defineEnv = createDefineEnv(env, 'development');
 
 export default merge(common, {
-  mode: 'development',
+  mode: 'production',
   devtool: 'inline-source-map',
   devServer: {
     static: './dist',
