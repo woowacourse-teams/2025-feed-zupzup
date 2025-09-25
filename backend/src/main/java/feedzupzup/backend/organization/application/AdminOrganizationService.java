@@ -119,8 +119,8 @@ public class AdminOrganizationService {
         final Long organizationId = organization.getId();
 
         organizerRepository.deleteAllByOrganization_Id(organizationId);
-        organizationCategoryService.deleteByOrganizationId(organizationId);
         adminFeedbackService.deleteByOrganizationId(organizationId);
+        organizationCategoryService.deleteByOrganizationId(organizationId);
         qrService.deleteByOrganizationId(organizationId);
         organizationRepository.delete(organization);
     }

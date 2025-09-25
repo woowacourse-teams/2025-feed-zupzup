@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrganizationCategories {
 
-    @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST)
     private final Set<OrganizationCategory> organizationCategories = new HashSet<>();
 
     public void addAll(final Set<String> categories, final Organization organization) {

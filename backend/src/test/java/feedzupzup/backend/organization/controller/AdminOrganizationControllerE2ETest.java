@@ -1,6 +1,7 @@
 package feedzupzup.backend.organization.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -11,7 +12,14 @@ import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.application.PasswordEncoder;
 import feedzupzup.backend.auth.dto.request.LoginRequest;
+import feedzupzup.backend.category.domain.Category;
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
+import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.application.AdminOrganizationService;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -22,6 +30,8 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
+import feedzupzup.backend.qr.domain.QR;
+import feedzupzup.backend.qr.repository.QRRepository;
 import io.restassured.http.ContentType;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
@@ -44,6 +54,15 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
 
     @Autowired
     private OrganizerRepository organizerRepository;
+
+    @Autowired
+    private OrganizationCategoryRepository organizationCategoryRepository;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private QRRepository qrRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -289,5 +308,62 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .delete("/admin/organizations/{organizationUuid}", organization.getUuid())
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("조직 삭제시 연관된 모든 데이터(피드백, 카테고리, QR)가 함께 삭제된다")
+    void deleteOrganization_WithRelatedData_Success() {
+        // given - 관리자 생성 및 로그인
+        final Password password = new Password("password123");
+        Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
+        adminRepository.save(admin);
+
+        LoginRequest loginRequest = new LoginRequest("testId", "password123");
+        String sessionCookie = given()
+                .contentType(ContentType.JSON)
+                .body(loginRequest)
+                .when()
+                .post("/admin/login")
+                .then()
+                .extract()
+                .cookie(SESSION_ID);
+
+        // given - 조직 및 연관 데이터 생성
+        Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+        organizerRepository.save(new Organizer(organization, admin, OrganizerRole.OWNER));
+
+        // 카테고리 생성
+        OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, Category.SUGGESTION);
+        organizationCategoryRepository.save(category);
+
+        // 피드백 생성
+        Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, "테스트 피드백", category);
+        feedbackRepository.save(feedback);
+
+        // QR 생성
+        QR qr = new QR("test-image-url", organization);
+        qrRepository.save(qr);
+
+        final Long organizationId = organization.getId();
+        final Long categoryId = category.getId();
+        final Long feedbackId = feedback.getId();
+        final Long qrId = qr.getId();
+
+        // when - 조직 삭제 요청
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .delete("/admin/organizations/{organizationUuid}", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        // then - 조직과 모든 연관 데이터가 삭제되었는지 확인
+        assertThat(organizationRepository.findByUuid(organization.getUuid())).isEmpty();
+        assertThat(organizerRepository.findByOrganizationId(organizationId)).isEmpty();
+        assertThat(organizationCategoryRepository.findById(categoryId)).isEmpty();
+        assertThat(feedbackRepository.findById(feedbackId)).isEmpty();
+        assertThat(qrRepository.findById(qrId)).isEmpty();
     }
 }

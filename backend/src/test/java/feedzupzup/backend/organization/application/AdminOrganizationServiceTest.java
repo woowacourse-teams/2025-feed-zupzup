@@ -178,6 +178,32 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         assertThat(qrRepository.findById(qr.getId())).isEmpty();
     }
 
+    @Test
+    @DisplayName("조직 삭제 시 연관된 피드백들도 함께 삭제되어야 한다")
+    void delete_organization_then_related_feedbacks_should_be_deleted() {
+        // given
+        final Admin admin = createAndSaveAdmin();
+        final Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+        organizerRepository.save(new Organizer(organization, admin, OrganizerRole.OWNER));
+
+        final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(organization,
+                Category.SUGGESTION);
+        final OrganizationCategory savedCategory = organizationCategoryRepository.save(category);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, "테스트 피드백", savedCategory);
+        final Feedback savedFeedback = feedbackRepository.save(feedback);
+
+        // 삭제 전 상태 확인
+        assertThat(savedFeedback.getOrganizationCategory()).isNotNull();
+        assertThat(savedFeedback.getOrganizationCategory().getId()).isEqualTo(savedCategory.getId());
+
+        // when - 조직 삭제 (소프트 삭제)
+        adminOrganizationService.deleteOrganization(organization.getUuid());
+
+        // then - 피드백도 함께 소프트 삭제되어야 함
+        assertThat(feedbackRepository.findById(savedFeedback.getId())).isEmpty();
+    }
+
     private Admin createAndSaveAdmin() {
         final Admin admin = AdminFixture.create();
         return adminRepository.save(admin);
