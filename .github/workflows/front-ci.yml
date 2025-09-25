@@ -109,14 +109,14 @@ jobs:
     needs: [type-check, lint, test]
     if: |
       (
-        github.base_ref == 'fe/develop' || github.ref == 'refs/heads/fe/develop' ||
-        github.base_ref == 'fe/production' || github.ref == 'refs/heads/fe/production'
-      ) &&
-      !contains(github.event.pull_request.labels.*.name, 'skip-lighthouse') &&
+
+        github.event_name == 'push' && github.ref == 'refs/heads/fe/develop'
+      ) ||
       (
-        github.event_name == 'push' ||
-        github.event_name == 'workflow_dispatch' ||
-        (github.event_name == 'pull_request' && github.event.action != 'closed')
+        
+        github.event_name == 'pull_request' && 
+        github.base_ref == 'fe/production' && 
+        github.event.action != 'closed'
       )
     steps:
       - name: Checkout code
@@ -206,10 +206,10 @@ jobs:
         env:
           LHCI_COMMENTS: ${{ steps.format_lighthouse_score.outputs.comments }}
 
-      - name: Install required packages
-        run: npm install google-spreadsheet
-
       - name: Update Google SpreadSheet
+        if: |
+          (github.event_name == 'push') ||
+          (github.event_name == 'pull_request' && github.base_ref == 'fe/production')
         run: node ./scripts/update-google-sheet.js
         env:
           LHCI_GOOGLE_CLIENT_EMAIL: ${{ secrets.LHCI_GOOGLE_CLIENT_EMAIL }}
@@ -217,6 +217,6 @@ jobs:
           LHCI_GOOGLE_SPREAD_SHEET_ID: ${{ secrets.LHCI_GOOGLE_SPREAD_SHEET_ID }}
           LHCI_SCORES: ${{ steps.format_lighthouse_score.outputs.scores }}
           LHCI_MONITORING_TIME: ${{ steps.format_lighthouse_score.outputs.monitoringTime }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
