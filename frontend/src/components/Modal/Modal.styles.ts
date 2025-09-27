@@ -59,5 +59,5 @@ export const buttonContainer = css`
 export const modalWidth = css`
   width: 80%;
   min-width: 300px;
-  max-width: 500px;
+  max-width: 450px;
 `;
