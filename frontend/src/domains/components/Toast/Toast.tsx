@@ -1,6 +1,6 @@
 import { toastStyle } from '@/domains/components/Toast/Toast.style';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { useEffect } from 'react';
+import Danger from '@/components/icons/Danger';
+import { useEffect, useState } from 'react';
 
 interface ToastProps {
   message: string;
@@ -13,13 +13,22 @@ export default function Toast({
   onClose,
   duration = 3000,
 }: ToastProps) {
-  const theme = useAppTheme();
+  const [isExiting, setIsExiting] = useState(false);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      onClose();
+      setIsExiting(true);
+      setTimeout(() => {
+        onClose();
+      }, 300);
     }, duration);
     return () => clearTimeout(timer);
   }, [duration, onClose]);
 
-  return <div css={toastStyle(theme)}>{message}</div>;
+  return (
+    <div css={toastStyle(isExiting)}>
+      <Danger />
+      <span>{message}</span>
+    </div>
+  );
 }
