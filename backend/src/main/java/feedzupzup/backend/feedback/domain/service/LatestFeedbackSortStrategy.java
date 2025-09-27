@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ public class LatestFeedbackSortStrategy implements FeedbackSortStrategy {
 
     private final FeedbackRepository feedbackRepository;
 
+    @Cacheable(cacheNames = "latestFeedbacks", key = "#organizationUuId", condition = "#cursorId == null")
     @Override
     public List<Feedback> getSortedFeedbacks(final UUID organizationUuId, final ProcessStatus status, final Long cursorId,
             final Pageable pageable) {
