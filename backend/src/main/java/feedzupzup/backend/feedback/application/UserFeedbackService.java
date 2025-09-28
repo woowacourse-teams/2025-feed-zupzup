@@ -68,9 +68,12 @@ public class UserFeedbackService {
         if (latestFeedbacks != null) {
             List<Feedback> cachedFeedbacks = latestFeedbacks.get(organizationUuid, List.class);
             if (cachedFeedbacks != null) {
-                final Feedback feedback = cachedFeedbacks.removeLast();
+                if (cachedFeedbacks.size() >= 10) {
+                    final Feedback feedback = cachedFeedbacks.removeLast();
+                    log.info("캐시 업데이트 : feedbackId " + feedback.getId() + "삭제");
+                }
                 cachedFeedbacks.addFirst(savedFeedback);
-                log.info("캐시 업데이트 : feedbackId " + feedback.getId() + "삭제, feedbackId " + savedFeedback.getId() + "추가");
+                log.info("캐시 업데이트 : feedbackId " + savedFeedback.getId() + "추가");
             }
         }
     }
