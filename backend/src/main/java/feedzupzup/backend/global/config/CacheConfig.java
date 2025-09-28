@@ -1,9 +1,12 @@
 package feedzupzup.backend.global.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.caffeine.CaffeineCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,14 +22,44 @@ public class CacheConfig {
     }
 
     @Bean
-    public CacheManager cacheManager(final Caffeine<Object, Object> caffeine) {
-        CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager(
-                "latestFeedbacks",
-                "likesFeedbacks",
-                "oldestFeedbacks"
+    public CacheManager cacheManager() {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        cacheManager.setCaches(
+                Arrays.asList(
+                        createLatestFeedbacksCache(),
+                        createLikesFeedbacksCache(),
+                        createOldestFeedbacksCache()
+                )
         );
-        caffeineCacheManager.setCaffeine(caffeine);
-        return caffeineCacheManager;
+        return cacheManager;
+    }
+
+    private CaffeineCache createLatestFeedbacksCache() {
+        return new CaffeineCache("likesFeedbacks",
+                Caffeine.newBuilder()
+                        .maximumSize(100)
+                        .recordStats()
+                        .build()
+        );
+    }
+
+    private CaffeineCache createLikesFeedbacksCache() {
+        return new CaffeineCache("likesFeedbacks",
+                Caffeine.newBuilder()
+                        .maximumSize(100)
+                        .expireAfterWrite(30, TimeUnit.SECONDS) // 30초
+                        .recordStats()
+                        .build()
+        );
+    }
+
+    private CaffeineCache createOldestFeedbacksCache() {
+        return new CaffeineCache("oldestFeedbacks",
+                Caffeine.newBuilder()
+                        .maximumSize(100)
+                        .recordStats()
+                        .build()
+        );
     }
 
 }
