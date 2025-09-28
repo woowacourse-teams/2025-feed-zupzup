@@ -35,7 +35,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createLatestFeedbacksCache() {
-        return new CaffeineCache("likesFeedbacks",
+        return new CaffeineCache("latestFeedbacks",
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .recordStats()
@@ -57,6 +57,7 @@ public class CacheConfig {
         return new CaffeineCache("oldestFeedbacks",
                 Caffeine.newBuilder()
                         .maximumSize(100)
+                        .expireAfterWrite(30, TimeUnit.SECONDS) // 30초
                         .recordStats()
                         .build()
         );

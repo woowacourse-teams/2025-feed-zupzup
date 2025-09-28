@@ -18,7 +18,7 @@ public class OldestFeedbackSortStrategy implements FeedbackSortStrategy {
 
     private final FeedbackRepository feedbackRepository;
 
-    @Cacheable(cacheNames = "oldestFeedbacks", key = "#organizationUuId", condition = "#cursorId == null")
+    @Cacheable(cacheNames = "oldestFeedbacks", key = "#organizationUuId", condition = "#cursorId == null and #status == T(feedzupzup.backend.feedback.domain.vo.ProcessStatus).WAITING")
     @Override
     public List<Feedback> getSortedFeedbacks(final UUID organizationUuId, final ProcessStatus status, final Long cursorId,
             final Pageable pageable) {
