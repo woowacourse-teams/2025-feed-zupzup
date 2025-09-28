@@ -18,7 +18,7 @@ public class LikesFeedbackSortStrategy implements FeedbackSortStrategy {
 
     private final FeedbackRepository feedbackRepository;
 
-    @Cacheable(cacheNames = "likesFeedbacks", key = "#organizationUuId", condition = "#cursorId == null")
+    @Cacheable(cacheNames = "likesFeedbacks", key = "#organizationUuId", condition = "#cursorId == null and #status == null")
     @Override
     public List<Feedback> getSortedFeedbacks(final UUID organizationUuId, final ProcessStatus status, final Long cursorId,
             final Pageable pageable) {
