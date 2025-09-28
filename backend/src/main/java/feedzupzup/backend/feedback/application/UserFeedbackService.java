@@ -21,6 +21,9 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,11 +32,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
+    private final CacheManager cacheManager;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -49,10 +54,25 @@ public class UserFeedbackService {
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
 
+        // 최신순 캐시 업데이트
+        updateLatestCache(organizationUuid, savedFeedback);
+
         // 새로운 피드백이 생성되면 이벤트 발행
         publishFeedbackCreatedEvent(organization);
 
         return CreateFeedbackResponse.from(savedFeedback);
+    }
+
+    private void updateLatestCache(final UUID organizationUuid, final Feedback savedFeedback) {
+        final Cache latestFeedbacks = cacheManager.getCache("latestFeedbacks");
+        if (latestFeedbacks != null) {
+            List<Feedback> cachedFeedbacks = latestFeedbacks.get(organizationUuid, List.class);
+            if (cachedFeedbacks != null) {
+                final Feedback feedback = cachedFeedbacks.removeLast();
+                cachedFeedbacks.addFirst(savedFeedback);
+                log.info("캐시 업데이트 : feedbackId " + feedback.getId() + "삭제, feedbackId " + savedFeedback.getId() + "추가");
+            }
+        }
     }
 
     public UserFeedbackListResponse getFeedbackPage(
