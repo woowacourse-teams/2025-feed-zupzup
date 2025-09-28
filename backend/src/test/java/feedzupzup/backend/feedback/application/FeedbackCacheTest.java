@@ -2,6 +2,8 @@ package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -59,8 +61,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
     }
 
     @Nested
-    @DisplayName("유저 피드백 조회(최신순) 시 캐시 히트 테스트")
-    class CacheTest {
+    @DisplayName("유저 피드백 조회(최신순)시 캐시 테스트")
+    class LatestFeedbacksCacheTest {
 
         @Test
         @DisplayName("최신순 피드백을 가져올 때, DB 접근을 하지 않고, 캐시 데이터를 가져와야 한다. (두 번 조회)")
@@ -138,9 +140,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             userFeedbackService.create(request, organization.getUuid());
 
+            // when
             final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);;
+                    organization.getUuid(), 10, null, null, LATEST);
 
+            // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
 
             final List<FeedbackItem> feedbacks = feedbackPage2.feedbacks();
@@ -194,9 +198,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             userFeedbackService.create(request, organization.getUuid());
 
+            // when
             final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(
                     organization.getUuid(), 10, null, null, LATEST);;
 
+            // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
 
             final List<FeedbackItem> feedbacks = feedbackPage2.feedbacks();
@@ -214,6 +220,82 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     () -> assertThat(feedbacks.get(8).feedbackId()).isEqualTo(3),
                     () -> assertThat(feedbacks.get(9).feedbackId()).isEqualTo(2)
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("유저 피드백 조회(좋아요 순)시 캐시 테스트")
+    class LikesFeedbacksCacheTest {
+
+        @DisplayName("상위 10개의 좋아요 값을 캐싱해놓는다.")
+        @Test
+        void upper_10_likes_cache() {
+            // given
+            // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, null, LIKES);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, null, LIKES);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, null, LIKES);
+
+            verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+        }
+
+        @DisplayName("특정 상태가 정해진 경우, 캐시가 되면 안 된다.")
+        @Test
+        void only_cached_all_status() {
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, CONFIRMED, LIKES);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, WAITING, LIKES);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, CONFIRMED, LIKES);
+
+            verify(feedbackRepository, times(3)).findByLikes(any(), any(), any(), any());
+        }
+    }
+
+    @Nested
+    @DisplayName("유저 피드백 조회(오래된 순)시 캐시 테스트")
+    class OldestFeedbacksCacheTest {
+
+        @DisplayName("가장 오래된 WAITING 상태의 10개의 피드백 값을 캐싱해놓는다.")
+        @Test
+        void oldest_waiting_feedback_cache() {
+            // given
+            // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            verify(feedbackRepository, times(1)).findByOldest(any(), any(), any(), any());
+        }
+
+
+        @DisplayName("WAITING 상태가 아니라면, 캐시되어서는 안 된다.")
+        @Test
+        void not_waiting_status_then_not_cached() {
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, CONFIRMED, OLDEST);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, CONFIRMED, OLDEST);
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, CONFIRMED, OLDEST);
+
+            verify(feedbackRepository, times(3)).findByOldest(any(), any(), any(), any());
         }
     }
 
