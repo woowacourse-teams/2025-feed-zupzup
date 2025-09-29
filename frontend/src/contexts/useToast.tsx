@@ -1,9 +1,11 @@
 import { createContext, useCallback, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
-import Toast from '@/domains/components/Toast/Toast'; // Toast 컴포넌트 경로에 맞게 수정해주세요
+import Toast from '@/domains/components/Toast/Toast';
+
+export type ToastType = 'success' | 'error' | 'origin';
 
 interface ToastContextProps {
-  showToast: (message: string, duration?: number) => void;
+  showToast: (message: string, duration?: number, type?: ToastType) => void;
   hideToast: () => void;
 }
 
@@ -18,15 +20,19 @@ interface ToastProviderProps {
 
 export interface ToastData {
   message: string;
+  type: ToastType;
   duration: number;
 }
 
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toastData, setToastData] = useState<ToastData | null>(null);
   const portalTarget = document.getElementById('toast') || document.body;
-  const showToast = useCallback((message: string, duration: number = 3000) => {
-    setToastData({ message, duration });
-  }, []);
+  const showToast = useCallback(
+    (message: string, duration: number = 3000, type: ToastType = 'error') => {
+      setToastData({ message, duration, type });
+    },
+    []
+  );
 
   const hideToast = useCallback(() => {
     setToastData(null);
@@ -43,6 +49,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
       {toastData &&
         createPortal(
           <Toast
+            type={toastData.type}
             message={toastData.message}
             onClose={hideToast}
             duration={toastData.duration}

@@ -1,4 +1,4 @@
-export default function Danger() {
+export default function ToastDangerIcon() {
   return (
     <svg
       width='24'

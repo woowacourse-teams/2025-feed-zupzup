@@ -1,14 +1,18 @@
 import { toastStyle } from '@/domains/components/Toast/Toast.style';
-import Danger from '@/components/icons/Danger';
+import ToastDangerIcon from '@/components/icons/ToastDangerIcon';
 import { useEffect, useState } from 'react';
+import ToastCheckIcon from '@/components/icons/ToastCheckIcon';
+import { ToastType } from '@/contexts/useToast';
 
 interface ToastProps {
+  type: ToastType;
   message: string;
   onClose: () => void;
   duration?: number;
 }
 
 export default function Toast({
+  type = 'error',
   message,
   onClose,
   duration = 3000,
@@ -27,7 +31,8 @@ export default function Toast({
 
   return (
     <div css={toastStyle(isExiting)}>
-      <Danger />
+      {type === 'error' && <ToastDangerIcon />}
+      {type === 'success' && <ToastCheckIcon />}
       <span>{message}</span>
     </div>
   );
