@@ -70,7 +70,12 @@ export default function SignUp() {
   return (
     <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
       {toast && (
-        <Toast message={toast} onClose={() => setToast(null)} duration={2000} />
+        <Toast
+          message={toast}
+          onClose={() => setToast(null)}
+          duration={2000}
+          type='error'
+        />
       )}
 
       <form css={signUpForm(theme)} onSubmit={handleSignUp}>

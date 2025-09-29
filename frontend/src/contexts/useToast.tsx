@@ -5,7 +5,7 @@ import Toast from '@/domains/components/Toast/Toast';
 export type ToastType = 'success' | 'error' | 'origin';
 
 interface ToastContextProps {
-  showToast: (message: string, duration?: number, type?: ToastType) => void;
+  showToast: (message: string, type?: ToastType, duration?: number) => void;
   hideToast: () => void;
 }
 
@@ -28,7 +28,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
   const [toastData, setToastData] = useState<ToastData | null>(null);
   const portalTarget = document.getElementById('toast') || document.body;
   const showToast = useCallback(
-    (message: string, duration: number = 3000, type: ToastType = 'error') => {
+    (message: string, type: ToastType = 'error', duration: number = 3000) => {
       setToastData({ message, duration, type });
     },
     []
