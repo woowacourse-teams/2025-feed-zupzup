@@ -5,6 +5,7 @@ import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
+import Loading from './components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
@@ -57,7 +58,7 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <App />
       </Suspense>
     ),
