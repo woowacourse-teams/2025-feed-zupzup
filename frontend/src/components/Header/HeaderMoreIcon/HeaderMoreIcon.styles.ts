@@ -1,7 +1,13 @@
+import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const moreMenuContainer = css`
+export const moreMenuContainer = (theme: Theme) => css`
   position: relative;
+
+  :hover {
+    background-color: ${theme.colors.darkGray[100]};
+    border-radius: 50%;
+  }
 `;
 
 export const moreMenu = css`
