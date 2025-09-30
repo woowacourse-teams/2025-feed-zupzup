@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
+import feedzupzup.backend.feedback.application.FeedbackCacheManager.LikeAction;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.LikeFeedbacks;
@@ -21,6 +22,7 @@ public class FeedbackLikeService {
 
     private final FeedbackRepository feedBackRepository;
     private final UserLikeFeedbacksRepository userLikeFeedbacksRepository;
+    private final FeedbackCacheManager feedbackCacheManager;
 
     @Transactional
     public LikeResponse like(final Long feedbackId, final UUID visitorId) {
@@ -35,6 +37,7 @@ public class FeedbackLikeService {
         }
 
         feedback.increaseLikeCount();
+        feedbackCacheManager.handleLikesCache(feedback, LikeAction.INCREASE);
         userLikeFeedbacksRepository.save(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
@@ -42,15 +45,19 @@ public class FeedbackLikeService {
 
     @Transactional
     public LikeResponse unlike(final Long feedbackId, final UUID visitorId) {
-        if (visitorId == null || !userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
+        if (visitorId == null || !userLikeFeedbacksRepository.isAlreadyLike(visitorId,
+                feedbackId)) {
             throw new InvalidLikeException(
-                    "해당 유저 " + visitorId + "는 해당 feedbackId" + feedbackId + "에 대한 좋아요 기록이 존재하지 않습니다."
+                    "해당 유저 " + visitorId + "는 해당 feedbackId" + feedbackId
+                            + "에 대한 좋아요 기록이 존재하지 않습니다."
             );
         }
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.decreaseLikeCount();
+        feedbackCacheManager.handleLikesCache(feedback, LikeAction.DECREASE);
         userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
+
         return LikeResponse.from(feedback);
     }
 

@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toMap;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import java.util.List;
 import java.util.Map;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 @Component

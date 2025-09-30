@@ -47,7 +47,6 @@ public class CacheConfig {
         return new CaffeineCache("likesFeedbacks",
                 Caffeine.newBuilder()
                         .maximumSize(100)
-                        .expireAfterWrite(30, TimeUnit.SECONDS) // 30초
                         .recordStats()
                         .build()
         );
