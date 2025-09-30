@@ -7,14 +7,16 @@ import {
   moreMenu,
   MoreButton,
 } from './HeaderMoreIcon.styles';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 export default function HeaderMoreIcon() {
+  const theme = useAppTheme();
   const { isOpenMoreMenu, toggleMoreMenu, moreButtonRef, closeMoreMenu } =
     useMoreMenuManager();
 
   return (
     <div
-      css={moreMenuContainer}
+      css={moreMenuContainer(theme)}
       ref={moreButtonRef as React.RefObject<HTMLDivElement>}
     >
       <Button onClick={toggleMoreMenu} customCSS={MoreButton}>

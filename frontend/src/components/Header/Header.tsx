@@ -1,6 +1,7 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import {
   arrowTitleContainer,
+  backButton,
   captionSection,
   header,
   headerSection,
@@ -26,7 +27,7 @@ export default function Header() {
     <header css={header(theme)}>
       <div css={arrowTitleContainer}>
         {showBackButton && (
-          <Button onClick={goBack}>
+          <Button css={backButton(theme)} onClick={goBack}>
             <ArrowLeftIcon color={theme.colors.white[100]} />
           </Button>
         )}

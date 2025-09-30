@@ -1,5 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import Modal from '@/components/Modal/Modal';
+import { modalWidth } from '@/components/Modal/Modal.styles';
 import { CategoryListType } from '@/constants/categoryList';
 import RoomCategoryList from '@/domains/admin/components/RoomCategoryList/RoomCategoryList';
 import RoomCategoryTagList from '@/domains/admin/components/RoomCategoryTagList/RoomCategoryTagList';
@@ -47,7 +48,7 @@ export default function CreateRoomModal({
   }, [organizationName, selectedCategories.length]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} customCSS={modalWidth}>
       <section css={roomModalContainer}>
         <p css={roomModalTitle}>새 피드백 방 만들기</p>
 

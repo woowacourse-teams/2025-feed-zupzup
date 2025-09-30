@@ -16,6 +16,7 @@ import useEditRoom from './hooks/useEditRoom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useModalContext } from '@/contexts/useModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
+import { modalWidth } from '@/components/Modal/Modal.styles';
 
 interface EditRoomModalProps {
   isOpen: boolean;
@@ -61,7 +62,7 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} customCSS={modalWidth}>
       <section css={editRoomModalContainer}>
         <p css={editRoomModalTitle}>피드백 방 수정하기</p>
         <RoomNameInput

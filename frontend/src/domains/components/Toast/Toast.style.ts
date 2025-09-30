@@ -43,8 +43,9 @@ export const toastStyle = (isExiting?: boolean) => css`
   max-width: 400px;
   animation: ${isExiting ? slideOutToTop : slideInFromTop} 0.3s ease-out
     ${isExiting ? 'forwards' : 'none'};
-`;
+
 
 export const iconContainer = css`
   flex-shrink: 0;
+
 `;
