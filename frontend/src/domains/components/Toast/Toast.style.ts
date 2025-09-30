@@ -32,7 +32,7 @@ export const toastStyle = (isExiting?: boolean) => css`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 16px 20px;
+  padding: 12px 16px;
   font-size: 14px;
   font-weight: 400;
   color: #000;
@@ -43,4 +43,9 @@ export const toastStyle = (isExiting?: boolean) => css`
   max-width: 400px;
   animation: ${isExiting ? slideOutToTop : slideInFromTop} 0.3s ease-out
     ${isExiting ? 'forwards' : 'none'};
+
+
+export const iconContainer = css`
+  flex-shrink: 0;
+
 `;
