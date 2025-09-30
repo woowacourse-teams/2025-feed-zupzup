@@ -226,6 +226,6 @@ jobs:
           LHCI_GOOGLE_SPREAD_SHEET_ID: ${{ secrets.LHCI_GOOGLE_SPREAD_SHEET_ID }}
           LHCI_SCORES: ${{ steps.format_lighthouse_score.outputs.scores }}
           LHCI_MONITORING_TIME: ${{ steps.format_lighthouse_score.outputs.monitoringTime }}
-          PR_NUMBER: ${{ steps.get_pr.outputs.pr_number || github.event.pull_request.number || '' }} # ✅ 수정
+          PR_NUMBER: ${{ steps.get_pr.outputs.pr_number || github.event.pull_request.number || '' }}
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
