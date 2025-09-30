@@ -121,6 +121,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -206,6 +208,13 @@ jobs:
         env:
           LHCI_COMMENTS: ${{ steps.format_lighthouse_score.outputs.comments }}
 
+      - name: Get merged PR number
+        id: get_pr
+        if: github.event_name == 'push'
+        run: |
+          PR_NUM=$(git log -1 --pretty=%B | grep -oP '#\K\d+' | head -1 || echo "")
+          echo "pr_number=$PR_NUM" >> $GITHUB_OUTPUT
+
       - name: Update Google SpreadSheet
         if: |
           (github.event_name == 'push') ||
@@ -217,6 +226,6 @@ jobs:
           LHCI_GOOGLE_SPREAD_SHEET_ID: ${{ secrets.LHCI_GOOGLE_SPREAD_SHEET_ID }}
           LHCI_SCORES: ${{ steps.format_lighthouse_score.outputs.scores }}
           LHCI_MONITORING_TIME: ${{ steps.format_lighthouse_score.outputs.monitoringTime }}
-          PR_NUMBER: ${{ github.event.pull_request.number || '' }}
+          PR_NUMBER: ${{ steps.get_pr.outputs.pr_number || github.event.pull_request.number || '' }} # ✅ 수정
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
