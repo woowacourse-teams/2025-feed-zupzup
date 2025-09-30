@@ -6,6 +6,7 @@ export const container = (theme: Theme) => css`
   padding: 6px 10px;
   background-color: ${theme.colors.gray[100]};
   border-radius: 20px;
+  cursor: pointer;
 
   ${theme.typography.pretendard.caption};
 `;

@@ -18,6 +18,14 @@ export default {
       '@': path.resolve(__dirname, '../src'),
     },
   },
+  output: {
+    filename: '[name].[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
+    assetModuleFilename: 'assets/[name].[contenthash][ext]',
+    path: path.resolve(__dirname, '../dist'),
+    clean: true,
+    publicPath: '/',
+  },
   devServer: {
     historyApiFallback: true,
     static: './dist',

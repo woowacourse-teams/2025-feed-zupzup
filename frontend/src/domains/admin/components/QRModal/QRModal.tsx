@@ -3,6 +3,7 @@ import Modal from '@/components/Modal/Modal';
 import QRImageSection from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection';
 import QRUrlSection from '@/domains/admin/components/QRModal/components/QRUrlSection/QRUrlSection';
 import { useQRCode } from './hooks/useQRCode';
+import { modalWidth } from '@/components/Modal/Modal.styles';
 
 interface QRModalProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ export default function QRModal({ isOpen, onClose }: QRModalProps) {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} customCSS={modalWidth}>
       <QRImageSection url={data?.imageUrl || ''} />
       <QRUrlSection url={data?.siteUrl || ''} />
       <BasicButton
