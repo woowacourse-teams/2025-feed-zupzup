@@ -5,25 +5,39 @@ import FillHeartIcon from '../../../components/icons/FillHeartIcon';
 import {
   likeButton,
   iconWrapper,
+  adminLikeText,
+  likeCountText,
 } from '@/domains/components/LikeButton/LikeButton.style';
-import { theme } from '@/theme';
+
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface LikeButtonProps {
   like: boolean | undefined;
   feedbackId: number | undefined;
   likeCount: number;
+  isAdmin?: boolean;
 }
 
 export default function LikeButton({
   like,
   feedbackId,
   likeCount,
+  isAdmin,
 }: LikeButtonProps) {
+  const theme = useAppTheme();
   const { handleLikeButton, isLiked, tempLikeCount } = useLikeButtonManager({
     like,
     feedbackId,
     likeCount,
   });
+
+  if (isAdmin) {
+    return (
+      <span css={adminLikeText(theme)}>
+        <strong css={likeCountText(theme)}>{tempLikeCount}</strong>개의 좋아요
+      </span>
+    );
+  }
 
   return (
     <Button onClick={handleLikeButton} css={likeButton}>

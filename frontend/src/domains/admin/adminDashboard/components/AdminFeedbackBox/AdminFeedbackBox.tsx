@@ -65,6 +65,7 @@ export default memo(function AdminFeedbackBox({
       {type === 'CONFIRMED' && comment && <FeedbackAnswer answer={comment} />}
       <FeedbackBoxFooter
         type={type}
+        isAdmin={true}
         likeCount={likeCount}
         postedAt={postedAt}
         feedbackId={feedbackId}
