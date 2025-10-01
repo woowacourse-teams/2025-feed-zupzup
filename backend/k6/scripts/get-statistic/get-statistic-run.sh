@@ -10,4 +10,4 @@ K6_WEB_DASHBOARD=true k6 run \
   -e K6_INFLUXDB_DB=${INFLUXDB_DB} \
   -e K6_INFLUXDB_USERNAME=${INFLUXDB_USERNAME} \
   -e K6_INFLUXDB_PASSWORD=${INFLUXDB_PASSWORD} \
-  scripts/get-statictic/get-statictic-run.sh
+  scripts/get-statistic/get-statistic-load-test.js

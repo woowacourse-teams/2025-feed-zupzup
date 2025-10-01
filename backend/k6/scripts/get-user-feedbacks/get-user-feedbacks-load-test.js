@@ -9,8 +9,7 @@ import {BASE_URL} from '../../utils/secret.js';
 
 export const options = {
   stages: [
-    {duration: '1m', target: 200},
-    {duration: '4m', target: 200}
+    {duration: '5m', target: 200}
   ]
 };
 
