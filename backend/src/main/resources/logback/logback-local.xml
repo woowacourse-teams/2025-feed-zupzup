@@ -7,17 +7,7 @@
       <pattern>${CONSOLE_LOG_PATTERN}</pattern>
     </encoder>
   </appender>
-
-  <!-- SQL 쿼리 로깅 -->
-  <logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
-    <appender-ref ref="CONSOLE"/>
-  </logger>
-
-  <!-- SQL 파라미터 로깅 -->
-  <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
-    <appender-ref ref="CONSOLE"/>
-  </logger>
-
+  
   <root level="DEBUG">
     <appender-ref ref="CONSOLE"/>
   </root>
