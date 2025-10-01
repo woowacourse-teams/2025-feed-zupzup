@@ -25,12 +25,37 @@ public class FeedbackCacheManager {
         INCREASE, DECREASE
     }
 
+    public void handleLatestCache(
+            final FeedbackItem savedFeedbackItem,
+            final UUID organizationUuid
+    ) {
+        final String latestCacheName = "latestFeedbacks";
+        final Optional<List<FeedbackItem>> findCachedFeedbacks = getCachedFeedbacks(organizationUuid,
+                latestCacheName);
+
+        if (findCachedFeedbacks.isEmpty()) {
+            return;
+        }
+        final List<FeedbackItem> cachedFeedbackItems = findCachedFeedbacks.get();
+
+        List<FeedbackItem> mutableCaches = new ArrayList<>(cachedFeedbackItems);
+
+        if (mutableCaches.size() >= 10) {
+            mutableCaches.removeLast();
+        }
+        mutableCaches.addFirst(savedFeedbackItem);
+
+        cacheManager.getCache("latestFeedbacks")
+                .put(organizationUuid, mutableCaches);
+    }
+
     public void handleLikesCache(
             final FeedbackItem savedFeedbackItem,
             final UUID organizationUuid,
             final LikeAction likeAction
     ) {
-        final Optional<List<FeedbackItem>> findCachedFeedbacks = getCachedFeedbacks(organizationUuid);
+        final String likesCacheName = "likesFeedbacks";
+        final Optional<List<FeedbackItem>> findCachedFeedbacks = getCachedFeedbacks(organizationUuid, likesCacheName);
         if (findCachedFeedbacks.isEmpty()) {
             return;
         }
@@ -45,12 +70,12 @@ public class FeedbackCacheManager {
         }
     }
 
-    private Optional<List<FeedbackItem>> getCachedFeedbacks(final UUID organizationUuid) {
-        final Cache likesFeedbacks = cacheManager.getCache("likesFeedbacks");
-        if (likesFeedbacks == null) {
+    private Optional<List<FeedbackItem>> getCachedFeedbacks(final UUID organizationUuid, String cacheName) {
+        final Cache cache = cacheManager.getCache(cacheName);
+        if (cache == null) {
             return Optional.empty();
         }
-        return Optional.ofNullable(likesFeedbacks.get(organizationUuid, List.class));
+        return Optional.ofNullable(cache.get(organizationUuid, List.class));
     }
 
     private void handleLikesCacheOnIncrease(
