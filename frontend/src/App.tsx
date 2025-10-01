@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { usePageTracking } from './hooks/usePageTracking';
 import { useLayoutConfig } from './hooks/useLayoutConfig';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
@@ -7,6 +8,7 @@ import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
 import { ModalProvider } from './contexts/useModal';
+
 const gaId = process.env.GA_ID;
 
 if (gaId) {
@@ -52,5 +54,9 @@ function AppContent() {
 }
 
 export default function App() {
-  return <AppContent />;
+  return (
+    <HelmetProvider>
+      <AppContent />
+    </HelmetProvider>
+  );
 }
