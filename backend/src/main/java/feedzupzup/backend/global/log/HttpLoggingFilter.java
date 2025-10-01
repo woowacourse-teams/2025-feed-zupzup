@@ -1,11 +1,11 @@
 package feedzupzup.backend.global.log;
 
+import io.opentelemetry.api.trace.Span;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -44,19 +44,34 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         final ContentCachingRequestWrapper cacheRequest = new ContentCachingRequestWrapper(request);
         final ContentCachingResponseWrapper cacheResponse = new ContentCachingResponseWrapper(response);
 
-        createRequestId();
+        createTraceId();
+        createSpanId();
 
         writeRequestLog(cacheRequest);
         filterChain.doFilter(cacheRequest, cacheResponse);
         writeResponseLog(cacheResponse);
 
         cacheResponse.copyBodyToResponse();
-        MDC.remove("request_id");
+        MDC.remove("trace_id");
+        MDC.remove("span_id");
     }
 
-    private void createRequestId() {
-        String requestId = UUID.randomUUID().toString().substring(0, 8);
-        MDC.put("request_id", requestId);
+    private void createTraceId() {
+        String traceId = Span.current().getSpanContext().getTraceId();
+        if (!traceId.isEmpty()) {
+            MDC.put("trace_id", traceId);
+        } else {
+            MDC.put("trace_id", UUID.randomUUID().toString());
+        }
+    }
+
+    private void createSpanId() {
+        String spanId = Span.current().getSpanContext().getSpanId();
+        if (!spanId.isEmpty()) {
+            MDC.put("span_id", spanId);
+        } else {
+            MDC.put("span_id", UUID.randomUUID().toString());
+        }
     }
 
     private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {

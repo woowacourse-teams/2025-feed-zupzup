@@ -31,6 +31,8 @@ public enum ErrorCode {
     INVALID_USERNAME_LENGTH(BAD_REQUEST, "F01", "닉네임은 1글자 이상 10글자 이하여야 합니다."),
     INVALID_CONTENT_LENGTH(BAD_REQUEST, "F02", "내용은 1글자 이상 500글자 이하여야 합니다."),
     INVALID_VALUE_RANGE(INTERNAL_SERVER_ERROR, "F03", "좋아요는 음수가 될 수 없습니다."),
+    LIKE_ALREADY_EXISTS(BAD_REQUEST, "F04", "좋아요는 한 번만 누를 수 있습니다."),
+    INVALID_LIKE_REQUEST(BAD_REQUEST, "F05", "잘못된 요청입니다."),
 
     //Admin Domain Error
     INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),

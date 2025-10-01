@@ -12,14 +12,18 @@ import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
+import jakarta.servlet.http.Cookie;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 
 class FeedbackLikeControllerE2ETest extends E2EHelper {
 
@@ -79,8 +83,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 좋아요 2개 추가
-        feedbackLikeService.like(savedFeedback.getId());
-        feedbackLikeService.like(savedFeedback.getId());
+        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
+        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
 
         // when & then
         given()
@@ -93,6 +97,33 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
                 .body("data.afterLikeCount", equalTo(13));
+    }
+
+    @Test
+    @DisplayName("해당 피드백에 대한 좋아요 기록이 없는 유저가 취소를 요청할 경우, 400 에러를 반환해야 한다")
+    void not_exist_like_history_user_then_return_400() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
+                organizationCategory, 5);
+        final Feedback savedFeedback = feedBackRepository.save(feedback);
+
+        final UUID cookieValue = createAndGetCookieValue();
+
+        // when & then
+        given()
+                .log().all()
+                .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue)
+                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -154,51 +185,21 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("피드백 좋아요를 성공적으로 취소한다")
-    void unlike_feedback_success() {
-        // given
-        final Organization organization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(organization);
-
-        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                organization, SUGGESTION);
-        organizationCategoryRepository.save(organizationCategory);
-
-        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
-                organizationCategory, 5);
-        final Feedback savedFeedback = feedBackRepository.save(feedback);
-
-        // 좋아요 3개 삭제
-        feedbackLikeService.unLike(savedFeedback.getId());
-        feedbackLikeService.unLike(savedFeedback.getId());
-        feedbackLikeService.unLike(savedFeedback.getId());
-
-        // when & then (추가로 한 번 더 삭제)
-        given()
-                .log().all()
-                .when()
-                .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.afterLikeCount", equalTo(1));
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요 취소를 시도하면 404 에러가 발생한다")
+    @DisplayName("존재하지 않는 피드백에 좋아요 취소를 시도하면 400 에러가 발생한다")
     void unlike_non_existent_feedback_not_found() {
         // given
         final Long nonExistentFeedbackId = 999L;
 
+        UUID visitorId = UUID.randomUUID();
+
         // when & then
         given()
                 .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/unlike", nonExistentFeedbackId)
                 .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -214,11 +215,15 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
 
         final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
                 organizationCategory, 2);
+
         final Feedback savedFeedback = feedBackRepository.save(feedback);
+
+        UUID visitorId = UUID.randomUUID();
 
         // when - 좋아요 추가
         given()
                 .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
@@ -228,6 +233,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // then - 좋아요 취소
         given()
                 .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
@@ -250,9 +256,15 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 organizationCategory, 0);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
+        final UUID cookieValue1 = createAndGetCookieValue();
+        final UUID cookieValue2 = createAndGetCookieValue();
+        final UUID cookieValue3 = createAndGetCookieValue();
+
+
         // when & then - 좋아요 추가
         given()
                 .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue1)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -261,6 +273,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue2)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -269,6 +282,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue1)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -277,6 +291,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue3)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -285,6 +300,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
+                .cookie(CookieUtilization.VISITOR_KEY, cookieValue2)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -317,5 +333,11 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
                 .body("data.afterLikeCount", equalTo(1));
+    }
+
+    private UUID createAndGetCookieValue() {
+        final ResponseCookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+                UUID.randomUUID());
+        return UUID.fromString(cookie.getValue());
     }
 }

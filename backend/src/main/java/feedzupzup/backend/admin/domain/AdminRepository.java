@@ -1,6 +1,7 @@
 package feedzupzup.backend.admin.domain;
 
 import feedzupzup.backend.admin.domain.vo.LoginId;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,4 +24,7 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
       )
       """)
     boolean existsFeedbackId(Long adminId, Long feedbackId);
+    
+    @Query("SELECT a.id FROM Admin a WHERE a.id IN :adminIds AND a.alertsOn = true")
+    List<Long> findAlertsEnabledAdminIds(List<Long> adminIds);
 }

@@ -14,8 +14,8 @@ import feedzupzup.backend.admin.domain.vo.AdminName;
 import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.notification.domain.NotificationToken;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import feedzupzup.backend.notification.domain.Notification;
+import feedzupzup.backend.notification.domain.NotificationRepository;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
     private FcmErrorHandler fcmErrorHandler;
     
     @Autowired
-    private NotificationTokenRepository notificationTokenRepository;
+    private NotificationRepository notificationRepository;
     
     @Autowired
     private AdminRepository adminRepository;
@@ -39,8 +39,8 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
     void handleFailures_DeletesInvalidTokens() {
         // given
         Admin admin = createAndSaveAdmin("testAdmin", "testLogin");
-        NotificationToken token = new NotificationToken(admin, "invalid-token");
-        notificationTokenRepository.save(token);
+        Notification token = new Notification(admin, "invalid-token");
+        notificationRepository.save(token);
         
         BatchResponse batchResponse = mock(BatchResponse.class);
         SendResponse failResponse = mock(SendResponse.class);
@@ -51,13 +51,13 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
         given(failResponse.getException()).willReturn(exception);
         given(exception.getMessagingErrorCode()).willReturn(MessagingErrorCode.UNREGISTERED);
         
-        List<Long> adminIds = List.of(admin.getId());
+        List<String> tokens = List.of("invalid-token");
 
         // when
-        fcmErrorHandler.handleFailures(batchResponse, adminIds);
+        fcmErrorHandler.handleFailures(batchResponse, tokens);
 
         // then
-        assertThat(notificationTokenRepository.findByAdmin_Id(admin.getId())).isEmpty();
+        assertThat(notificationRepository.findByAdminIdAndToken(admin.getId(), "invalid-token")).isEmpty();
     }
 
     @Test
@@ -65,8 +65,8 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
     void handleFailures_DoesNotDeleteValidTokens() {
         // given
         Admin admin = createAndSaveAdmin("testAdmin2", "testLogin2");
-        NotificationToken token = new NotificationToken(admin, "valid-token");
-        notificationTokenRepository.save(token);
+        Notification token = new Notification(admin, "valid-token");
+        notificationRepository.save(token);
         
         BatchResponse batchResponse = mock(BatchResponse.class);
         SendResponse successResponse = mock(SendResponse.class);
@@ -74,13 +74,13 @@ class FcmErrorHandlerTest extends ServiceIntegrationHelper {
         given(batchResponse.getResponses()).willReturn(List.of(successResponse));
         given(successResponse.isSuccessful()).willReturn(true);
         
-        List<Long> adminIds = List.of(admin.getId());
+        List<String> tokens = List.of("valid-token");
 
         // when
-        fcmErrorHandler.handleFailures(batchResponse, adminIds);
+        fcmErrorHandler.handleFailures(batchResponse, tokens);
 
         // then
-        assertThat(notificationTokenRepository.findByAdmin_Id(admin.getId())).isPresent();
+        assertThat(notificationRepository.findByAdminIdAndToken(admin.getId(), "valid-token")).isPresent();
     }
 
     private Admin createAndSaveAdmin(String adminName, String loginId) {

@@ -18,11 +18,11 @@ public class NotificationException extends DomainException {
         }
     }
 
-    public static final class NotificationTokenExistsException extends NotificationException {
+    public static final class NotificationExistsException extends NotificationException {
 
         private static final ErrorCode errorCode = ErrorCode.NOTIFICATION_TOKEN_ALREADY_EXISTS;
 
-        public NotificationTokenExistsException(String message) {
+        public NotificationExistsException(String message) {
             super(errorCode, message);
         }
     }

@@ -40,6 +40,7 @@ public class Organizer extends BaseTimeEntity {
         return admin.isAlertsOn();
     }
 
+
     public Long getAdminId() {
         return admin.getId();
     }

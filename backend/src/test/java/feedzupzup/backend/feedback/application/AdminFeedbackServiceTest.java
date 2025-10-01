@@ -24,6 +24,7 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -195,22 +196,17 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         }
 
         @Test
-        @DisplayName("빈 결과에 대해 적절히 처리한다")
+        @DisplayName("존재하지 않는 단체를 조회하면 예외를 발생시킨다.")
         void getAllFeedbacks_empty_result() {
             // given
             final UUID organizationUuid = UUID.randomUUID();
             final int size = 10;
 
             // when
-            final AdminFeedbackListResponse response = adminFeedbackService.getFeedbackPage(
-                    organizationUuid, size, null, null, LATEST);
-
-            // then
-            assertAll(
-                    () -> assertThat(response.feedbacks()).isEmpty(),
-                    () -> assertThat(response.hasNext()).isFalse(),
-                    () -> assertThat(response.nextCursorId()).isNull()
-            );
+            assertThatThrownBy(() -> {
+                adminFeedbackService.getFeedbackPage(
+                        organizationUuid, size, null, null, LATEST);
+            }).isInstanceOf(ResourceNotFoundException.class);
         }
     }
 

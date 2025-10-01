@@ -1,0 +1,1 @@
+ALTER TABLE organization MODIFY cheering_count BIGINT NOT NULL

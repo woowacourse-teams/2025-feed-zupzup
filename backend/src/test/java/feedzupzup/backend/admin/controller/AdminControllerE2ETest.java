@@ -6,14 +6,13 @@ import static org.hamcrest.Matchers.equalTo;
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
-import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
 import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.auth.application.PasswordEncoder;
 import feedzupzup.backend.auth.dto.request.LoginRequest;
 import feedzupzup.backend.config.E2EHelper;
-import feedzupzup.backend.notification.domain.NotificationToken;
-import feedzupzup.backend.notification.domain.NotificationTokenRepository;
+import feedzupzup.backend.notification.domain.Notification;
+import feedzupzup.backend.notification.domain.NotificationRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -37,7 +36,7 @@ class AdminControllerE2ETest extends E2EHelper {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private NotificationTokenRepository notificationTokenRepository;
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -53,8 +52,8 @@ class AdminControllerE2ETest extends E2EHelper {
         Admin admin = new Admin(new LoginId("testAdmin"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
 
-        NotificationToken notificationToken = new NotificationToken(admin, "test-token");
-        notificationTokenRepository.save(notificationToken);
+        Notification notificationToken = new Notification(admin, "test-token");
+        notificationRepository.save(notificationToken);
 
         Organization organization = OrganizationFixture.createAllBlackBox();
         Organization saved = organizationRepository.save(organization);

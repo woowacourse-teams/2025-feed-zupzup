@@ -4,9 +4,11 @@ import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
@@ -18,12 +20,12 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
+import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -517,5 +519,119 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[1].likeCount", equalTo(5))
                 .body("data.feedbacks[2].feedbackId", equalTo(saved3.getId().intValue()))
                 .body("data.feedbacks[2].likeCount", equalTo(3));
+    }
+
+    @Test
+    @DisplayName("본인이 좋아요 누른 피드백 목록을 조회할 수 있어야 한다")
+    void get_like_histories() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
+                organizationCategory, 0);
+        final Feedback savedFeedback = feedBackRepository.save(feedback);
+
+        UUID visitorId = UUID.randomUUID();
+
+        given()
+                .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .when()
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        // when
+        given()
+                .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .when()
+                .get("/feedbacks/my-likes")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("data.feedbackIds[0]", is(savedFeedback.getId().intValue()));
+    }
+
+    @Test
+    @DisplayName("본인이 좋아요 누른 피드백 목록들을 전부 조회할 수 있어야 한다")
+    void get_like_histories_multiple_case() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithLikes(organization,
+                organizationCategory, 0);
+
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithLikes(organization,
+                organizationCategory, 0);
+
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithLikes(organization,
+                organizationCategory, 0);
+
+        final Feedback savedFeedback1 = feedBackRepository.save(feedback1);
+        final Feedback savedFeedback2 = feedBackRepository.save(feedback2);
+        final Feedback savedFeedback3 = feedBackRepository.save(feedback3);
+
+        UUID visitorId = UUID.randomUUID();
+
+        given()
+                .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .when()
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback1.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        given()
+                .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .when()
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback2.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        given()
+                .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .when()
+                .patch("/feedbacks/{feedbackId}/like", savedFeedback3.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        // when
+        given()
+                .log().all()
+                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .when()
+                .get("/feedbacks/my-likes")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("data.feedbackIds", hasSize(3))
+                .body("data.feedbackIds[0]", is(savedFeedback1.getId().intValue()))
+                .body("data.feedbackIds[1]", is(savedFeedback2.getId().intValue()))
+                .body("data.feedbackIds[2]", is(savedFeedback3.getId().intValue()));
+    }
+
+    @Test
+    @DisplayName("쿠키가 없다면, 빈 배열이 반환되어야 한다")
+    void get_like_histories_none_cookie_case() {
+
+        // when
+        given()
+                .log().all()
+                .when()
+                .get("/feedbacks/my-likes")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("data.feedbackIds", empty());
     }
 }
