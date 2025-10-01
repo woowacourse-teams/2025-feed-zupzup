@@ -18,14 +18,13 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackItem;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -303,7 +302,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(response.feedbacks()).hasSize(2),
                 () -> assertThat(response.feedbacks())
-                        .extracting(FeedbackItem::feedbackId)
+                        .extracting(UserFeedbackItem::feedbackId)
                         .doesNotContain(otherFeedback.getId()),
                 () -> assertThat(response.hasNext()).isFalse()
         );

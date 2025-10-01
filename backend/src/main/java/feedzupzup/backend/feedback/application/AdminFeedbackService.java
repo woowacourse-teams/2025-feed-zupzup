@@ -12,6 +12,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -58,7 +59,7 @@ public class AdminFeedbackService {
         final Pageable pageable = Pageable.ofSize(size + 1);
 
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
+        List<FeedbackItem> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
                 pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);

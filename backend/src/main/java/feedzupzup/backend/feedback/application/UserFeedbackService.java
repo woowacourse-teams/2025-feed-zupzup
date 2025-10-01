@@ -11,6 +11,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
@@ -88,11 +89,11 @@ public class UserFeedbackService {
 
         final Pageable pageable = createPageable(size);
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
-        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
+        List<FeedbackItem> feedbackItems = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
+        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbackItems, size);
 
         return UserFeedbackListResponse.of(
-                feedbackPage.getFeedbacks(),
+                feedbackPage.getFeedbackItems(),
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
@@ -108,7 +109,7 @@ public class UserFeedbackService {
                 organizationUuid, myFeedbackIds);
 
         final FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        final List<Feedback> sortedFeedbacks = feedbackSortStrategy.sort(feedbacks);
+        final List<FeedbackItem> sortedFeedbacks = feedbackSortStrategy.sort(feedbacks);
 
         return MyFeedbackListResponse.of(sortedFeedbacks);
     }

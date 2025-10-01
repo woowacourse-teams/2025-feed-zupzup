@@ -4,6 +4,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +21,16 @@ public class LikesFeedbackSortStrategy implements FeedbackSortStrategy {
 
     @Cacheable(cacheNames = "likesFeedbacks", key = "#organizationUuId", condition = "#cursorId == null and #status == null")
     @Override
-    public List<Feedback> getSortedFeedbacks(final UUID organizationUuId, final ProcessStatus status, final Long cursorId,
-            final Pageable pageable) {
-        return feedbackRepository.findByLikes(organizationUuId, status, cursorId, pageable);
+    public List<FeedbackItem> getSortedFeedbacks(
+            final UUID organizationUuId,
+            final ProcessStatus status,
+            final Long cursorId,
+            final Pageable pageable
+    ) {
+        final List<Feedback> feedbacks = feedbackRepository.findByLikes(organizationUuId, status, cursorId, pageable);
+        return feedbacks.stream()
+                .map(FeedbackItem::from)
+                .toList();
     }
 
     @Override
@@ -31,10 +39,11 @@ public class LikesFeedbackSortStrategy implements FeedbackSortStrategy {
     }
 
     @Override
-    public List<Feedback> sort(final List<Feedback> feedbacks) {
+    public List<FeedbackItem> sort(final List<Feedback> feedbacks) {
         return feedbacks.stream()
                 .sorted(Comparator.comparing(Feedback::getLikeCountValue).reversed()
                         .thenComparing(Feedback::getId))
+                .map(FeedbackItem::from)
                 .toList();
     }
 }
