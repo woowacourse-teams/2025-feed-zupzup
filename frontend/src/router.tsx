@@ -5,6 +5,8 @@ import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
+import GlobalErrorBoundary from './error/GlobalErrorBoundary';
+import GlobalErrorFallback from './error/GlobalErrorFallback';
 
 const AdminDashboard = lazy(
   () =>
@@ -57,9 +59,11 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <App />
-      </Suspense>
+      <GlobalErrorBoundary fallback={GlobalErrorFallback}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <App />
+        </Suspense>
+      </GlobalErrorBoundary>
     ),
     children: [
       {
@@ -92,7 +96,10 @@ export const router = createBrowserRouter([
         path: ROUTES.ADMIN,
         element: <ProtectedRoute redirectPath='/login' />,
         children: [
-          { path: ROUTES.ADMIN_HOME, element: <AdminHome /> },
+          {
+            path: ROUTES.ADMIN_HOME,
+            element: <AdminHome />,
+          },
           { path: ROUTES.DASHBOARD, element: <AdminDashboard /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <Settings /> },
         ],
