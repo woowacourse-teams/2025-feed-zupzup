@@ -6,8 +6,7 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
 import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,13 +18,14 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
-import feedzupzup.backend.feedback.dto.response.FeedbackItem;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -44,6 +44,9 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
     @Autowired
     private UserFeedbackService userFeedbackService;
 
+    @Autowired
+    private FeedbackLikeService feedbackLikeService;
+
     @MockitoSpyBean
     private FeedbackRepository feedbackRepository;
 
@@ -56,7 +59,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
 
-        organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(organization, SUGGESTION);
+        organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(organization,
+                SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
     }
 
@@ -122,104 +126,47 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         @DisplayName("최신순 캐시 도중, 새로운 값이 저장된다면 캐시 값이 바뀌어야 한다.(사이즈 10 이하인 경우)")
         void when_save_new_feedback_then_update_latest_cache() {
             // given
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
+            saveMultipleFeedbacks(3);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
 
-            feedbackRepository.save(feedback1);
-            feedbackRepository.save(feedback2);
-            feedbackRepository.save(feedback3);
-
-            final UserFeedbackListResponse feedbackPage = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
-
-            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨", "건의");
+            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
+                    "건의");
 
             userFeedbackService.create(request, organization.getUuid());
 
             // when
-            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            final List<UserFeedbackItem> feedbacks = feedbackPage2.feedbacks();
 
             // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
-
-            final List<FeedbackItem> feedbacks = feedbackPage2.feedbacks();
-            assertAll(
-                    () -> assertThat(feedbacks.get(0).feedbackId()).isEqualTo(4),
-                    () -> assertThat(feedbacks.get(1).feedbackId()).isEqualTo(3),
-                    () -> assertThat(feedbacks.get(2).feedbackId()).isEqualTo(2),
-                    () -> assertThat(feedbacks.get(3).feedbackId()).isEqualTo(1)
-            );
+            assertFeedbackIds(feedbacks, 4L, 3L, 2L, 1L);
         }
 
         @Test
         @DisplayName("최신순 캐시 도중, 새로운 값이 저장된다면 캐시 값이 바뀌어야 한다.(사이즈 10 이상인 경우)")
         void when_save_new_feedback_then_update_latest_cache_over_10() {
             // given
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback5 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback6 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback7 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback8 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback9 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback10 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-
-            feedbackRepository.save(feedback1);
-            feedbackRepository.save(feedback2);
-            feedbackRepository.save(feedback3);
-            feedbackRepository.save(feedback4);
-            feedbackRepository.save(feedback5);
-            feedbackRepository.save(feedback6);
-            feedbackRepository.save(feedback7);
-            feedbackRepository.save(feedback8);
-            feedbackRepository.save(feedback9);
-            feedbackRepository.save(feedback10);
+            saveMultipleFeedbacks(10);
 
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
 
-            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨", "건의");
+            final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
+                    "건의");
 
             userFeedbackService.create(request, organization.getUuid());
 
             // when
             final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);;
+                    organization.getUuid(), 10, null, null, LATEST);
 
             // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
 
-            final List<FeedbackItem> feedbacks = feedbackPage2.feedbacks();
+            final List<UserFeedbackItem> feedbacks = feedbackPage2.feedbacks();
 
             assertThat(feedbacks.size()).isEqualTo(10);
-            assertAll(
-                    () -> assertThat(feedbacks.get(0).feedbackId()).isEqualTo(11),
-                    () -> assertThat(feedbacks.get(1).feedbackId()).isEqualTo(10),
-                    () -> assertThat(feedbacks.get(2).feedbackId()).isEqualTo(9),
-                    () -> assertThat(feedbacks.get(3).feedbackId()).isEqualTo(8),
-                    () -> assertThat(feedbacks.get(4).feedbackId()).isEqualTo(7),
-                    () -> assertThat(feedbacks.get(5).feedbackId()).isEqualTo(6),
-                    () -> assertThat(feedbacks.get(6).feedbackId()).isEqualTo(5),
-                    () -> assertThat(feedbacks.get(7).feedbackId()).isEqualTo(4),
-                    () -> assertThat(feedbacks.get(8).feedbackId()).isEqualTo(3),
-                    () -> assertThat(feedbacks.get(9).feedbackId()).isEqualTo(2)
-            );
+            assertFeedbackIds(feedbacks, 11L, 10L, 9L, 8L, 7L, 6L, 5L, 4L, 3L, 2L);
         }
     }
 
@@ -299,4 +246,203 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         }
     }
 
+    @Nested
+    @DisplayName("캐시를 재정의 하거나, 비우는 상황 테스트")
+    class HandleCacheTest {
+
+        @Nested
+        @DisplayName("좋아요 케이스")
+        class LikestCacheCase {
+
+            @DisplayName("이미 캐시에 속해있는 피드백에 대해 좋아요 증가를 할 경우, 캐시가 재정렬되어야 한다.")
+            @Test
+            void already_exist_likes_cache_when_like_increase_then_resort() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
+
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                feedbackLikeService.like(5L, UUID.randomUUID());
+
+                final UserFeedbackListResponse feedbackPage = userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final List<UserFeedbackItem> feedbacks = feedbackPage.feedbacks();
+
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+                assertFeedbackIds(feedbacks, 5L, 1L, 2L, 3L, 4L, 6L, 7L, 8L, 9L, 10L);
+            }
+
+            @DisplayName("캐시에 속하지 않으면서 증가된 좋아요 값이 마지막 캐시값보다 크거나 같을 경우, 캐시를 재구성 해야한다")
+            @Test
+            void not_contains_cache_and_cache_last_value_over_or_equals_then_reorganize_cache() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 1, 1));
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                // when
+                feedbackLikeService.like(11L, UUID.randomUUID());
+
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                final UserFeedbackListResponse feedbackPage = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                final List<UserFeedbackItem> feedbacks = feedbackPage.feedbacks();
+
+                // then
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+                assertFeedbackIds(feedbacks, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 11L);
+            }
+
+            @DisplayName("캐시의 값이 최대 캐시 수보다 작다면, 새로운 캐시에 들어가야 한다.")
+            @Test
+            void saved_cache_size_under_max_then_put() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10));
+
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                final Feedback feedback4 = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 0);
+                feedbackRepository.save(feedback4);
+
+                // when
+                feedbackLikeService.like(feedback4.getId(), UUID.randomUUID());
+
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                final UserFeedbackListResponse feedbackPage = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                final List<UserFeedbackItem> feedbacks = feedbackPage.feedbacks();
+
+                // then
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+                assertFeedbackIds(feedbacks, 1L, 2L, 3L, 4L);
+            }
+
+            @DisplayName("좋아요 피드백이 캐시에 속하지도 않고, 제일 작은 캐시값보다 작다면, 기존의 캐시값을 반환해야 한다.")
+            @Test
+            void like_count_less_then_saved_cache_then_return_basic_cache() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
+
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final Feedback feedback11 = FeedbackFixture.createFeedbackWithLikes(
+                        organization, organizationCategory, 0);
+
+                feedbackRepository.save(feedback11);
+
+                // when
+                feedbackLikeService.like(feedback11.getId(), UUID.randomUUID());
+
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final UserFeedbackListResponse feedbackPage = userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final List<UserFeedbackItem> feedbacks = feedbackPage.feedbacks();
+
+                // then
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+                assertFeedbackIds(feedbacks, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L);
+            }
+
+            @DisplayName("좋아요 감소 요청을 할 때, 마지막 캐시값과 같거나 작다면, 캐시를 비워야한다.")
+            @Test
+            void ike_count_same_last_cache_then_clear_cache() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 1));
+
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final UUID userUuid = UUID.randomUUID();
+                feedbackLikeService.like(10L, userUuid);
+
+                // when
+                feedbackLikeService.unlike(10L, userUuid);
+
+                // then
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                // then
+                verify(feedbackRepository, times(2)).findByLikes(any(), any(), any(), any());
+            }
+
+            @DisplayName("캐시를 비운 상황에서, 다시 요청이 온다면, DB 에서 새로운 캐시값을 받아와야한다.")
+            @Test
+            void clear_cache_case_then_re_request_then_connect_db() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 1));
+
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final UUID userUuid = UUID.randomUUID();
+                feedbackLikeService.like(10L, userUuid);
+
+                // when
+                feedbackLikeService.unlike(10L, userUuid);
+
+                // then
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+
+                // 다시 요청
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                verify(feedbackRepository, times(2)).findByLikes(any(), any(), any(), any());
+            }
+
+            @DisplayName("좋아요 감소 요청을 할 때, 캐시에 존재하는 값이라면, 캐시를 재정의 해야한다.")
+            @Test
+            void like_count_already_exist_cache_then_reorganize_cache() {
+                // given
+                saveMultipleFeedbacksFromLikeCounts(List.of(10, 9, 10, 10, 10, 5, 4, 4, 3, 1));
+
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES);
+
+                final UUID userUuid = UUID.randomUUID();
+                feedbackLikeService.like(2L, userUuid);
+
+                // when
+                feedbackLikeService.unlike(2L, userUuid);
+                final UserFeedbackListResponse feedbackPage = userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, null, LIKES);
+
+                final List<UserFeedbackItem> feedbacks = feedbackPage.feedbacks();
+
+                // then
+                verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
+                assertFeedbackIds(feedbacks, 1L, 3L, 4L, 5L, 2L, 6L, 7L, 8L, 9L, 10L);
+            }
+
+        }
+    }
+
+    private void saveMultipleFeedbacks(int count) {
+        for (int i=0; i<count; i++) {
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
+            feedbackRepository.save(feedback);
+        }
+    }
+
+    private void saveMultipleFeedbacksFromLikeCounts(List<Integer> likeCounts) {
+        for (Integer amount : likeCounts) {
+            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, amount);
+            feedbackRepository.save(feedback);
+        }
+    }
+
+    private void assertFeedbackIds(List<UserFeedbackItem> feedbacks, Long... expectedIds) {
+        assertThat(feedbacks)
+                .extracting("feedbackId")
+                .containsExactly(expectedIds);
+    }
 }

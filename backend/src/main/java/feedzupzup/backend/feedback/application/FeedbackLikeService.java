@@ -5,6 +5,7 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.LikeFeedbacks;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
@@ -37,7 +38,8 @@ public class FeedbackLikeService {
         }
 
         feedback.increaseLikeCount();
-        feedbackCacheManager.handleLikesCache(feedback, LikeAction.INCREASE);
+        feedbackCacheManager.handleLikesCache(
+                FeedbackItem.from(feedback), feedback.getOrganization().getUuid(), LikeAction.INCREASE);
         userLikeFeedbacksRepository.save(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
@@ -55,7 +57,7 @@ public class FeedbackLikeService {
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.decreaseLikeCount();
-        feedbackCacheManager.handleLikesCache(feedback, LikeAction.DECREASE);
+        feedbackCacheManager.handleLikesCache(FeedbackItem.from(feedback), feedback.getOrganization().getUuid(), LikeAction.DECREASE);
         userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);

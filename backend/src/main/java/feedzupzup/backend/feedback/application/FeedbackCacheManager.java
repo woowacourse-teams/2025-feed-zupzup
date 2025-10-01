@@ -2,7 +2,8 @@ package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.feedback.application.FeedbackCacheManager.LikeAction.*;
 
-import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -24,24 +25,27 @@ public class FeedbackCacheManager {
         INCREASE, DECREASE
     }
 
-    public void handleLikesCache(final Feedback savedFeedback, final LikeAction likeAction) {
-        final Optional<List<Feedback>> findCachedFeedbacks = getCachedFeedbacks(savedFeedback);
+    public void handleLikesCache(
+            final FeedbackItem savedFeedbackItem,
+            final UUID organizationUuid,
+            final LikeAction likeAction
+    ) {
+        final Optional<List<FeedbackItem>> findCachedFeedbacks = getCachedFeedbacks(organizationUuid);
         if (findCachedFeedbacks.isEmpty()) {
             return;
         }
-        final List<Feedback> cachedFeedbacks = findCachedFeedbacks.get();
+        final List<FeedbackItem> cachedFeedbacks = findCachedFeedbacks.get();
 
         if (likeAction == INCREASE) {
-            handleLikesCacheOnIncrease(savedFeedback, cachedFeedbacks);
+            handleLikesCacheOnIncrease(savedFeedbackItem, cachedFeedbacks, organizationUuid);
             return;
         }
         if (likeAction == DECREASE) {
-            handleLikesCacheOnDecrease(savedFeedback, cachedFeedbacks);
+            handleLikesCacheOnDecrease(savedFeedbackItem, cachedFeedbacks, organizationUuid);
         }
     }
 
-    private Optional<List<Feedback>> getCachedFeedbacks(final Feedback savedFeedback) {
-        final UUID organizationUuid = savedFeedback.getOrganization().getUuid();
+    private Optional<List<FeedbackItem>> getCachedFeedbacks(final UUID organizationUuid) {
         final Cache likesFeedbacks = cacheManager.getCache("likesFeedbacks");
         if (likesFeedbacks == null) {
             return Optional.empty();
@@ -50,60 +54,76 @@ public class FeedbackCacheManager {
     }
 
     private void handleLikesCacheOnIncrease(
-            final Feedback savedFeedback,
-            final List<Feedback> cachedFeedbacks
+            final FeedbackItem savedFeedbackItem,
+            final List<FeedbackItem> cachedFeedbackItems,
+            final UUID organizationUuid
     ) {
-        cachedFeedbacks.removeIf(
-                cachedFeedback -> cachedFeedback.getId().equals(savedFeedback.getId())
+        List<FeedbackItem> mutableCaches = new ArrayList<>(cachedFeedbackItems);
+
+        mutableCaches.removeIf(
+                cachedFeedback -> cachedFeedback.feedbackId().equals(savedFeedbackItem.feedbackId())
         );
-        cachedFeedbacks.add(savedFeedback);
-        sortCachedFeedback(cachedFeedbacks);
-        if (cachedFeedbacks.size() > MAX_CACHE_VALUE) {
-            cachedFeedbacks.removeLast();
+
+        mutableCaches.add(savedFeedbackItem);
+        sortCachedFeedback(mutableCaches);
+        if (cachedFeedbackItems.size() > MAX_CACHE_VALUE) {
+            mutableCaches.removeLast();
         }
+        cacheManager.getCache("likesFeedbacks")
+                .put(organizationUuid, mutableCaches);
     }
 
     private void handleLikesCacheOnDecrease(
-            final Feedback savedFeedback,
-            final List<Feedback> cachedFeedbacks
+            final FeedbackItem savedFeedbackItem,
+            final List<FeedbackItem> cachedFeedbacks,
+            final UUID organizationUuid
     ) {
-        final boolean isAlreadyCached = isCachedFeedback(savedFeedback, cachedFeedbacks);
+        final boolean isAlreadyCached = isCachedFeedback(savedFeedbackItem, cachedFeedbacks);
         if (!isAlreadyCached) {
             return;
         }
-        if (isBelowCacheThreshold(savedFeedback, cachedFeedbacks)) {
-            cachedFeedbacks.clear();
+        if (isBelowCacheThreshold(savedFeedbackItem, cachedFeedbacks)) {
+            final Cache likesCache = cacheManager.getCache("likesFeedbacks");
+            likesCache.evict(organizationUuid);
             return;
         }
-        reorganizeCachedFeedbacks(savedFeedback, cachedFeedbacks);
+        reorganizeCachedFeedbacks(savedFeedbackItem, cachedFeedbacks, organizationUuid);
     }
 
-    private boolean isBelowCacheThreshold(final Feedback savedFeedback, final List<Feedback> cachedFeedbacks) {
-        final Feedback lastCachedFeedback = cachedFeedbacks.getLast();
-        return savedFeedback.getLikeCountValue() < lastCachedFeedback.getLikeCountValue();
+    private boolean isBelowCacheThreshold(
+            final FeedbackItem savedFeedbackItem,
+            final List<FeedbackItem> cachedFeedbacks
+    ) {
+        final FeedbackItem lastCachedFeedback = cachedFeedbacks.getLast();
+        return savedFeedbackItem.likeCount() < lastCachedFeedback.likeCount();
     }
 
     private void reorganizeCachedFeedbacks(
-            final Feedback savedFeedback,
-            final List<Feedback> cachedFeedbacks
+            final FeedbackItem savedFeedbackItem,
+            final List<FeedbackItem> cachedFeedbackItems,
+            final UUID organizationUuid
     ) {
-        cachedFeedbacks.removeIf(
-                cachedFeedback -> cachedFeedback.getId().equals(savedFeedback.getId())
+        List<FeedbackItem> mutableCaches = new ArrayList<>(cachedFeedbackItems);
+        mutableCaches.removeIf(
+                cachedFeedback -> cachedFeedback.feedbackId().equals(savedFeedbackItem.feedbackId())
         );
-        cachedFeedbacks.add(savedFeedback);
-        sortCachedFeedback(cachedFeedbacks);
+
+        mutableCaches.add(savedFeedbackItem);
+        sortCachedFeedback(mutableCaches);
+        cacheManager.getCache("likesFeedbacks")
+                .put(organizationUuid, mutableCaches);
     }
 
-    private void sortCachedFeedback(final List<Feedback> cachedFeedbacks) {
-        cachedFeedbacks.sort(Comparator.comparingInt(Feedback::getLikeCountValue).reversed()
-                .thenComparing(Feedback::getId));
+    private void sortCachedFeedback(final List<FeedbackItem> cachedFeedbacks) {
+        cachedFeedbacks.sort(Comparator.comparingInt(FeedbackItem::likeCount).reversed()
+                .thenComparing(FeedbackItem::feedbackId));
     }
 
     private boolean isCachedFeedback(
-            final Feedback savedFeedback,
-            final List<Feedback> cachedFeedbacks
+            final FeedbackItem savedFeedbackItem,
+            final List<FeedbackItem> cachedFeedbacks
     ) {
         return cachedFeedbacks.stream()
-                .anyMatch(cachedFeedback -> cachedFeedback.getId().equals(savedFeedback.getId()));
+                .anyMatch(cachedFeedback -> cachedFeedback.feedbackId().equals(savedFeedbackItem.feedbackId()));
     }
 }
