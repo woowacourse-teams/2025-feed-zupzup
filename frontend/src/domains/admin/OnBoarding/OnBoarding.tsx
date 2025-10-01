@@ -8,7 +8,7 @@ export default function OnBoarding() {
     <>
       <SEO
         title='시작하기'
-        description='피드백을 쉽고 남기고, 확실히 받는 방법을 알아보세요'
+        description='피드백을 쉽게 남기고, 확실히 받는 방법을 알아보세요'
         keywords='소개, 가이드, 사용법, 피드줍줍'
       />
 
