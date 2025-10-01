@@ -14,6 +14,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
+            JOIN FETCH f.organizationCategory
             WHERE f.organization.uuid = :organizationUuid
             AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id < :cursorId)
@@ -30,6 +31,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
+            JOIN FETCH f.organizationCategory
             WHERE f.organization.uuid = :organizationUuid
             AND (:status IS NULL OR f.status = :status)
             AND (:cursorId IS NULL OR f.id > :cursorId)
@@ -46,6 +48,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("""
             SELECT f
             FROM Feedback f
+            JOIN FETCH f.organizationCategory
             WHERE f.organization.uuid = :organizationUuid
             AND (:status IS NULL OR f.status = :status)
             AND (
