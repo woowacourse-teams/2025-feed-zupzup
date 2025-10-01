@@ -12,7 +12,9 @@ import {
   container,
 } from './GlobalErrorFallback.styles';
 import { ApiError } from '@/apis/apiClient';
-import { ERROR_MESSAGES } from './errorMessages';
+import { resetLocalStorage } from '@/utils/localStorage';
+import { NotificationService } from '@/services/notificationService';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 export default function GlobalErrorFallback({
   resetErrorBoundary,
@@ -23,11 +25,34 @@ export default function GlobalErrorFallback({
 }) {
   const queryClient = useQueryClient();
   const theme = useAppTheme();
+  const { goPath } = useNavigation();
 
   const handleRetry = () => {
     queryClient.resetQueries();
     resetErrorBoundary();
   };
+
+  const handleLogin = () => {
+    resetLocalStorage('auth');
+    NotificationService.removeToken();
+    goPath('/login');
+    resetErrorBoundary();
+  };
+
+  const ERROR_MESSAGES = {
+    UNKNOWN_ERROR: {
+      title: '알 수 없는 오류',
+      subtitle: '알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      button: '재시도',
+      onClick: handleRetry,
+    },
+    AUTH_ERROR: {
+      title: '인증 오류',
+      subtitle: '인증이 필요합니다. 로그인 후 다시 시도해주세요.',
+      button: '로그인하기',
+      onClick: handleLogin,
+    },
+  } as const;
 
   const errorName = getErrorName(error as ApiError);
   const errorMessage = ERROR_MESSAGES[errorName];
@@ -39,7 +64,7 @@ export default function GlobalErrorFallback({
         <p css={subtitle(theme)}>{errorMessage.subtitle}</p>
         <div css={buttonContainer}>
           <BasicButton
-            onClick={handleRetry}
+            onClick={errorMessage.onClick}
             variant='primary'
             width='120px'
             height='25px'
