@@ -1,6 +1,9 @@
 /* eslint-env browser, serviceworker */
 /* global importScripts, firebase, self */
 
+const CACHE_NAME = 'feed-zupzup-v1';
+const urlsToCache = ['/', '/index.html'];
+
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -46,15 +49,66 @@ if (self.location.hostname === 'localhost') {
 }
 
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Installed');
-  event.waitUntil(self.skipWaiting());
+  console.log('[ServiceWorker] Installing');
+  event.waitUntil(
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => {
+        console.log('[ServiceWorker] Caching app shell');
+        return cache.addAll(urlsToCache);
+      })
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activated');
-  event.waitUntil(self.clients.claim());
+  console.log('[ServiceWorker] Activating');
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('[ServiceWorker] Deleting old cache:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(fetch(event.request));
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      return fetch(event.request)
+        .then((response) => {
+          if (
+            !response ||
+            response.status !== 200 ||
+            response.type === 'error'
+          ) {
+            return response;
+          }
+
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+
+          return response;
+        })
+        .catch(() => {
+          if (event.request.headers.get('accept').includes('text/html')) {
+            return caches.match('/index.html');
+          }
+        });
+    })
+  );
 });
