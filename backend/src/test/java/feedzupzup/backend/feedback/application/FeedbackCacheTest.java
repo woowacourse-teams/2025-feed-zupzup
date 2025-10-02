@@ -11,6 +11,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import feedzupzup.backend.admin.domain.Admin;
+import feedzupzup.backend.admin.domain.AdminRepository;
+import feedzupzup.backend.admin.domain.fixture.AdminFixture;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
@@ -18,13 +21,18 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
+import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import feedzupzup.backend.organizer.domain.Organizer;
+import feedzupzup.backend.organizer.domain.OrganizerRepository;
+import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,6 +54,15 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackLikeService feedbackLikeService;
+
+    @Autowired
+    private AdminFeedbackService adminFeedbackService;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private OrganizerRepository organizerRepository;
 
     @MockitoSpyBean
     private FeedbackRepository feedbackRepository;
@@ -325,6 +342,70 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 verify(feedbackRepository, times(3)).findByLikes(any(), any(), any(), any());
             }
 
+            @DisplayName("피드백의 상태 변경 시 이미 캐시에 있는 값이라면, 캐시를 비워야 한다.")
+            @Test
+            void when_modify_feedback_status_already_exist_cache_then_remove() {
+                // given
+                final Admin admin = AdminFixture.create();
+                adminRepository.save(admin);
+                final Organization organization = OrganizationFixture.createAllBlackBox();
+                organizationRepository.save(organization);
+                final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+                organizerRepository.save(organizer);
+
+                saveMultipleFeedbacks(10, organization);
+
+                // 1차 조회 (DB 통신1)
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, WAITING, OLDEST);
+
+                // when - 업데이트 시 기존 캐시 피드백 삭제
+                adminFeedbackService.updateFeedbackComment(
+                        admin.getId(),
+                        new UpdateFeedbackCommentRequest("test"),
+                        5L
+                );
+
+                // (DB 통신2) 캐시가 비어있기 때문에 새로운 DB 통신 필요
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+
+                // then
+                verify(feedbackRepository, times(2)).findByOldest(any(), any(), any(), any());
+            }
+
+            @DisplayName("피드백의 상태 변경 시 캐시에 해당되지 않는 값이라면, 캐시를 비워선 안 된다.")
+            @Test
+            void when_modify_feedback_status_not_exist_cache_then_not_clear() {
+                // given
+                final Admin admin = AdminFixture.create();
+                adminRepository.save(admin);
+                final Organization organization = OrganizationFixture.createAllBlackBox();
+                organizationRepository.save(organization);
+                final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+                organizerRepository.save(organizer);
+
+                saveMultipleFeedbacks(10, organization);
+
+                // 1차 조회 (DB 통신1)
+                userFeedbackService.getFeedbackPage(
+                        organization.getUuid(), 10, null, WAITING, OLDEST);
+
+                saveMultipleFeedbacks(1, organization);
+
+                // when - 캐시에 존재하지 않는다면, 캐시 업데이트를 하지 않는다
+                adminFeedbackService.updateFeedbackComment(
+                        admin.getId(),
+                        new UpdateFeedbackCommentRequest("test"),
+                        11L
+                );
+
+                // 캐시 변경이 되지 않았기에, 기존 캐시값을 가져와야 한다
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+
+                // then
+                verify(feedbackRepository, times(1)).findByOldest(any(), any(), any(), any());
+            }
+
         }
     }
 
@@ -335,7 +416,14 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         }
     }
 
-    private void saveMultipleFeedbacksFromLikeCounts(List<Integer> likeCounts) {
+    private void saveMultipleFeedbacks(int count, final Organization organization) {
+        for (int i=0; i<count; i++) {
+            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
+            feedbackRepository.save(feedback);
+        }
+    }
+
+    private void saveMultipleFeedbacksFromLikeCounts(final List<Integer> likeCounts) {
         for (Integer amount : likeCounts) {
             final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, amount);
             feedbackRepository.save(feedback);

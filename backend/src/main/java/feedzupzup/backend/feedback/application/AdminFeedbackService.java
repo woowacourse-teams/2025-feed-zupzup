@@ -6,6 +6,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.service.cache.CacheHandler;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
@@ -33,7 +34,7 @@ public class AdminFeedbackService {
     private final AdminRepository adminRepository;
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
-    private final FeedbackLikeService feedbackLikeService;
+    private final CacheHandler oldestCacheHandler;
     private final OrganizationRepository organizationRepository;
 
     @Transactional
@@ -80,6 +81,8 @@ public class AdminFeedbackService {
         validateAuthentication(adminId, feedbackId);
 
         feedback.updateCommentAndStatus(request.toComment());
+        oldestCacheHandler.handle(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
+
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
