@@ -4,7 +4,7 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.LikeFeedbacks;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
-import feedzupzup.backend.feedback.domain.service.CacheHandler;
+import feedzupzup.backend.feedback.domain.service.cache.CacheHandler;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;

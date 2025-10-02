@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain.service;
+package feedzupzup.backend.feedback.domain.service.sort;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -15,16 +15,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class LatestFeedbackSortStrategy implements FeedbackSortStrategy {
+public class OldestFeedbackSortStrategy implements FeedbackSortStrategy {
 
     private final FeedbackRepository feedbackRepository;
 
-    @Cacheable(cacheNames = "latestFeedbacks", key = "#organizationUuId", condition = "#cursorId == null and #status == null")
+    @Cacheable(cacheNames = "oldestFeedbacks", key = "#organizationUuId", condition = "#cursorId == null and #status == T(feedzupzup.backend.feedback.domain.vo.ProcessStatus).WAITING")
     @Override
-    public List<FeedbackItem> getSortedFeedbacks(final UUID organizationUuId, final ProcessStatus status, final Long cursorId,
-            final Pageable pageable) {
-
-        final List<Feedback> feedbacks = feedbackRepository.findByLatest(organizationUuId, status,
+    public List<FeedbackItem> getSortedFeedbacks(
+            final UUID organizationUuId,
+            final ProcessStatus status,
+            final Long cursorId,
+            final Pageable pageable
+    ) {
+        final List<Feedback> feedbacks = feedbackRepository.findByOldest(organizationUuId, status,
                 cursorId, pageable);
 
         return feedbacks.stream()
@@ -33,15 +36,15 @@ public class LatestFeedbackSortStrategy implements FeedbackSortStrategy {
     }
 
     @Override
-    public List<FeedbackItem> sort(final List<Feedback> feedbacks) {
-        return feedbacks.stream()
-                .sorted(Comparator.comparing(Feedback::getId).reversed())
-                .map(FeedbackItem::from)
-                .toList();
+    public FeedbackSortBy getType() {
+        return FeedbackSortBy.OLDEST;
     }
 
     @Override
-    public FeedbackSortBy getType() {
-        return FeedbackSortBy.LATEST;
+    public List<FeedbackItem> sort(final List<Feedback> feedbacks) {
+        return feedbacks.stream()
+                .sorted(Comparator.comparing(Feedback::getId))
+                .map(FeedbackItem::from)
+                .toList();
     }
 }

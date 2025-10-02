@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain.service;
+package feedzupzup.backend.feedback.domain.service.cache;
 
 import static feedzupzup.backend.global.config.CacheConfig.LATEST_FEEDBACK_CACHE;
 

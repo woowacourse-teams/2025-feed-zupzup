@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain.service;
+package feedzupzup.backend.feedback.domain.service.sort;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;

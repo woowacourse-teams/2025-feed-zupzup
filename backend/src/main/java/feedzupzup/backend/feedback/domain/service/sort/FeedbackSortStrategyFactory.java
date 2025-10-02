@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain.service;
+package feedzupzup.backend.feedback.domain.service.sort;
 
 import static java.util.stream.Collectors.toMap;
 
