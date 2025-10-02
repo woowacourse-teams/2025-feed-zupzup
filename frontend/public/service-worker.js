@@ -3,7 +3,6 @@
 
 const CACHE_NAME = 'feed-zupzup-v1';
 const urlsToCache = ['/', '/index.html'];
-
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -60,7 +59,6 @@ self.addEventListener('install', (event) => {
       .then(() => self.skipWaiting())
   );
 });
-
 self.addEventListener('activate', (event) => {
   console.log('[ServiceWorker] Activating');
   event.waitUntil(

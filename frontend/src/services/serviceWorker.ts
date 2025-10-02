@@ -1,4 +1,10 @@
 export const registerServiceWorker = () => {
+  console.log(process.env.ENV_MODE);
+  if (process.env.ENV_MODE === 'local') {
+    console.log('[ServiceWorker] Local mode - skipping registration');
+    return;
+  }
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker
