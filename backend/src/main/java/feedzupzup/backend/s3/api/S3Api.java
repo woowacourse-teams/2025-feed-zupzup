@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Tag(name = "S3", description = "S3 API")
 public interface S3Api {
 
-    @Operation(
-            summary = "피드백 presignedUrl 발급",
-            description = "피드백 이미지 업로드를 위한 S3 presignedUrl을 발급합니다.")
+    @Operation(summary = "presignedUrl 발급", description = "이미지 업로드를 위한 S3 presignedUrl을 발급합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "발급 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400", ref = "#/components/responses/BadRequest"),
+            @ApiResponse(responseCode = "500", ref = "#/components/responses/InternalServerError")
     })
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/presigned-url")
