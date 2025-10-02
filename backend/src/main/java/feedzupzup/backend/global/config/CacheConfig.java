@@ -2,6 +2,7 @@ package feedzupzup.backend.global.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
@@ -14,6 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CacheConfig {
 
+    public static final String LATEST_FEEDBACK_CACHE = "latestFeedbacks";
+    public static final String LIKES_FEEDBACK_CACHE = "likesFeedbacks";
+    public static final String OLDEST_FEEDBACK_CACHE = "oldestFeedbacks";
+
     @Bean
     public Caffeine<Object, Object> caffeineConfig() {
         return Caffeine.newBuilder()
@@ -25,7 +30,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(
-                Arrays.asList(
+                List.of(
                         createLatestFeedbacksCache(),
                         createLikesFeedbacksCache(),
                         createOldestFeedbacksCache()
@@ -35,7 +40,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createLatestFeedbacksCache() {
-        return new CaffeineCache("latestFeedbacks",
+        return new CaffeineCache(LATEST_FEEDBACK_CACHE,
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .recordStats()
@@ -44,7 +49,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createLikesFeedbacksCache() {
-        return new CaffeineCache("likesFeedbacks",
+        return new CaffeineCache(LIKES_FEEDBACK_CACHE,
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .recordStats()
@@ -53,7 +58,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createOldestFeedbacksCache() {
-        return new CaffeineCache("oldestFeedbacks",
+        return new CaffeineCache(OLDEST_FEEDBACK_CACHE,
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .expireAfterWrite(30, TimeUnit.SECONDS) // 30초

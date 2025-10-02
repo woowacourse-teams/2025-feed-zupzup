@@ -5,6 +5,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.service.CacheHandler;
 import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.Cache;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class UserFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
-    private final FeedbackCacheManager feedbackCacheManager;
+    private final CacheHandler latestCacheHandler;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -55,7 +55,7 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
 
         // 최신순 캐시 업데이트
-        feedbackCacheManager.handleLatestCache(FeedbackItem.from(savedFeedback), organizationUuid);
+        latestCacheHandler.handle(FeedbackItem.from(savedFeedback), organizationUuid);
 
         // 새로운 피드백이 생성되면 이벤트 발행
         publishFeedbackCreatedEvent(organization);

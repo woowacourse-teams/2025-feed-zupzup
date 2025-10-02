@@ -1,10 +1,10 @@
 package feedzupzup.backend.feedback.application;
 
-import feedzupzup.backend.feedback.application.FeedbackCacheManager.LikeAction;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.LikeFeedbacks;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
+import feedzupzup.backend.feedback.domain.service.CacheHandler;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
@@ -23,7 +23,7 @@ public class FeedbackLikeService {
 
     private final FeedbackRepository feedBackRepository;
     private final UserLikeFeedbacksRepository userLikeFeedbacksRepository;
-    private final FeedbackCacheManager feedbackCacheManager;
+    private final CacheHandler likesCacheHandler;
 
     @Transactional
     public LikeResponse like(final Long feedbackId, final UUID visitorId) {
@@ -38,8 +38,8 @@ public class FeedbackLikeService {
         }
 
         feedback.increaseLikeCount();
-        feedbackCacheManager.handleLikesCache(
-                FeedbackItem.from(feedback), feedback.getOrganization().getUuid(), LikeAction.INCREASE);
+        likesCacheHandler.handle(
+                FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
         userLikeFeedbacksRepository.save(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
@@ -57,7 +57,7 @@ public class FeedbackLikeService {
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.decreaseLikeCount();
-        feedbackCacheManager.handleLikesCache(FeedbackItem.from(feedback), feedback.getOrganization().getUuid(), LikeAction.DECREASE);
+        likesCacheHandler.handle(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
         userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
