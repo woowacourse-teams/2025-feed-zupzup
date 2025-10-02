@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 public class ImageUrl {
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String value;
 
     public ImageUrl(final String presignedUrl) {
-        this.imageUrl = presignedUrl.split("\\?")[0];
+        this.value = presignedUrl.split("\\?")[0];
     }
 }
