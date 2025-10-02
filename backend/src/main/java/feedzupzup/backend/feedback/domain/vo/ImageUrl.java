@@ -1,14 +1,20 @@
 package feedzupzup.backend.feedback.domain.vo;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Embeddable
-public record ImageUrl(
-        String imageUrl
-) {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ImageUrl {
 
-    public static ImageUrl createS3Url(final String presignedUrl) {
-        String imageUrl = presignedUrl.split("\\?")[0];
-        return new ImageUrl(imageUrl);
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    public ImageUrl(final String presignedUrl) {
+        this.imageUrl = presignedUrl.split("\\?")[0];
     }
 }
