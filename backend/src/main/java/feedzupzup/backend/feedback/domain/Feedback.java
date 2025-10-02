@@ -66,6 +66,9 @@ public class Feedback extends BaseTimeEntity {
     @Embedded
     private Comment comment;
 
+    @Embedded
+    private FeedbackClustering clustering;
+
     @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 
