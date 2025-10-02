@@ -8,19 +8,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class LatestCacheHandler implements CacheHandler {
 
-    private final CacheManager cacheManager;
+    private final CacheHelper cacheHelper;
 
     @Override
     public void handle(final FeedbackItem savedFeedbackItem, final UUID organizationUuid) {
-        final Optional<List<FeedbackItem>> findCachedFeedbacks = getCachedFeedbacks(organizationUuid);
+        final Optional<List<FeedbackItem>> findCachedFeedbacks = cacheHelper.getCacheValueList(organizationUuid, LATEST_FEEDBACK_CACHE);
         if (findCachedFeedbacks.isEmpty()) {
             return;
         }
@@ -30,16 +28,6 @@ public class LatestCacheHandler implements CacheHandler {
             mutableCaches.removeLast();
         }
         mutableCaches.addFirst(savedFeedbackItem);
-        cacheManager.getCache(LATEST_FEEDBACK_CACHE)
-                .put(organizationUuid, mutableCaches);
+        cacheHelper.putInCache(LATEST_FEEDBACK_CACHE, organizationUuid, mutableCaches);
     }
-
-    private Optional<List<FeedbackItem>> getCachedFeedbacks(final UUID organizationUuid) {
-        final Cache cache = cacheManager.getCache(LATEST_FEEDBACK_CACHE);
-        if (cache == null) {
-            return Optional.empty();
-        }
-        return Optional.ofNullable(cache.get(organizationUuid, List.class));
-    }
-
 }
