@@ -79,34 +79,67 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
+  const request = event.request;
+  const url = new URL(request.url);
 
-      return fetch(event.request)
+  const isApiRequest =
+    url.hostname === 'localhost' ||
+    url.hostname.startsWith('api-') ||
+    url.hostname.startsWith('api.') ||
+    request.headers.get('content-type')?.includes('application/json');
+
+  if (isApiRequest) {
+    event.respondWith(
+      fetch(request)
         .then((response) => {
           if (
-            !response ||
-            response.status !== 200 ||
-            response.type === 'error'
+            response &&
+            response.status === 200 &&
+            response.type !== 'error'
           ) {
-            return response;
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
           }
-
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-
           return response;
         })
         .catch(() => {
-          if (event.request.headers.get('accept').includes('text/html')) {
-            return caches.match('/index.html');
-          }
-        });
-    })
-  );
+          return caches.match(request);
+        })
+    );
+  } else {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return fetch(request)
+          .then((response) => {
+            if (
+              !response ||
+              response.status !== 200 ||
+              response.type === 'error'
+            ) {
+              return response;
+            }
+
+            if (request.method === 'GET') {
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseToCache);
+              });
+            }
+
+            return response;
+          })
+          .catch(() => {
+            if (request.headers.get('accept')?.includes('text/html')) {
+              return caches.match('/index.html');
+            }
+          });
+      })
+    );
+  }
 });
