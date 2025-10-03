@@ -2,12 +2,14 @@ package feedzupzup.backend.feedback.infrastructure.config;
 
 import feedzupzup.backend.feedback.infrastructure.ai.OpenAIProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
+@EnableConfigurationProperties(OpenAIProperties.class)
 @Configuration
 @RequiredArgsConstructor
 public class RestClientConfig {

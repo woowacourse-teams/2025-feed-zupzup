@@ -44,7 +44,7 @@ public class OpenAIEmbeddingClient {
             return embedding;
         } catch (Exception e) {
             log.error("임베딩 생성 실패: {}", e.getMessage(), e);
-            throw new RestClientServerException("임베딩 생성 중 오류 발생", e);
+            throw new RestClientServerException("임베딩 생성 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
