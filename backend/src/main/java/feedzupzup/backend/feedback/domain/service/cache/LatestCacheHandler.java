@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class LatestCacheHandler implements CacheHandler {
+public class LatestCacheHandler implements FeedbackCacheHandler {
 
     private final CacheHelper cacheHelper;
 

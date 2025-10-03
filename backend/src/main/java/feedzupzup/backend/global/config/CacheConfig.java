@@ -1,9 +1,7 @@
 package feedzupzup.backend.global.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCache;
@@ -61,7 +59,6 @@ public class CacheConfig {
         return new CaffeineCache(OLDEST_FEEDBACK_CACHE,
                 Caffeine.newBuilder()
                         .maximumSize(100)
-                        .expireAfterWrite(30, TimeUnit.SECONDS) // 30초
                         .recordStats()
                         .build()
         );
