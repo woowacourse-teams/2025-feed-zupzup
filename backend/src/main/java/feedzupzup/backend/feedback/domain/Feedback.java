@@ -82,7 +82,8 @@ public class Feedback extends BaseTimeEntity {
             final @NonNull UserName userName,
             final @NonNull PostedAt postedAt,
             final @NonNull OrganizationCategory organizationCategory,
-            final Comment comment
+            final Comment comment,
+            final FeedbackClustering clustering
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -93,6 +94,7 @@ public class Feedback extends BaseTimeEntity {
         this.postedAt = postedAt;
         this.organizationCategory = organizationCategory;
         this.comment = comment;
+        this.clustering = clustering;
     }
 
     public void updateStatus(final ProcessStatus status) {

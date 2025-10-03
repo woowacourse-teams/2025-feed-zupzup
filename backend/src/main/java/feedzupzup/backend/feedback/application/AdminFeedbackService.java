@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
+import feedzupzup.backend.feedback.domain.ClusterRepresentativeFeedback;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
@@ -12,6 +13,8 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -117,5 +120,26 @@ public class AdminFeedbackService {
     @Transactional
     public void deleteByOrganizationId(final Long organizationId) {
         feedBackRepository.deleteAllByOrganizationId(organizationId);
+    }
+
+    public ClusterRepresentativeFeedbacksResponse getRepresentativeCluster(final Long adminId, final UUID organizationUuid) {
+        hasAccessToOrganization(adminId, organizationUuid);
+        List<ClusterRepresentativeFeedback> clusterRepresentativeFeedbacks = feedBackRepository.findAllRepresentativeFeedbackPerCluster(
+                organizationUuid);
+        return ClusterRepresentativeFeedbacksResponse.from(clusterRepresentativeFeedbacks);
+    }
+
+    private void hasAccessToOrganization(final Long adminId, final UUID organizationUuid) {
+        if (!adminRepository.existsByOrganizationUuid(adminId, organizationUuid)) {
+            throw new ForbiddenException("admin" + adminId + "는 해당 단체에 대한 권한이 없습니다.");
+        }
+    }
+
+    public ClusterFeedbacksResponse getFeedbacksByClusterId(final UUID clusterId) {
+        if (!feedBackRepository.existsByClustering_ClusterId(clusterId)) {
+            throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
+        }
+        List<Feedback> feedbacks = feedBackRepository.findAllByClustering_ClusterId(clusterId);
+        return ClusterFeedbacksResponse.of(feedbacks);
     }
 }
