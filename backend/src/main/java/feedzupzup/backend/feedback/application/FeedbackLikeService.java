@@ -1,18 +1,21 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
+
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.LikeFeedbacks;
 import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
-import feedzupzup.backend.feedback.domain.service.cache.CacheHandler;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
+import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +26,7 @@ public class FeedbackLikeService {
 
     private final FeedbackRepository feedBackRepository;
     private final UserLikeFeedbacksRepository userLikeFeedbacksRepository;
-    private final CacheHandler likesCacheHandler;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public LikeResponse like(final Long feedbackId, final UUID visitorId) {
@@ -38,8 +41,9 @@ public class FeedbackLikeService {
         }
 
         feedback.increaseLikeCount();
-        likesCacheHandler.handle(
-                FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
+
+        // 캐시 핸들 이벤트 발행
+        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
         userLikeFeedbacksRepository.save(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
@@ -57,7 +61,9 @@ public class FeedbackLikeService {
 
         final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.decreaseLikeCount();
-        likesCacheHandler.handle(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
+
+        // 캐시 핸들 이벤트 발행
+        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
         userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
@@ -73,5 +79,10 @@ public class FeedbackLikeService {
         final LikeFeedbacks likeFeedbacks = userLikeFeedbacksRepository.getUserLikeFeedbacksFrom(
                 visitorId);
         return LikeHistoryResponse.from(likeFeedbacks);
+    }
+
+    private void publishLikesFeedbackCacheEvent(FeedbackItem feedbackItem, UUID organizationUuid) {
+        FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LIKES);
+        eventPublisher.publishEvent(event);
     }
 }

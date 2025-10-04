@@ -1,20 +1,22 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.*;
+
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.service.cache.CacheHandler;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
@@ -38,7 +40,6 @@ public class UserFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
-    private final CacheHandler latestCacheHandler;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -55,7 +56,7 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
 
         // 최신순 캐시 업데이트
-        latestCacheHandler.handle(FeedbackItem.from(savedFeedback), organizationUuid);
+        publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
 
         // 새로운 피드백이 생성되면 이벤트 발행
         publishFeedbackCreatedEvent(organization);
@@ -68,7 +69,7 @@ public class UserFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortBy sortBy
+            final FeedbackSortType sortBy
     ) {
 
         final Pageable pageable = createPageable(size);
@@ -85,7 +86,7 @@ public class UserFeedbackService {
 
     public MyFeedbackListResponse getMyFeedbackPage(
             final UUID organizationUuid,
-            final FeedbackSortBy sortBy,
+            final FeedbackSortType sortBy,
             final List<Long> myFeedbackIds
     ) {
 
@@ -104,8 +105,12 @@ public class UserFeedbackService {
     }
 
     private Pageable createPageable(int size) {
-        final Pageable pageable = Pageable.ofSize(size + 1);
-        return pageable;
+        return Pageable.ofSize(size + 1);
+    }
+
+    private void publishLatestFeedbackCacheEvent(FeedbackItem feedbackItem, UUID organizationUuid) {
+        FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
+        eventPublisher.publishEvent(event);
     }
 
     private void publishFeedbackCreatedEvent(Organization organization) {
