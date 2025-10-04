@@ -1,9 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;

@@ -1,9 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +32,6 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

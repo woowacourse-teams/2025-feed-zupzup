@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.domain.service.sort;
 
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import java.util.Comparator;
@@ -41,7 +41,7 @@ public class LatestFeedbackSortStrategy implements FeedbackSortStrategy {
     }
 
     @Override
-    public FeedbackSortBy getType() {
-        return FeedbackSortBy.LATEST;
+    public FeedbackSortType getType() {
+        return FeedbackSortType.LATEST;
     }
 }
