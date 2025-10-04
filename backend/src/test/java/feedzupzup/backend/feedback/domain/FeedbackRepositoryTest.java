@@ -78,11 +78,11 @@ class FeedbackRepositoryTest extends RepositoryHelper {
 
             // then
             ClusterRepresentativeFeedback cluster1 = result.stream()
-                    .filter(cluster -> cluster.id().equals(clusterId1))
+                    .filter(cluster -> cluster.clusterId().equals(clusterId1))
                     .findFirst()
                     .orElseThrow();
             ClusterRepresentativeFeedback cluster2 = result.stream()
-                    .filter(cluster -> cluster.id().equals(clusterId2))
+                    .filter(cluster -> cluster.clusterId().equals(clusterId2))
                     .findFirst()
                     .orElseThrow();
             assertAll(

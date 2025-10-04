@@ -92,7 +92,33 @@ public class FeedbackFixture {
         FeedbackClustering clustering = new FeedbackClustering(
                 clusterId,
                 0.8, // similarity score
-                "[0.1, 0.2, 0.3]" // embedding vector
+                new double[]{0.1, 0.2, 0.3} // embedding vector
+        );
+        
+        return Feedback.builder()
+                .content(new Content(content))
+                .isSecret(false)
+                .status(ProcessStatus.WAITING)
+                .organization(organization)
+                .likeCount(new LikeCount(0))
+                .userName(new UserName("테스트유저"))
+                .postedAt(new PostedAt(CurrentDateTime.create()))
+                .organizationCategory(category)
+                .clustering(clustering)
+                .build();
+    }
+
+    public static Feedback createFeedbackWithCluster(
+            final Organization organization,
+            final String content,
+            final OrganizationCategory category,
+            final UUID clusterId,
+            final double[] embeddingVector
+    ) {
+        FeedbackClustering clustering = new FeedbackClustering(
+                clusterId,
+                0.8, // similarity score
+                embeddingVector
         );
         
         return Feedback.builder()

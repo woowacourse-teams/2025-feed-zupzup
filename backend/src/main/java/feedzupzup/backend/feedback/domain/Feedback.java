@@ -121,4 +121,8 @@ public class Feedback extends BaseTimeEntity {
     public int getLikeCountValue() {
         return this.likeCount.getValue();
     }
+
+    public void updateClustering(final FeedbackClustering feedbackClustering) {
+        this.clustering = feedbackClustering;
+    }
 }

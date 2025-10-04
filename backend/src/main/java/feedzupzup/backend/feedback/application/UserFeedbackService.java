@@ -5,6 +5,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.event.FeedbackCreatedEvent2;
 import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
@@ -50,7 +51,9 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
 
         // 새로운 피드백이 생성되면 이벤트 발행
-        publishFeedbackCreatedEvent(organization);
+        eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
+        //TODO : 위 피드백 생성 이벤트 리팩토링 필요
+        eventPublisher.publishEvent(new FeedbackCreatedEvent2(savedFeedback.getId()));
 
         return CreateFeedbackResponse.from(savedFeedback);
     }
@@ -98,10 +101,5 @@ public class UserFeedbackService {
     private Pageable createPageable(int size) {
         final Pageable pageable = Pageable.ofSize(size + 1);
         return pageable;
-    }
-
-    private void publishFeedbackCreatedEvent(Organization organization) {
-        FeedbackCreatedEvent event = new FeedbackCreatedEvent(organization.getId(), "피드줍줍");
-        eventPublisher.publishEvent(event);
     }
 }
