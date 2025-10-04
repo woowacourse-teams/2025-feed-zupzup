@@ -20,7 +20,7 @@ public record ClusterRepresentativeFeedbacksResponse(
     ) {
 
         public static ClusterRepresentativeFeedbackResponse from(ClusterRepresentativeFeedback feedback) {
-            return new ClusterRepresentativeFeedbackResponse(feedback.clusterId(), feedback.content(), feedback.totalCount());
+            return new ClusterRepresentativeFeedbackResponse(feedback.clusterUuid(), feedback.content(), feedback.totalCount());
         }
     }
 

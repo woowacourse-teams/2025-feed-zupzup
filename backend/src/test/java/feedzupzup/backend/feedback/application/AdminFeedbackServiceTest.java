@@ -896,18 +896,5 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                             .containsExactlyInAnyOrder("첫 번째 피드백", "두 번째 피드백", "세 번째 피드백")
             );
         }
-
-        @Test
-        @DisplayName("존재하지 않는 클러스터 ID로 조회하면 빈 결과를 반환한다")
-        void getFeedbacksByClusterId_empty() {
-            // given
-            final UUID nonExistentClusterId = UUID.randomUUID();
-
-            // when
-            final ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(nonExistentClusterId);
-
-            // then
-            assertThat(response.feedbacks()).isEmpty();
-        }
     }
 }

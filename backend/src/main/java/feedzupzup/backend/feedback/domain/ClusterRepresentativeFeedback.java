@@ -3,8 +3,12 @@ package feedzupzup.backend.feedback.domain;
 import java.util.UUID;
 
 public record ClusterRepresentativeFeedback(
-        UUID clusterId,
+        String clusterId,
         String content,
         Long totalCount
 ) {
+
+    public UUID clusterUuid() {
+        return UUID.fromString(clusterId);
+    }
 }
