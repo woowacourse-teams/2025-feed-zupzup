@@ -7,7 +7,9 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -20,17 +22,22 @@ import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.service.cache.LatestCacheHandler;
+import feedzupzup.backend.feedback.domain.service.cache.LikesCacheHandler;
+import feedzupzup.backend.feedback.domain.service.cache.OldestCacheHandler;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
+import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +46,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.transaction.support.TransactionTemplate;
 
 class FeedbackCacheTest extends ServiceIntegrationHelper {
 
@@ -65,6 +73,18 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
     @MockitoSpyBean
     private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
+    @MockitoSpyBean
+    private LatestCacheHandler latestCacheHandler;
+
+    @MockitoSpyBean
+    private LikesCacheHandler likesCacheHandler;
+
+    @MockitoSpyBean
+    private OldestCacheHandler oldestCacheHandler;
 
     private Organization organization;
 
@@ -406,6 +426,136 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             }
 
         }
+    }
+
+    @Nested
+    @DisplayName("피드백 캐시 처리 비동기 처리 테스트")
+    class AsyncFeedbackCache {
+
+        @Test
+        @DisplayName("트랜잭션 롤백 시 캐시 핸들러가 실행되지 않는다 (최신순)")
+        void cache_handler_not_called_on_rollback_latest_case() {
+            // given
+            final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("test1");
+
+            // when - 명시적 롤백을 진행한다.
+            transactionTemplate.execute(status -> {
+                userFeedbackService.create(request, organization.getUuid());
+                status.setRollbackOnly();
+                return null;
+            });
+
+            // then
+            verify(latestCacheHandler, never()).handle(any(), any());
+        }
+
+        @Test
+        @DisplayName("트랜잭션 롤백이 아니라면, 캐시 핸들러가 실행되어야 한다 (최신순)")
+        void cache_handler_called_on_commit_latest() {
+            // given
+            final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("test1");
+
+            // when
+            userFeedbackService.create(request, organization.getUuid());
+
+            // then
+            await().atMost(Duration.ofSeconds(1))
+                            .untilAsserted(() ->
+                                    verify(latestCacheHandler, times(1)).handle(any(), any()));
+        }
+
+        @Test
+        @DisplayName("트랜잭션 롤백 시 캐시 핸들러가 실행되지 않는다 (좋아요 순)")
+        void cache_handler_not_called_on_rollback_likes_case() {
+            // given
+            saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, null, LIKES);
+
+            // when
+            transactionTemplate.execute(status -> {
+                feedbackLikeService.like(5L, UUID.randomUUID());
+                status.setRollbackOnly();
+                return null;
+            });
+
+            // then
+            verify(likesCacheHandler, never()).handle(any(), any());
+        }
+
+        @Test
+        @DisplayName("트랜잭션 롤백이 아니라면, 캐시 핸들러가 실행되어야 한다 (좋아요 순)")
+        void cache_handler_called_on_commit_likes() {
+            // given
+            saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
+
+            userFeedbackService.getFeedbackPage(
+                    organization.getUuid(), 10, null, null, LIKES);
+
+            // when
+            feedbackLikeService.like(5L, UUID.randomUUID());
+
+            // then
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(likesCacheHandler, times(1)).handle(any(), any()));
+        }
+
+        @Test
+        @DisplayName("트랜잭션 롤백 시 캐시 핸들러가 실행되지 않는다 (오래된 순)")
+        void cache_handler_not_called_on_rollback_oldest_case() {
+            // given
+            final Admin admin = AdminFixture.create();
+            adminRepository.save(admin);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
+            saveMultipleFeedbacks(10, organization);
+
+            // when
+            transactionTemplate.execute(status -> {
+                adminFeedbackService.updateFeedbackComment(
+                        admin.getId(),
+                        new UpdateFeedbackCommentRequest("test"),
+                        10L
+                );
+                status.setRollbackOnly();
+                return null;
+            });
+
+            // then
+            verify(oldestCacheHandler, never()).handle(any(), any());
+        }
+
+        @Test
+        @DisplayName("트랜잭션 롤백이 아니라면, 캐시 핸들러가 실행되어야 한다 (오래된 순)")
+        void cache_handler_called_on_commit_oldest() {
+            // given
+            final Admin admin = AdminFixture.create();
+            adminRepository.save(admin);
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
+            saveMultipleFeedbacks(10, organization);
+
+            // when
+            adminFeedbackService.updateFeedbackComment(
+                    admin.getId(),
+                    new UpdateFeedbackCommentRequest("test"),
+                    10L
+            );
+
+            // then
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(oldestCacheHandler, times(1)).handle(any(), any()));
+        }
+
     }
 
     private void saveMultipleFeedbacks(int count) {
