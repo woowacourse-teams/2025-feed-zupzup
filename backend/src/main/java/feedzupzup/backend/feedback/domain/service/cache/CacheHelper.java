@@ -1,9 +1,7 @@
 package feedzupzup.backend.feedback.domain.service.cache;
 
-import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
@@ -35,7 +33,7 @@ public final class CacheHelper {
                 .ifPresent(cache -> cache.evict(key));
     }
 
-    public void putInCache(final String cacheName, final UUID key, final List<FeedbackItem> value) {
+    public <K, V> void putInCache(final String cacheName, final K key, final V value) {
         Optional.ofNullable(cacheManager.getCache(cacheName))
                 .ifPresent(cache -> cache.put(key, value));
     }
