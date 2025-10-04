@@ -27,7 +27,7 @@ public record UserFeedbackListResponse(
         );
     }
 
-    private static List<UserFeedbackItem> convertUserFeedbackItemsFrom(List<FeedbackItem> feedbackItems) {
+    private static List<UserFeedbackItem> convertUserFeedbackItemsFrom(final List<FeedbackItem> feedbackItems) {
         return feedbackItems.stream()
                 .map(UserFeedbackItem::from)
                 .toList();

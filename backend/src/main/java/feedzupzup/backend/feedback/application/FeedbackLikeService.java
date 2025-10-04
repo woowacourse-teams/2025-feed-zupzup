@@ -81,8 +81,8 @@ public class FeedbackLikeService {
         return LikeHistoryResponse.from(likeFeedbacks);
     }
 
-    private void publishLikesFeedbackCacheEvent(FeedbackItem feedbackItem, UUID organizationUuid) {
-        FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LIKES);
+    private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LIKES);
         eventPublisher.publishEvent(event);
     }
 }

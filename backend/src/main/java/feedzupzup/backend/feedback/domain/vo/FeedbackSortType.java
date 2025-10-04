@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 public enum FeedbackSortType {
     LATEST(CacheType.LATEST_FEEDBACK),
     OLDEST(CacheType.OLDEST_FEEDBACK),
-    LIKES(CacheType.LIKES_FEEDBACK);
+    LIKES(CacheType.LIKES_FEEDBACK),
+    ;
 
     private final CacheType cacheType;
 }

@@ -9,7 +9,8 @@ public enum CacheType {
 
     LATEST_FEEDBACK("latestFeedbacks", "latestCacheHandler"),
     OLDEST_FEEDBACK("oldestFeedbacks", "oldestCacheHandler"),
-    LIKES_FEEDBACK("likesFeedbacks", "likesCacheHandler");
+    LIKES_FEEDBACK("likesFeedbacks", "likesCacheHandler"),
+    ;
 
     private final String cacheName;
     private final String handlerName;

@@ -15,6 +15,6 @@ public interface FeedbackSortStrategy {
 
     FeedbackSortType getType();
 
-    List<FeedbackItem> sort(List<Feedback> feedbacks);
+    List<FeedbackItem> sort(final List<Feedback> feedbacks);
 
 }

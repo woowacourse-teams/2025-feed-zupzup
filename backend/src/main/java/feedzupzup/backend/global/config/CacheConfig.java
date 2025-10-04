@@ -24,7 +24,7 @@ public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        SimpleCacheManager cacheManager = new SimpleCacheManager();
+        final SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(
                 List.of(
                         createLatestFeedbacksCache(),

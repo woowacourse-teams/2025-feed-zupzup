@@ -108,8 +108,8 @@ public class AdminFeedbackService {
         }
     }
 
-    private void publishOldestFeedbackCacheEvent(FeedbackItem feedbackItem, UUID organizationUuid) {
-        FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, OLDEST);
+    private void publishOldestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, OLDEST);
         eventPublisher.publishEvent(event);
     }
 

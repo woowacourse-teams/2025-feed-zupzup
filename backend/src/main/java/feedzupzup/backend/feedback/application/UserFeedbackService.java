@@ -108,8 +108,8 @@ public class UserFeedbackService {
         return Pageable.ofSize(size + 1);
     }
 
-    private void publishLatestFeedbackCacheEvent(FeedbackItem feedbackItem, UUID organizationUuid) {
-        FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
+    private void publishLatestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
         eventPublisher.publishEvent(event);
     }
 
