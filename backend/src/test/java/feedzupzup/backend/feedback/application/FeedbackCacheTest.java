@@ -170,6 +170,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             userFeedbackService.create(request, organization.getUuid());
 
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(latestCacheHandler, times(1)).handle(any(), any())
+                    );
+
             // when
             final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
             final List<UserFeedbackItem> feedbacks = feedbackPage2.feedbacks();
@@ -191,6 +196,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     "건의");
 
             userFeedbackService.create(request, organization.getUuid());
+
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(latestCacheHandler, times(1)).handle(any(), any())
+                    );
 
             // when
             final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(
@@ -302,6 +312,10 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 // when - 캐시 비우기
                 feedbackLikeService.like(5L, UUID.randomUUID());
 
+                await().atMost(Duration.ofSeconds(1))
+                        .untilAsserted(() ->
+                                verify(likesCacheHandler, times(1)).handle(any(), any())
+                        );
 
                 userFeedbackService.getFeedbackPage(
                         organization.getUuid(), 10, null, null, LIKES);
@@ -324,6 +338,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 // when
                 feedbackLikeService.like(11L, UUID.randomUUID());
 
+                await().atMost(Duration.ofSeconds(1))
+                        .untilAsserted(() ->
+                                verify(likesCacheHandler, times(1)).handle(any(), any())
+                        );
+
                 userFeedbackService.getFeedbackPage(
                         organization.getUuid(), 10, null, null, LIKES);
 
@@ -333,7 +352,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             @DisplayName("좋아요 감소 요청을 누른 값이 마지막 캐시값과 같거나 크다면, 캐시를 비워야한다.")
             @Test
-            void ike_count_same_last_cache_then_clear_cache() {
+            void like_count_same_last_cache_then_clear_cache() {
                 // given
                 saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
 
@@ -346,12 +365,23 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 // 1차 캐시 클리어
                 feedbackLikeService.like(9L, userUuid);
 
+                await().atMost(Duration.ofSeconds(1))
+                        .untilAsserted(() ->
+                                verify(likesCacheHandler, times(1)).handle(any(), any())
+                        );
+
                 // 2차 디비 조회
                 userFeedbackService.getFeedbackPage(
                         organization.getUuid(), 10, null, null, LIKES);
 
                 // 2차 캐시 클리어
                 feedbackLikeService.unlike(9L, userUuid);
+
+                // 비동기 캐시 클리어 대기
+                await().atMost(Duration.ofSeconds(1))
+                        .untilAsserted(() ->
+                                verify(likesCacheHandler, times(2)).handle(any(), any())
+                        );
 
                 // 3차 디비 조회
                 userFeedbackService.getFeedbackPage(
@@ -385,6 +415,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         5L
                 );
 
+                await().atMost(Duration.ofSeconds(1))
+                        .untilAsserted(() ->
+                                verify(oldestCacheHandler, times(1)).handle(any(), any())
+                        );
+
                 // (DB 통신2) 캐시가 비어있기 때문에 새로운 DB 통신 필요
                 userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
 
@@ -417,6 +452,10 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         new UpdateFeedbackCommentRequest("test"),
                         11L
                 );
+
+                await().atMost(Duration.ofSeconds(1))
+                        .untilAsserted(() ->
+                                verify(oldestCacheHandler, times(1)).handle(any(), any()));
 
                 // 캐시 변경이 되지 않았기에, 기존 캐시값을 가져와야 한다
                 userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
