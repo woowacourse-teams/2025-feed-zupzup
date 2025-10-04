@@ -1,9 +1,5 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
-
 import feedzupzup.backend.feedback.domain.service.cache.FeedbackCacheHandler;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
@@ -28,15 +24,6 @@ public class FeedbackEventHandler {
     }
 
     private FeedbackCacheHandler findHandler(final FeedbackSortType type) {
-        if (type == LATEST) {
-            return cacheHandlers.get("latestCacheHandler");
-        }
-        if (type == LIKES) {
-            return cacheHandlers.get("likesCacheHandler");
-        }
-        if (type == OLDEST) {
-            return cacheHandlers.get("oldestCacheHandler");
-        }
-        throw new IllegalStateException("존재하지 않는 핸들러입니다.");
+        return cacheHandlers.get(type.getCacheType().getHandlerName());
     }
 }

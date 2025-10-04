@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.domain.service.cache;
 
-import static feedzupzup.backend.global.config.CacheConfig.LIKES_FEEDBACK_CACHE;
+import static feedzupzup.backend.global.domain.CacheType.*;
 
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import java.util.List;
@@ -18,13 +18,13 @@ public class LikesCacheHandler implements FeedbackCacheHandler {
     @Override
     public void handle(final FeedbackItem savedFeedbackItem, final UUID organizationUuid) {
         final Optional<List<FeedbackItem>> findCachedFeedbacks = cacheHelper.getCacheValueList(
-                organizationUuid, LIKES_FEEDBACK_CACHE);
+                organizationUuid, LIKES_FEEDBACK.getCacheName());
         if (findCachedFeedbacks.isEmpty()) {
             return;
         }
         final List<FeedbackItem> cachedFeedbacks = findCachedFeedbacks.get();
         if (isCacheClearCondition(savedFeedbackItem, cachedFeedbacks)) {
-            cacheHelper.removeCache(organizationUuid, LIKES_FEEDBACK_CACHE);
+            cacheHelper.removeCache(organizationUuid, LIKES_FEEDBACK.getCacheName());
         }
     }
 

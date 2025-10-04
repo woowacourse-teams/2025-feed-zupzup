@@ -1,5 +1,7 @@
 package feedzupzup.backend.global.config;
 
+import static feedzupzup.backend.global.domain.CacheType.*;
+
 import com.github.benmanes.caffeine.cache.Caffeine;
 import java.util.List;
 import org.springframework.cache.CacheManager;
@@ -12,10 +14,6 @@ import org.springframework.context.annotation.Configuration;
 @EnableCaching
 @Configuration
 public class CacheConfig {
-
-    public static final String LATEST_FEEDBACK_CACHE = "latestFeedbacks";
-    public static final String LIKES_FEEDBACK_CACHE = "likesFeedbacks";
-    public static final String OLDEST_FEEDBACK_CACHE = "oldestFeedbacks";
 
     @Bean
     public Caffeine<Object, Object> caffeineConfig() {
@@ -38,7 +36,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createLatestFeedbacksCache() {
-        return new CaffeineCache(LATEST_FEEDBACK_CACHE,
+        return new CaffeineCache(LATEST_FEEDBACK.getCacheName(),
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .recordStats()
@@ -47,7 +45,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createLikesFeedbacksCache() {
-        return new CaffeineCache(LIKES_FEEDBACK_CACHE,
+        return new CaffeineCache(LIKES_FEEDBACK.getCacheName(),
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .recordStats()
@@ -56,7 +54,7 @@ public class CacheConfig {
     }
 
     private CaffeineCache createOldestFeedbacksCache() {
-        return new CaffeineCache(OLDEST_FEEDBACK_CACHE,
+        return new CaffeineCache(OLDEST_FEEDBACK.getCacheName(),
                 Caffeine.newBuilder()
                         .maximumSize(100)
                         .recordStats()

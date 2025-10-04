@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.domain.service.cache;
 
-import static feedzupzup.backend.global.config.CacheConfig.OLDEST_FEEDBACK_CACHE;
+import static feedzupzup.backend.global.domain.CacheType.*;
 
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import java.util.List;
@@ -18,7 +18,7 @@ public class OldestCacheHandler implements FeedbackCacheHandler {
     @Override
     public void handle(final FeedbackItem savedFeedbackItem, final UUID organizationUuid) {
         final Optional<List<FeedbackItem>> findCachedFeedbacks = cacheHelper.getCacheValueList(
-                organizationUuid, OLDEST_FEEDBACK_CACHE);
+                organizationUuid, OLDEST_FEEDBACK.getCacheName());
         if (findCachedFeedbacks.isEmpty()) {
             return;
         }
@@ -29,7 +29,7 @@ public class OldestCacheHandler implements FeedbackCacheHandler {
                 .anyMatch(feedbackItem -> feedbackItem.feedbackId().equals(savedFeedbackItem.feedbackId()));
 
         if (alreadyCached) {
-            cacheHelper.removeCache(organizationUuid, OLDEST_FEEDBACK_CACHE);
+            cacheHelper.removeCache(organizationUuid, OLDEST_FEEDBACK.getCacheName());
         }
     }
 }
