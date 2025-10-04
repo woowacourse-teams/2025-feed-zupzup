@@ -28,8 +28,8 @@ public record CreateFeedbackRequest(
         @Schema(description = "카테고리", example = "시설")
         String category,
 
-        @Schema(description = "presigned URL", example = "https://example.com/image.png")
-        String presignedUrl
+        @Schema(description = "이미지 URL", example = "https://example.com/image.png")
+        String imageUrl
 ) {
 
     public Feedback toFeedback(final Organization organization, final OrganizationCategory organizationCategory) {
@@ -42,7 +42,7 @@ public record CreateFeedbackRequest(
                 .userName(new UserName(userName))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(organizationCategory)
-                .imageUrl(new ImageUrl(presignedUrl))
+                .imageUrl(new ImageUrl(imageUrl))
                 .build();
     }
 }
