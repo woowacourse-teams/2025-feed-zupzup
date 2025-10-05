@@ -1,6 +1,5 @@
 package feedzupzup.backend.feedback.dto.response;
 
-import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +19,8 @@ public record AdminFeedbackListResponse(
 ) {
 
     public static AdminFeedbackListResponse from(final FeedbackPage feedbackPage) {
-        final List<AdminFeedbackItem> adminFeedbackItems = feedbackPage.getFeedbacks().stream()
+        final List<FeedbackItem> feedbackItems = feedbackPage.getFeedbackItems();
+        final List<AdminFeedbackItem> adminFeedbackItems = feedbackItems.stream()
                 .map(AdminFeedbackItem::from)
                 .toList();
         return new AdminFeedbackListResponse(
@@ -63,7 +63,7 @@ public record AdminFeedbackListResponse(
             String imageUrl
     ) {
 
-        private static AdminFeedbackItem from(final Feedback feedback) {
+        private static AdminFeedbackItem from(final FeedbackItem feedbackItem) {
             return new AdminFeedbackItem(
                     feedback.getId(),
                     feedback.getContent().getValue(),

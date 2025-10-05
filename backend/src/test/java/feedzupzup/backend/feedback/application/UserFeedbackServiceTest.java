@@ -1,9 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +18,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackItem;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -306,7 +306,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(response.feedbacks()).hasSize(2),
                 () -> assertThat(response.feedbacks())
-                        .extracting(FeedbackItem::feedbackId)
+                        .extracting(UserFeedbackItem::feedbackId)
                         .doesNotContain(otherFeedback.getId()),
                 () -> assertThat(response.hasNext()).isFalse()
         );
