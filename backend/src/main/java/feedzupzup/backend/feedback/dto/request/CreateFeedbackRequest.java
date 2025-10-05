@@ -42,7 +42,7 @@ public record CreateFeedbackRequest(
                 .userName(new UserName(userName))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(organizationCategory)
-                .imageUrl(new ImageUrl(imageUrl))
+                .imageUrl(imageUrl == null ? null : new ImageUrl(imageUrl))
                 .build();
     }
 }
