@@ -65,16 +65,16 @@ public record AdminFeedbackListResponse(
 
         private static AdminFeedbackItem from(final FeedbackItem feedbackItem) {
             return new AdminFeedbackItem(
-                    feedback.getId(),
-                    feedback.getContent().getValue(),
-                    feedback.getStatus(),
-                    feedback.isSecret(),
-                    feedback.getLikeCount().getValue(),
-                    feedback.getUserName().getValue(),
-                    feedback.getPostedAt().getValue(),
-                    feedback.getOrganizationCategory().getCategory().getKoreanName(),
-                    feedback.getComment() == null ? null : feedback.getComment().getValue(),
-                    feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
+                    feedbackItem.feedbackId(),
+                    feedbackItem.content(),
+                    feedbackItem.status(),
+                    feedbackItem.isSecret(),
+                    feedbackItem.likeCount(),
+                    feedbackItem.userName(),
+                    feedbackItem.postedAt(),
+                    feedbackItem.category(),
+                    feedbackItem.comment() == null ? null : feedbackItem.comment(),
+                    feedbackItem.imageUrl() == null ? null : feedbackItem.imageUrl()
             );
         }
 

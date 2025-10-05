@@ -13,13 +13,10 @@ public record FeedbackItem(
         String userName,
         LocalDateTime postedAt,
         String category,
-
-        @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
         String comment,
-
-        @Schema(description = "이미지 URL", example = "https://example.com/image.png")
         String imageUrl
 ) {
+
     public static FeedbackItem from(final Feedback feedback) {
         return new FeedbackItem(
                 feedback.getId(),
@@ -30,9 +27,8 @@ public record FeedbackItem(
                 feedback.getUserName().getValue(),
                 feedback.getPostedAt().getValue(),
                 feedback.getOrganizationCategory().getCategory().getKoreanName(),
-                feedback.getComment() != null ? feedback.getComment().getValue() : null,
-                feedback.getImageUrl() != null ? feedback.getImageUrl().getValue() : null
+                feedback.getComment() == null ? null : feedback.getComment().getValue(),
+                feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
         );
     }
-
 }
