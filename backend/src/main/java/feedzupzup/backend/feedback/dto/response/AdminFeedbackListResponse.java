@@ -73,8 +73,8 @@ public record AdminFeedbackListResponse(
                     feedback.getUserName().getValue(),
                     feedback.getPostedAt().getValue(),
                     feedback.getOrganizationCategory().getCategory().getKoreanName(),
-                    feedback.getComment() != null ? feedback.getComment().getValue() : null,
-                    feedback.getImageUrl() != null ? feedback.getImageUrl().getValue() : null
+                    feedback.getComment() == null ? null : feedback.getComment().getValue(),
+                    feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
             );
         }
 

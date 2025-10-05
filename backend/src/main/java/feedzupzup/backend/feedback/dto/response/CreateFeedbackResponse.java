@@ -41,8 +41,7 @@ public record CreateFeedbackResponse(
                 feedback.getUserName().getValue(),
                 feedback.getCreatedAt(),
                 feedback.getOrganizationCategory().getCategory().getKoreanName(),
-                feedback.getImageUrl() != null ? feedback.getImageUrl().getValue() : null
+                feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
         );
     }
-
 }
