@@ -3,7 +3,7 @@ package feedzupzup.backend.feedback.api;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
@@ -47,7 +47,7 @@ public interface AdminFeedbackApi {
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortBy sortBy
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortType sortBy
     );
 
     @Operation(summary = "피드백 삭제", description = "피드백을 삭제합니다. (관리자 전용)")
