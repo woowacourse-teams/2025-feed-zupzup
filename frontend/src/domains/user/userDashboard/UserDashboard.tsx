@@ -37,7 +37,7 @@ export default function UserDashboard() {
       <SEO
         title='피드백 방'
         description='제출된 피드백을 확인하세요'
-        keywords='피드백, 방, 확인, 상태, 조회'
+        keywords='피드백, 피드백확인, 피드백조회, 피드백상태, 건의사항, 피드백방'
       />
       <div css={dashboardLayout}>
         <DashboardOverview />
