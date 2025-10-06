@@ -1,8 +1,9 @@
+import { ApiError } from '@/apis/apiClient';
 import React, { ComponentType, PropsWithChildren } from 'react';
 
 export interface FallbackProps {
   resetErrorBoundary: () => void;
-  error: Error | null;
+  error: Error | ApiError;
 }
 
 interface ErrorBoundaryProps {
@@ -31,7 +32,6 @@ export default class GlobalErrorBoundary extends React.Component<
     return { error };
   }
 
-  // 재시도 함수
   resetErrorBoundary = () => {
     this.props.onReset?.();
     this.setState({ ...initialState });

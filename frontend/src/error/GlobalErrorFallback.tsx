@@ -21,7 +21,7 @@ export default function GlobalErrorFallback({
   error,
 }: {
   resetErrorBoundary: () => void;
-  error: Error | null;
+  error: Error | ApiError;
 }) {
   const queryClient = useQueryClient();
   const theme = useAppTheme();
@@ -60,7 +60,7 @@ export default function GlobalErrorFallback({
     },
   } as const;
 
-  const errorName = getErrorName(error as ApiError);
+  const errorName = getErrorName(error);
   const errorMessage = ERROR_MESSAGES[errorName];
 
   return (
@@ -97,13 +97,15 @@ export default function GlobalErrorFallback({
   );
 }
 
-function getErrorName(error: ApiError) {
-  console.log(error.status, error.message);
-  if (error.status === 401 || error.status === 403) {
-    return 'AUTH_ERROR';
+function getErrorName(error: Error | ApiError) {
+  if (error instanceof ApiError) {
+    if (error.status === 401 || error.status === 403) {
+      return 'AUTH_ERROR';
+    }
+    if (error.status === 1000) {
+      return 'NETWORK_ERROR';
+    }
   }
-  if (error.status === 1000) {
-    return 'NETWORK_ERROR';
-  }
+
   return 'UNKNOWN_ERROR';
 }
