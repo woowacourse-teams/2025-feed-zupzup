@@ -170,7 +170,7 @@ async function baseClient<Response, RequestBody>({
         ? error.message
         : DEFAULT_ERROR_MESSAGE;
 
-    throw new ApiError(0, message);
+    throw new ApiError(1000, message);
   }
 }
 
