@@ -9,7 +9,6 @@ export interface FallbackProps {
 
 interface ErrorBoundaryProps {
   fallback: ComponentType<FallbackProps>;
-  onReset?: () => void;
   queryKey: readonly string[];
 }
 
@@ -41,9 +40,7 @@ export default class LocalErrorBoundary extends React.Component<
     }
   }
 
-  // 재시도 함수
   resetErrorBoundary = () => {
-    this.props.onReset?.();
     this.setState({ ...initialState });
   };
 

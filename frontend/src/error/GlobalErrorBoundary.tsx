@@ -8,7 +8,6 @@ export interface FallbackProps {
 
 interface ErrorBoundaryProps {
   fallback: ComponentType<FallbackProps>;
-  onReset?: () => void;
 }
 
 interface ErrorBoundaryState {
@@ -33,7 +32,6 @@ export default class GlobalErrorBoundary extends React.Component<
   }
 
   resetErrorBoundary = () => {
-    this.props.onReset?.();
     this.setState({ ...initialState });
   };
 
