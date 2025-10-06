@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import FeedbackText from './FeedbackText';
+import FeedbackText from './FeedbackContent';
 
 const meta: Meta<typeof FeedbackText> = {
   title: 'Common/FeedbackText',
