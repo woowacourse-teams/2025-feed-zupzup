@@ -52,6 +52,12 @@ export default function GlobalErrorFallback({
       button: '로그인하기',
       onClick: handleLogin,
     },
+    NETWORK_ERROR: {
+      title: '네트워크 오류',
+      subtitle: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      button: '재시도',
+      onClick: handleRetry,
+    },
   } as const;
 
   const errorName = getErrorName(error as ApiError);
@@ -92,8 +98,12 @@ export default function GlobalErrorFallback({
 }
 
 function getErrorName(error: ApiError) {
+  console.log(error.status, error.message);
   if (error.status === 401 || error.status === 403) {
     return 'AUTH_ERROR';
+  }
+  if (error.status === 1000) {
+    return 'NETWORK_ERROR';
   }
   return 'UNKNOWN_ERROR';
 }
