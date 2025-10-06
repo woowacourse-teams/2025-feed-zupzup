@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import {
@@ -12,9 +11,7 @@ import {
   container,
 } from './GlobalErrorFallback.styles';
 import { ApiError } from '@/apis/apiClient';
-import { resetLocalStorage } from '@/utils/localStorage';
-import { NotificationService } from '@/services/notificationService';
-import useNavigation from '@/domains/hooks/useNavigation';
+import useGlobalError from './useGlobalError';
 
 export default function GlobalErrorFallback({
   resetErrorBoundary,
@@ -23,59 +20,25 @@ export default function GlobalErrorFallback({
   resetErrorBoundary: () => void;
   error: Error | ApiError;
 }) {
-  const queryClient = useQueryClient();
   const theme = useAppTheme();
-  const { goPath } = useNavigation();
-
-  const handleRetry = () => {
-    queryClient.resetQueries();
-    resetErrorBoundary();
-  };
-
-  const handleLogin = () => {
-    resetLocalStorage('auth');
-    NotificationService.removeToken();
-    goPath('/login');
-    resetErrorBoundary();
-  };
-
-  const ERROR_MESSAGES = {
-    UNKNOWN_ERROR: {
-      title: '알 수 없는 오류',
-      subtitle: '알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-      button: '재시도',
-      onClick: handleRetry,
-    },
-    AUTH_ERROR: {
-      title: '인증 오류',
-      subtitle: '인증이 필요합니다. 로그인 후 다시 시도해주세요.',
-      button: '로그인하기',
-      onClick: handleLogin,
-    },
-    NETWORK_ERROR: {
-      title: '네트워크 오류',
-      subtitle: '네트워크 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
-      button: '재시도',
-      onClick: handleRetry,
-    },
-  } as const;
-
-  const errorName = getErrorName(error);
-  const errorMessage = ERROR_MESSAGES[errorName];
+  const { errorObject } = useGlobalError({
+    resetErrorBoundary,
+    error,
+  });
 
   return (
     <div css={container}>
       <div css={content}>
-        <h1 css={title(theme)}>{errorMessage.title}</h1>
-        <p css={subtitle(theme)}>{errorMessage.subtitle}</p>
+        <h1 css={title(theme)}>{errorObject.title}</h1>
+        <p css={subtitle(theme)}>{errorObject.subtitle}</p>
         <div css={buttonContainer}>
           <BasicButton
-            onClick={errorMessage.onClick}
+            onClick={errorObject.onClick}
             variant='primary'
             width='120px'
             height='25px'
           >
-            {errorMessage.button}
+            {errorObject.button}
           </BasicButton>
         </div>
         <div css={reportSection}>
@@ -95,17 +58,4 @@ export default function GlobalErrorFallback({
       </div>
     </div>
   );
-}
-
-function getErrorName(error: Error | ApiError) {
-  if (error instanceof ApiError) {
-    if (error.status === 401 || error.status === 403) {
-      return 'AUTH_ERROR';
-    }
-    if (error.status === 1000) {
-      return 'NETWORK_ERROR';
-    }
-  }
-
-  return 'UNKNOWN_ERROR';
 }
