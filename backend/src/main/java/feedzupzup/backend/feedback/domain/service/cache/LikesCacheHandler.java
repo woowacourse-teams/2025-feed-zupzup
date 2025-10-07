@@ -14,9 +14,15 @@ import org.springframework.stereotype.Component;
 public class LikesCacheHandler implements FeedbackCacheHandler {
 
     private final CacheHelper cacheHelper;
+    private final FeedbackCacheRemover feedbackCacheRemover;
 
     @Override
     public void handle(final FeedbackItem savedFeedbackItem, final UUID organizationUuid) {
+        feedbackCacheRemover.removeAllFeedbackCachesInfContains(savedFeedbackItem, organizationUuid);
+        handleLikesCache(savedFeedbackItem, organizationUuid);
+    }
+
+    private void handleLikesCache(final FeedbackItem savedFeedbackItem, final UUID organizationUuid) {
         final Optional<List<FeedbackItem>> findCachedFeedbacks = cacheHelper.getCacheValueList(
                 organizationUuid, LIKES_FEEDBACK.getCacheName());
         if (findCachedFeedbacks.isEmpty()) {
