@@ -9,7 +9,7 @@ import {
   reportText,
   reportLink,
   container,
-} from './GlobalErrorFallback.styles';
+} from '../GlobalError/GlobalErrorFallback.styles';
 import useLocalError from './useLocalError';
 import { ApiError } from '@/apis/apiClient';
 

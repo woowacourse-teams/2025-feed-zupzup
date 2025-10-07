@@ -1,7 +1,7 @@
 import { ApiError } from '@/apis/apiClient';
 import { useQueryClient } from '@tanstack/react-query';
-import { ERROR_MESSAGES } from './errorMessages';
-import { getErrorName } from './error.utils';
+import { ERROR_MESSAGES } from '../errorMessages';
+import { getErrorName } from '../error.utils';
 
 interface useLocalErrorProps {
   queryKey: readonly string[];

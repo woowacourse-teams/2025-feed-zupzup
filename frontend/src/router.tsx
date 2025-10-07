@@ -5,8 +5,8 @@ import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
-import GlobalErrorBoundary from './error/GlobalErrorBoundary';
-import GlobalErrorFallback from './error/GlobalErrorFallback';
+import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
+import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
 
 const AdminDashboard = lazy(
   () =>

@@ -8,8 +8,8 @@ import {
 } from '@/domains/admin/AdminHome/AdminHome.style';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import AdminOrganizationList from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList';
-import LocalErrorBoundary from '@/error/LocalErrorBoundary';
-import LocalErrorFallback from '@/error/LocalErrorFallback';
+import LocalErrorBoundary from '@/error/LocalError/LocalErrorBoundary';
+import LocalErrorFallback from '@/error/LocalError/LocalErrorFallback';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { AdminAuthData } from '@/types/adminAuth';
 import { getLocalStorage } from '@/utils/localStorage';

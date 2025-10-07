@@ -3,8 +3,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { resetLocalStorage } from '@/utils/localStorage';
 import { NotificationService } from '@/services/notificationService';
 import useNavigation from '@/domains/hooks/useNavigation';
-import { getErrorName } from './error.utils';
-import { ERROR_MESSAGES } from './errorMessages';
+import { getErrorName } from '../error.utils';
+import { ERROR_MESSAGES } from '../errorMessages';
 
 interface useGlobalErrorProps {
   resetErrorBoundary: () => void;
