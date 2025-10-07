@@ -69,6 +69,9 @@ dependencies {
 
     //firebase
     implementation 'com.google.firebase:firebase-admin:9.5.0'
+
+    //profanity filter
+    implementation 'io.github.vaneproject:vane-badwordfiltering:1.0.0'
 }
 
 tasks.register('copySecret', Copy) {
