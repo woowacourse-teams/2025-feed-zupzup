@@ -46,7 +46,7 @@ export default function FeedbackBoxFooter({
         )}
         {!isSecret && (
           <LikeButton
-            like={isLiked}
+            like={isLiked ?? false}
             feedbackId={feedbackId}
             likeCount={likeCount}
             isAdmin={isAdmin}

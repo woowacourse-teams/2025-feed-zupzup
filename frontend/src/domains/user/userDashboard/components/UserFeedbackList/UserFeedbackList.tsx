@@ -1,20 +1,20 @@
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
-import {
-  FeedbackResponse,
-  FeedbackType,
-  FeedbackFilterType,
-  SortType,
-} from '@/types/feedback.types';
+import useMyLikedFeedback from '@/domains/user/userDashboard/hooks/useMyLikedFeedback';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
-import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
+import {
+  FeedbackFilterType,
+  FeedbackResponse,
+  FeedbackType,
+  SortType,
+} from '@/types/feedback.types';
 import { memo, useCallback, useMemo } from 'react';
-import { getLocalStorage } from '@/utils/localStorage';
+import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
+import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
 
 interface UserFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -26,7 +26,7 @@ export default memo(function UserFeedbackList({
   selectedSort,
 }: UserFeedbackListProps) {
   const { organizationId } = useOrganizationId();
-  const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
+  const { myLikeFeedbackIds } = useMyLikedFeedback();
 
   const apiUrl = useMemo(
     () =>
@@ -71,9 +71,12 @@ export default memo(function UserFeedbackList({
     [selectedFilter, myFeedbacks, feedbacks]
   );
 
-  const getFeedbackIsLike = useCallback((feedbackId: number) => {
-    return likedFeedbackIds?.includes(feedbackId) || false;
-  }, []);
+  const getFeedbackIsLike = useCallback(
+    (feedbackId: number) => {
+      return myLikeFeedbackIds?.includes(feedbackId) || false;
+    },
+    [myLikeFeedbackIds]
+  );
 
   return (
     <>

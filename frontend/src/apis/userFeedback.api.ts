@@ -88,3 +88,17 @@ export async function getMyFeedbacks({
 
   return response as GetMyFeedbacksResponse;
 }
+
+export interface GetMyLikedFeedbacksResponse {
+  data: {
+    feedbackIds: number[];
+  };
+}
+
+export async function getMyLikedFeedbacks() {
+  const response = await apiClient.get<GetMyLikedFeedbacksResponse>(
+    '/feedbacks/my-likes'
+  );
+
+  return response as GetMyLikedFeedbacksResponse;
+}
