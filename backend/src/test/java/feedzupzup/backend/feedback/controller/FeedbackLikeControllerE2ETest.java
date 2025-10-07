@@ -13,11 +13,14 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.util.CookieUtilization;
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import jakarta.servlet.http.Cookie;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,8 +86,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 좋아요 2개 추가
-        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
-        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
+        feedbackLikeService.like(savedFeedback.getId(), createGuest());
+        feedbackLikeService.like(savedFeedback.getId(), createGuest());
 
         // when & then
         given()
@@ -339,5 +342,9 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final ResponseCookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
+    }
+
+    private Guest createGuest() {
+        return new Guest(UUID.randomUUID(), CurrentDateTime.create());
     }
 }

@@ -65,7 +65,7 @@ public class UserFeedbackController implements UserFeedbackApi {
             final Long feedbackId,
             @Visitor final Guest guest
     ) {
-        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, guest.getVisitorUuid());
+        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, guest);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 

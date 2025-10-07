@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,4 +27,9 @@ public class LikeHistory {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Feedback feedback;
+
+    public LikeHistory(@NonNull final Guest guest, @NonNull final Feedback feedback) {
+        this.guest = guest;
+        this.feedback = feedback;
+    }
 }
