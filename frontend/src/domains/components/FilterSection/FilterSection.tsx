@@ -1,7 +1,7 @@
 import { SerializedStyles } from '@emotion/react';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import Tag from '@/components/Tag/Tag';
-import Dropdown from '@/domains/components/Dropdown/Dropdown'; // CategorySelector 사용
+import Dropdown from '@/domains/components/Dropdown/Dropdown';
 import {
   filterSectionContainer,
   filterTagsContainer,
@@ -11,7 +11,7 @@ import {
 } from './FilterSection.styles';
 import Button from '@/components/@commons/Button/Button';
 import { FeedbackFilterType, SortType } from '@/types/feedback.types';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 export interface FilterSectionProps {
   selectedFilter: FeedbackFilterType | '';
@@ -46,6 +46,12 @@ export default memo(function FilterSection({
 }: FilterSectionProps) {
   const theme = useAppTheme();
 
+  useEffect(() => {
+    if (selectedFilter === 'MINE' && selectedSort !== 'LATEST') {
+      onSortChange('LATEST');
+    }
+  }, [selectedFilter, selectedSort, onSortChange]);
+
   const handleFilterClick = (filterValue: FeedbackFilterType) => {
     if (selectedFilter === filterValue) {
       onFilterChange('');
@@ -53,6 +59,8 @@ export default memo(function FilterSection({
       onFilterChange(filterValue);
     }
   };
+
+  const isSortDisabled = selectedFilter === 'MINE';
 
   return (
     <div css={[filterSectionContainer, customCSS]}>
@@ -81,6 +89,7 @@ export default memo(function FilterSection({
           placeholder='정렬 기준'
           width='100px'
           height='32px'
+          disabled={isSortDisabled}
         />
       </div>
     </div>
