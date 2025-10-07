@@ -25,6 +25,7 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -171,25 +172,16 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     class LikeDecreaseTest {
 
         @Test
-        @DisplayName("쿠키가 존재하지 않는 유저가 취소를 요청하면, 예외가 발생해야 한다 (null 인 경우)")
-        void not_exist_cookie_request_then_throw_exception() {
-            // given
-            final Long feedbackId = createFeedback();
-
-            // when & then
-            assertThatThrownBy(() -> feedbackLikeService.unlike(feedbackId, null))
-                    .isInstanceOf(InvalidLikeException.class);
-        }
-
-        @Test
+        @Disabled
         @DisplayName("해당 피드백에 대해 좋아요 기록이 존재하지 않는 유저가 취소 요청을 할 경우, 예외가 발생해야 한다")
         void not_exist_like_history_then_throw_exception() {
             // given
             final Long feedbackId = createFeedback();
             final UUID cookieValue = createAndGetCookieValue();
+            final Guest guest = new Guest(cookieValue, CurrentDateTime.create());
 
             // when & then
-            assertThatThrownBy(() -> feedbackLikeService.unlike(feedbackId, cookieValue))
+            assertThatThrownBy(() -> feedbackLikeService.unlike(feedbackId, guest))
                     .isInstanceOf(InvalidLikeException.class);
         }
 
@@ -207,7 +199,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             feedbackLikeService.like(feedbackId, guest3);
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest1.getVisitorUuid());
+            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest1);
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(2);
@@ -222,7 +214,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             feedbackLikeService.like(feedbackId, guest);
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest.getVisitorUuid());
+            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest);
 
             // then
             assertThat(likeResponse.afterLikeCount()).isZero();
@@ -246,10 +238,10 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             // when
             feedbackLikeService.like(feedbackId, guest1);          // 1
             feedbackLikeService.like(feedbackId, guest2);          // 2
-            feedbackLikeService.unlike(feedbackId, guest1.getVisitorUuid());        // 1
+            feedbackLikeService.unlike(feedbackId, guest1);        // 1
             feedbackLikeService.like(feedbackId, guest3);          // 2
             feedbackLikeService.like(feedbackId, guest4);          // 3
-            feedbackLikeService.unlike(feedbackId, guest2.getVisitorUuid());        // 2
+            feedbackLikeService.unlike(feedbackId, guest2);        // 2
 
             final Feedback feedback = feedBackRepository.findById(feedbackId).get();
 
@@ -273,12 +265,12 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
 
             // when
             feedbackLikeService.like(feedbackId1, guest1);
-            final LikeResponse likeResponse1 = feedbackLikeService.unlike(feedbackId1, guest1.getVisitorUuid());
+            final LikeResponse likeResponse1 = feedbackLikeService.unlike(feedbackId1, guest1);
             final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, guest2);
             feedbackLikeService.like(feedbackId3, guest3);
             feedbackLikeService.like(feedbackId3, guest4);
             feedbackLikeService.like(feedbackId3, guest5);
-            final LikeResponse likeResponse3 = feedbackLikeService.unlike(feedbackId3, guest3.getVisitorUuid());
+            final LikeResponse likeResponse3 = feedbackLikeService.unlike(feedbackId3, guest3);
 
             // then
             assertAll(

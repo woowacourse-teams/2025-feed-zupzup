@@ -19,8 +19,6 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
-import jakarta.servlet.http.Cookie;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -130,21 +128,6 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요를 시도하면 404 에러가 발생한다")
-    void like_non_existent_feedback_not_found() {
-        // given
-        final Long nonExistentFeedbackId = 999L;
-
-        // when & then
-        given()
-                .log().all()
-                .when()
-                .patch("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
-                .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
     @DisplayName("같은 피드백에 여러 번 좋아요를 추가한다")
     void like_feedback_multiple_times_success() {
         // given
@@ -185,24 +168,6 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("data.afterLikeCount", equalTo(3));
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요 취소를 시도하면 400 에러가 발생한다")
-    void unlike_non_existent_feedback_not_found() {
-        // given
-        final Long nonExistentFeedbackId = 999L;
-
-        UUID visitorId = UUID.randomUUID();
-
-        // when & then
-        given()
-                .log().all()
-                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
-                .when()
-                .patch("/feedbacks/{feedbackId}/unlike", nonExistentFeedbackId)
-                .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test

@@ -52,31 +52,29 @@ public class FeedbackLikeService {
         return LikeResponse.from(feedback);
     }
 
+    @Transactional
+    public LikeResponse unlike(final Long feedbackId, final Guest guest) {
+        final Guest savedGuest = saveGuestIfNotPersisted(guest);
+        final Feedback feedback = findFeedbackBy(feedbackId);
+
+        if (!likeHistoryRepository.existsByGuestAndFeedback(savedGuest, feedback)) {
+            throw new InvalidLikeException(
+                    "해당 유저 " + savedGuest.getVisitorUuid() + "는 feedbackId " + feedbackId + "에 좋아요 기록이 없습니다.");
+        }
+        feedback.decreaseLikeCount();
+
+        // 캐시 핸들 이벤트 발행
+        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
+
+        likeHistoryRepository.deleteByGuestAndFeedback(savedGuest, feedback);
+        return LikeResponse.from(feedback);
+    }
+
     private Guest saveGuestIfNotPersisted(final Guest guest) {
         if (!guest.isPersisted()) {
             return guestRepository.save(guest);
         }
         return guest;
-    }
-
-    @Transactional
-    public LikeResponse unlike(final Long feedbackId, final UUID visitorId) {
-        if (visitorId == null || !userLikeFeedbacksRepository.isAlreadyLike(visitorId,
-                feedbackId)) {
-            throw new InvalidLikeException(
-                    "해당 유저 " + visitorId + "는 해당 feedbackId" + feedbackId
-                            + "에 대한 좋아요 기록이 존재하지 않습니다."
-            );
-        }
-
-        final Feedback feedback = findFeedbackBy(feedbackId);
-        feedback.decreaseLikeCount();
-
-        // 캐시 핸들 이벤트 발행
-        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
-        userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
-
-        return LikeResponse.from(feedback);
     }
 
     private Feedback findFeedbackBy(final Long feedbackId) {

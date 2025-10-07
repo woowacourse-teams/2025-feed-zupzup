@@ -378,7 +378,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         organization.getUuid(), 10, null, null, LIKES);
 
                 // 2차 캐시 클리어
-                feedbackLikeService.unlike(9L, guest.getVisitorUuid());
+                feedbackLikeService.unlike(9L, guest);
 
                 // 비동기 캐시 클리어 대기
                 await().atMost(Duration.ofSeconds(1))
