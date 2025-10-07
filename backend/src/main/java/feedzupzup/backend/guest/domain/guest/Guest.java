@@ -27,10 +27,12 @@ public class Guest extends BaseTimeEntity {
 
     private LocalDateTime connectedTime;
 
-    public Guest(@NonNull final Long id, @NonNull final UUID visitorUuid, @NonNull final LocalDateTime connectedTime) {
-        this.id = id;
+    public Guest(@NonNull final UUID visitorUuid, @NonNull final LocalDateTime connectedTime) {
         this.visitorUuid = visitorUuid;
         this.connectedTime = connectedTime;
     }
 
+    public boolean isPersisted() {
+        return this.id != null;
+    }
 }
