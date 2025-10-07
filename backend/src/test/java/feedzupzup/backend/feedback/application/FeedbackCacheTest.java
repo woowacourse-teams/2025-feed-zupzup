@@ -31,6 +31,8 @@ import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -38,6 +40,7 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -310,7 +313,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         organization.getUuid(), 10, null, null, LIKES);
 
                 // when - 캐시 비우기
-                feedbackLikeService.like(5L, UUID.randomUUID());
+                feedbackLikeService.like(5L, createGuest());
 
                 await().atMost(Duration.ofSeconds(1))
                         .untilAsserted(() ->
@@ -336,7 +339,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 saveMultipleFeedbacksFromLikeCounts(List.of(1));
 
                 // when
-                feedbackLikeService.like(11L, UUID.randomUUID());
+                feedbackLikeService.like(11L, createGuest());
 
                 await().atMost(Duration.ofSeconds(1))
                         .untilAsserted(() ->
@@ -360,10 +363,10 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 userFeedbackService.getFeedbackPage(
                         organization.getUuid(), 10, null, null, LIKES);
 
-                final UUID userUuid = UUID.randomUUID();
+                final Guest guest = createGuest();
 
                 // 1차 캐시 클리어
-                feedbackLikeService.like(9L, userUuid);
+                feedbackLikeService.like(9L, guest);
 
                 await().atMost(Duration.ofSeconds(1))
                         .untilAsserted(() ->
@@ -375,7 +378,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         organization.getUuid(), 10, null, null, LIKES);
 
                 // 2차 캐시 클리어
-                feedbackLikeService.unlike(9L, userUuid);
+                feedbackLikeService.unlike(9L, guest.getVisitorUuid());
 
                 // 비동기 캐시 클리어 대기
                 await().atMost(Duration.ofSeconds(1))
@@ -514,7 +517,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             // when
             transactionTemplate.execute(status -> {
-                feedbackLikeService.like(5L, UUID.randomUUID());
+                feedbackLikeService.like(5L, createGuest());
                 status.setRollbackOnly();
                 return null;
             });
@@ -533,7 +536,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     organization.getUuid(), 10, null, null, LIKES);
 
             // when
-            feedbackLikeService.like(5L, UUID.randomUUID());
+            feedbackLikeService.like(5L, createGuest());
 
             // then
             await().atMost(Duration.ofSeconds(1))
@@ -622,5 +625,9 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         assertThat(feedbacks)
                 .extracting("feedbackId")
                 .containsExactly(expectedIds);
+    }
+
+    private Guest createGuest() {
+        return new Guest(UUID.randomUUID(), CurrentDateTime.create());
     }
 }

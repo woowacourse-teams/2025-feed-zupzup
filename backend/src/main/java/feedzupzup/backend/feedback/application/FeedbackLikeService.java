@@ -13,6 +13,10 @@ import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.domain.like.LikeHistory;
+import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,27 +30,33 @@ public class FeedbackLikeService {
 
     private final FeedbackRepository feedBackRepository;
     private final UserLikeFeedbacksRepository userLikeFeedbacksRepository;
+    private final GuestRepository guestRepository;
+    private final LikeHistoryRepository likeHistoryRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public LikeResponse like(final Long feedbackId, final UUID visitorId) {
-        if (visitorId == null) {
-            throw new InvalidLikeException("잘못된 요청입니다.");
-        }
-
+    public LikeResponse like(final Long feedbackId, final Guest guest) {
+        final Guest savedGuest = saveGuestIfNotPersisted(guest);
         final Feedback feedback = findFeedbackBy(feedbackId);
-        if (userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
-            throw new DuplicateLikeException(
-                    "해당 유저 " + visitorId + "는 이미 해당 feedbackId" + feedbackId + "에 좋아요를 눌렀습니다.");
-        }
 
+        if (likeHistoryRepository.existsByGuestAndFeedback(savedGuest, feedback)) {
+            throw new DuplicateLikeException(
+                    "해당 유저 " + savedGuest.getVisitorUuid() + "는 이미 해당 feedbackId " + feedbackId + "에 좋아요를 눌렀습니다.");
+        }
         feedback.increaseLikeCount();
 
         // 캐시 핸들 이벤트 발행
         publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
-        userLikeFeedbacksRepository.save(visitorId, feedbackId);
 
+        likeHistoryRepository.save(new LikeHistory(savedGuest, feedback));
         return LikeResponse.from(feedback);
+    }
+
+    private Guest saveGuestIfNotPersisted(final Guest guest) {
+        if (!guest.isPersisted()) {
+            return guestRepository.save(guest);
+        }
+        return guest;
     }
 
     @Transactional
