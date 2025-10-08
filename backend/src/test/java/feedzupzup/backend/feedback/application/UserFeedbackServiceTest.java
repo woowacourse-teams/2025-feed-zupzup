@@ -37,7 +37,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackRepository feedBackRepository;
-    
+
     @Autowired
     private OrganizationRepository organizationRepository;
 
@@ -56,7 +56,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION, true);
         organizationCategoryRepository.save(organizationCategory);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "건의");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "맛있어요", false, "윌슨",
+                "건의", "https://example.com/image.png");
 
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
@@ -84,7 +86,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory1);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "기타");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "맛있어요", false, "윌슨",
+                "기타", "https://example.com/image.png");
 
         // when & then
         assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid()))

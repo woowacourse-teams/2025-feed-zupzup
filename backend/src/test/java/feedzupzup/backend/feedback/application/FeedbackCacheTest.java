@@ -166,7 +166,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
 
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
-                    "건의");
+                    "건의", "https://example.com/image.png");
 
             userFeedbackService.create(request, organization.getUuid());
 
@@ -176,7 +176,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // when
-            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(),
+                    10, null, null, LATEST);
             final List<UserFeedbackItem> feedbacks = feedbackPage2.feedbacks();
 
             // then
@@ -193,7 +194,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
 
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
-                    "건의");
+                    "건의", "https://example.com/image.png");
 
             userFeedbackService.create(request, organization.getUuid());
 
