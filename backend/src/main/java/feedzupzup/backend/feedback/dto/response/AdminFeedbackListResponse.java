@@ -57,7 +57,10 @@ public record AdminFeedbackListResponse(
             String category,
 
             @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
-            String comment
+            String comment,
+
+            @Schema(description = "이미지 URL", example = "https://example.com/image.png")
+            String imageUrl
     ) {
 
         private static AdminFeedbackItem from(final FeedbackItem feedbackItem) {
@@ -70,7 +73,8 @@ public record AdminFeedbackListResponse(
                     feedbackItem.userName(),
                     feedbackItem.postedAt(),
                     feedbackItem.category(),
-                    feedbackItem.comment()
+                    feedbackItem.comment() == null ? null : feedbackItem.comment(),
+                    feedbackItem.imageUrl() == null ? null : feedbackItem.imageUrl()
             );
         }
 

@@ -40,7 +40,6 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -169,7 +168,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
 
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
-                    "건의");
+                    "건의", "https://example.com/image.png");
 
             userFeedbackService.create(request, organization.getUuid(), createGuest());
 
@@ -179,7 +178,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // when
-            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(),
+                    10, null, null, LATEST);
             final List<UserFeedbackItem> feedbacks = feedbackPage2.feedbacks();
 
             // then
@@ -196,7 +196,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
 
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
-                    "건의");
+                    "건의", "https://example.com/image.png");
 
             userFeedbackService.create(request, organization.getUuid(), createGuest());
 
@@ -467,6 +467,142 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 verify(feedbackRepository, times(1)).findByOldest(any(), any(), any(), any());
             }
 
+        }
+    }
+
+    @Nested
+    @DisplayName("크로스 캐시 삭제 테스트 - 피드백 변경 시 다른 캐시에도 반영")
+    class CrossCacheRemovalTest {
+
+        @DisplayName("좋아요 증가 시 LATEST, OLDEST 캐시에도 해당 피드백이 있다면 모두 삭제되어야 한다")
+        @Test
+        void when_like_increase_then_remove_all_caches_containing_feedback() {
+            // given
+            saveMultipleFeedbacks(10);
+
+            // LATEST, OLDEST 캐시 생성
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            // when - 좋아요 증가
+            feedbackLikeService.like(5L, createGuest());
+
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(likesCacheHandler, times(1)).handle(any(), any())
+                    );
+
+            // 두 번째 조회 시 캐시가 삭제되었으므로 DB 접근 발생
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            // then - LATEST, OLDEST 캐시가 삭제되어 각각 2번씩 DB 조회 발생
+            verify(feedbackRepository, times(2)).findByLatest(any(), any(), any(), any());
+            verify(feedbackRepository, times(2)).findByOldest(any(), any(), any(), any());
+        }
+
+        @DisplayName("좋아요 감소 시 LATEST, OLDEST 캐시에도 해당 피드백이 있다면 모두 삭제되어야 한다")
+        @Test
+        void when_unlike_then_remove_all_caches_containing_feedback() {
+            // given
+            saveMultipleFeedbacks(10);
+            final Guest guest = createGuest();
+            // 먼저 좋아요
+            feedbackLikeService.like(5L, guest);
+
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(likesCacheHandler, times(1)).handle(any(), any())
+                    );
+
+            // LATEST, OLDEST 캐시 생성
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            // when - 좋아요 감소
+            feedbackLikeService.unlike(5L, guest);
+
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(likesCacheHandler, times(2)).handle(any(), any())
+                    );
+
+            // 두 번째 조회 시 캐시가 삭제되었으므로 DB 접근 발생
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+
+            // then - LATEST, OLDEST 캐시가 삭제되어 각각 2번씩 DB 조회 발생
+            verify(feedbackRepository, times(2)).findByLatest(any(), any(), any(), any());
+            verify(feedbackRepository, times(2)).findByOldest(any(), any(), any(), any());
+        }
+
+        @DisplayName("피드백 상태 변경 시 LATEST, LIKES 캐시에도 해당 피드백이 있다면 모두 삭제되어야 한다")
+        @Test
+        void when_update_feedback_status_then_remove_all_caches_containing_feedback() {
+            // given
+            final Admin admin = AdminFixture.create();
+            adminRepository.save(admin);
+            final Organization testOrganization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(testOrganization);
+            final Organizer organizer = new Organizer(testOrganization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+
+            final OrganizationCategory testCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    testOrganization, SUGGESTION);
+            organizationCategoryRepository.save(testCategory);
+
+            saveMultipleFeedbacks(10, testOrganization);
+
+            // LATEST, LIKES 캐시 생성
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LIKES);
+
+            // when - 피드백 상태 변경
+            adminFeedbackService.updateFeedbackComment(
+                    admin.getId(),
+                    new UpdateFeedbackCommentRequest("test"),
+                    5L
+            );
+
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(oldestCacheHandler, times(1)).handle(any(), any())
+                    );
+
+            // 두 번째 조회 시 캐시가 삭제되었으므로 DB 접근 발생
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LIKES);
+
+            // then - LATEST, LIKES 캐시가 삭제되어 각각 2번씩 DB 조회 발생
+            verify(feedbackRepository, times(2)).findByLatest(any(), any(), any(), any());
+            verify(feedbackRepository, times(2)).findByLikes(any(), any(), any(), any());
+        }
+
+        @DisplayName("좋아요 증가 시 해당 피드백이 캐시에 없다면 다른 캐시는 삭제되지 않아야 한다")
+        @Test
+        void when_like_increase_feedback_not_in_cache_then_not_remove_other_caches() {
+            // given
+            saveMultipleFeedbacks(10);
+
+            // LATEST 캐시 생성 (1~10번 피드백)
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+
+            // 새로운 피드백 생성 (11번 피드백)
+            saveMultipleFeedbacks(1);
+
+            // when - 캐시에 없는 11번 피드백에 좋아요
+            feedbackLikeService.like(11L, createGuest());
+
+            await().atMost(Duration.ofSeconds(1))
+                    .untilAsserted(() ->
+                            verify(likesCacheHandler, times(1)).handle(any(), any())
+                    );
+
+            // 두 번째 조회 시 캐시가 유지되어 DB 접근 없음
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+
+            // then - LATEST 캐시가 유지되어 1번만 DB 조회
+            verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
         }
     }
 

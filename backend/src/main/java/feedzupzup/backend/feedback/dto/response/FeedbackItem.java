@@ -13,8 +13,10 @@ public record FeedbackItem(
         String userName,
         LocalDateTime postedAt,
         String category,
-        String comment
+        String comment,
+        String imageUrl
 ) {
+
     public static FeedbackItem from(final Feedback feedback) {
         return new FeedbackItem(
                 feedback.getId(),
@@ -25,8 +27,8 @@ public record FeedbackItem(
                 feedback.getUserName().getValue(),
                 feedback.getPostedAt().getValue(),
                 feedback.getOrganizationCategory().getCategory().getKoreanName(),
-                feedback.getComment() != null ? feedback.getComment().getValue() : null
+                feedback.getComment() == null ? null : feedback.getComment().getValue(),
+                feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
         );
     }
-
 }
