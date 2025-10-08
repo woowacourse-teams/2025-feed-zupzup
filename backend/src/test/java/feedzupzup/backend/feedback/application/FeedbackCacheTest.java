@@ -171,7 +171,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
                     "건의");
 
-            userFeedbackService.create(request, organization.getUuid());
+            userFeedbackService.create(request, organization.getUuid(), createGuest());
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -198,7 +198,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
                     "건의");
 
-            userFeedbackService.create(request, organization.getUuid());
+            userFeedbackService.create(request, organization.getUuid(), createGuest());
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -482,7 +482,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             // when - 명시적 롤백을 진행한다.
             transactionTemplate.execute(status -> {
-                userFeedbackService.create(request, organization.getUuid());
+                userFeedbackService.create(request, organization.getUuid(), createGuest());
                 status.setRollbackOnly();
                 return null;
             });
@@ -498,7 +498,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("test1");
 
             // when
-            userFeedbackService.create(request, organization.getUuid());
+            userFeedbackService.create(request, organization.getUuid(), createGuest());
 
             // then
             await().atMost(Duration.ofSeconds(1))

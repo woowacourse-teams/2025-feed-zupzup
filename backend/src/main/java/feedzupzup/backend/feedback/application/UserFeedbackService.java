@@ -19,6 +19,10 @@ import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.domain.write.WriteHistory;
+import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
@@ -36,23 +40,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserFeedbackService {
 
-    private final FeedbackRepository feedBackRepository;
+    private final GuestRepository guestRepository;
+    private final FeedbackRepository feedbackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
+    private final WriteHistoryRepository writeHistoryRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @BusinessActionLog
     public CreateFeedbackResponse create(
             final CreateFeedbackRequest request,
-            final UUID organizationUuid
+            final UUID organizationUuid,
+            final Guest guest
     ) {
+        final Guest savedGuest = saveGuestIfNotPersisted(guest);
+
         final Organization organization = findOrganizationBy(organizationUuid);
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
                 category);
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
-        final Feedback savedFeedback = feedBackRepository.save(newFeedback);
+        final Feedback savedFeedback = feedbackRepository.save(newFeedback);
+
+        writeHistoryRepository.save(new WriteHistory(savedGuest, savedFeedback));
 
         // 최신순 캐시 업데이트
         publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
@@ -81,6 +92,13 @@ public class UserFeedbackService {
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
+    }
+
+    private Guest saveGuestIfNotPersisted(final Guest guest) {
+        if (!guest.isPersisted()) {
+            return guestRepository.save(guest);
+        }
+        return guest;
     }
 
     private Organization findOrganizationBy(final UUID organizationUuid) {

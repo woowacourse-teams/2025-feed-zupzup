@@ -22,10 +22,13 @@ import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -62,7 +65,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackResponse response = userFeedbackService.create(
-                request, savedOrganization.getUuid());
+                request, savedOrganization.getUuid(), createGuest());
 
         //then
         assertAll(
@@ -88,7 +91,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "기타");
 
         // when & then
-        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid()))
+        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid(), createGuest()))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -514,5 +517,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
             );
         }
+    }
+
+    private Guest createGuest() {
+        return new Guest(UUID.randomUUID(), CurrentDateTime.create());
     }
 }

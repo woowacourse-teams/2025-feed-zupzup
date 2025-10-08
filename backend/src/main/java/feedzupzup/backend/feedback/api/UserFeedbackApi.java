@@ -55,7 +55,8 @@ public interface UserFeedbackApi {
     @PostMapping("/organizations/{organizationUuid}/feedbacks")
     SuccessResponse<CreateFeedbackResponse> create(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @RequestBody @Valid final CreateFeedbackRequest request
+            @RequestBody @Valid final CreateFeedbackRequest request,
+            @Parameter(hidden = true) @Visitor Guest guest
     );
 
     @Operation(summary = "피드백 좋아요", description = "피드백에 좋아요를 추가합니다.")
