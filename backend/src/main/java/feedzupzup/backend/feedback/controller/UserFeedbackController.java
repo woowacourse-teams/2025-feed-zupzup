@@ -50,7 +50,7 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<CreateFeedbackResponse> create(
             final UUID organizationUuid,
             final CreateFeedbackRequest request,
-            @Visitor Guest guest
+            @Visitor final Guest guest
     ) {
         final CreateFeedbackResponse response = userFeedbackService.create(request,
                 organizationUuid, guest);

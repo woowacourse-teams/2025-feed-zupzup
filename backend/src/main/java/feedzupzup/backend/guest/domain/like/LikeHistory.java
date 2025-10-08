@@ -22,10 +22,10 @@ public class LikeHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Guest guest;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Feedback feedback;
 
     public LikeHistory(@NonNull final Guest guest, @NonNull final Feedback feedback) {
