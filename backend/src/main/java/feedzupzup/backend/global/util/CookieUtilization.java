@@ -1,5 +1,6 @@
 package feedzupzup.backend.global.util;
 
+import feedzupzup.backend.global.exception.BusinessViolationException.NotSupportedException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Optional;
@@ -55,7 +56,15 @@ public class CookieUtilization {
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> VISITOR_KEY.equals(cookie.getName()))
                 .findFirst()
-                .map(cookie -> UUID.fromString(cookie.getValue()));
+                .map(cookie -> parseUUID(cookie.getValue()));
+    }
+
+    private UUID parseUUID(String value) {
+        try {
+            return UUID.fromString(value);
+        } catch (IllegalArgumentException e) {
+            throw new NotSupportedException("조작된 쿠키값이 사용된 요청입니다 :" + "value = " + value);
+        }
     }
 
 }
