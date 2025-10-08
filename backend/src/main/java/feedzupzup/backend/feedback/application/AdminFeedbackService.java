@@ -129,10 +129,10 @@ public class AdminFeedbackService {
     }
 
     public ClusterFeedbacksResponse getFeedbacksByClusterId(final UUID clusterId) {
-        if (!feedBackRepository.existsByClustering_ClusterId(clusterId)) {
+        List<Feedback> feedbacks = feedBackRepository.findAllByClustering_ClusterId(clusterId);
+        if (feedbacks.isEmpty()) {
             throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
         }
-        List<Feedback> feedbacks = feedBackRepository.findAllByClustering_ClusterId(clusterId);
         return ClusterFeedbacksResponse.of(feedbacks);
     }
 }

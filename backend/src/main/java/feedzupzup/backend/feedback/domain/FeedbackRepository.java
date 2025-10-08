@@ -119,8 +119,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     List<Feedback> findAllByClustering_ClusterId(final UUID clusterId);
 
-    boolean existsByClustering_ClusterId(final UUID clustering_clusterId);
-
     @Query("""
                 SELECT MIN(f.id)
                 FROM Feedback f
