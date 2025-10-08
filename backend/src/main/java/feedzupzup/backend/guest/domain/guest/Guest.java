@@ -25,6 +25,7 @@ public class Guest extends BaseTimeEntity {
     @Column(nullable = false)
     private UUID visitorUuid;
 
+    @Column(nullable = false)
     private LocalDateTime connectedTime;
 
     public Guest(@NonNull final UUID visitorUuid, @NonNull final LocalDateTime connectedTime) {

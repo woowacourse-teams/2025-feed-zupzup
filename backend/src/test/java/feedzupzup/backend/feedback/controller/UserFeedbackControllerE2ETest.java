@@ -169,7 +169,6 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final OrganizationCategory organizationCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
                 organization2, SUGGESTION);
 
-        organizationCategoryRepository.save(organizationCategory);
         organizationCategoryRepository.save(organizationCategory2);
 
         final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,

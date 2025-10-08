@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface LikeHistoryRepository extends JpaRepository<LikeHistory, Long> {
 
-    boolean existsByGuestAndFeedback(Guest guest, Feedback feedback);
+    boolean existsByGuestAndFeedback(final Guest guest, final Feedback feedback);
 
-    void deleteByGuestAndFeedback(Guest guest, Feedback feedback);
+    void deleteByGuestAndFeedback(final Guest guest, final Feedback feedback);
 
     @Query("""
             SELECT DISTINCT lh
@@ -22,5 +23,8 @@ public interface LikeHistoryRepository extends JpaRepository<LikeHistory, Long> 
             WHERE g.id = :guestId
             AND o.uuid = :organizationUuid
             """)
-    List<LikeHistory> findLikeHistoriesBy(Long guestId, UUID organizationUuid);
+    List<LikeHistory> findLikeHistoriesBy(
+            @Param("guestId") final Long guestId,
+            @Param("organizationUuid") final UUID organizationUuid
+    );
 }

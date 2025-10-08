@@ -28,7 +28,7 @@ public interface GuestApi {
     @GetMapping("/organizations/{organizationUuid}/feedbacks/my")
     SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(hidden = true) @Visitor Guest guest
+            @Parameter(hidden = true) @Visitor final Guest guest
     );
 
     @Operation(summary = "좋아요 목록 조회", description = "본인이 누른 좋아요 목록들을 조회합니다.")
@@ -39,7 +39,7 @@ public interface GuestApi {
     @GetMapping("/organizations/{organizationUuid}/feedbacks/my-likes")
     SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(hidden = true) @Visitor Guest guest
+            @Parameter(hidden = true) @Visitor final Guest guest
     );
 
 }
