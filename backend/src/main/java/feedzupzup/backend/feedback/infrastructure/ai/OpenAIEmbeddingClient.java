@@ -18,7 +18,7 @@ public class OpenAIEmbeddingClient {
     private final RestClient openAiEmbeddingRestClient;
     private final OpenAIErrorHandler openAIErrorHandler;
 
-    public double[] extractEmbedding(String text) {
+    public double[] extractEmbedding(final String text) {
         try {
             Map<String, Object> requestBody = Map.of(
                     "input", text,
@@ -48,7 +48,7 @@ public class OpenAIEmbeddingClient {
         }
     }
 
-    private static double[] extractEmbeddingOrThrow(final OpenAIEmbeddingResponse response) {
+    private double[] extractEmbeddingOrThrow(final OpenAIEmbeddingResponse response) {
         return Optional.ofNullable(response)
                 .map(OpenAIEmbeddingResponse::getData)
                 .filter(data -> !data.isEmpty())

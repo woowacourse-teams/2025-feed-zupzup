@@ -11,17 +11,17 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 
-@Component
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
+@Component
 public class OpenAIErrorHandler {
 
     private final ObjectMapper objectMapper;
 
-    public void handleError(HttpRequest request, ClientHttpResponse response) {
+    public void handleError(final HttpRequest request, final ClientHttpResponse response) {
         try (InputStream bodyStream = response.getBody()) {
-            OpenAIErrorResponse errorResponse = objectMapper.readValue(bodyStream, OpenAIErrorResponse.class);
-            ErrorBody errorBody = errorResponse.getError();
+            final OpenAIErrorResponse errorResponse = objectMapper.readValue(bodyStream, OpenAIErrorResponse.class);
+            final ErrorBody errorBody = errorResponse.getError();
 
             log.error("OpenAI API 실패 [{}:{}] {}", errorBody.getType(), errorBody.getCode(), errorBody.getMessage());
             throw new RestClientServerException("OpenAI API를 실패하였습니다. request URI : " + request.getURI());
