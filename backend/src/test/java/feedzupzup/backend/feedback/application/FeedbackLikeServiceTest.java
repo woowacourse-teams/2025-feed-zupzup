@@ -23,7 +23,6 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.util.UUID;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -131,7 +130,6 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     class LikeDecreaseTest {
 
         @Test
-        @Disabled
         @DisplayName("해당 피드백에 대해 좋아요 기록이 존재하지 않는 유저가 취소 요청을 할 경우, 예외가 발생해야 한다")
         void not_exist_like_history_then_throw_exception() {
             // given

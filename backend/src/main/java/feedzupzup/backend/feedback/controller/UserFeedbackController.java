@@ -49,10 +49,11 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<CreateFeedbackResponse> create(
             final UUID organizationUuid,
-            final CreateFeedbackRequest request
+            final CreateFeedbackRequest request,
+            @Visitor Guest guest
     ) {
         final CreateFeedbackResponse response = userFeedbackService.create(request,
-                organizationUuid);
+                organizationUuid, guest);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 
