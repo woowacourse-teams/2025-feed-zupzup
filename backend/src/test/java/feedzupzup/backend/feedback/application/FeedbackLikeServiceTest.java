@@ -43,6 +43,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private CookieUtilization cookieUtilization;
+
     private Long createFeedback() {
         final Organization organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
@@ -270,7 +273,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     }
 
     private UUID createAndGetCookieValue() {
-        final ResponseCookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
     }

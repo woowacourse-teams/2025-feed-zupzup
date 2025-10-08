@@ -4,6 +4,7 @@ import static feedzupzup.backend.global.util.CookieUtilization.*;
 
 import com.google.common.net.HttpHeaders;
 import feedzupzup.backend.auth.presentation.annotation.Visitor;
+import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
@@ -25,6 +26,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final GuestRepository guestRepository;
+    private final CookieUtilization cookieUtilization;
 
     @Override
     public Object resolveArgument(
@@ -35,11 +37,11 @@ public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
     ) throws Exception {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         final HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
-        final Optional<UUID> visitorId = getVisitorIdFromCookie(request);
+        final Optional<UUID> visitorId = cookieUtilization.getVisitorIdFromCookie(request);
 
         if (visitorId.isEmpty()) {
             UUID newId = UUID.randomUUID();
-            final ResponseCookie cookie = createCookie(VISITOR_KEY, newId);
+            final ResponseCookie cookie = cookieUtilization.createCookie(VISITOR_KEY, newId);
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
             return new Guest(newId, CurrentDateTime.create());
         }
