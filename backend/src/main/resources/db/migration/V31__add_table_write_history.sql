@@ -1,6 +1,6 @@
 CREATE TABLE write_history
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     guest_id    BIGINT NOT NULL,
     feedback_id BIGINT NOT NULL,
     created_at  DATETIME(6) NOT NULL,
