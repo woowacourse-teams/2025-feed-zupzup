@@ -123,16 +123,9 @@ public class AdminFeedbackService {
     }
 
     public ClusterRepresentativeFeedbacksResponse getRepresentativeCluster(final Long adminId, final UUID organizationUuid) {
-        hasAccessToOrganization(adminId, organizationUuid);
         List<ClusterRepresentativeFeedback> clusterRepresentativeFeedbacks = feedBackRepository.findAllRepresentativeFeedbackPerCluster(
                 organizationUuid);
         return ClusterRepresentativeFeedbacksResponse.from(clusterRepresentativeFeedbacks);
-    }
-
-    private void hasAccessToOrganization(final Long adminId, final UUID organizationUuid) {
-        if (!adminRepository.existsByOrganizationUuid(adminId, organizationUuid)) {
-            throw new ForbiddenException("admin" + adminId + "는 해당 단체에 대한 권한이 없습니다.");
-        }
     }
 
     public ClusterFeedbacksResponse getFeedbacksByClusterId(final UUID clusterId) {

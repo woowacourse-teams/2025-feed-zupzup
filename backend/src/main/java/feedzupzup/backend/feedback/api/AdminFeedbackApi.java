@@ -106,7 +106,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/clusters")
     SuccessResponse<ClusterRepresentativeFeedbacksResponse> getRepresentativeCluster(
-            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession,
+            @Parameter(hidden = true) @LoginOrganizer final AdminSession adminSession,
             @PathVariable("organizationUuid") UUID organizationUuid
     );
 
