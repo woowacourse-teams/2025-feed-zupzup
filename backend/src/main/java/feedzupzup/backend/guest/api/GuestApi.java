@@ -1,7 +1,7 @@
 package feedzupzup.backend.guest.api;
 
 import feedzupzup.backend.auth.presentation.annotation.Visitor;
-import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
+import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.guest.domain.guest.Guest;
@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,9 +36,9 @@ public interface GuestApi {
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/feedbacks/my-likes")
+    @GetMapping("/organizations/{organizationUuid}/feedbacks/my-likes")
     SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
-            final HttpServletResponse response,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
             @Parameter(hidden = true) @Visitor Guest guest
     );
 
