@@ -11,7 +11,6 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
@@ -93,15 +92,6 @@ public class UserFeedbackController implements UserFeedbackApi {
     ) {
         final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(
                 guest.getVisitorUuid());
-        return SuccessResponse.success(HttpStatus.OK, response);
-    }
-
-    @Override
-    public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
-            final UUID organizationUuid,
-            @Visitor final Guest guest
-    ) {
-        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(organizationUuid, guest);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

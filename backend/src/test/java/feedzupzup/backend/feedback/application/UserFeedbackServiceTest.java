@@ -18,20 +18,14 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
-import feedzupzup.backend.guest.domain.write.WriteHistory;
-import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import java.time.LocalDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -49,16 +43,10 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private FeedbackLikeService feedbackLikeService;
-
-    @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
     private GuestRepository guestRepository;
-
-    @Autowired
-    private WriteHistoryRepository writeHistoryRepository;
 
     @Test
     @DisplayName("피드백을 성공적으로 생성한다")
@@ -525,184 +513,6 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId()),
                     () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
             );
-        }
-    }
-
-    @Nested
-    @DisplayName("내가 쓴 글 조회 테스트")
-    class GetMyFeedbacksTest {
-
-        @Test
-        @DisplayName("Guest가 작성한 피드백 목록을 성공적으로 조회한다")
-        void getMyFeedbacks_success() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Guest guest = new Guest(UUID.randomUUID(), LocalDateTime.now());
-            guestRepository.save(guest);
-
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-
-            feedBackRepository.save(feedback1);
-            feedBackRepository.save(feedback2);
-            feedBackRepository.save(feedback3);
-
-            final WriteHistory writeHistory1 = new WriteHistory(guest, feedback1);
-            final WriteHistory writeHistory2 = new WriteHistory(guest, feedback2);
-            final WriteHistory writeHistory3 = new WriteHistory(guest, feedback3);
-
-            writeHistoryRepository.save(writeHistory1);
-            writeHistoryRepository.save(writeHistory2);
-            writeHistoryRepository.save(writeHistory3);
-
-            // when
-            final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getUuid(), guest);
-
-            // then
-            assertAll(
-                    () -> assertThat(response.feedbacks()).hasSize(3),
-                    () -> assertThat(response.feedbacks())
-                            .extracting(UserFeedbackItem::feedbackId)
-                            .containsExactlyInAnyOrder(feedback1.getId(), feedback2.getId(), feedback3.getId())
-            );
-        }
-
-        @Test
-        @DisplayName("특정 Organization의 피드백만 조회한다")
-        void getMyFeedbacks_only_specific_organization() {
-            // given
-            final Organization targetOrganization = OrganizationFixture.createAllBlackBox();
-            final Organization otherOrganization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(targetOrganization);
-            organizationRepository.save(otherOrganization);
-
-            final OrganizationCategory organizationCategory1 = OrganizationCategoryFixture.createOrganizationCategory(
-                    targetOrganization, SUGGESTION);
-            final OrganizationCategory organizationCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
-                    otherOrganization, SUGGESTION);
-            organizationCategoryRepository.save(organizationCategory1);
-            organizationCategoryRepository.save(organizationCategory2);
-
-            final Guest guest = new Guest(UUID.randomUUID(), LocalDateTime.now());
-            guestRepository.save(guest);
-
-            final Feedback targetFeedback1 = FeedbackFixture.createFeedbackWithOrganization(
-                    targetOrganization, organizationCategory1);
-            final Feedback targetFeedback2 = FeedbackFixture.createFeedbackWithOrganization(
-                    targetOrganization, organizationCategory1);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(
-                    otherOrganization, organizationCategory2);
-
-            feedBackRepository.save(targetFeedback1);
-            feedBackRepository.save(targetFeedback2);
-            feedBackRepository.save(otherFeedback);
-
-            final WriteHistory writeHistory1 = new WriteHistory(guest, targetFeedback1);
-            final WriteHistory writeHistory2 = new WriteHistory(guest, targetFeedback2);
-            final WriteHistory writeHistory3 = new WriteHistory(guest, otherFeedback);
-
-            writeHistoryRepository.save(writeHistory1);
-            writeHistoryRepository.save(writeHistory2);
-            writeHistoryRepository.save(writeHistory3);
-
-            // when
-            final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    targetOrganization.getUuid(), guest);
-
-            // then
-            assertAll(
-                    () -> assertThat(response.feedbacks()).hasSize(2),
-                    () -> assertThat(response.feedbacks())
-                            .extracting(UserFeedbackItem::feedbackId)
-                            .containsExactlyInAnyOrder(targetFeedback1.getId(), targetFeedback2.getId()),
-                    () -> assertThat(response.feedbacks())
-                            .extracting(UserFeedbackItem::feedbackId)
-                            .doesNotContain(otherFeedback.getId())
-            );
-        }
-
-        @Test
-        @DisplayName("다른 Guest가 작성한 피드백은 조회되지 않는다")
-        void getMyFeedbacks_only_my_feedbacks() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Guest myGuest = new Guest(UUID.randomUUID(), LocalDateTime.now());
-            final Guest otherGuest = new Guest(UUID.randomUUID(), LocalDateTime.now());
-            guestRepository.save(myGuest);
-            guestRepository.save(otherGuest);
-
-            final Feedback myFeedback1 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback myFeedback2 = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithOrganization(
-                    organization, organizationCategory);
-
-            feedBackRepository.save(myFeedback1);
-            feedBackRepository.save(myFeedback2);
-            feedBackRepository.save(otherFeedback);
-
-            final WriteHistory myWriteHistory1 = new WriteHistory(myGuest, myFeedback1);
-            final WriteHistory myWriteHistory2 = new WriteHistory(myGuest, myFeedback2);
-            final WriteHistory otherWriteHistory = new WriteHistory(otherGuest, otherFeedback);
-
-            writeHistoryRepository.save(myWriteHistory1);
-            writeHistoryRepository.save(myWriteHistory2);
-            writeHistoryRepository.save(otherWriteHistory);
-
-            // when
-            final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getUuid(), myGuest);
-
-            // then
-            assertAll(
-                    () -> assertThat(response.feedbacks()).hasSize(2),
-                    () -> assertThat(response.feedbacks())
-                            .extracting(UserFeedbackItem::feedbackId)
-                            .containsExactlyInAnyOrder(myFeedback1.getId(), myFeedback2.getId()),
-                    () -> assertThat(response.feedbacks())
-                            .extracting(UserFeedbackItem::feedbackId)
-                            .doesNotContain(otherFeedback.getId())
-            );
-        }
-
-        @Test
-        @DisplayName("작성한 피드백이 없는 경우 빈 목록을 반환한다")
-        void getMyFeedbacks_empty_result() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Guest guest = new Guest(UUID.randomUUID(), LocalDateTime.now());
-            guestRepository.save(guest);
-
-            // when
-            final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                    organization.getUuid(), guest);
-
-            // then
-            assertThat(response.feedbacks()).isEmpty();
         }
     }
 }

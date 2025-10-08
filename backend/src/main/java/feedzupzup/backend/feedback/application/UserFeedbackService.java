@@ -14,15 +14,11 @@ import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
-import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
-import feedzupzup.backend.guest.domain.guest.Guest;
-import feedzupzup.backend.guest.domain.write.WriteHistory;
-import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
@@ -43,7 +39,6 @@ public class UserFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
-    private final WriteHistoryRepository writeHistoryRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -86,15 +81,6 @@ public class UserFeedbackService {
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
-    }
-
-    public MyFeedbackListResponse getMyFeedbackPage(
-            final UUID organizationUuid,
-            final Guest guest
-    ) {
-        final List<WriteHistory> writeHistories = writeHistoryRepository.findWriteHistoriesBy(
-                guest.getId(), organizationUuid);
-        return MyFeedbackListResponse.fromHistory(writeHistories);
     }
 
     private Organization findOrganizationBy(final UUID organizationUuid) {
