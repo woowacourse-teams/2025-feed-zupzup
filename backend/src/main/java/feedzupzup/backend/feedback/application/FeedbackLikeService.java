@@ -4,10 +4,7 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
 
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.LikeFeedbacks;
-import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
-import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
@@ -29,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackLikeService {
 
     private final FeedbackRepository feedBackRepository;
-    private final UserLikeFeedbacksRepository userLikeFeedbacksRepository;
     private final GuestRepository guestRepository;
     private final LikeHistoryRepository likeHistoryRepository;
     private final ApplicationEventPublisher eventPublisher;
@@ -81,12 +77,6 @@ public class FeedbackLikeService {
         return feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
-    }
-
-    public LikeHistoryResponse findLikeHistories(final UUID visitorId) {
-        final LikeFeedbacks likeFeedbacks = userLikeFeedbacksRepository.getUserLikeFeedbacksFrom(
-                visitorId);
-        return LikeHistoryResponse.from(likeFeedbacks);
     }
 
     private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {

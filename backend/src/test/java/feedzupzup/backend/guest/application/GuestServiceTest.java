@@ -8,6 +8,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
+import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
@@ -18,6 +19,7 @@ import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.guest.domain.write.WriteHistory;
 import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
+import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -33,6 +35,9 @@ public class GuestServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private GuestService guestService;
+
+    @Autowired
+    private FeedbackLikeService feedbackLikeService;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -188,6 +193,37 @@ public class GuestServiceTest extends ServiceIntegrationHelper {
 
             // then
             assertThat(response.feedbacks()).isEmpty();
+        }
+    }
+
+    @Nested
+    @DisplayName("좋아요를 누른 피드백 조회 테스트")
+    class LikeHistoryTest {
+
+        @Test
+        @DisplayName("좋아요 누른 기록이 없다면, 빈 배열이 반환되어야 한다.")
+        void not_like_history_then_empty() {
+            final LikeHistoryResponse likeHistories = guestService.findGuestLikeHistories(organization.getUuid(), createAndSaveRandomGuest());
+            assertThat(likeHistories.feedbackIds()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("좋아요 누른 기록을 전부 조회할 수 있어야 한다.")
+        void find_all_histories() {
+            // given
+            final Feedback feedback = createAndSaveFeedback();
+            final Guest guest = createAndSaveRandomGuest();
+
+            feedbackLikeService.like(feedback.getId(), guest);
+
+            // when
+            final LikeHistoryResponse likeHistories = guestService.findGuestLikeHistories(organization.getUuid(), guest);
+
+            // then
+            assertAll(
+                    () -> assertThat(likeHistories.feedbackIds().size()).isEqualTo(1),
+                    () -> assertThat(likeHistories.feedbackIds().get(0)).isEqualTo(feedback.getId())
+            );
         }
     }
 

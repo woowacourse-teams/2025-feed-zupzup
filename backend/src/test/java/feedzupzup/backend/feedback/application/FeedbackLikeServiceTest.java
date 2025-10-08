@@ -12,7 +12,6 @@ import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
@@ -23,7 +22,6 @@ import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -57,45 +55,6 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, "테스트 피드백",
                 organizationCategory);
         return feedBackRepository.save(feedback).getId();
-    }
-
-    @Nested
-    @DisplayName("좋아요를 누른 피드백 조회 테스트")
-    class LikeHistoryTest {
-
-        @Test
-        @DisplayName("좋아요 누른 기록이 없다면, 빈 배열이 반환되어야 한다.")
-        void not_like_history_then_empty() {
-            final LikeHistoryResponse likeHistories = feedbackLikeService.findLikeHistories(
-                    UUID.randomUUID());
-            assertThat(likeHistories.feedbackIds()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("좋아요 누른 기록을 전부 조회할 수 있어야 한다.")
-        void find_all_histories() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-            final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION, true);
-            organizationCategoryRepository.save(organizationCategory);
-            final Feedback feedback = FeedbackFixture.createFeedbackWithLikes(organization,
-                    organizationCategory, 0);
-            final Feedback savedFeedback = feedBackRepository.save(feedback);
-
-            final Guest guest = createGuest();
-            final UUID userId = guest.getVisitorUuid();
-
-            feedbackLikeService.like(savedFeedback.getId(), guest);
-
-            // when & then
-            final LikeHistoryResponse likeHistories = feedbackLikeService.findLikeHistories(userId);
-
-            assertAll(
-                    () -> assertThat(likeHistories.feedbackIds().size()).isEqualTo(1),
-                    () -> assertThat(likeHistories.feedbackIds().get(0)).isEqualTo(savedFeedback.getId())
-            );
-        }
     }
 
     @Nested
