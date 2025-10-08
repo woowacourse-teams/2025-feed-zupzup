@@ -102,18 +102,6 @@ public interface UserFeedbackApi {
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid
     );
 
-    @Operation(summary = "내가 쓴 피드백 목록 조회", description = "내가 쓴 피드백 목록을 조회합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/organizations/{organizationUuid}/feedbacks/my")
-    SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
-            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(hidden = true) @Visitor Guest guest
-    );
-
     @Operation(summary = "좋아요 목록 조회", description = "본인이 누른 좋아요 목록들을 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
