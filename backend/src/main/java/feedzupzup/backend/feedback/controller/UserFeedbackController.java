@@ -17,7 +17,6 @@ import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -100,14 +99,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             final UUID organizationUuid,
-            final FeedbackSortType sortBy,
-            final List<Long> feedbackIds
+            @Visitor final Guest guest
     ) {
-        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                organizationUuid,
-                sortBy,
-                feedbackIds
-        );
+        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(organizationUuid, guest);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }
