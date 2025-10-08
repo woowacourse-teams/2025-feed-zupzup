@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.feedback.domain.vo;
 
 import feedzupzup.backend.global.convert.DoubleArrayConverter;
 import jakarta.persistence.Column;

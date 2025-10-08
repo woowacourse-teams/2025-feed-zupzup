@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.EmbeddingExtractor;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackClustering;
+import feedzupzup.backend.feedback.domain.vo.FeedbackClustering;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.Comparator;

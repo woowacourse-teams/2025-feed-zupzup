@@ -3,7 +3,7 @@ package feedzupzup.backend.feedback.fixture;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackClustering;
+import feedzupzup.backend.feedback.domain.vo.FeedbackClustering;
 import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
