@@ -5,31 +5,53 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
 
+@Component
 @Slf4j
 public class CookieUtilization {
 
     public static final String VISITOR_KEY = "visitorId";
 
-    private CookieUtilization() {}
+    private final String cookieDomain;
+    private final String sameSite;
+    private final long maxAge;
+    private final String path;
+    private final boolean secure;
 
-    public static ResponseCookie createCookie(String key, UUID value) {
+    public CookieUtilization(
+            @Value("${cookie.domain}") final String cookieDomain,
+            @Value("${cookie.sameSite}") final String sameSite,
+            @Value("${cookie.max-age}") final long maxAge,
+            @Value("${cookie.path}") final String path,
+            @Value("${cookie.secure}") final boolean secure
+    ) {
+        this.cookieDomain = cookieDomain;
+        this.sameSite = sameSite;
+        this.maxAge = maxAge;
+        this.path = path;
+        this.secure = secure;
+    }
+
+    public ResponseCookie createCookie(String key, UUID value) {
         final ResponseCookie responseCookie = ResponseCookie.from(key, value.toString())
                 .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/")
+                .domain(cookieDomain)
+                .sameSite(sameSite)
+                .maxAge(maxAge)
+                .path(path)
+                .secure(secure)
                 .build();
         log.info("쿠키 생성 완료 : {" + "key = " + key + ", value = " + value + "}");
         return responseCookie;
     }
 
-    public static Optional<UUID> getVisitorIdFromCookie(final HttpServletRequest request) {
+    public Optional<UUID> getVisitorIdFromCookie(final HttpServletRequest request) {
         if (request.getCookies() == null) {
             return Optional.empty();
         }
-
         return Arrays.stream(request.getCookies())
                 .filter(cookie -> VISITOR_KEY.equals(cookie.getName()))
                 .findFirst()

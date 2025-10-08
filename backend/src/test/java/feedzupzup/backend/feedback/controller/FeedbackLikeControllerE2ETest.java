@@ -40,6 +40,9 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     @Autowired
     private OrganizationRepository organizationRepository;
 
+    @Autowired
+    private CookieUtilization cookieUtilization;
+
     @Test
     @DisplayName("피드백에 좋아요를 성공적으로 추가한다")
     void like_feedback_success() {
@@ -304,7 +307,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     private UUID createAndGetCookieValue() {
-        final ResponseCookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
     }
