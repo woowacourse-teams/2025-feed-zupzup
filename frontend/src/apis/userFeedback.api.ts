@@ -12,6 +12,7 @@ export interface UserFeedbackParams {
   userName: string;
   isSecret: boolean;
   content: string;
+  imageUrl: string | null;
   category: CategoryListType | null;
 }
 
@@ -24,6 +25,7 @@ interface FeedbackRequestBody {
   isSecret: boolean;
   userName: string;
   category: CategoryListType | null;
+  imageUrl: string | null;
 }
 
 export async function postUserFeedback({
@@ -31,6 +33,7 @@ export async function postUserFeedback({
   isSecret,
   userName,
   content,
+  imageUrl,
   category,
 }: UserFeedbackParams) {
   const response = await apiClient.post<
@@ -41,6 +44,7 @@ export async function postUserFeedback({
     isSecret,
     userName,
     category,
+    imageUrl: imageUrl ?? '',
   });
   return response;
 }

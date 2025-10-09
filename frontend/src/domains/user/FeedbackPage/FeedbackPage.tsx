@@ -1,7 +1,11 @@
+import { Analytics, suggestionFormEvents } from '@/analytics';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import SendIcon from '@/components/icons/SendIcon';
-import { useState, useCallback } from 'react';
+import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
+import { CategoryListType } from '@/constants/categoryList';
+import useNavigation from '@/domains/hooks/useNavigation';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import {
   arrowLeftIconContainer,
   buttonGroupContainer,
@@ -16,12 +20,12 @@ import FeedbackInput from '@/domains/user/home/components/FeedbackInput/Feedback
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useCallback, useState } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
-import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
-import { Analytics, suggestionFormEvents } from '@/analytics';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import useNavigation from '@/domains/hooks/useNavigation';
-import { CategoryListType } from '@/constants/categoryList';
+import useUploadImage from '@/domains/user/home/hooks/useUploadImage';
+import { useUploadS3Image } from '@/domains/user/home/hooks/useUploadS3Image';
+import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
+import { ApiError } from '@/apis/apiClient';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
@@ -49,6 +53,10 @@ export default function FeedbackPage({
     handleUsernameFocus,
   } = useFeedbackForm();
 
+  const { file, imgUrl, onChangeFile, presignedUrl, contentType } =
+    useUploadImage();
+  const { uploadS3PreSignUrl } = useUploadS3Image();
+  const { handleApiError } = useApiErrorHandler();
   const { submitFeedback, submitStatus } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -93,12 +101,24 @@ export default function FeedbackPage({
 
       setIsModalOpen(true);
 
-      submitFeedback({
+      if (!file || !presignedUrl) {
+        handleApiError(new ApiError(400, 'No file or presigned URL'));
+        return;
+      }
+
+      uploadS3PreSignUrl({
+        presignedUrl: presignedUrl,
+        file: file,
+        contentType: contentType ?? 'image/png',
+      });
+
+      await submitFeedback({
         organizationId,
         content: feedback,
         isSecret: isLocked,
         userName: username,
         category,
+        imageUrl: presignedUrl,
       });
     } catch (error) {
       setIsModalOpen(false);
@@ -129,6 +149,9 @@ export default function FeedbackPage({
             username={username}
             isLocked={isLocked}
             canSubmit={canSubmit}
+            file={file}
+            imgUrl={imgUrl}
+            onChangeFile={onChangeFile}
             onFeedbackChange={handleFeedbackChange}
             onRandomChange={handleRandomChangeWithTracking}
             onLockToggle={handleLockToggleWithTracking}
