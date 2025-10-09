@@ -638,16 +638,18 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
+        UUID clusterId1 = UUID.randomUUID();
+        UUID clusterId2 = UUID.randomUUID();
         // 클러스터별 피드백 생성 (clusterId가 다른 피드백들)
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
-                organization, "첫 번째 클러스터 피드백", organizationCategory, 
-                UUID.fromString("11111111-1111-1111-1111-111111111111"));
+                organization, "첫 번째 클러스터 피드백", organizationCategory,
+                clusterId1);
         final Feedback feedback2 = FeedbackFixture.createFeedbackWithCluster(
-                organization, "첫 번째 클러스터의 다른 피드백", organizationCategory, 
-                UUID.fromString("11111111-1111-1111-1111-111111111111"));
+                organization, "첫 번째 클러스터의 다른 피드백", organizationCategory,
+                clusterId1);
         final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
-                organization, "두 번째 클러스터 피드백", organizationCategory, 
-                UUID.fromString("22222222-2222-2222-2222-222222222222"));
+                organization, "두 번째 클러스터 피드백", organizationCategory,
+                clusterId2);
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);
@@ -665,10 +667,10 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .body("status", equalTo(200))
                 .body("message", equalTo("OK"))
                 .body("data.clusterRepresentativeFeedbacks", hasSize(2))
-                .body("data.clusterRepresentativeFeedbacks[0].clusterId", equalTo("11111111-1111-1111-1111-111111111111"))
+                .body("data.clusterRepresentativeFeedbacks[0].clusterId", equalTo(clusterId1.toString()))
                 .body("data.clusterRepresentativeFeedbacks[0].content", equalTo("첫 번째 클러스터 피드백"))
                 .body("data.clusterRepresentativeFeedbacks[0].totalCount", equalTo(2))
-                .body("data.clusterRepresentativeFeedbacks[1].clusterId", equalTo("22222222-2222-2222-2222-222222222222"))
+                .body("data.clusterRepresentativeFeedbacks[1].clusterId", equalTo(clusterId2.toString()))
                 .body("data.clusterRepresentativeFeedbacks[1].content", equalTo("두 번째 클러스터 피드백"))
                 .body("data.clusterRepresentativeFeedbacks[1].totalCount", equalTo(1));
     }
@@ -687,7 +689,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 organization, SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
 
-        final UUID clusterId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+        final UUID clusterId = UUID.randomUUID();
 
         // 같은 클러스터의 피드백 3개 생성
         final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
@@ -700,7 +702,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
         // 다른 클러스터의 피드백 1개 (결과에 포함되지 않아야 함)
         final Feedback otherClusterFeedback = FeedbackFixture.createFeedbackWithCluster(
                 organization, "다른 클러스터 피드백", organizationCategory, 
-                UUID.fromString("22222222-2222-2222-2222-222222222222"));
+                UUID.randomUUID());
 
         feedBackRepository.save(feedback1);
         feedBackRepository.save(feedback2);

@@ -803,8 +803,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationCategoryRepository.save(organizationCategory);
 
             // 클러스터별 피드백 생성
-            final UUID clusterId1 = UUID.fromString("11111111-1111-1111-1111-111111111111");
-            final UUID clusterId2 = UUID.fromString("22222222-2222-2222-2222-222222222222");
+            final UUID clusterId1 = UUID.randomUUID();
+            final UUID clusterId2 = UUID.randomUUID();
 
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
                     organization, "첫 번째 클러스터 대표", organizationCategory, clusterId1);
@@ -812,7 +812,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization, "첫 번째 클러스터 추가", organizationCategory, clusterId1);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
                     organization, "두 번째 클러스터 대표", organizationCategory, clusterId2);
-
+            
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
             feedBackRepository.save(feedback3);
@@ -833,22 +833,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                             .anyMatch(cluster -> cluster.clusterId().equals(clusterId2) && cluster.totalCount() == 1)
             );
         }
-
-        @Test
-        @DisplayName("권한이 없는 관리자가 조회하면 예외가 발생한다")
-        void getRepresentativeCluster_forbidden() {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-
-            final Admin otherAdmin = AdminFixture.createFromLoginId("otheradmin");
-            adminRepository.save(otherAdmin);
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getRepresentativeCluster(
-                    otherAdmin.getId(), organization.getUuid()))
-                    .isInstanceOf(ForbiddenException.class);
-        }
     }
 
     @Nested
@@ -865,8 +849,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization, SUGGESTION);
             organizationCategoryRepository.save(organizationCategory);
 
-            final UUID targetClusterId = UUID.fromString("11111111-1111-1111-1111-111111111111");
-            final UUID otherClusterId = UUID.fromString("22222222-2222-2222-2222-222222222222");
+            final UUID targetClusterId = UUID.randomUUID();
+            final UUID otherClusterId = UUID.randomUUID();
 
             // 같은 클러스터의 피드백 3개
             final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(

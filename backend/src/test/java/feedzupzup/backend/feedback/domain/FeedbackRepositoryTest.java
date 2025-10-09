@@ -49,8 +49,8 @@ class FeedbackRepositoryTest extends RepositoryHelper {
         @DisplayName("조직의 모든 클러스터 대표 피드백을 조회한다")
         void findAllRepresentativeFeedbackPerCluster_success() {
             // given
-            final UUID clusterId1 = UUID.fromString("11111111-1111-1111-1111-111111111111");
-            final UUID clusterId2 = UUID.fromString("22222222-2222-2222-2222-222222222222");
+            final UUID clusterId1 = UUID.randomUUID();
+            final UUID clusterId2 = UUID.randomUUID();
 
             // 첫 번째 클러스터의 피드백 3개 (가장 오래된 것이 대표가 됨)
             final Feedback feedback1_1 = FeedbackFixture.createFeedbackWithCluster(
@@ -106,7 +106,7 @@ class FeedbackRepositoryTest extends RepositoryHelper {
             final OrganizationCategory otherOrgCategory = organizationCategoryRepository.save(
                     OrganizationCategoryFixture.createOrganizationCategory(otherOrganization, SUGGESTION));
 
-            final UUID clusterId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+            final UUID clusterId = UUID.randomUUID();
 
             // 내 조직의 피드백
             final Feedback myFeedback = FeedbackFixture.createFeedbackWithCluster(

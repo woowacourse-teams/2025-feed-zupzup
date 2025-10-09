@@ -61,7 +61,7 @@ class FeedbackClusteringServiceTest extends ServiceIntegrationHelper {
         @DisplayName("새로운 피드백이 유사한 기존 클러스터에 할당된다")
         void cluster_AssignToExistingCluster_WhenSimilarityIsHigh() {
             // given
-            final UUID existingClusterId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+            final UUID existingClusterId = UUID.randomUUID();
             
             // 기존 클러스터의 대표 피드백
             final double[] existingEmbedding = {0.1, 0.2, 0.3, 0.4, 0.5};
@@ -95,7 +95,7 @@ class FeedbackClusteringServiceTest extends ServiceIntegrationHelper {
         @DisplayName("새로운 피드백이 기존 클러스터와 유사도가 낮으면 새 클러스터를 생성한다")
         void cluster_CreateNewCluster_WhenSimilarityIsLow() {
             // given
-            final UUID existingClusterId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+            final UUID existingClusterId = UUID.randomUUID();
             
             // 기존 클러스터의 대표 피드백
             final double[] existingEmbedding = {0.1, 0.2, 0.3, 0.4, 0.5};
@@ -128,8 +128,8 @@ class FeedbackClusteringServiceTest extends ServiceIntegrationHelper {
         @DisplayName("여러 클러스터 중 가장 유사도가 높은 클러스터에 할당된다")
         void cluster_AssignToMostSimilarCluster() {
             // given
-            final UUID clusterId1 = UUID.fromString("11111111-1111-1111-1111-111111111111");
-            final UUID clusterId2 = UUID.fromString("22222222-2222-2222-2222-222222222222");
+            final UUID clusterId1 = UUID.randomUUID();
+            final UUID clusterId2 = UUID.randomUUID();
             
             // 첫 번째 클러스터 (유사도 0.87)
             final double[] embedding1 = {0.1, 0.2, 0.3, 0.4, 0.5};
