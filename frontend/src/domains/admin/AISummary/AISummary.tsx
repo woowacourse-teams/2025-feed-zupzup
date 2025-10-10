@@ -7,6 +7,7 @@ import { feedbackData } from '@/mocks/data/feedbackData';
 import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 import { aiSummaryTitle } from './AISummary.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import useGoTop from './useGoTop';
 
 export default function AISummary() {
   const theme = useAppTheme();
@@ -19,6 +20,7 @@ export default function AISummary() {
     handleConfirmFeedback,
     handleDeleteFeedback,
   } = useAdminModal({ organizationId });
+  useGoTop();
 
   return (
     <FeedbackBoxList>
