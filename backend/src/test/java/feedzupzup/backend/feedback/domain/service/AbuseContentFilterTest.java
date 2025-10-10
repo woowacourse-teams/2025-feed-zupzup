@@ -89,4 +89,30 @@ class AbuseContentFilterTest {
                 () -> assertThat(result).containsAnyOf("멍멍", "야옹", "음메")
         );
     }
+
+    @Test
+    @DisplayName("null 입력은 그대로 null을 반환한다")
+    void filter_null_text() {
+        // given
+        final String nullText = null;
+
+        // when
+        final String result = contentFilter.filter(nullText);
+
+        // then
+        assertThat(result).isNull();
+    }
+
+    @Test
+    @DisplayName("빈 문자열 입력은 그대로 빈 문자열을 반환한다")
+    void filter_blank_text() {
+        // given
+        final String blankText = "   ";
+
+        // when
+        final String result = contentFilter.filter(blankText);
+
+        // then
+        assertThat(result).isEqualTo(blankText);
+    }
 }

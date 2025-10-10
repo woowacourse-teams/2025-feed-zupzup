@@ -15,6 +15,9 @@ public class AbuseContentFilter implements ContentFilter {
 
     @Override
     public String filter(final String text) {
+        if (text == null || text.isBlank()) {
+            return text;
+        }
         String processedText = text.replace("*", ASTERISK_PLACEHOLDER);
 
         /*
