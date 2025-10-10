@@ -36,7 +36,7 @@ export default function AISummaryFloatingButton() {
     },
   ];
 
-  const handleAISummaryClick = () => {
+  const handleCategoryClick = () => {
     openModal(
       <AISummary
         onCategorySelect={() => {
@@ -52,7 +52,7 @@ export default function AISummaryFloatingButton() {
   return (
     <FloatingButton
       text='AI'
-      onClick={handleAISummaryClick}
+      onClick={handleCategoryClick}
       inset={{ bottom: '60px', left: '100%' }}
       customCSS={aiFloatingButton(theme)}
     />
