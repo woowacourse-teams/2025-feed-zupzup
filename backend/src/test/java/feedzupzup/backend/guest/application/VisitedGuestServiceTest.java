@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class GuestServiceTest extends ServiceIntegrationHelper {
+public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private GuestService guestService;

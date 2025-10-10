@@ -23,13 +23,13 @@ public class Guest extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private UUID visitorUuid;
+    private UUID guestUuid;
 
     @Column(nullable = false)
     private LocalDateTime connectedTime;
 
-    public Guest(@NonNull final UUID visitorUuid, @NonNull final LocalDateTime connectedTime) {
-        this.visitorUuid = visitorUuid;
+    public Guest(@NonNull final UUID guestUuid, @NonNull final LocalDateTime connectedTime) {
+        this.guestUuid = guestUuid;
         this.connectedTime = connectedTime;
     }
 

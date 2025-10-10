@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class CookieUtilization {
 
-    public static final String VISITOR_KEY = "visitorId";
+    public static final String GUEST_KEY = "guestId";
 
     private final String cookieDomain;
     private final String sameSite;
@@ -49,12 +49,12 @@ public class CookieUtilization {
         return responseCookie;
     }
 
-    public Optional<UUID> getVisitorIdFromCookie(final HttpServletRequest request) {
+    public Optional<UUID> getGuestIdFromCookie(final HttpServletRequest request) {
         if (request.getCookies() == null) {
             return Optional.empty();
         }
         return Arrays.stream(request.getCookies())
-                .filter(cookie -> VISITOR_KEY.equals(cookie.getName()))
+                .filter(cookie -> GUEST_KEY.equals(cookie.getName()))
                 .findFirst()
                 .map(cookie -> parseUUID(cookie.getValue()));
     }

@@ -124,7 +124,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -189,12 +189,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
 
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
-        UUID visitorId = UUID.randomUUID();
+        UUID guestId = UUID.randomUUID();
 
         // when - 좋아요 추가
         given()
                 .log().all()
-                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .cookie(CookieUtilization.GUEST_KEY, guestId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
@@ -204,7 +204,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // then - 좋아요 취소
         given()
                 .log().all()
-                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .cookie(CookieUtilization.GUEST_KEY, guestId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
@@ -235,7 +235,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue1)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue1)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -244,7 +244,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue2)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue2)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -253,7 +253,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue1)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue1)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -262,7 +262,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue3)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue3)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -271,7 +271,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue2)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue2)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -307,7 +307,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     private UUID createAndGetCookieValue() {
-        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.GUEST_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
     }

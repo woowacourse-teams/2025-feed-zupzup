@@ -273,7 +273,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
     }
 
     private UUID createAndGetCookieValue() {
-        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.GUEST_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
     }

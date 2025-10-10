@@ -37,7 +37,7 @@ public class FeedbackLikeService {
 
         if (likeHistoryRepository.existsByGuestAndFeedback(savedGuest, feedback)) {
             throw new DuplicateLikeException(
-                    "해당 유저 " + savedGuest.getVisitorUuid() + "는 이미 해당 feedbackId " + feedbackId + "에 좋아요를 눌렀습니다.");
+                    "해당 유저 " + savedGuest.getGuestUuid() + "는 이미 해당 feedbackId " + feedbackId + "에 좋아요를 눌렀습니다.");
         }
         feedback.increaseLikeCount();
 
@@ -55,7 +55,7 @@ public class FeedbackLikeService {
 
         if (!likeHistoryRepository.existsByGuestAndFeedback(savedGuest, feedback)) {
             throw new InvalidLikeException(
-                    "해당 유저 " + savedGuest.getVisitorUuid() + "는 feedbackId " + feedbackId + "에 좋아요 기록이 없습니다.");
+                    "해당 유저 " + savedGuest.getGuestUuid() + "는 feedbackId " + feedbackId + "에 좋아요 기록이 없습니다.");
         }
         feedback.decreaseLikeCount();
 

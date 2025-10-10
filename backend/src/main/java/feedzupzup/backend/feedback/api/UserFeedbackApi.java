@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
-import feedzupzup.backend.auth.presentation.annotation.Visitor;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
@@ -9,7 +9,7 @@ import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
-import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -56,7 +56,7 @@ public interface UserFeedbackApi {
     SuccessResponse<CreateFeedbackResponse> create(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
             @RequestBody @Valid final CreateFeedbackRequest request,
-            @Parameter(hidden = true) @Visitor Guest guest
+            @Parameter(hidden = true) @VisitedGuest GuestInfo guestInfo
     );
 
     @Operation(summary = "피드백 좋아요", description = "피드백에 좋아요를 추가합니다.")
@@ -70,7 +70,7 @@ public interface UserFeedbackApi {
     SuccessResponse<LikeResponse> like(
             final HttpServletResponse response,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
-            @Parameter(hidden = true) @Visitor Guest guest
+            @Parameter(hidden = true) @VisitedGuest GuestInfo guestInfo
     );
 
     @Operation(summary = "피드백 좋아요 취소", description = "피드백의 좋아요를 취소합니다.")
@@ -84,7 +84,7 @@ public interface UserFeedbackApi {
     SuccessResponse<LikeResponse> unlike(
             final HttpServletResponse response,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
-            @Parameter(hidden = true) @Visitor Guest guest
+            @Parameter(hidden = true) @VisitedGuest GuestInfo guestInfo
     );
 
     @Operation(summary = "피드백 통계 계산", description = "피드백의 통계를 계산합니다.")

@@ -1,12 +1,11 @@
 package feedzupzup.backend.guest.controller;
 
-import feedzupzup.backend.auth.presentation.annotation.Visitor;
+import feedzupzup.backend.auth.presentation.annotation.Guest;
 import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.guest.api.GuestApi;
 import feedzupzup.backend.guest.application.GuestService;
-import feedzupzup.backend.guest.domain.guest.Guest;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,7 @@ public class GuestController implements GuestApi {
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             final UUID organizationUuid,
-            @Visitor final Guest guest
+            @Guest final feedzupzup.backend.guest.domain.guest.Guest guest
     ) {
         final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
                 organizationUuid, guest);
@@ -31,7 +30,7 @@ public class GuestController implements GuestApi {
     @Override
     public SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
             final UUID organizationUuid,
-            @Visitor final Guest guest
+            @Guest final feedzupzup.backend.guest.domain.guest.Guest guest
     ) {
         final LikeHistoryResponse response = guestService.findGuestLikeHistories(
                 organizationUuid, guest);

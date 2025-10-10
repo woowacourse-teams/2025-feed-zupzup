@@ -1,10 +1,10 @@
 package feedzupzup.backend.guest.api;
 
-import feedzupzup.backend.auth.presentation.annotation.Visitor;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
-import feedzupzup.backend.guest.domain.guest.Guest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,7 +28,7 @@ public interface GuestApi {
     @GetMapping("/organizations/{organizationUuid}/feedbacks/my")
     SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(hidden = true) @Visitor final Guest guest
+            @Parameter(hidden = true) @VisitedGuest final GuestInfo guestInfo
     );
 
     @Operation(summary = "좋아요 목록 조회", description = "본인이 누른 좋아요 목록들을 조회합니다.")
@@ -39,7 +39,7 @@ public interface GuestApi {
     @GetMapping("/organizations/{organizationUuid}/feedbacks/my-likes")
     SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
-            @Parameter(hidden = true) @Visitor final Guest guest
+            @Parameter(hidden = true) @VisitedGuest final GuestInfo guestInfo
     );
 
 }

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class GuestControllerE2ETest extends E2EHelper {
+public class VisitedGuestControllerE2ETest extends E2EHelper {
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -63,19 +63,19 @@ public class GuestControllerE2ETest extends E2EHelper {
                     organizationCategory, 0);
             final Feedback savedFeedback = feedbackRepository.save(feedback);
 
-            final String visitorCookie = given()
+            final String guestCookie = given()
                     .log().all()
                     .when()
                     .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value())
                     .extract()
-                    .cookie(CookieUtilization.VISITOR_KEY);
+                    .cookie(CookieUtilization.GUEST_KEY);
 
             // when
             given()
                     .log().all()
-                    .cookie(CookieUtilization.VISITOR_KEY, visitorCookie)
+                    .cookie(CookieUtilization.GUEST_KEY, guestCookie)
                     .when()
                     .get("/organizations/{organizationUuid}/feedbacks/my-likes",
                             organization.getUuid())
@@ -102,18 +102,18 @@ public class GuestControllerE2ETest extends E2EHelper {
             final Feedback savedFeedback3 = feedbackRepository.save(feedback3);
 
             // 첫 번째 좋아요로 쿠키 발급받기
-            final String visitorCookie = given()
+            final String guestCookie = given()
                     .log().all()
                     .when()
                     .patch("/feedbacks/{feedbackId}/like", savedFeedback1.getId())
                     .then().log().all()
                     .statusCode(HttpStatus.OK.value())
                     .extract()
-                    .cookie(CookieUtilization.VISITOR_KEY);
+                    .cookie(CookieUtilization.GUEST_KEY);
 
             given()
                     .log().all()
-                    .cookie(CookieUtilization.VISITOR_KEY, visitorCookie)
+                    .cookie(CookieUtilization.GUEST_KEY, guestCookie)
                     .when()
                     .patch("/feedbacks/{feedbackId}/like", savedFeedback2.getId())
                     .then().log().all()
@@ -121,7 +121,7 @@ public class GuestControllerE2ETest extends E2EHelper {
 
             given()
                     .log().all()
-                    .cookie(CookieUtilization.VISITOR_KEY, visitorCookie)
+                    .cookie(CookieUtilization.GUEST_KEY, guestCookie)
                     .when()
                     .patch("/feedbacks/{feedbackId}/like", savedFeedback3.getId())
                     .then().log().all()
@@ -130,7 +130,7 @@ public class GuestControllerE2ETest extends E2EHelper {
             // when
             given()
                     .log().all()
-                    .cookie(CookieUtilization.VISITOR_KEY, visitorCookie)
+                    .cookie(CookieUtilization.GUEST_KEY, guestCookie)
                     .when()
                     .get("/organizations/{organizationUuid}/feedbacks/my-likes",
                             organization.getUuid())
@@ -168,7 +168,7 @@ public class GuestControllerE2ETest extends E2EHelper {
             final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("피드백");
 
             // 첫 번째 게시글 작성
-            final String visitorCookie = given()
+            final String guestCookie = given()
                     .log().all()
                     .contentType(ContentType.JSON)
                     .body(request)
@@ -177,12 +177,12 @@ public class GuestControllerE2ETest extends E2EHelper {
                     .then().log().all()
                     .statusCode(HttpStatus.CREATED.value())
                     .extract()
-                    .cookie(CookieUtilization.VISITOR_KEY);
+                    .cookie(CookieUtilization.GUEST_KEY);
 
             // 두 번째 게시글 작성
             given()
                     .log().all()
-                    .cookie(CookieUtilization.VISITOR_KEY, visitorCookie)
+                    .cookie(CookieUtilization.GUEST_KEY, guestCookie)
                     .contentType(ContentType.JSON)
                     .body(request)
                     .when()
@@ -193,7 +193,7 @@ public class GuestControllerE2ETest extends E2EHelper {
             // when & then
             given()
                     .log().all()
-                    .cookie(CookieUtilization.VISITOR_KEY, visitorCookie)
+                    .cookie(CookieUtilization.GUEST_KEY, guestCookie)
                     .when()
                     .get("/organizations/{organizationUuid}/feedbacks/my",
                             organization.getUuid())

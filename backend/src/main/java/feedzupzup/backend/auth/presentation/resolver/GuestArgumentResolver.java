@@ -3,10 +3,9 @@ package feedzupzup.backend.auth.presentation.resolver;
 import static feedzupzup.backend.global.util.CookieUtilization.*;
 
 import com.google.common.net.HttpHeaders;
-import feedzupzup.backend.auth.presentation.annotation.Visitor;
+import feedzupzup.backend.auth.presentation.annotation.Guest;
 import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.global.util.CurrentDateTime;
-import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,23 +36,23 @@ public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
     ) throws Exception {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         final HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
-        final Optional<UUID> visitorId = cookieUtilization.getVisitorIdFromCookie(request);
+        final Optional<UUID> guestId = cookieUtilization.getguestIdFromCookie(request);
 
-        if (visitorId.isEmpty()) {
+        if (guestId.isEmpty()) {
             UUID newId = UUID.randomUUID();
-            final ResponseCookie cookie = cookieUtilization.createCookie(VISITOR_KEY, newId);
+            final ResponseCookie cookie = cookieUtilization.createCookie(GUEST_KEY, newId);
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            return new Guest(newId, CurrentDateTime.create());
+            return new feedzupzup.backend.guest.domain.guest.Guest(newId, CurrentDateTime.create());
         }
 
-        final UUID visitorUuid = visitorId.get();
-        return guestRepository.findByVisitorUuid(visitorUuid)
-                .orElseGet(() -> new Guest(visitorUuid, CurrentDateTime.create()));
+        final UUID guestUuid = guestId.get();
+        return guestRepository.findByGuestUuid(guestUuid)
+                .orElseGet(() -> new feedzupzup.backend.guest.domain.guest.Guest(guestUuid, CurrentDateTime.create()));
     }
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Visitor.class) &&
-                parameter.getParameterType().equals(Guest.class);
+        return parameter.hasParameterAnnotation(Guest.class) &&
+                parameter.getParameterType().equals(feedzupzup.backend.guest.domain.guest.Guest.class);
     }
 }

@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
-import feedzupzup.backend.auth.presentation.annotation.Visitor;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
@@ -13,7 +13,7 @@ import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
-import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -50,10 +50,10 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<CreateFeedbackResponse> create(
             final UUID organizationUuid,
             final CreateFeedbackRequest request,
-            @Visitor final Guest guest
+            @VisitedGuest final GuestInfo guestInfo
     ) {
         final CreateFeedbackResponse response = userFeedbackService.create(request,
-                organizationUuid, guest);
+                organizationUuid, guestInfo);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 
@@ -61,9 +61,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<LikeResponse> like(
             final HttpServletResponse response,
             final Long feedbackId,
-            @Visitor final Guest guest
+            @VisitedGuest final GuestInfo guestInfo
     ) {
-        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, guest);
+        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
@@ -71,9 +71,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<LikeResponse> unlike(
             final HttpServletResponse response,
             final Long feedbackId,
-            @Visitor final Guest guest
+            @VisitedGuest final GuestInfo guestInfo
     ) {
-        final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest);
+        final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
