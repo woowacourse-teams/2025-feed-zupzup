@@ -7,6 +7,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.service.moderation.ContentFilter;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
@@ -41,6 +42,7 @@ public class UserFeedbackService {
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ContentFilter contentFilter;
 
     @Transactional
     @BusinessActionLog
@@ -52,7 +54,8 @@ public class UserFeedbackService {
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
                 category);
-        final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
+        final String filteredContent = contentFilter.filter(request.content());
+        final Feedback newFeedback = request.toFeedback(organization, organizationCategory, filteredContent);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
 
         // 최신순 캐시 업데이트

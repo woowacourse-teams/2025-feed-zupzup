@@ -28,9 +28,13 @@ public record CreateFeedbackRequest(
         String category
 ) {
 
-    public Feedback toFeedback(final Organization organization, final OrganizationCategory organizationCategory) {
+    public Feedback toFeedback(
+            final Organization organization,
+            final OrganizationCategory organizationCategory,
+            final String filteredContent
+    ) {
         return Feedback.builder()
-                .content(new Content(content))
+                .content(new Content(filteredContent))
                 .organization(organization)
                 .likeCount(new LikeCount(0))
                 .status(ProcessStatus.WAITING)
