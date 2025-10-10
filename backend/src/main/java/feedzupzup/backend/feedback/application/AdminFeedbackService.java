@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
+
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.ClusterRepresentativeFeedback;
@@ -7,22 +9,25 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
-import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
+import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +40,8 @@ public class AdminFeedbackService {
     private final AdminRepository adminRepository;
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
-    private final FeedbackLikeService feedbackLikeService;
     private final OrganizationRepository organizationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @BusinessActionLog
@@ -53,7 +58,7 @@ public class AdminFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortBy sortBy
+            final FeedbackSortType sortBy
     ) {
         if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
             throw new ResourceNotFoundException("해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다.");
@@ -61,7 +66,7 @@ public class AdminFeedbackService {
         final Pageable pageable = Pageable.ofSize(size + 1);
 
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
+        List<FeedbackItem> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
                 pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
@@ -82,6 +87,10 @@ public class AdminFeedbackService {
         validateAuthentication(adminId, feedbackId);
 
         feedback.updateCommentAndStatus(request.toComment());
+
+        // 캐시 핸들 이벤트 발행
+        publishOldestFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
+
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
@@ -100,6 +109,11 @@ public class AdminFeedbackService {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
             throw new ForbiddenException("admin" + adminId + "는 해당 요청에 대한 권한이 없습니다.");
         }
+    }
+
+    private void publishOldestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, OLDEST);
+        eventPublisher.publishEvent(event);
     }
 
     public FeedbackStatisticResponse calculateFeedbackStatistics(final Long adminId) {

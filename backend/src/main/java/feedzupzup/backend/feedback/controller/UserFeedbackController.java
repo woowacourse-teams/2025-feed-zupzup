@@ -3,7 +3,7 @@ package feedzupzup.backend.feedback.controller;
 import com.google.common.net.HttpHeaders;
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
@@ -38,7 +38,7 @@ public class UserFeedbackController implements UserFeedbackApi {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortBy sortBy
+            final FeedbackSortType sortBy
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organizationUuid,
@@ -125,7 +125,7 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             final UUID organizationUuid,
-            final FeedbackSortBy sortBy,
+            final FeedbackSortType sortBy,
             final List<Long> feedbackIds
     ) {
         final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(

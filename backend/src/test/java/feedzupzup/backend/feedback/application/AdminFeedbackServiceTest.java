@@ -1,10 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
-import static feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse.*;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -24,6 +23,7 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse.ClusterRepresentativeFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
@@ -812,7 +812,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organization, "첫 번째 클러스터 추가", organizationCategory, clusterId1);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
                     organization, "두 번째 클러스터 대표", organizationCategory, clusterId2);
-            
+
             feedBackRepository.save(feedback1);
             feedBackRepository.save(feedback2);
             feedBackRepository.save(feedback3);

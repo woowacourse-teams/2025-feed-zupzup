@@ -3,6 +3,7 @@ package feedzupzup.backend.feedback.domain;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Comment;
 import feedzupzup.backend.feedback.domain.vo.Content;
+import feedzupzup.backend.feedback.domain.vo.ImageUrl;
 import feedzupzup.backend.feedback.domain.vo.FeedbackClustering;
 import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
@@ -68,6 +69,9 @@ public class Feedback extends BaseTimeEntity {
     private Comment comment;
 
     @Embedded
+    private ImageUrl imageUrl;
+
+    @Embedded
     private FeedbackClustering clustering;
 
     @Column(name = "deleted_at")
@@ -84,6 +88,7 @@ public class Feedback extends BaseTimeEntity {
             final @NonNull PostedAt postedAt,
             final @NonNull OrganizationCategory organizationCategory,
             final Comment comment,
+            final ImageUrl imageUrl,
             final FeedbackClustering clustering
     ) {
         this.content = content;
@@ -95,6 +100,7 @@ public class Feedback extends BaseTimeEntity {
         this.postedAt = postedAt;
         this.organizationCategory = organizationCategory;
         this.comment = comment;
+        this.imageUrl = imageUrl;
         this.clustering = clustering;
     }
 
@@ -107,7 +113,7 @@ public class Feedback extends BaseTimeEntity {
     }
 
     public void decreaseLikeCount() {
-        this.likeCount= this.likeCount.decrease();
+        this.likeCount = this.likeCount.decrease();
     }
 
     public void updateCommentAndStatus(final Comment comment) {

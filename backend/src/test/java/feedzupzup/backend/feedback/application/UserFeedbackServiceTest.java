@@ -1,9 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LATEST;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.LIKES;
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortBy.OLDEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
 import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,14 +18,13 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackItem;
+import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackRepository feedBackRepository;
-    
+
     @Autowired
     private OrganizationRepository organizationRepository;
 
@@ -57,7 +56,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION, true);
         organizationCategoryRepository.save(organizationCategory);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "건의");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "맛있어요", false, "윌슨",
+                "건의", "https://example.com/image.png");
 
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
@@ -85,7 +86,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory1);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "기타");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "맛있어요", false, "윌슨",
+                "기타", "https://example.com/image.png");
 
         // when & then
         assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid()))
@@ -303,7 +306,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         assertAll(
                 () -> assertThat(response.feedbacks()).hasSize(2),
                 () -> assertThat(response.feedbacks())
-                        .extracting(FeedbackItem::feedbackId)
+                        .extracting(UserFeedbackItem::feedbackId)
                         .doesNotContain(otherFeedback.getId()),
                 () -> assertThat(response.hasNext()).isFalse()
         );

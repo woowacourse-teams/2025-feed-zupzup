@@ -50,9 +50,16 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation "org.flywaydb:flyway-mysql"
 
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
     //metric
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    //log
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

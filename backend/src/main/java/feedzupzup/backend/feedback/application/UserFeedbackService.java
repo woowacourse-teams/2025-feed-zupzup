@@ -1,19 +1,23 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.*;
+
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
+import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.event.FeedbackCreatedEvent2;
-import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
-import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
@@ -22,6 +26,7 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class UserFeedbackService {
 
     private final FeedbackRepository feedBackRepository;
@@ -50,6 +56,9 @@ public class UserFeedbackService {
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedBackRepository.save(newFeedback);
 
+        // 최신순 캐시 업데이트
+        publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
+
         // 새로운 피드백이 생성되면 이벤트 발행
         eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
         //TODO : 위 피드백 생성 이벤트 리팩토링 필요
@@ -63,16 +72,16 @@ public class UserFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortBy sortBy
+            final FeedbackSortType sortBy
     ) {
 
         final Pageable pageable = createPageable(size);
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
-        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
+        List<FeedbackItem> feedbackItems = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
+        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbackItems, size);
 
         return UserFeedbackListResponse.of(
-                feedbackPage.getFeedbacks(),
+                feedbackPage.getFeedbackItems(),
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
@@ -80,7 +89,7 @@ public class UserFeedbackService {
 
     public MyFeedbackListResponse getMyFeedbackPage(
             final UUID organizationUuid,
-            final FeedbackSortBy sortBy,
+            final FeedbackSortType sortBy,
             final List<Long> myFeedbackIds
     ) {
 
@@ -88,7 +97,7 @@ public class UserFeedbackService {
                 organizationUuid, myFeedbackIds);
 
         final FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        final List<Feedback> sortedFeedbacks = feedbackSortStrategy.sort(feedbacks);
+        final List<FeedbackItem> sortedFeedbacks = feedbackSortStrategy.sort(feedbacks);
 
         return MyFeedbackListResponse.of(sortedFeedbacks);
     }
@@ -99,7 +108,11 @@ public class UserFeedbackService {
     }
 
     private Pageable createPageable(int size) {
-        final Pageable pageable = Pageable.ofSize(size + 1);
-        return pageable;
+        return Pageable.ofSize(size + 1);
+    }
+
+    private void publishLatestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
+        eventPublisher.publishEvent(event);
     }
 }

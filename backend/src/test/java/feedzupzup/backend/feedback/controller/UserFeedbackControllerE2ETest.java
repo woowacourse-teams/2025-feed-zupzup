@@ -252,7 +252,9 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         final Organization savedOrganization = organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저", "건의");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "비밀 피드백입니다", true, "테스트유저",
+                "건의", "https://example.com/image.png");
 
         // when & then
         given()
@@ -285,7 +287,8 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
         organizationCategoryRepository.save(organizationCategory);
 
         final CreateFeedbackRequest request = new CreateFeedbackRequest(
-                "새 피드백", false, "테스트유저", "건의");
+                "새 피드백", false, "테스트유저",
+                "건의", "https://example.com/image.png");
 
         // when - 피드백 생성
         final Long createdFeedbackId = given()
