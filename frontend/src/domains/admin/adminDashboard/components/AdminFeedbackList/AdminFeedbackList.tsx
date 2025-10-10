@@ -12,11 +12,6 @@ import useGetFeedback from '../../hooks/useGetFeedback';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { memo, useMemo } from 'react';
-import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
-import { aiFloatingButton } from '../../AdminDashboard.style';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { useModalContext } from '@/contexts/useModal';
-import AISummary from '../AISummary/AISummary';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -32,8 +27,6 @@ export default memo(function AdminFeedbackList({
   openFeedbackDeleteModal,
 }: AdminFeedbackListProps) {
   const { organizationId } = useOrganizationId();
-  const theme = useAppTheme();
-  const { openModal, closeModal, isOpen } = useModalContext();
   const apiUrl = useMemo(
     () =>
       createFeedbacksUrl({
@@ -59,10 +52,6 @@ export default memo(function AdminFeedbackList({
     key: 'feedbacks',
     size: 10,
   });
-
-  const handleAISummaryClick = () => {
-    openModal(<AISummary isOpen={isOpen} onClose={closeModal} />);
-  };
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
@@ -96,15 +85,6 @@ export default memo(function AdminFeedbackList({
 
         {hasNext && <div id='scroll-observer' style={{ minHeight: '1px' }} />}
       </div>
-      // 여기 범위는 어떻게 해야할 지 정하고 수정 예정
-      {feedbacks.length > 10 && (
-        <FloatingButton
-          text='AI'
-          onClick={handleAISummaryClick}
-          inset={{ bottom: '60px', left: '100%' }}
-          customCSS={aiFloatingButton(theme)}
-        />
-      )}
     </div>
   );
 });
