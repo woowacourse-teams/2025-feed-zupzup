@@ -7,7 +7,7 @@ import feedzupzup.backend.guest.domain.like.LikeHistory;
 import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
 import feedzupzup.backend.guest.domain.write.WriteHistory;
 import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class GuestService {
             final Guest guest
     ) {
         if (!guest.isPersisted()) {
-            return MyFeedbackListResponse.from(new ArrayList<>());
+            return MyFeedbackListResponse.from(Collections.emptyList());
         }
         final List<WriteHistory> writeHistories = writeHistoryRepository.findWriteHistoriesBy(
                 guest.getId(), organizationUuid);
@@ -39,7 +39,7 @@ public class GuestService {
             final Guest guest
     ) {
         if (!guest.isPersisted()) {
-            return LikeHistoryResponse.from(new ArrayList<>());
+            return LikeHistoryResponse.from(Collections.emptyList());
         }
         final List<LikeHistory> likeHistories = likeHistoryRepository.findLikeHistoriesBy(
                 guest.getId(), organizatioUuid);

@@ -1,6 +1,7 @@
 package feedzupzup.backend.guest.domain.like;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.global.BaseTimeEntity;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +17,7 @@ import lombok.NonNull;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class LikeHistory {
+public class LikeHistory extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
