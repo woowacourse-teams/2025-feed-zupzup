@@ -15,6 +15,8 @@ import { memo, useMemo } from 'react';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import { aiFloatingButton } from '../../AdminDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useModalContext } from '@/contexts/useModal';
+import AISummary from '../AISummary/AISummary';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -31,6 +33,7 @@ export default memo(function AdminFeedbackList({
 }: AdminFeedbackListProps) {
   const { organizationId } = useOrganizationId();
   const theme = useAppTheme();
+  const { openModal, closeModal, isOpen } = useModalContext();
   const apiUrl = useMemo(
     () =>
       createFeedbacksUrl({
@@ -56,6 +59,10 @@ export default memo(function AdminFeedbackList({
     key: 'feedbacks',
     size: 10,
   });
+
+  const handleAISummaryClick = () => {
+    openModal(<AISummary isOpen={isOpen} onClose={closeModal} />);
+  };
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
@@ -93,7 +100,7 @@ export default memo(function AdminFeedbackList({
       {feedbacks.length > 10 && (
         <FloatingButton
           text='AI'
-          onClick={() => {}}
+          onClick={handleAISummaryClick}
           inset={{ bottom: '60px', left: '100%' }}
           customCSS={aiFloatingButton(theme)}
         />
