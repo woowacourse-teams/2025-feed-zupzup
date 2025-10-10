@@ -88,15 +88,11 @@ export const closeButton = (theme: Theme) => css`
   &:hover {
     background-color: ${theme.colors.gray[100]};
   }
-
-  &:active {
-    background-color: ${theme.colors.gray[200]};
-  }
 `;
 
 export const modalWidth = css`
-  width: 90%;
-  min-width: 320px;
-  max-width: 500px;
+  width: 80%;
+  min-width: 300px;
+  max-width: 450px;
   position: relative;
 `;

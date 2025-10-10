@@ -39,6 +39,9 @@ export default function AISummaryFloatingButton() {
   const handleAISummaryClick = () => {
     openModal(
       <AISummary
+        onCategorySelect={() => {
+          '아직은 빈값 나중에 api 연결할 때 추가';
+        }}
         isOpen={isOpen}
         onClose={closeAiModal}
         categories={dummyCategories}

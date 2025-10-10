@@ -17,7 +17,7 @@ import {
 interface AISummaryProps {
   isOpen: boolean;
   onClose: () => void;
-  onCategorySelect?: (category: {
+  onCategorySelect: (category: {
     clusteredId: string;
     content: string;
     totalCount: number;
@@ -42,9 +42,7 @@ export default function AISummary({
     content: string;
     totalCount: number;
   }) => {
-    if (onCategorySelect) {
-      onCategorySelect(category);
-    }
+    onCategorySelect(category);
     onClose();
   };
 
@@ -54,7 +52,7 @@ export default function AISummary({
         <CloseIcon />
       </button>
       <section css={aiSummaryContainer}>
-        <h2 css={aiSummaryTitle(theme)}>AI 요약</h2>
+        <p css={aiSummaryTitle(theme)}>AI 요약</p>
         <div css={aiSummaryDescription(theme)}>
           <p>최근 100개의 피드백을 분석해</p>
           <p>연관성이 높은 항목들을 묶어 Top 5 카테고리를 보여줍니다</p>
