@@ -53,11 +53,17 @@ export default function AdminDashboard() {
           openFeedbackCompleteModal={openFeedbackCompleteModal}
           openFeedbackDeleteModal={openFeedbackDeleteModal}
         />
+        {/* <FloatingButton
+          text='AI'
+          onClick={() => {}}
+          inset={{ bottom: '60px', left: '100%' }}
+          customCSS={aiFloatingButton(theme)}
+        /> */}
         {showButton && (
           <FloatingButton
             icon={<ArrowUpIcon />}
             onClick={scrollToTop}
-            inset={{ bottom: '80px' }}
+            inset={{ bottom: '60px' }}
             customCSS={goTopButton(theme)}
           />
         )}
