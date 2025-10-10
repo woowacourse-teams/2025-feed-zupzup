@@ -3,3 +3,7 @@ export interface AISummaryCategory {
   content: string;
   totalCount: number;
 }
+
+export interface AISummaryData {
+  clusterRepresentativeFeedbacks: AISummaryCategory[];
+}
