@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useState } from 'react';
 import AISummary from './AISummary';
+import { AISummaryCategory } from '@/types/ai.types';
 
 const meta: Meta<typeof AISummary> = {
   title: 'Admin/AISummary',
@@ -40,50 +40,8 @@ export const Default: Story = {
   args: {
     isOpen: true,
     onClose: () => console.log('Modal closed'),
-    onCategorySelect: (category: string) =>
-      console.log('Category selected:', category),
-  },
-};
-
-// 모달이 닫힌 상태
-export const Closed: Story = {
-  args: {
-    isOpen: false,
-    onClose: () => console.log('Modal closed'),
-    onCategorySelect: (category: string) =>
-      console.log('Category selected:', category),
-  },
-};
-
-// 인터랙티브 예제
-export const Interactive: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    return (
-      <div style={{ padding: '20px' }}>
-        <button
-          onClick={() => setIsOpen(true)}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
-        >
-          AI 요약 열기
-        </button>
-        <AISummary
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          onCategorySelect={(category) => {
-            console.log('선택된 카테고리:', category);
-            setIsOpen(false);
-          }}
-        />
-      </div>
-    );
+    onCategorySelect: (category: AISummaryCategory) => {
+      console.log(category);
+    },
   },
 };
