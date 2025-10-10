@@ -20,7 +20,6 @@ import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
-import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.guest.domain.write.WriteHistory;
@@ -43,8 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class UserFeedbackService {
 
-    private final GuestRepository guestRepository;
     private final FeedbackRepository feedbackRepository;
+    private final GuestRepository guestRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
     private final WriteHistoryRepository writeHistoryRepository;
@@ -57,8 +56,7 @@ public class UserFeedbackService {
             final UUID organizationUuid,
             final GuestInfo guestInfo
     ) {
-        final Guest savedGuest = saveOrGetGuest(guestInfo);
-
+        final Guest guest = findGuestBy(guestInfo.guestUuid());
         final Organization organization = findOrganizationBy(organizationUuid);
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
@@ -66,7 +64,7 @@ public class UserFeedbackService {
         final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
         final Feedback savedFeedback = feedbackRepository.save(newFeedback);
 
-        writeHistoryRepository.save(new WriteHistory(savedGuest, savedFeedback));
+        writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
 
         // 최신순 캐시 업데이트
         publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
@@ -99,13 +97,9 @@ public class UserFeedbackService {
         );
     }
 
-    private Guest saveOrGetGuest(final GuestInfo guestInfo) {
-        if (guestInfo.isNewGuest()) {
-            Guest guest = new Guest(guestInfo.guestUuid(), CurrentDateTime.create());
-            return guestRepository.save(guest);
-        }
-        return guestRepository.findByGuestUuid(guestInfo.guestUuid())
-                .orElseThrow(() -> new IllegalArgumentException());
+    private Guest findGuestBy(final UUID guestUuid) {
+        return guestRepository.findByGuestUuid(guestUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("게스트를 찾을 수 없습니다."));
     }
 
     private Organization findOrganizationBy(final UUID organizationUuid) {

@@ -15,6 +15,8 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -30,6 +32,9 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
 
     @Autowired
     private FeedbackRepository feedBackRepository;
+
+    @Autowired
+    private GuestRepository guestRepository;
 
     @Autowired
     private FeedbackLikeService feedbackLikeService;
@@ -87,8 +92,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 좋아요 2개 추가
-        feedbackLikeService.like(savedFeedback.getId(), createGuestInfo());
-        feedbackLikeService.like(savedFeedback.getId(), createGuestInfo());
+        feedbackLikeService.like(savedFeedback.getId(), toGuestInfo(createAndSaveGuest()));
+        feedbackLikeService.like(savedFeedback.getId(), toGuestInfo(createAndSaveGuest()));
 
         // when & then
         given()
@@ -312,11 +317,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         return UUID.fromString(cookie.getValue());
     }
 
-    private Guest createGuest() {
-        return new Guest(UUID.randomUUID(), CurrentDateTime.create());
+    private Guest createAndSaveGuest() {
+        return guestRepository.save(new Guest(UUID.randomUUID(), CurrentDateTime.create()));
     }
 
-    private feedzupzup.backend.guest.dto.GuestInfo createGuestInfo() {
-        return new feedzupzup.backend.guest.dto.GuestInfo(UUID.randomUUID(), true);
+    private GuestInfo toGuestInfo(Guest guest) {
+        return new GuestInfo(guest.getGuestUuid());
     }
+
 }

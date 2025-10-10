@@ -2,8 +2,5 @@ package feedzupzup.backend.guest.dto;
 
 import java.util.UUID;
 
-public record GuestInfo(
-        UUID guestUuid,
-        boolean isNewGuest
-) {
+public record GuestInfo(UUID guestUuid) {
 }

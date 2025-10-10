@@ -244,6 +244,6 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
     }
 
     private GuestInfo toGuestInfo(Guest guest) {
-        return new GuestInfo(guest.getGuestUuid(), false);
+        return new GuestInfo(guest.getGuestUuid());
     }
 }

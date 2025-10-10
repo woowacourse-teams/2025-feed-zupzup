@@ -3,9 +3,10 @@ package feedzupzup.backend.auth.presentation.resolver;
 import static feedzupzup.backend.global.util.CookieUtilization.*;
 
 import com.google.common.net.HttpHeaders;
+import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
 import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.global.util.CookieUtilization;
-import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.application.GuestService;
 import feedzupzup.backend.guest.dto.GuestInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final GuestRepository guestRepository;
+    private final GuestService guestService;
     private final CookieUtilization cookieUtilization;
 
     @Override
@@ -42,17 +43,25 @@ public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
             UUID newId = UUID.randomUUID();
             final ResponseCookie cookie = cookieUtilization.createCookie(GUEST_KEY, newId);
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            return new GuestInfo(newId, true);
+
+            if (parameter.hasParameterAnnotation(SavedGuest.class)) {
+                guestService.save(newId);
+            }
+            return new GuestInfo(newId);
         }
-        if (guestRepository.existsByGuestUuid(guestId.get())) {
-            return new GuestInfo(guestId.get(), false);
+
+        if (!guestService.isSavedGuest(guestId.get())) {
+            guestService.save(guestId.get());
         }
-        return new GuestInfo(guestId.get(), true);
+        return new GuestInfo(guestId.get());
     }
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(VisitedGuest.class) &&
-                parameter.getParameterType().equals(GuestInfo.class);
+        final boolean isSupportAnnotation = parameter.hasParameterAnnotation(VisitedGuest.class) ||
+                parameter.hasParameterAnnotation(SavedGuest.class);
+        final boolean isSupportType = parameter.getParameterType().equals(GuestInfo.class);
+
+        return isSupportAnnotation && isSupportType;
     }
 }

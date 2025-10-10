@@ -1,5 +1,8 @@
 package feedzupzup.backend.guest.application;
 
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
@@ -19,14 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GuestService {
 
+    private final GuestRepository guestRepository;
     private final WriteHistoryRepository writeHistoryRepository;
     private final LikeHistoryRepository likeHistoryRepository;
+
+    @Transactional
+    public void save(final UUID guestUuid) {
+        Guest guest = new Guest(guestUuid, CurrentDateTime.create());
+        guestRepository.save(guest);
+    }
 
     public MyFeedbackListResponse getMyFeedbackPage(
             final UUID organizationUuid,
             final GuestInfo guestInfo
     ) {
-        if (guestInfo.isNewGuest()) {
+        if (!isSavedGuest(guestInfo.guestUuid())) {
             return MyFeedbackListResponse.from(Collections.emptyList());
         }
 
@@ -39,12 +49,16 @@ public class GuestService {
             final UUID organizatioUuid,
             final GuestInfo guestInfo
     ) {
-        if (guestInfo.isNewGuest()) {
+        if (!isSavedGuest(guestInfo.guestUuid())) {
             return LikeHistoryResponse.from(Collections.emptyList());
         }
 
         final List<LikeHistory> likeHistories = likeHistoryRepository.findLikeHistoriesBy(
                 guestInfo.guestUuid(), organizatioUuid);
         return LikeHistoryResponse.from(likeHistories);
+    }
+
+    public boolean isSavedGuest(final UUID guestUuid) {
+        return guestRepository.existsByGuestUuid(guestUuid);
     }
 }
