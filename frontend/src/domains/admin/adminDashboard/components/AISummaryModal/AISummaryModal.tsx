@@ -36,7 +36,10 @@ export default function AISummary({
 
   const handleCategoryClick = (category: AISummaryCategory) => {
     onCategorySelect(category);
-    goPath(`/admin/${organizationId}/ai/summary`);
+
+    goPath(`/admin/${organizationId}/ai/summary`, {
+      categoryData: category,
+    });
     onClose();
   };
 

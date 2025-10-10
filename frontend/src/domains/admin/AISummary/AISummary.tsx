@@ -8,6 +8,8 @@ import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/Admi
 import { aiSummaryTitle } from './AISummary.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useGoTop from './useGoTop';
+import { useLocation } from 'react-router-dom';
+import { AISummaryCategory } from '@/types/ai.types';
 
 export default function AISummary() {
   const theme = useAppTheme();
@@ -21,11 +23,14 @@ export default function AISummary() {
     handleDeleteFeedback,
   } = useAdminModal({ organizationId });
   useGoTop();
+  const { categoryData } = useLocation().state as {
+    categoryData: AISummaryCategory;
+  };
 
   return (
     <FeedbackBoxList>
       <p css={aiSummaryTitle(theme)}>
-        사용 편의성을 개선해야 한다는 의견이 많습니다 (5)
+        {categoryData.content} ({categoryData.totalCount})
       </p>
       {feedbackData.map((feedback) => (
         <AdminFeedbackBox
