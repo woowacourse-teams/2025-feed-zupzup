@@ -1,21 +1,29 @@
 {
-  "short_name": "feed_zupzup",
-  "name": "feed_zupzup Web App",
+  "name": "피드줍줍",
+  "short_name": "피드줍줍",
+  "id": "feedzupzup",
+  "description": "피드백을 더 쉽게 주고, 확실히 받는 익명 피드백 서비스.",
+  "scope": "/",
+  "dir": "ltr",
+  "lang": "ko",
+  "orientation": "any",
+  "categories": ["productivity", "business"],
   "icons": [
     {
       "src": "192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#FFFFFF"
 }
