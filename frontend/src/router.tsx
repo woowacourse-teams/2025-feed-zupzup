@@ -5,6 +5,7 @@ import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
+import AISummary from './domains/admin/AISummary/AISummary';
 
 const AdminDashboard = lazy(
   () =>
@@ -95,6 +96,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_HOME, element: <AdminHome /> },
           { path: ROUTES.DASHBOARD, element: <AdminDashboard /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <Settings /> },
+          { path: ROUTES.AI_SUMMARY, element: <AISummary /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

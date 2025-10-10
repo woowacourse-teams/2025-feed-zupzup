@@ -14,6 +14,8 @@ import {
   modalWidth,
 } from './AISummaryModal.styles';
 import { AISummaryCategory } from '@/types/ai.types';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import useNavigation from '@/domains/hooks/useNavigation';
 
 interface AISummaryProps {
   isOpen: boolean;
@@ -28,10 +30,13 @@ export default function AISummary({
   onCategorySelect,
   categories,
 }: AISummaryProps) {
+  const { organizationId } = useOrganizationId();
+  const { goPath } = useNavigation();
   const theme = useAppTheme();
 
   const handleCategoryClick = (category: AISummaryCategory) => {
     onCategorySelect(category);
+    goPath(`/admin/${organizationId}/ai/summary`);
     onClose();
   };
 
