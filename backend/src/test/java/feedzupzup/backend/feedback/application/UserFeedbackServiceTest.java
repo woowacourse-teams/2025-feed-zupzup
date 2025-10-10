@@ -67,7 +67,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackResponse response = userFeedbackService.create(
-                request, savedOrganization.getUuid(), createGuest());
+                request, savedOrganization.getUuid(), createGuestInfo());
 
         //then
         assertAll(
@@ -95,7 +95,7 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                 "기타", "https://example.com/image.png");
 
         // when & then
-        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid(), createGuest()))
+        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid(), createGuestInfo()))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -525,5 +525,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     private Guest createGuest() {
         return new Guest(UUID.randomUUID(), CurrentDateTime.create());
+    }
+
+    private feedzupzup.backend.guest.dto.GuestInfo createGuestInfo() {
+        return new feedzupzup.backend.guest.dto.GuestInfo(UUID.randomUUID(), true);
     }
 }

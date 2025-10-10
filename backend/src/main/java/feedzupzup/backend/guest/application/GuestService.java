@@ -1,8 +1,8 @@
 package feedzupzup.backend.guest.application;
 
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
-import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.like.LikeHistory;
 import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
 import feedzupzup.backend.guest.domain.write.WriteHistory;
@@ -24,25 +24,27 @@ public class GuestService {
 
     public MyFeedbackListResponse getMyFeedbackPage(
             final UUID organizationUuid,
-            final Guest guest
+            final GuestInfo guestInfo
     ) {
-        if (!guest.isPersisted()) {
+        if (guestInfo.isNewGuest()) {
             return MyFeedbackListResponse.from(Collections.emptyList());
         }
+
         final List<WriteHistory> writeHistories = writeHistoryRepository.findWriteHistoriesBy(
-                guest.getId(), organizationUuid);
+                guestInfo.guestUuid(), organizationUuid);
         return MyFeedbackListResponse.fromHistory(writeHistories);
     }
 
     public LikeHistoryResponse findGuestLikeHistories(
             final UUID organizatioUuid,
-            final Guest guest
+            final GuestInfo guestInfo
     ) {
-        if (!guest.isPersisted()) {
+        if (guestInfo.isNewGuest()) {
             return LikeHistoryResponse.from(Collections.emptyList());
         }
+
         final List<LikeHistory> likeHistories = likeHistoryRepository.findLikeHistoriesBy(
-                guest.getId(), organizatioUuid);
+                guestInfo.guestUuid(), organizatioUuid);
         return LikeHistoryResponse.from(likeHistories);
     }
 }

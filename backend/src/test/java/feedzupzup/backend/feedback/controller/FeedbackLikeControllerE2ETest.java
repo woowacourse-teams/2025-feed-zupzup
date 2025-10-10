@@ -87,8 +87,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 좋아요 2개 추가
-        feedbackLikeService.like(savedFeedback.getId(), createGuest());
-        feedbackLikeService.like(savedFeedback.getId(), createGuest());
+        feedbackLikeService.like(savedFeedback.getId(), createGuestInfo());
+        feedbackLikeService.like(savedFeedback.getId(), createGuestInfo());
 
         // when & then
         given()
@@ -314,5 +314,9 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
 
     private Guest createGuest() {
         return new Guest(UUID.randomUUID(), CurrentDateTime.create());
+    }
+
+    private feedzupzup.backend.guest.dto.GuestInfo createGuestInfo() {
+        return new feedzupzup.backend.guest.dto.GuestInfo(UUID.randomUUID(), true);
     }
 }

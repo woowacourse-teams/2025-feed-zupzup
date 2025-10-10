@@ -19,6 +19,7 @@ import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.guest.domain.write.WriteHistory;
 import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -83,7 +84,7 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
 
             // when
             final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
-                    organization.getUuid(), guest);
+                    organization.getUuid(), toGuestInfo(guest));
 
             // then
             assertAll(
@@ -128,7 +129,7 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
 
             // when
             final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
-                    organization.getUuid(), guest);
+                    organization.getUuid(), toGuestInfo(guest));
 
             // then
             assertAll(
@@ -159,7 +160,7 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
 
             // when
             final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
-                    organization.getUuid(), guest);
+                    organization.getUuid(), toGuestInfo(guest));
 
             // then
             assertAll(
@@ -189,7 +190,7 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
 
             // when
             final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
-                    organization.getUuid(), guest);
+                    organization.getUuid(), toGuestInfo(guest));
 
             // then
             assertThat(response.feedbacks()).isEmpty();
@@ -203,7 +204,7 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
         @Test
         @DisplayName("좋아요 누른 기록이 없다면, 빈 배열이 반환되어야 한다.")
         void not_like_history_then_empty() {
-            final LikeHistoryResponse likeHistories = guestService.findGuestLikeHistories(organization.getUuid(), createAndSaveRandomGuest());
+            final LikeHistoryResponse likeHistories = guestService.findGuestLikeHistories(organization.getUuid(), toGuestInfo(createAndSaveRandomGuest()));
             assertThat(likeHistories.feedbackIds()).isEmpty();
         }
 
@@ -214,10 +215,10 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
             final Feedback feedback = createAndSaveFeedback();
             final Guest guest = createAndSaveRandomGuest();
 
-            feedbackLikeService.like(feedback.getId(), guest);
+            feedbackLikeService.like(feedback.getId(), toGuestInfo(guest));
 
             // when
-            final LikeHistoryResponse likeHistories = guestService.findGuestLikeHistories(organization.getUuid(), guest);
+            final LikeHistoryResponse likeHistories = guestService.findGuestLikeHistories(organization.getUuid(), toGuestInfo(guest));
 
             // then
             assertAll(
@@ -240,5 +241,9 @@ public class VisitedGuestServiceTest extends ServiceIntegrationHelper {
     private Feedback createAndSaveFeedback() {
         final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization, organizationCategory);
         return feedbackRepository.save(feedback);
+    }
+
+    private GuestInfo toGuestInfo(Guest guest) {
+        return new GuestInfo(guest.getGuestUuid(), false);
     }
 }

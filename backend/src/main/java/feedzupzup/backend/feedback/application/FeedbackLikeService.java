@@ -10,10 +10,12 @@ import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.guest.domain.like.LikeHistory;
 import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,8 +33,8 @@ public class FeedbackLikeService {
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public LikeResponse like(final Long feedbackId, final Guest guest) {
-        final Guest savedGuest = saveGuestIfNotPersisted(guest);
+    public LikeResponse like(final Long feedbackId, final GuestInfo guestInfo) {
+        final Guest savedGuest = saveOrGetGuest(guestInfo);
         final Feedback feedback = findFeedbackBy(feedbackId);
 
         if (likeHistoryRepository.existsByGuestAndFeedback(savedGuest, feedback)) {
@@ -49,8 +51,8 @@ public class FeedbackLikeService {
     }
 
     @Transactional
-    public LikeResponse unlike(final Long feedbackId, final Guest guest) {
-        final Guest savedGuest = saveGuestIfNotPersisted(guest);
+    public LikeResponse unlike(final Long feedbackId, final GuestInfo guestInfo) {
+        final Guest savedGuest = saveOrGetGuest(guestInfo);
         final Feedback feedback = findFeedbackBy(feedbackId);
 
         if (!likeHistoryRepository.existsByGuestAndFeedback(savedGuest, feedback)) {
@@ -66,11 +68,13 @@ public class FeedbackLikeService {
         return LikeResponse.from(feedback);
     }
 
-    private Guest saveGuestIfNotPersisted(final Guest guest) {
-        if (!guest.isPersisted()) {
+    private Guest saveOrGetGuest(final GuestInfo guestInfo) {
+        if (guestInfo.isNewGuest()) {
+            Guest guest = new Guest(guestInfo.guestUuid(), CurrentDateTime.create());
             return guestRepository.save(guest);
         }
-        return guest;
+        return guestRepository.findByGuestUuid(guestInfo.guestUuid())
+                .orElseThrow(() -> new IllegalArgumentException());
     }
 
     private Feedback findFeedbackBy(final Long feedbackId) {

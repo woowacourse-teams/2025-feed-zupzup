@@ -3,10 +3,10 @@ package feedzupzup.backend.auth.presentation.resolver;
 import static feedzupzup.backend.global.util.CookieUtilization.*;
 
 import com.google.common.net.HttpHeaders;
-import feedzupzup.backend.auth.presentation.annotation.Guest;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.global.util.CookieUtilization;
-import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Optional;
@@ -36,23 +36,23 @@ public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
     ) throws Exception {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         final HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
-        final Optional<UUID> guestId = cookieUtilization.getguestIdFromCookie(request);
+        final Optional<UUID> guestId = cookieUtilization.getGuestIdFromCookie(request);
 
         if (guestId.isEmpty()) {
             UUID newId = UUID.randomUUID();
             final ResponseCookie cookie = cookieUtilization.createCookie(GUEST_KEY, newId);
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            return new feedzupzup.backend.guest.domain.guest.Guest(newId, CurrentDateTime.create());
+            return new GuestInfo(newId, true);
         }
-
-        final UUID guestUuid = guestId.get();
-        return guestRepository.findByGuestUuid(guestUuid)
-                .orElseGet(() -> new feedzupzup.backend.guest.domain.guest.Guest(guestUuid, CurrentDateTime.create()));
+        if (guestRepository.existsByGuestUuid(guestId.get())) {
+            return new GuestInfo(guestId.get(), false);
+        }
+        return new GuestInfo(guestId.get(), true);
     }
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(Guest.class) &&
-                parameter.getParameterType().equals(feedzupzup.backend.guest.domain.guest.Guest.class);
+        return parameter.hasParameterAnnotation(VisitedGuest.class) &&
+                parameter.getParameterType().equals(GuestInfo.class);
     }
 }

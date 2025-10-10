@@ -19,6 +19,8 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -30,6 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 
 class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
+
+    @Autowired
+    private GuestRepository guestRepository;
 
     @Autowired
     private FeedbackLikeService feedbackLikeService;
@@ -68,13 +73,13 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void same_cookie_continuous_like_same_feedback_then_throw_exception() {
             // given
             final Long feedbackId = createFeedback();
-            final Guest guest = createGuest();
+            final Guest guest = createAndSaveGuest();
 
             // when
-            feedbackLikeService.like(feedbackId, guest);
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest));
 
             // then
-            assertThatThrownBy(() -> feedbackLikeService.like(feedbackId, guest))
+            assertThatThrownBy(() -> feedbackLikeService.like(feedbackId, toGuestInfo(guest)))
                     .isInstanceOf(DuplicateLikeException.class);
         }
 
@@ -85,12 +90,12 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId1 = createFeedback();
             final Long feedbackId2 = createFeedback();
 
-            final Guest guest = createGuest();
+            final Guest guest = createAndSaveGuest();
 
-            feedbackLikeService.like(feedbackId1, guest);
+            feedbackLikeService.like(feedbackId1, toGuestInfo(guest));
 
             // when & then
-            assertThatCode(() -> feedbackLikeService.like(feedbackId2, guest))
+            assertThatCode(() -> feedbackLikeService.like(feedbackId2, toGuestInfo(guest)))
                     .doesNotThrowAnyException();
         }
 
@@ -102,7 +107,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId = createFeedback();
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, createGuest());
+            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, createNewGuestInfo());
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(1);
@@ -116,9 +121,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId2 = createFeedback();
 
             // when
-            feedbackLikeService.like(feedbackId1, createGuest());
-            final LikeResponse likeResponse1 = feedbackLikeService.like(feedbackId1, createGuest());
-            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, createGuest());
+            feedbackLikeService.like(feedbackId1, createNewGuestInfo());
+            final LikeResponse likeResponse1 = feedbackLikeService.like(feedbackId1, createNewGuestInfo());
+            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, createNewGuestInfo());
 
             // then
             assertAll(
@@ -137,11 +142,9 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void not_exist_like_history_then_throw_exception() {
             // given
             final Long feedbackId = createFeedback();
-            final UUID cookieValue = createAndGetCookieValue();
-            final Guest guest = new Guest(cookieValue, CurrentDateTime.create());
 
             // when & then
-            assertThatThrownBy(() -> feedbackLikeService.unlike(feedbackId, guest))
+            assertThatThrownBy(() -> feedbackLikeService.unlike(feedbackId, createNewGuestInfo()))
                     .isInstanceOf(InvalidLikeException.class);
         }
 
@@ -150,16 +153,16 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void unlike_existing_feedback() {
             // given
             final Long feedbackId = createFeedback();
-            final Guest guest1 = createGuest();
-            final Guest guest2 = createGuest();
-            final Guest guest3 = createGuest();
+            final Guest guest1 = createAndSaveGuest();
+            final Guest guest2 = createAndSaveGuest();
+            final Guest guest3 = createAndSaveGuest();
 
-            feedbackLikeService.like(feedbackId, guest1);
-            feedbackLikeService.like(feedbackId, guest2);
-            feedbackLikeService.like(feedbackId, guest3);
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest1));
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest2));
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest3));
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest1);
+            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, toGuestInfo(guest1));
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(2);
@@ -170,11 +173,11 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void unlike_single_like() {
             // given
             final Long feedbackId = createFeedback();
-            final Guest guest = createGuest();
-            feedbackLikeService.like(feedbackId, guest);
+            final Guest guest = createAndSaveGuest();
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest));
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guest);
+            final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, toGuestInfo(guest));
 
             // then
             assertThat(likeResponse.afterLikeCount()).isZero();
@@ -190,18 +193,18 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         void like_and_unlike_combination() {
             // given
             final Long feedbackId = createFeedback();
-            final Guest guest1 = createGuest();
-            final Guest guest2 = createGuest();
-            final Guest guest3 = createGuest();
-            final Guest guest4 = createGuest();
+            final Guest guest1 = createAndSaveGuest();
+            final Guest guest2 = createAndSaveGuest();
+            final Guest guest3 = createAndSaveGuest();
+            final Guest guest4 = createAndSaveGuest();
 
             // when
-            feedbackLikeService.like(feedbackId, guest1);          // 1
-            feedbackLikeService.like(feedbackId, guest2);          // 2
-            feedbackLikeService.unlike(feedbackId, guest1);        // 1
-            feedbackLikeService.like(feedbackId, guest3);          // 2
-            feedbackLikeService.like(feedbackId, guest4);          // 3
-            feedbackLikeService.unlike(feedbackId, guest2);        // 2
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest1));          // 1
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest2));          // 2
+            feedbackLikeService.unlike(feedbackId, toGuestInfo(guest1));        // 1
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest3));          // 2
+            feedbackLikeService.like(feedbackId, toGuestInfo(guest4));          // 3
+            feedbackLikeService.unlike(feedbackId, toGuestInfo(guest2));        // 2
 
             final Feedback feedback = feedBackRepository.findById(feedbackId).get();
 
@@ -217,20 +220,20 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long feedbackId2 = createFeedback();
             final Long feedbackId3 = createFeedback();
 
-            final Guest guest1 = createGuest();
-            final Guest guest2 = createGuest();
-            final Guest guest3 = createGuest();
-            final Guest guest4 = createGuest();
-            final Guest guest5 = createGuest();
+            final Guest guest1 = createAndSaveGuest();
+            final Guest guest2 = createAndSaveGuest();
+            final Guest guest3 = createAndSaveGuest();
+            final Guest guest4 = createAndSaveGuest();
+            final Guest guest5 = createAndSaveGuest();
 
             // when
-            feedbackLikeService.like(feedbackId1, guest1);
-            final LikeResponse likeResponse1 = feedbackLikeService.unlike(feedbackId1, guest1);
-            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, guest2);
-            feedbackLikeService.like(feedbackId3, guest3);
-            feedbackLikeService.like(feedbackId3, guest4);
-            feedbackLikeService.like(feedbackId3, guest5);
-            final LikeResponse likeResponse3 = feedbackLikeService.unlike(feedbackId3, guest3);
+            feedbackLikeService.like(feedbackId1, toGuestInfo(guest1));
+            final LikeResponse likeResponse1 = feedbackLikeService.unlike(feedbackId1, toGuestInfo(guest1));
+            final LikeResponse likeResponse2 = feedbackLikeService.like(feedbackId2, toGuestInfo(guest2));
+            feedbackLikeService.like(feedbackId3, toGuestInfo(guest3));
+            feedbackLikeService.like(feedbackId3, toGuestInfo(guest4));
+            feedbackLikeService.like(feedbackId3, toGuestInfo(guest5));
+            final LikeResponse likeResponse3 = feedbackLikeService.unlike(feedbackId3, toGuestInfo(guest3));
 
             // then
             assertAll(
@@ -252,7 +255,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long largeFeedbackId = createFeedback();
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.like(largeFeedbackId, createGuest());
+            final LikeResponse likeResponse = feedbackLikeService.like(largeFeedbackId, createNewGuestInfo());
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(1);
@@ -265,7 +268,7 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
             final Long minFeedbackId = createFeedback();
 
             // when
-            final LikeResponse likeResponse = feedbackLikeService.like(minFeedbackId, createGuest());
+            final LikeResponse likeResponse = feedbackLikeService.like(minFeedbackId, createNewGuestInfo());
 
             // then
             assertThat(likeResponse.afterLikeCount()).isEqualTo(1);
@@ -278,7 +281,15 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
         return UUID.fromString(cookie.getValue());
     }
 
-    private Guest createGuest() {
-        return new Guest(UUID.randomUUID(), CurrentDateTime.create());
+    private Guest createAndSaveGuest() {
+        return guestRepository.save(new Guest(UUID.randomUUID(), CurrentDateTime.create()));
+    }
+
+    private GuestInfo createNewGuestInfo() {
+        return new GuestInfo(UUID.randomUUID(), true);
+    }
+
+    private GuestInfo toGuestInfo(Guest guest) {
+        return new GuestInfo(guest.getGuestUuid(), false);
     }
 }

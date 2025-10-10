@@ -1,6 +1,7 @@
 package feedzupzup.backend.guest.controller;
 
-import feedzupzup.backend.auth.presentation.annotation.Guest;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.guest.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
@@ -20,20 +21,20 @@ public class GuestController implements GuestApi {
     @Override
     public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
             final UUID organizationUuid,
-            @Guest final feedzupzup.backend.guest.domain.guest.Guest guest
+            @VisitedGuest final GuestInfo guestInfo
     ) {
         final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
-                organizationUuid, guest);
+                organizationUuid, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
     public SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
             final UUID organizationUuid,
-            @Guest final feedzupzup.backend.guest.domain.guest.Guest guest
+            @VisitedGuest final GuestInfo guestInfo
     ) {
         final LikeHistoryResponse response = guestService.findGuestLikeHistories(
-                organizationUuid, guest);
+                organizationUuid, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

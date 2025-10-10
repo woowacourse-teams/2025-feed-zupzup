@@ -20,11 +20,11 @@ public interface LikeHistoryRepository extends JpaRepository<LikeHistory, Long> 
             JOIN FETCH lh.guest g
             JOIN FETCH lh.feedback fb
             JOIN FETCH fb.organization o
-            WHERE g.id = :guestId
+            WHERE g.guestUuid = :guestUuid
             AND o.uuid = :organizationUuid
             """)
     List<LikeHistory> findLikeHistoriesBy(
-            @Param("guestId") final Long guestId,
+            @Param("guestUuid") final UUID guestUuid,
             @Param("organizationUuid") final UUID organizationUuid
     );
 }

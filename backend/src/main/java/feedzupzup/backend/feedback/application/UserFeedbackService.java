@@ -20,10 +20,12 @@ import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.guest.domain.write.WriteHistory;
 import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
@@ -53,9 +55,9 @@ public class UserFeedbackService {
     public CreateFeedbackResponse create(
             final CreateFeedbackRequest request,
             final UUID organizationUuid,
-            final Guest guest
+            final GuestInfo guestInfo
     ) {
-        final Guest savedGuest = saveGuestIfNotPersisted(guest);
+        final Guest savedGuest = saveOrGetGuest(guestInfo);
 
         final Organization organization = findOrganizationBy(organizationUuid);
         final Category category = Category.findCategoryBy(request.category());
@@ -97,11 +99,13 @@ public class UserFeedbackService {
         );
     }
 
-    private Guest saveGuestIfNotPersisted(final Guest guest) {
-        if (!guest.isPersisted()) {
+    private Guest saveOrGetGuest(final GuestInfo guestInfo) {
+        if (guestInfo.isNewGuest()) {
+            Guest guest = new Guest(guestInfo.guestUuid(), CurrentDateTime.create());
             return guestRepository.save(guest);
         }
-        return guest;
+        return guestRepository.findByGuestUuid(guestInfo.guestUuid())
+                .orElseThrow(() -> new IllegalArgumentException());
     }
 
     private Organization findOrganizationBy(final UUID organizationUuid) {
