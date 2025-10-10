@@ -12,7 +12,7 @@ import {
   footerText,
   closeButton,
   modalWidth,
-} from './AISummary.styles';
+} from './AISummaryModal.styles';
 import { AISummaryCategory } from '@/types/ai.types';
 
 interface AISummaryProps {

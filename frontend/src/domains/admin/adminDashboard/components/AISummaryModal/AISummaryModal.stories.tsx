@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import AISummary from './AISummary';
+import AISummaryModal from './AISummaryModal';
 import { AISummaryCategory } from '@/types/ai.types';
 
-const meta: Meta<typeof AISummary> = {
-  title: 'Admin/AISummary',
-  component: AISummary,
+const meta: Meta<typeof AISummaryModal> = {
+  title: 'Admin/AISummaryModal',
+  component: AISummaryModal,
   parameters: {
     layout: 'centered',
   },

@@ -1,7 +1,7 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useModalContext } from '@/contexts/useModal';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
-import AISummary from '../AISummary/AISummary';
+import AISummaryModal from '../AISummaryModal/AISummaryModal';
 import { aiFloatingButton } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 
 export default function AISummaryFloatingButton() {
@@ -38,7 +38,7 @@ export default function AISummaryFloatingButton() {
 
   const handleCategoryClick = () => {
     openModal(
-      <AISummary
+      <AISummaryModal
         onCategorySelect={() => {
           '아직은 빈값 나중에 api 연결할 때 추가';
         }}
