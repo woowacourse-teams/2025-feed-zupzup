@@ -10,7 +10,7 @@ import {
   reportLink,
   container,
 } from './GlobalErrorFallback.styles';
-import { ApiError } from '@/apis/apiClient';
+import { ApiError, NetworkError } from '@/apis/apiClient';
 import useGlobalError from './useGlobalError';
 
 export default function GlobalErrorFallback({
@@ -18,7 +18,7 @@ export default function GlobalErrorFallback({
   error,
 }: {
   resetErrorBoundary: () => void;
-  error: Error | ApiError;
+  error: Error | ApiError | NetworkError;
 }) {
   const theme = useAppTheme();
   const { errorObject } = useGlobalError({

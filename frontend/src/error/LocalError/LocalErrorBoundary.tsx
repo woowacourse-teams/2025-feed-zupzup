@@ -1,9 +1,9 @@
-import { ApiError } from '@/apis/apiClient';
+import { ApiError, NetworkError } from '@/apis/apiClient';
 import React, { ComponentType, PropsWithChildren } from 'react';
 
 export interface FallbackProps {
   resetErrorBoundary: () => void;
-  error: ApiError;
+  error: ApiError | NetworkError;
   queryKey: readonly string[];
 }
 
@@ -13,7 +13,7 @@ interface ErrorBoundaryProps {
 }
 
 interface ErrorBoundaryState {
-  error: ApiError | null;
+  error: ApiError | NetworkError | null;
 }
 
 const initialState = {
@@ -30,6 +30,10 @@ export default class LocalErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error) {
+    if (error instanceof NetworkError) {
+      return { error };
+    }
+
     if (error instanceof ApiError) {
       if (!isKnownError(error)) {
         throw error;
@@ -61,6 +65,16 @@ export default class LocalErrorBoundary extends React.Component<
   }
 }
 
-function isKnownError(error: ApiError) {
-  return error.status === 400 || error.status === 500 || error.status === 1000;
+function isKnownError(error: ApiError | NetworkError) {
+  if (error instanceof NetworkError) {
+    return true;
+  }
+
+  if (error instanceof ApiError) {
+    return (
+      error.status === 400 || error.status === 500 || error.status === 1000
+    );
+  }
+
+  return false;
 }

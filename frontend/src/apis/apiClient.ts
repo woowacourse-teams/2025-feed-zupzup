@@ -154,23 +154,21 @@ async function baseClient<Response, RequestBody>({
 
     throw new Error(DEFAULT_ERROR_MESSAGE);
   } catch (error) {
-    if (!(error instanceof ApiError)) {
-      const networkError =
-        error instanceof Error ? error : new Error('Unknown API Error');
-      logError(networkError, ErrorType.NETWORK_ERROR, ErrorSeverity.HIGH);
-    }
-
     onError?.();
+
     if (error instanceof ApiError) {
       throw error;
     }
 
-    const message =
+    // 네트워크 에러를 NetworkError로 처리
+    const networkError = new NetworkError(
       error instanceof Error && error.message
         ? error.message
-        : DEFAULT_ERROR_MESSAGE;
+        : DEFAULT_ERROR_MESSAGE
+    );
 
-    throw new ApiError(1000, message);
+    logError(networkError, ErrorType.NETWORK_ERROR, ErrorSeverity.HIGH);
+    throw networkError;
   }
 }
 
@@ -203,5 +201,12 @@ export class ApiError extends Error {
   ) {
     super(message);
     this.name = 'ApiError';
+  }
+}
+
+export class NetworkError extends Error {
+  constructor(message: string = '네트워크 연결에 문제가 발생했습니다.') {
+    super(message);
+    this.name = 'NetworkError';
   }
 }

@@ -1,4 +1,4 @@
-import { ApiError } from '@/apis/apiClient';
+import { ApiError, NetworkError } from '@/apis/apiClient';
 import { useQueryClient } from '@tanstack/react-query';
 import { ERROR_MESSAGES } from '../errorMessages';
 import { getErrorName } from '../error.utils';
@@ -6,7 +6,7 @@ import { getErrorName } from '../error.utils';
 interface useLocalErrorProps {
   queryKey: readonly string[];
   resetErrorBoundary: () => void;
-  error: ApiError;
+  error: ApiError | NetworkError;
 }
 
 export default function useLocalError({

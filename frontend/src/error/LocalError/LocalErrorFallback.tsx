@@ -11,7 +11,7 @@ import {
   container,
 } from '../GlobalError/GlobalErrorFallback.styles';
 import useLocalError from './useLocalError';
-import { ApiError } from '@/apis/apiClient';
+import { ApiError, NetworkError } from '@/apis/apiClient';
 
 export default function LocalErrorFallback({
   resetErrorBoundary,
@@ -19,7 +19,7 @@ export default function LocalErrorFallback({
   queryKey,
 }: {
   resetErrorBoundary: () => void;
-  error: ApiError;
+  error: ApiError | NetworkError;
   queryKey: readonly string[];
 }) {
   const theme = useAppTheme();

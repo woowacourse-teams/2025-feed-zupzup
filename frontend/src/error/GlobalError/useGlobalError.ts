@@ -1,4 +1,4 @@
-import { ApiError } from '@/apis/apiClient';
+import { ApiError, NetworkError } from '@/apis/apiClient';
 import { useQueryClient } from '@tanstack/react-query';
 import { resetLocalStorage } from '@/utils/localStorage';
 import { NotificationService } from '@/services/notificationService';
@@ -8,7 +8,7 @@ import { ERROR_MESSAGES } from '../errorMessages';
 
 interface useGlobalErrorProps {
   resetErrorBoundary: () => void;
-  error: Error | ApiError;
+  error: Error | ApiError | NetworkError;
 }
 
 export default function useGlobalError({

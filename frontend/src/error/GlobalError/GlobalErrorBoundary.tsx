@@ -1,9 +1,9 @@
-import { ApiError } from '@/apis/apiClient';
+import { ApiError, NetworkError } from '@/apis/apiClient';
 import React, { ComponentType, PropsWithChildren } from 'react';
 
 export interface FallbackProps {
   resetErrorBoundary: () => void;
-  error: Error | ApiError;
+  error: Error | ApiError | NetworkError;
 }
 
 interface ErrorBoundaryProps {
@@ -11,7 +11,7 @@ interface ErrorBoundaryProps {
 }
 
 interface ErrorBoundaryState {
-  error: Error | null;
+  error: Error | ApiError | NetworkError | null;
 }
 
 const initialState = {
