@@ -2,6 +2,7 @@ import { apiClient } from '@/apis/apiClient';
 import { AdminAuthData } from '@/types/adminAuth';
 import { AISummaryData } from '@/types/ai.types';
 import { ApiResponse } from '@/types/apiResponse';
+import { FeedbackType } from '@/types/feedback.types';
 
 export interface PostAdminLoginParams {
   loginId: string;
@@ -18,9 +19,15 @@ export interface AISummaryParams {
   organizationId: string;
 }
 
+export interface AISummaryDetailParams {
+  organizationId: string;
+  clusterId: string;
+}
+
 type PostAdminLogoutResponse = ApiResponse<string>;
 export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 export type AISummaryResponse = ApiResponse<AISummaryData>;
+export type AISummaryDetailResponse = ApiResponse<FeedbackType>;
 
 export async function postAdminLogin({
   loginId,
@@ -69,4 +76,14 @@ export async function getAISummary({ organizationId }: AISummaryParams) {
     `/admin/organizations/${organizationId}/clusters`
   );
   return response as AISummaryResponse;
+}
+
+export async function getAISummaryDetail({
+  organizationId,
+  clusterId,
+}: AISummaryDetailParams) {
+  const response = await apiClient.get<AISummaryDetailResponse>(
+    `/admin/organizations/${organizationId}/clusters/${clusterId}`
+  );
+  return response as AISummaryDetailResponse;
 }
