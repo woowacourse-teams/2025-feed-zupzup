@@ -1,9 +1,6 @@
 import { SEO } from '@/components/SEO/SEO';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
-import {
-  aiFloatingButton,
-  dashboardLayout,
-} from '@/domains/admin/adminDashboard/AdminDashboard.style';
+import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
@@ -16,15 +13,13 @@ import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import { goTopButton } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import AdminFeedbackList from './components/AdminFeedbackList/AdminFeedbackList';
-import { useModalContext } from '@/contexts/useModal';
-import AISummary from './components/AISummary/AISummary';
+import AISummaryFloatingButton from './components/AISummaryFloatingButton/AISummaryFloatingButton';
 
 export default function AdminDashboard() {
   const theme = useAppTheme();
   const { selectedFilter, selectedSort, handleFilterChange, handleSortChange } =
     useFeedbackFilterSort();
   const { organizationId } = useOrganizationId();
-  const { openModal, closeModal: closeAiModal, isOpen } = useModalContext();
 
   const {
     modalState,
@@ -36,10 +31,6 @@ export default function AdminDashboard() {
   } = useAdminModal({ organizationId });
 
   const { showButton, scrollToTop } = useScrollUp();
-
-  const handleAISummaryClick = () => {
-    openModal(<AISummary isOpen={isOpen} onClose={closeAiModal} />);
-  };
 
   return (
     <>
@@ -63,12 +54,7 @@ export default function AdminDashboard() {
           openFeedbackCompleteModal={openFeedbackCompleteModal}
           openFeedbackDeleteModal={openFeedbackDeleteModal}
         />
-        <FloatingButton
-          text='AI'
-          onClick={handleAISummaryClick}
-          inset={{ bottom: '60px', left: '100%' }}
-          customCSS={aiFloatingButton(theme)}
-        />
+        <AISummaryFloatingButton />
         {showButton && (
           <FloatingButton
             icon={<ArrowUpIcon />}

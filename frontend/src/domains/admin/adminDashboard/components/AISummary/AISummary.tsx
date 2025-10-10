@@ -17,26 +17,31 @@ import {
 interface AISummaryProps {
   isOpen: boolean;
   onClose: () => void;
-  onCategorySelect?: (category: string) => void;
+  onCategorySelect?: (category: {
+    clusteredId: string;
+    content: string;
+    totalCount: number;
+  }) => void;
+  categories: {
+    clusteredId: string;
+    content: string;
+    totalCount: number;
+  }[];
 }
-
-// 더미 데이터 - 실제로는 API에서 가져올 데이터
-const mockCategories = [
-  '사용 편의성을 개선해야 한다는 의견이 많습니다.',
-  '고객 지원 응답 속도가 더 빨라지길 원합니다.',
-  '가격 대비 성능이 만족스럽다는 평가가 많습니다.',
-  '디자인과 UI가 직관적이지 않다는 지적이 있습니다.',
-  '추가 기능 도입에 대한 요구가 많습니다.',
-];
 
 export default function AISummary({
   isOpen,
   onClose,
   onCategorySelect,
+  categories,
 }: AISummaryProps) {
   const theme = useAppTheme();
 
-  const handleCategoryClick = (category: string) => {
+  const handleCategoryClick = (category: {
+    clusteredId: string;
+    content: string;
+    totalCount: number;
+  }) => {
     if (onCategorySelect) {
       onCategorySelect(category);
     }
@@ -56,13 +61,15 @@ export default function AISummary({
         </div>
 
         <div css={categoriesContainer(theme)}>
-          {mockCategories.map((category, index) => (
+          {categories.map((category, index) => (
             <div
               key={index}
               css={categoryItem(theme)}
               onClick={() => handleCategoryClick(category)}
             >
-              <p css={categoryText(theme)}>{category}</p>
+              <p css={categoryText(theme)}>
+                {category.content} ({category.totalCount})
+              </p>
               <p css={arrowIcon(theme)}>&gt;&gt;</p>
             </div>
           ))}
