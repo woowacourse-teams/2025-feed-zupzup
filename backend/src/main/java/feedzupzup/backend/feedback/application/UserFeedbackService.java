@@ -10,6 +10,7 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
+import feedzupzup.backend.feedback.domain.event.FeedbackCreatedEvent2;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
@@ -59,7 +60,9 @@ public class UserFeedbackService {
         publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
 
         // 새로운 피드백이 생성되면 이벤트 발행
-        publishFeedbackCreatedEvent(organization);
+        eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
+        //TODO : 위 피드백 생성 이벤트 리팩토링 필요
+        eventPublisher.publishEvent(new FeedbackCreatedEvent2(savedFeedback.getId()));
 
         return CreateFeedbackResponse.from(savedFeedback);
     }
@@ -110,11 +113,6 @@ public class UserFeedbackService {
 
     private void publishLatestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
         final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
-        eventPublisher.publishEvent(event);
-    }
-
-    private void publishFeedbackCreatedEvent(Organization organization) {
-        FeedbackCreatedEvent event = new FeedbackCreatedEvent(organization.getId(), "피드줍줍");
         eventPublisher.publishEvent(event);
     }
 }

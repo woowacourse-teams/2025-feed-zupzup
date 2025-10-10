@@ -4,6 +4,7 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
+import feedzupzup.backend.feedback.domain.ClusterRepresentativeFeedback;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
@@ -14,6 +15,8 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
@@ -131,5 +134,19 @@ public class AdminFeedbackService {
     @Transactional
     public void deleteByOrganizationId(final Long organizationId) {
         feedBackRepository.deleteAllByOrganizationId(organizationId);
+    }
+
+    public ClusterRepresentativeFeedbacksResponse getRepresentativeCluster(final Long adminId, final UUID organizationUuid) {
+        List<ClusterRepresentativeFeedback> clusterRepresentativeFeedbacks = feedBackRepository.findAllRepresentativeFeedbackPerCluster(
+                organizationUuid);
+        return ClusterRepresentativeFeedbacksResponse.from(clusterRepresentativeFeedbacks);
+    }
+
+    public ClusterFeedbacksResponse getFeedbacksByClusterId(final UUID clusterId) {
+        List<Feedback> feedbacks = feedBackRepository.findAllByClustering_ClusterId(clusterId);
+        if (feedbacks.isEmpty()) {
+            throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
+        }
+        return ClusterFeedbacksResponse.of(feedbacks);
     }
 }
