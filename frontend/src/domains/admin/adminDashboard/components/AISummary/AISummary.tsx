@@ -13,20 +13,13 @@ import {
   closeButton,
   modalWidth,
 } from './AISummary.styles';
+import { AISummaryCategory } from '@/types/ai.types';
 
 interface AISummaryProps {
   isOpen: boolean;
   onClose: () => void;
-  onCategorySelect: (category: {
-    clusteredId: string;
-    content: string;
-    totalCount: number;
-  }) => void;
-  categories: {
-    clusteredId: string;
-    content: string;
-    totalCount: number;
-  }[];
+  onCategorySelect: (category: AISummaryCategory) => void;
+  categories: AISummaryCategory[];
 }
 
 export default function AISummary({
@@ -37,11 +30,7 @@ export default function AISummary({
 }: AISummaryProps) {
   const theme = useAppTheme();
 
-  const handleCategoryClick = (category: {
-    clusteredId: string;
-    content: string;
-    totalCount: number;
-  }) => {
+  const handleCategoryClick = (category: AISummaryCategory) => {
     onCategorySelect(category);
     onClose();
   };
