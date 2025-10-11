@@ -36,37 +36,28 @@
   ],
   "screenshots": [
     {
-      "src": "screenshot-mobile.png",
-      "sizes": "640x1136",
-      "type": "image/png"
-    },
-    {
-      "src": "screenshot-desktop.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ],
-  "screenshots": [
-    {
       "src": "screenshot-mobile-1.png",
       "sizes": "640x1385",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "screenshot-mobile-2.png",
       "sizes": "640x1385",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "screenshot-mobile-3.png",
       "sizes": "640x1385",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "screenshot-mobile-4.png",
       "sizes": "640x1385",
-      "type": "image/png"
+      "type": "image/png",
+      "form_factor": "narrow"
     },
     {
       "src": "screenshot-desktop.png",
