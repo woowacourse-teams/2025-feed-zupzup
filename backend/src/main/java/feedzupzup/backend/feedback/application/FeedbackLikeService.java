@@ -38,12 +38,14 @@ public class FeedbackLikeService {
 
         if (likeHistoryRepository.existsByGuestAndFeedback(guest, feedback)) {
             throw new DuplicateLikeException(
-                    "해당 유저 " + guest.getGuestUuid() + "는 이미 해당 feedbackId " + feedbackId + "에 좋아요를 눌렀습니다.");
+                    "해당 유저 " + guest.getGuestUuid() + "는 이미 해당 feedbackId " + feedbackId
+                            + "에 좋아요를 눌렀습니다.");
         }
         feedback.increaseLikeCount();
 
         // 캐시 핸들 이벤트 발행
-        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
+        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback),
+                feedback.getOrganization().getUuid());
 
         likeHistoryRepository.save(new LikeHistory(guest, feedback));
         return LikeResponse.from(feedback);
@@ -54,22 +56,25 @@ public class FeedbackLikeService {
         final Guest guest = findGuestBy(guestInfo.guestUuid());
         final Feedback feedback = findFeedbackBy(feedbackId);
 
-        if (!likeHistoryRepository.existsByGuestAndFeedback(guest, feedback)) {
+        final int count = likeHistoryRepository.deleteByGuestAndFeedback(guest, feedback);
+
+        if (count == 0) {
             throw new InvalidLikeException(
                     "해당 유저 " + guest.getGuestUuid() + "는 feedbackId " + feedbackId + "에 좋아요 기록이 없습니다.");
         }
+
         feedback.decreaseLikeCount();
 
         // 캐시 핸들 이벤트 발행
         publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
 
-        likeHistoryRepository.deleteByGuestAndFeedback(guest, feedback);
         return LikeResponse.from(feedback);
     }
 
     private Guest findGuestBy(final UUID guestUuid) {
         return guestRepository.findByGuestUuid(guestUuid)
-                .orElseThrow(() -> new ResourceNotFoundException("guestUuid" + guestUuid +"는 존재하지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "guestUuid" + guestUuid + "는 존재하지 않습니다."));
     }
 
     private Feedback findFeedbackBy(final Long feedbackId) {
@@ -78,8 +83,10 @@ public class FeedbackLikeService {
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
     }
 
-    private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
-        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LIKES);
+    private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem,
+            final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid,
+                LIKES);
         eventPublisher.publishEvent(event);
     }
 }

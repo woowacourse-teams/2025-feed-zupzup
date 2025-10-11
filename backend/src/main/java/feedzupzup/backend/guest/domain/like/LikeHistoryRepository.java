@@ -12,7 +12,7 @@ public interface LikeHistoryRepository extends JpaRepository<LikeHistory, Long> 
 
     boolean existsByGuestAndFeedback(final Guest guest, final Feedback feedback);
 
-    void deleteByGuestAndFeedback(final Guest guest, final Feedback feedback);
+    int deleteByGuestAndFeedback(final Guest guest, final Feedback feedback);
 
     @Query("""
             SELECT DISTINCT lh
