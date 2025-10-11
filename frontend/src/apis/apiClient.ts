@@ -160,7 +160,6 @@ async function baseClient<Response, RequestBody>({
       throw error;
     }
 
-    // 네트워크 에러를 NetworkError로 처리
     const networkError = new NetworkError(
       error instanceof Error && error.message
         ? error.message
