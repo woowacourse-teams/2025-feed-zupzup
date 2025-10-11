@@ -1,6 +1,7 @@
 package feedzupzup.backend.global.config;
 
 import feedzupzup.backend.auth.presentation.interceptor.AdminCheckInterceptor;
+import feedzupzup.backend.auth.presentation.interceptor.GuestInterceptor;
 import feedzupzup.backend.auth.presentation.resolver.AdminOrganizationArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.AdminSessionArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.GuestArgumentResolver;
@@ -26,6 +27,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final AdminSessionArgumentResolver adminSessionArgumentResolver;
     private final AdminOrganizationArgumentResolver adminOrganizationArgumentResolver;
     private final AdminCheckInterceptor adminCheckInterceptor;
+    private final GuestInterceptor guestInterceptor;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -39,5 +41,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(adminCheckInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/login", "/admin/sign-up");
+
+        registry.addInterceptor(guestInterceptor)
+                .excludePathPatterns("/admin/**");
     }
 }
