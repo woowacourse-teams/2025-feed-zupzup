@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class GuestService {
 
     private final GuestRepository guestRepository;
@@ -28,7 +28,7 @@ public class GuestService {
 
     @Transactional
     public void save(final UUID guestUuid) {
-        Guest guest = new Guest(guestUuid, CurrentDateTime.create());
+        final Guest guest = new Guest(guestUuid, CurrentDateTime.create());
         guestRepository.save(guest);
     }
 

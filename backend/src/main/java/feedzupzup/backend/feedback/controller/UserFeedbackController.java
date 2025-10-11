@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
-import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
+import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
@@ -50,7 +50,7 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<CreateFeedbackResponse> create(
             final UUID organizationUuid,
             final CreateFeedbackRequest request,
-            @VisitedGuest final GuestInfo guestInfo
+            @SavedGuest final GuestInfo guestInfo
     ) {
         final CreateFeedbackResponse response = userFeedbackService.create(request,
                 organizationUuid, guestInfo);
@@ -61,7 +61,7 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<LikeResponse> like(
             final HttpServletResponse response,
             final Long feedbackId,
-            @VisitedGuest final GuestInfo guestInfo
+            @SavedGuest final GuestInfo guestInfo
     ) {
         final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
@@ -71,7 +71,7 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<LikeResponse> unlike(
             final HttpServletResponse response,
             final Long feedbackId,
-            @VisitedGuest final GuestInfo guestInfo
+            @SavedGuest final GuestInfo guestInfo
     ) {
         final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
