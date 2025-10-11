@@ -59,13 +59,16 @@ public class GuestInterceptor implements HandlerInterceptor {
         }
 
         final UUID guestUuid = guestId.get();
-        if (!guestService.isSavedGuest(guestUuid)) {
-            guestService.save(guestId.get());
+        if (!isSavedGuest(guestParameter, guestUuid)) {
+            guestService.save(guestUuid);
         }
-
         createAndAddCookie(response, guestUuid);
         request.setAttribute(GUEST_ID.getValue(), guestUuid);
         return true;
+    }
+
+    private boolean isSavedGuest(final Optional<MethodParameter> guestParameter, final UUID guestUuid) {
+        return isSavedGuestAnnotation(guestParameter.get()) && guestService.isSavedGuest(guestUuid);
     }
 
     private void createAndAddCookie(final HttpServletResponse response, final UUID newId) {
