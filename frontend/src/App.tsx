@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { syncVisitorId } from '@/utils/visitorId';
 import { Outlet } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { usePageTracking } from './hooks/usePageTracking';
@@ -33,12 +31,6 @@ function AppContent() {
   usePageTracking();
   const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
-  // TODO: 백엔드에서 쿠키 관련 플래그 수정해야 테스트 해볼수있음.
-  // TODO: 좋아요 로직, 피드백 작성 API로직에 인터셉트 추가해야함.
-
-  useEffect(() => {
-    syncVisitorId();
-  }, []);
 
   return (
     <ModalProvider>
