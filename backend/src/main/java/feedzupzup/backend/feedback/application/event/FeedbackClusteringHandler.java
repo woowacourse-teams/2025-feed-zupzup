@@ -12,7 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class FeedbackClusteringHandler {
 
-    private FeedbackClusteringService feedbackClusteringService;
+    private final FeedbackClusteringService feedbackClusteringService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Async
