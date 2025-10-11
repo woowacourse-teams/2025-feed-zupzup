@@ -532,11 +532,6 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         }
     }
 
-    private Guest createAndSaveRandomGuest() {
-        final Guest guest = new Guest(UUID.randomUUID(), CurrentDateTime.create());
-        return guestRepository.save(guest);
-    }
-
     private GuestInfo toGuestInfo(Guest guest) {
         return new GuestInfo(guest.getGuestUuid());
     }

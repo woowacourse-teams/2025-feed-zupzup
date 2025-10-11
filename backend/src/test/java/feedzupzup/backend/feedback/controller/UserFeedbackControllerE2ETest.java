@@ -226,9 +226,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     @DisplayName("사용자가 비밀 피드백을 성공적으로 생성한다")
     void user_create_secret_feedback_success() {
         // given
-        final CreateFeedbackRequest request = new CreateFeedbackRequest(
-                "비밀 피드백입니다", true, "테스트유저",
-                "건의", "https://example.com/image.png");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest("비밀 피드백입니다", true, "테스트유저", "건의", "https://example.com/image.png");
 
         // when & then
         given()
@@ -254,8 +252,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void user_create_feedback_appears_in_list() {
         // given
         final CreateFeedbackRequest request = new CreateFeedbackRequest(
-                "새 피드백", false, "테스트유저",
-                "건의", "https://example.com/image.png");
+                "새 피드백", false, "테스트유저", "건의", "https://example.com/image.png");
 
         // when - 피드백 생성
         final Long createdFeedbackId = given()

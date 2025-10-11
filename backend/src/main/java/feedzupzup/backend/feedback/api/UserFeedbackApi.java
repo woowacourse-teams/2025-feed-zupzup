@@ -1,7 +1,6 @@
 package feedzupzup.backend.feedback.api;
 
 import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
-import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;

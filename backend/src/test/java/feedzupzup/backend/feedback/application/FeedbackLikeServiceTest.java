@@ -16,7 +16,6 @@ import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
-import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.domain.guest.Guest;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
@@ -30,7 +29,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseCookie;
 
 class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
 
@@ -48,9 +46,6 @@ class FeedbackLikeServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private CookieUtilization cookieUtilization;
 
     private final Guest guest = new Guest(UUID.randomUUID(), CurrentDateTime.create());
 
