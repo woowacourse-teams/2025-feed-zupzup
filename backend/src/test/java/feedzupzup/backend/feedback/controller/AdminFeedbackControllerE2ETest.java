@@ -28,6 +28,7 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -621,5 +622,126 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .get("/admin/feedback-statistics")
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("관리자가 모든 클러스터 대표 피드백을 성공적으로 조회한다")
+    void admin_get_representative_cluster_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        UUID clusterId1 = UUID.randomUUID();
+        UUID clusterId2 = UUID.randomUUID();
+        // 클러스터별 피드백 생성 (clusterId가 다른 피드백들)
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
+                organization, "첫 번째 클러스터 피드백", organizationCategory,
+                clusterId1);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithCluster(
+                organization, "첫 번째 클러스터의 다른 피드백", organizationCategory,
+                clusterId1);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
+                organization, "두 번째 클러스터 피드백", organizationCategory,
+                clusterId2);
+
+        feedBackRepository.save(feedback1);
+        feedBackRepository.save(feedback2);
+        feedBackRepository.save(feedback3);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/clusters", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.clusterRepresentativeFeedbacks", hasSize(2))
+                .body("data.clusterRepresentativeFeedbacks[0].clusterId", equalTo(clusterId1.toString()))
+                .body("data.clusterRepresentativeFeedbacks[0].content", equalTo("첫 번째 클러스터 피드백"))
+                .body("data.clusterRepresentativeFeedbacks[0].totalCount", equalTo(2))
+                .body("data.clusterRepresentativeFeedbacks[1].clusterId", equalTo(clusterId2.toString()))
+                .body("data.clusterRepresentativeFeedbacks[1].content", equalTo("두 번째 클러스터 피드백"))
+                .body("data.clusterRepresentativeFeedbacks[1].totalCount", equalTo(1));
+    }
+
+    @Test
+    @DisplayName("관리자가 특정 클러스터의 모든 피드백을 성공적으로 조회한다")
+    void admin_get_feedbacks_by_cluster_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final UUID clusterId = UUID.randomUUID();
+
+        // 같은 클러스터의 피드백 3개 생성
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
+                organization, "첫 번째 피드백", organizationCategory, clusterId);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithCluster(
+                organization, "두 번째 피드백", organizationCategory, clusterId);
+        final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
+                organization, "세 번째 피드백", organizationCategory, clusterId);
+
+        // 다른 클러스터의 피드백 1개 (결과에 포함되지 않아야 함)
+        final Feedback otherClusterFeedback = FeedbackFixture.createFeedbackWithCluster(
+                organization, "다른 클러스터 피드백", organizationCategory, 
+                UUID.randomUUID());
+
+        feedBackRepository.save(feedback1);
+        feedBackRepository.save(feedback2);
+        feedBackRepository.save(feedback3);
+        feedBackRepository.save(otherClusterFeedback);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/clusters/{clusterId}", clusterId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(3))
+                .body("data.feedbacks[0].content", equalTo("첫 번째 피드백"))
+                .body("data.feedbacks[1].content", equalTo("두 번째 피드백"))
+                .body("data.feedbacks[2].content", equalTo("세 번째 피드백"));
+    }
+
+    @Test
+    @DisplayName("관리자가 존재하지 않는 클러스터를 조회하면 404 예외를 발생시킨다.")
+    void admin_get_feedbacks_by_cluster_empty() {
+        // given
+        final UUID nonExistentClusterId = UUID.randomUUID();
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/clusters/{clusterId}", nonExistentClusterId)
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(404))
+                .body("message", equalTo("요청한 자원을 찾을 수 없습니다"));
     }
 }

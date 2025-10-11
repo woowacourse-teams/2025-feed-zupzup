@@ -5,9 +5,11 @@ import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrinci
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
@@ -92,5 +94,32 @@ public interface AdminFeedbackApi {
     @GetMapping("/admin/feedbacks/statistics")
     SuccessResponse<FeedbackStatisticResponse> getAllFeedbackStatistics(
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
+    );
+
+    @Operation(summary = "모든 클러스터 대표 피드백 전체 조회", description = "각 클러스터의 대표 피드백을 조회합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations/{organizationUuid}/clusters")
+    SuccessResponse<ClusterRepresentativeFeedbacksResponse> getRepresentativeCluster(
+            @Parameter(hidden = true) @LoginOrganizer final AdminSession adminSession,
+            @PathVariable("organizationUuid") UUID organizationUuid
+    );
+
+    @Operation(summary = "특정 클러스터 피드백 전체 조회", description = "특정 클러스터에 속한 전체 피드백을 조회합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations/clusters/{clusterId}")
+    SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
+            @PathVariable("clusterId") UUID clusterId
     );
 }
