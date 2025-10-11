@@ -1,5 +1,7 @@
 package feedzupzup.backend.auth.presentation.resolver;
 
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.GUEST_ID;
+
 import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
 import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.guest.dto.GuestInfo;
@@ -25,7 +27,7 @@ public class GuestArgumentResolver implements HandlerMethodArgumentResolver {
             final WebDataBinderFactory binderFactory
     ) throws Exception {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        final UUID guestId = (UUID) request.getAttribute("guestId");
+        final UUID guestId = (UUID) request.getAttribute(GUEST_ID.getValue());
         return new GuestInfo(guestId);
     }
 

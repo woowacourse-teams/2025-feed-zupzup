@@ -1,5 +1,6 @@
 package feedzupzup.backend.auth.presentation.interceptor;
 
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.GUEST_ID;
 import static feedzupzup.backend.global.util.CookieUtilization.GUEST_KEY;
 
 import com.google.common.net.HttpHeaders;
@@ -53,7 +54,7 @@ public class GuestInterceptor implements HandlerInterceptor {
             if(isSavedGuestAnnotation(guestParameter.get())) {
                 guestService.save(newId);
             }
-            request.setAttribute("guestId", newId);
+            request.setAttribute(GUEST_ID.getValue(), newId);
             return true;
         }
 
@@ -63,7 +64,7 @@ public class GuestInterceptor implements HandlerInterceptor {
         }
 
         createAndAddCookie(response, guestUuid);
-        request.setAttribute("guestId", guestUuid);
+        request.setAttribute(GUEST_ID.getValue(), guestUuid);
         return true;
     }
 
