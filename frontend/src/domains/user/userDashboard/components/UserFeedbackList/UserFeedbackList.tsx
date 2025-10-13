@@ -96,6 +96,7 @@ export default memo(function UserFeedbackList({
               )}
               isHighlighted={feedback.feedbackId === highlightedId}
               category={feedback.category}
+              imgUrl={feedback.imageUrl}
             />
           ))}
         </FeedbackBoxList>

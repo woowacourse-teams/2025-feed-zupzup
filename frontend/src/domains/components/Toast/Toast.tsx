@@ -1,4 +1,7 @@
-import { toastStyle } from '@/domains/components/Toast/Toast.style';
+import {
+  iconContainer,
+  toastStyle,
+} from '@/domains/components/Toast/Toast.style';
 import ToastDangerIcon from '@/components/icons/ToastDangerIcon';
 import { useEffect, useState } from 'react';
 import ToastCheckIcon from '@/components/icons/ToastCheckIcon';
@@ -31,8 +34,10 @@ export default function Toast({
 
   return (
     <div css={toastStyle(isExiting)}>
-      {type === 'error' && <ToastDangerIcon />}
-      {type === 'success' && <ToastCheckIcon />}
+      <p css={iconContainer}>
+        {type === 'error' && <ToastDangerIcon />}
+        {type === 'success' && <ToastCheckIcon />}
+      </p>
       <span>{message}</span>
     </div>
   );
