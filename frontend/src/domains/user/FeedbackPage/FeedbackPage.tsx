@@ -18,14 +18,12 @@ import {
 } from '@/domains/user/FeedbackPage/FeedbackPage.styles';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
+import useUploadImage from '@/domains/user/home/hooks/useUploadImage';
+import { useUploadS3Image } from '@/domains/user/home/hooks/useUploadS3Image';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useCallback, useState } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
-import useUploadImage from '@/domains/user/home/hooks/useUploadImage';
-import { useUploadS3Image } from '@/domains/user/home/hooks/useUploadS3Image';
-import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
-import { ApiError } from '@/apis/apiClient';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
@@ -56,7 +54,6 @@ export default function FeedbackPage({
   const { file, imgUrl, onChangeFile, presignedUrl, contentType } =
     useUploadImage();
   const { uploadS3PreSignUrl } = useUploadS3Image();
-  const { handleApiError } = useApiErrorHandler();
   const { submitFeedback, submitStatus } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -101,16 +98,12 @@ export default function FeedbackPage({
 
       setIsModalOpen(true);
 
-      if (!file || !presignedUrl) {
-        handleApiError(new ApiError(400, 'No file or presigned URL'));
-        return;
-      }
-
-      uploadS3PreSignUrl({
-        presignedUrl: presignedUrl,
-        file: file,
-        contentType: contentType ?? 'image/png',
-      });
+      if (file && presignedUrl)
+        uploadS3PreSignUrl({
+          presignedUrl: presignedUrl,
+          file: file,
+          contentType: contentType ?? 'image/png',
+        });
 
       await submitFeedback({
         organizationId,
