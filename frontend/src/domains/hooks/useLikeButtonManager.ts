@@ -3,7 +3,7 @@ import { deleteLike, postLike } from '@/apis/userFeedback.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useMyLikedFeedback from '@/domains/user/userDashboard/hooks/useMyLikedFeedback';
 import { useMutation } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface useLikeButtonManagerProps {
   like: boolean;
@@ -16,16 +16,20 @@ export default function useLikeButtonManager({
   feedbackId,
   likeCount,
 }: useLikeButtonManagerProps) {
-  const [isLiked, setIsLiked] = useState<boolean>(false);
-  const [tempLikeCount, setTempLikeCount] = useState<number>(0);
+  const [optimisticLike, setOptimisticLike] = useState<boolean | null>(null);
+  const [optimisticCount, setOptimisticCount] = useState<number | null>(null);
+
+  const isLiked = optimisticLike ?? like;
+  const tempLikeCount = optimisticCount ?? likeCount;
+
   const { showErrorModal } = useErrorModalContext();
   const { refetchMyLikeFeedbackIds } = useMyLikedFeedback();
 
   const { mutate: likeMutation } = useMutation({
     mutationFn: postLike,
     onError: (e: ApiError) => {
-      setIsLiked(false);
-      setTempLikeCount((prev) => prev - 1);
+      setOptimisticLike(null);
+      setOptimisticCount(null);
       showErrorModal(e, '에러');
     },
     onSettled: () => {
@@ -36,8 +40,8 @@ export default function useLikeButtonManager({
   const { mutate: deleteLikeMutation } = useMutation({
     mutationFn: deleteLike,
     onError: (e: ApiError) => {
-      setIsLiked(true);
-      setTempLikeCount((prev) => prev + 1);
+      setOptimisticLike(null);
+      setOptimisticCount(null);
       showErrorModal(e, '에러');
     },
     onSettled: () => {
@@ -50,23 +54,15 @@ export default function useLikeButtonManager({
     if (feedbackId === undefined) return;
 
     if (!isLiked) {
-      setTempLikeCount((prev) => prev + 1);
-      setIsLiked(true);
+      setOptimisticCount(tempLikeCount + 1);
+      setOptimisticLike(true);
       likeMutation({ feedbackId });
     } else {
-      setTempLikeCount((prev) => prev - 1);
-      setIsLiked(false);
+      setOptimisticCount(tempLikeCount - 1);
+      setOptimisticLike(false);
       deleteLikeMutation({ feedbackId });
     }
   };
-
-  useEffect(() => {
-    setIsLiked(like);
-  }, [like]);
-
-  useEffect(() => {
-    setTempLikeCount(likeCount);
-  }, [likeCount]);
 
   return {
     tempLikeCount,
