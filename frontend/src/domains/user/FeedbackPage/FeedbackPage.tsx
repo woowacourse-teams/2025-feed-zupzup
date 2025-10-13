@@ -99,9 +99,9 @@ export default function FeedbackPage({
       setIsModalOpen(true);
 
       if (file && presignedUrl)
-        uploadS3PreSignUrl({
-          presignedUrl: presignedUrl,
-          file: file,
+        await uploadS3PreSignUrl({
+          presignedUrl,
+          file,
           contentType: contentType ?? 'image/png',
         });
 

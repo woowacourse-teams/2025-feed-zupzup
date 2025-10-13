@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 export function useUploadS3Image() {
   const { handleApiError } = useApiErrorHandler();
 
-  const { mutate: uploadS3PreSignUrl } = useMutation({
+  const { mutateAsync: uploadS3PreSignUrl } = useMutation({
     mutationFn: ({
       presignedUrl,
       file,
