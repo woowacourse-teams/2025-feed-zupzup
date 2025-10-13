@@ -34,6 +34,7 @@ export interface FeedbackFormProps {
   onUsernameFocus: () => void;
   onRandomChange: () => void;
   onLockToggle: () => void;
+  handleCancelFile: () => void;
 }
 
 export default function FeedbackForm({
@@ -49,6 +50,7 @@ export default function FeedbackForm({
   onUsernameFocus,
   onRandomChange,
   onLockToggle,
+  handleCancelFile,
 }: FeedbackFormProps) {
   const theme = useAppTheme();
 
@@ -95,6 +97,7 @@ export default function FeedbackForm({
           file={file}
           imgUrl={imgUrl}
           onChangeFile={onChangeFile}
+          onCancelFile={handleCancelFile}
         />
         <div css={toggleButtonContainer}>
           <BasicToggleButton

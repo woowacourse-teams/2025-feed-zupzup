@@ -30,6 +30,11 @@ export default function useUploadImage() {
     });
   };
 
+  const handleCancelFile = () => {
+    setFile(null);
+    setImgUrl(null);
+  };
+
   useEffect(() => {
     if (!file) {
       if (imgUrl) URL.revokeObjectURL(imgUrl);
@@ -60,5 +65,6 @@ export default function useUploadImage() {
     fetchPresignedUrl,
     presignedUrl,
     contentType,
+    handleCancelFile,
   };
 }

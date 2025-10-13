@@ -23,7 +23,7 @@ export const uploadLabel = (theme: Theme) => css`
   padding: 8px 12px;
   color: ${theme.colors.gray[100]};
   background: ${theme.colors.gray[500]};
-  border-radius: 10px;
+  border-radius: 24px;
   cursor: pointer;
   ${theme.typography.pretendard.caption};
 
@@ -37,14 +37,14 @@ export const fileInput = css`
 `;
 
 export const previewWrap = css`
-  width: 100%;
+  position: relative;
+  height: 100px;
   border-radius: 10px;
 `;
 
 export const previewImage = css`
   display: block;
-  max-height: 120px;
-  border-radius: 10px;
+  height: 100%;
 `;
 
 export const fileInfo = (theme: Theme) => css`
@@ -56,4 +56,25 @@ export const fileInfo = (theme: Theme) => css`
   color: ${theme.colors.gray[400]};
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const cancelButton = css`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+
+export const cancelIcon = css`
+  width: 16px;
+  height: 16px;
 `;

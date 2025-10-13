@@ -51,8 +51,15 @@ export default function FeedbackPage({
     handleUsernameFocus,
   } = useFeedbackForm();
 
-  const { file, imgUrl, onChangeFile, presignedUrl, contentType } =
-    useUploadImage();
+  const {
+    file,
+    imgUrl,
+    onChangeFile,
+    presignedUrl,
+    contentType,
+    handleCancelFile,
+  } = useUploadImage();
+
   const { uploadS3PreSignUrl } = useUploadS3Image();
   const { submitFeedback, submitStatus } = useFeedbackSubmit();
 
@@ -150,6 +157,7 @@ export default function FeedbackPage({
             onLockToggle={handleLockToggleWithTracking}
             onUsernameChange={handleUsernameChange}
             onUsernameFocus={handleUsernameFocus}
+            handleCancelFile={handleCancelFile}
           />
         </div>
 
