@@ -36,7 +36,7 @@ export default function useLikeButtonManager({
   const { mutate: deleteLikeMutation } = useMutation({
     mutationFn: deleteLike,
     onError: (e: ApiError) => {
-      setIsLiked(false);
+      setIsLiked(true);
       setTempLikeCount((prev) => prev + 1);
       showErrorModal(e, '에러');
     },
