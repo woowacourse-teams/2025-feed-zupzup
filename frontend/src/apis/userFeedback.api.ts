@@ -95,9 +95,15 @@ export interface GetMyLikedFeedbacksResponse {
   };
 }
 
-export async function getMyLikedFeedbacks() {
+interface GetMyLikedFeedbacksParams {
+  organizationId: string;
+}
+
+export async function getMyLikedFeedbacks({
+  organizationId,
+}: GetMyLikedFeedbacksParams) {
   const response = await apiClient.get<GetMyLikedFeedbacksResponse>(
-    '/feedbacks/my-likes'
+    `/organizations/${organizationId}/feedbacks/my-likes`
   );
 
   return response as GetMyLikedFeedbacksResponse;
