@@ -1,8 +1,10 @@
 package feedzupzup.backend.global.config;
 
 import feedzupzup.backend.auth.presentation.interceptor.AdminCheckInterceptor;
+import feedzupzup.backend.auth.presentation.interceptor.GuestInterceptor;
 import feedzupzup.backend.auth.presentation.resolver.AdminOrganizationArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.AdminSessionArgumentResolver;
+import feedzupzup.backend.auth.presentation.resolver.GuestArgumentResolver;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -21,12 +23,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
+    private final GuestArgumentResolver guestArgumentResolver;
     private final AdminSessionArgumentResolver adminSessionArgumentResolver;
     private final AdminOrganizationArgumentResolver adminOrganizationArgumentResolver;
     private final AdminCheckInterceptor adminCheckInterceptor;
+    private final GuestInterceptor guestInterceptor;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(guestArgumentResolver);
         resolvers.add(adminSessionArgumentResolver);
         resolvers.add(adminOrganizationArgumentResolver);
     }
@@ -36,5 +41,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(adminCheckInterceptor)
                 .addPathPatterns("/admin/**")
                 .excludePathPatterns("/admin/login", "/admin/sign-up");
+
+        registry.addInterceptor(guestInterceptor)
+                .excludePathPatterns("/admin/**");
     }
 }

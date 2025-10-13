@@ -31,6 +31,10 @@ import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
@@ -49,6 +53,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.transaction.support.TransactionTemplate;
 
 class FeedbackCacheTest extends ServiceIntegrationHelper {
+
+    @Autowired
+    private GuestRepository guestRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -90,6 +97,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
     private OrganizationCategory organizationCategory;
 
+    private final Guest guest = new Guest(UUID.randomUUID(), CurrentDateTime.create());
+
     @BeforeEach
     void init() {
         organization = OrganizationFixture.createAllBlackBox();
@@ -98,6 +107,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(organization,
                 SUGGESTION);
         organizationCategoryRepository.save(organizationCategory);
+        guestRepository.save(guest);
     }
 
     @Nested
@@ -168,7 +178,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
                     "건의", "https://example.com/image.png");
 
-            userFeedbackService.create(request, organization.getUuid());
+            userFeedbackService.create(request, organization.getUuid(), toGuestInfo(guest));
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -196,7 +206,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
                     "건의", "https://example.com/image.png");
 
-            userFeedbackService.create(request, organization.getUuid());
+            userFeedbackService.create(request, organization.getUuid(), toGuestInfo(guest));
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -311,7 +321,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         organization.getUuid(), 10, null, null, LIKES);
 
                 // when - 캐시 비우기
-                feedbackLikeService.like(5L, UUID.randomUUID());
+                feedbackLikeService.like(5L, toGuestInfo(guest));
 
                 await().atMost(Duration.ofSeconds(1))
                         .untilAsserted(() ->
@@ -337,7 +347,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 saveMultipleFeedbacksFromLikeCounts(List.of(1));
 
                 // when
-                feedbackLikeService.like(11L, UUID.randomUUID());
+                feedbackLikeService.like(11L, toGuestInfo(guest));
 
                 await().atMost(Duration.ofSeconds(1))
                         .untilAsserted(() ->
@@ -361,10 +371,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 userFeedbackService.getFeedbackPage(
                         organization.getUuid(), 10, null, null, LIKES);
 
-                final UUID userUuid = UUID.randomUUID();
-
                 // 1차 캐시 클리어
-                feedbackLikeService.like(9L, userUuid);
+                feedbackLikeService.like(9L, toGuestInfo(guest));
 
                 await().atMost(Duration.ofSeconds(1))
                         .untilAsserted(() ->
@@ -376,7 +384,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         organization.getUuid(), 10, null, null, LIKES);
 
                 // 2차 캐시 클리어
-                feedbackLikeService.unlike(9L, userUuid);
+                feedbackLikeService.unlike(9L, toGuestInfo(guest));
 
                 // 비동기 캐시 클리어 대기
                 await().atMost(Duration.ofSeconds(1))
@@ -483,7 +491,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
 
             // when - 좋아요 증가
-            feedbackLikeService.like(5L, UUID.randomUUID());
+            feedbackLikeService.like(5L, toGuestInfo(guest));
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -504,10 +512,9 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void when_unlike_then_remove_all_caches_containing_feedback() {
             // given
             saveMultipleFeedbacks(10);
-            final UUID userUuid = UUID.randomUUID();
 
             // 먼저 좋아요
-            feedbackLikeService.like(5L, userUuid);
+            feedbackLikeService.like(5L, toGuestInfo(guest));
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -519,7 +526,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
 
             // when - 좋아요 감소
-            feedbackLikeService.unlike(5L, userUuid);
+            feedbackLikeService.unlike(5L, toGuestInfo(guest));
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -590,7 +597,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             saveMultipleFeedbacks(1);
 
             // when - 캐시에 없는 11번 피드백에 좋아요
-            feedbackLikeService.like(11L, UUID.randomUUID());
+            feedbackLikeService.like(11L, toGuestInfo(guest));
 
             await().atMost(Duration.ofSeconds(1))
                     .untilAsserted(() ->
@@ -617,7 +624,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             // when - 명시적 롤백을 진행한다.
             transactionTemplate.execute(status -> {
-                userFeedbackService.create(request, organization.getUuid());
+                userFeedbackService.create(request, organization.getUuid(), toGuestInfo(guest));
                 status.setRollbackOnly();
                 return null;
             });
@@ -633,7 +640,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             final CreateFeedbackRequest request = FeedbackRequestFixture.createRequestWithContent("test1");
 
             // when
-            userFeedbackService.create(request, organization.getUuid());
+            userFeedbackService.create(request, organization.getUuid(), toGuestInfo(guest));
 
             // then
             await().atMost(Duration.ofSeconds(1))
@@ -652,7 +659,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
 
             // when
             transactionTemplate.execute(status -> {
-                feedbackLikeService.like(5L, UUID.randomUUID());
+                feedbackLikeService.like(5L, toGuestInfo(guest));
                 status.setRollbackOnly();
                 return null;
             });
@@ -671,7 +678,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     organization.getUuid(), 10, null, null, LIKES);
 
             // when
-            feedbackLikeService.like(5L, UUID.randomUUID());
+            feedbackLikeService.like(5L, toGuestInfo(guest));
 
             // then
             await().atMost(Duration.ofSeconds(1))
@@ -760,5 +767,13 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         assertThat(feedbacks)
                 .extracting("feedbackId")
                 .containsExactly(expectedIds);
+    }
+
+    private GuestInfo createGuestInfo() {
+        return new GuestInfo(UUID.randomUUID());
+    }
+
+    private GuestInfo toGuestInfo(Guest guest) {
+        return new GuestInfo(guest.getGuestUuid());
     }
 }

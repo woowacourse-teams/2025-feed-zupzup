@@ -39,8 +39,8 @@ public class UserLikeFeedbacksRepository {
         return Collections.unmodifiableMap(userLikeFeedbacks);
     }
 
-    public LikeFeedbacks getUserLikeFeedbacksFrom(final UUID visitorId) {
-        return Optional.ofNullable(userLikeFeedbacks.get(visitorId))
+    public LikeFeedbacks getUserLikeFeedbacksFrom(final UUID guestId) {
+        return Optional.ofNullable(userLikeFeedbacks.get(guestId))
                 .orElse(new LikeFeedbacks());
     }
 }
