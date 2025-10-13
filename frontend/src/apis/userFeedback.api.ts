@@ -64,6 +64,5 @@ export async function getMyFeedbacks({ organizationId }: GetMyFeedbacksParams) {
   const url = `/organizations/${organizationId}/feedbacks/my`;
 
   const response = await apiClient.get<GetMyFeedbacksResponse>(url);
-
   return response as GetMyFeedbacksResponse;
 }

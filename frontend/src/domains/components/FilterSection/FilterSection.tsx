@@ -11,7 +11,8 @@ import {
 } from './FilterSection.styles';
 import Button from '@/components/@commons/Button/Button';
 import { FeedbackFilterType, SortType } from '@/types/feedback.types';
-import { memo, useEffect } from 'react';
+import { memo } from 'react';
+import useSortResetOnMineFilter from './hooks/useSortResetOnMineFilter';
 
 export interface FilterSectionProps {
   selectedFilter: FeedbackFilterType | '';
@@ -46,11 +47,7 @@ export default memo(function FilterSection({
 }: FilterSectionProps) {
   const theme = useAppTheme();
 
-  useEffect(() => {
-    if (selectedFilter === 'MINE' && selectedSort !== 'LATEST') {
-      onSortChange('LATEST');
-    }
-  }, [selectedFilter, selectedSort, onSortChange]);
+  useSortResetOnMineFilter(selectedFilter, selectedSort, onSortChange);
 
   const handleFilterClick = (filterValue: FeedbackFilterType) => {
     if (selectedFilter === filterValue) {
