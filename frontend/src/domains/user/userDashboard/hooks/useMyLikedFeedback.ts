@@ -12,5 +12,5 @@ export default function useMyLikedFeedback() {
       select: (res) => res.data.feedbackIds,
     });
 
-  return { myLikeFeedbackIds: myLikeFeedbackIds, refetchMyLikeFeedbackIds };
+  return { myLikeFeedbackIds, refetchMyLikeFeedbackIds };
 }
