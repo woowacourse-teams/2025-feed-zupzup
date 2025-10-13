@@ -41,11 +41,11 @@ public class GuestService {
     }
 
     public LikeHistoryResponse findGuestLikeHistories(
-            final UUID organizatioUuid,
+            final UUID organizationUuid,
             final GuestInfo guestInfo
     ) {
         final List<LikeHistory> likeHistories = likeHistoryRepository.findLikeHistoriesBy(
-                guestInfo.guestUuid(), organizatioUuid);
+                guestInfo.guestUuid(), organizationUuid);
         return LikeHistoryResponse.from(likeHistories);
     }
 
