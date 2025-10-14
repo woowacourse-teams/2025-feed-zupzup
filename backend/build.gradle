@@ -40,7 +40,6 @@ dependencies {
 
     //aws
     implementation 'software.amazon.awssdk:s3:2.30.16'
-    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.698'
 
     //QR
     implementation 'com.google.zxing:core:3.5.2'
