@@ -13,6 +13,7 @@ import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import { goTopButton } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import AdminFeedbackList from './components/AdminFeedbackList/AdminFeedbackList';
+import AISummaryFloatingButton from './components/AISummaryFloatingButton/AISummaryFloatingButton';
 
 export default function AdminDashboard() {
   const theme = useAppTheme();
@@ -53,11 +54,12 @@ export default function AdminDashboard() {
           openFeedbackCompleteModal={openFeedbackCompleteModal}
           openFeedbackDeleteModal={openFeedbackDeleteModal}
         />
+        <AISummaryFloatingButton />
         {showButton && (
           <FloatingButton
             icon={<ArrowUpIcon />}
             onClick={scrollToTop}
-            inset={{ bottom: '80px' }}
+            inset={{ bottom: '60px' }}
             customCSS={goTopButton(theme)}
           />
         )}
