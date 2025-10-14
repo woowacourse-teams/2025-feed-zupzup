@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.*;
+import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
 
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
@@ -8,6 +8,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.event.FeedbackCreatedEvent2;
+import feedzupzup.backend.feedback.domain.service.moderation.ContentFilter;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
@@ -48,6 +49,7 @@ public class UserFeedbackService {
     private final OrganizationRepository organizationRepository;
     private final WriteHistoryRepository writeHistoryRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ContentFilter contentFilter;
 
     @Transactional
     @BusinessActionLog
@@ -61,7 +63,8 @@ public class UserFeedbackService {
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
                 category);
-        final Feedback newFeedback = request.toFeedback(organization, organizationCategory);
+        final String filteredContent = contentFilter.filter(request.content());
+        final Feedback newFeedback = request.toFeedback(organization, organizationCategory, filteredContent);
         final Feedback savedFeedback = feedbackRepository.save(newFeedback);
 
         writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
