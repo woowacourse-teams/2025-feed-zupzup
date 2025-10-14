@@ -38,7 +38,7 @@ export const categoryItem = (theme: Theme) => css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 12px 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 
