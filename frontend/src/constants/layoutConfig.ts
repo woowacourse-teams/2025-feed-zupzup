@@ -53,8 +53,8 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
   [`${ROUTES.ADMIN}/${ROUTES.AI_SUMMARY}`]: {
     header: {
       show: true,
-      title: 'AI 요약',
-      subtitle: 'AI 요약 현황 및 관리',
+      title: 'AI 피드백',
+      subtitle: 'AI가 찾은 비슷한 피드백',
       hasMoreIcon: true,
       showBackButton: true,
     },
