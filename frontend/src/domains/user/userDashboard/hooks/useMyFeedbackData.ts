@@ -17,14 +17,14 @@ export function useMyFeedbackData() {
     ApiError,
     FeedbackType[]
   >({
-    queryKey: QUERY_KEYS.myFeedbacks(organizationId!),
+    queryKey: QUERY_KEYS.myFeedbacks(organizationId),
     select: (res) => res.data.feedbacks,
     queryFn: () =>
       getMyFeedbacks({
         organizationId,
       }),
 
-    enabled: organizationId !== undefined,
+    enabled: organizationId !== '',
     staleTime: 0,
     gcTime: 5 * 60 * 1000,
   });
