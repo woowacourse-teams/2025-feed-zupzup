@@ -20,9 +20,11 @@ public class LocalStackS3TestConfig {
 
     @Bean
     static LocalStackContainer localStackContainer() {
-        return new LocalStackContainer(LOCALSTACK_IMAGE)
+        final LocalStackContainer container = new LocalStackContainer(LOCALSTACK_IMAGE)
                 .withServices(Service.S3)
                 .withReuse(true);
+        container.start();
+        return container;
     }
 
     @Bean
