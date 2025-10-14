@@ -10,9 +10,9 @@ export default function CloseIcon() {
       <path
         d='M11.25 1.75L1.75 11.25M1.75 1.75L11.25 11.25'
         stroke='#ADADAD'
-        stroke-width='2'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='2'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );
