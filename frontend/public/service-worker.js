@@ -32,35 +32,29 @@ try {
     };
     self.registration.showNotification(title, options);
   });
-
-  console.log('[ServiceWorker] Firebase FCM 초기화 완료');
 } catch (error) {
-  console.warn('[ServiceWorker] Firebase FCM 초기화 실패:', error);
+  // Firebase FCM 초기화 실패
 }
 
 if (self.location.hostname === 'localhost') {
   try {
     importScripts('/mockServiceWorker.js');
-    console.log('[ServiceWorker] MSW 로드 완료');
   } catch (error) {
-    console.warn('[ServiceWorker] MSW 로드 실패 (정상):', error);
+    // MSW 로드 실패 (정상)
   }
 }
 
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Installing');
   event.waitUntil(
     caches
       .open(CACHE_NAME)
       .then((cache) => {
-        console.log('[ServiceWorker] Caching app shell');
         return cache.addAll(urlsToCache);
       })
       .then(() => self.skipWaiting())
   );
 });
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activating');
   event.waitUntil(
     caches
       .keys()
@@ -68,7 +62,6 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
             if (cacheName !== CACHE_NAME) {
-              console.log('[ServiceWorker] Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
