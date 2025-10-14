@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';
+import TerserPlugin from 'terser-webpack-plugin';
 import { createDefineEnv } from './buildUtils.js';
 import common from './webpack.common.js';
 
@@ -13,4 +14,16 @@ export default merge(common, {
   mode: 'production',
   devtool: 'source-map',
   plugins: [new webpack.DefinePlugin(defineEnv)],
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true,
+            pure_funcs: ['console.log', 'console.info', 'console.debug'],
+          },
+        },
+      }),
+    ],
+  },
 });

@@ -12,6 +12,7 @@ export const feedbackData: FeedbackType[] = [
     comment:
       '좋게 봐주셔서 감사합니다! 앞으로도 더 나은 서비스 제공을 위해 노력하겠습니다.',
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 2,
@@ -23,6 +24,7 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 4,
     comment: null,
     category: '건의',
+    imageUrl: null,
   },
   {
     feedbackId: 3,
@@ -35,6 +37,7 @@ export const feedbackData: FeedbackType[] = [
     comment:
       '디자인을 알아봐 주셔서 감사합니다! 더 나은 UX를 위해 계속 개선하겠습니다.',
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 4,
@@ -46,6 +49,7 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 9,
     comment: null,
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 5,
@@ -57,6 +61,7 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 15,
     comment: '좋은 말씀 감사합니다! 유용하게 사용해 주셔서 기쁩니다.',
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 6,
@@ -68,6 +73,8 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 2,
     comment: null,
     category: '건의',
+    imageUrl:
+      'https://www.hanbit.co.kr/_next/image?url=https%3A%2F%2Fcdn-prod.hanbit.co.kr%2Fthumbnails%2FC6243800881_cover.jpg&w=1920&q=75',
   },
   {
     feedbackId: 7,
@@ -80,6 +87,7 @@ export const feedbackData: FeedbackType[] = [
     comment:
       '속도 개선을 느껴주셔서 감사합니다! 앞으로도 지속적으로 최적화하겠습니다.',
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 8,
@@ -91,6 +99,7 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 3,
     comment: null,
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 9,
@@ -103,6 +112,7 @@ export const feedbackData: FeedbackType[] = [
     comment:
       '새로운 기능이 마음에 드셨다니 다행입니다! 계속해서 발전해 나가겠습니다.',
     category: '기타',
+    imageUrl: null,
   },
   {
     feedbackId: 10,
@@ -114,5 +124,6 @@ export const feedbackData: FeedbackType[] = [
     likeCount: 10,
     comment: null,
     category: '건의',
+    imageUrl: null,
   },
 ];

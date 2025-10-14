@@ -72,6 +72,7 @@ export default memo(function AdminFeedbackList({
             userName={feedback.userName}
             category={feedback.category}
             comment={feedback.comment}
+            imgUrl={feedback.imageUrl}
           />
         ))}
       </FeedbackBoxList>

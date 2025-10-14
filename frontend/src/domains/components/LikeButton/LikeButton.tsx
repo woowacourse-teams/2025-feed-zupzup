@@ -12,7 +12,7 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface LikeButtonProps {
-  like: boolean | undefined;
+  like: boolean;
   feedbackId: number | undefined;
   likeCount: number;
   isAdmin?: boolean;
