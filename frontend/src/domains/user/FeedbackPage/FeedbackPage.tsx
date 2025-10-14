@@ -118,7 +118,7 @@ export default function FeedbackPage({
         isSecret: isLocked,
         userName: username,
         category,
-        imageUrl: presignedUrl,
+        imageUrl: file ? presignedUrl : null,
       });
     } catch (error) {
       setIsModalOpen(false);
