@@ -46,6 +46,7 @@ export default function AISummary() {
           userName={feedback.userName}
           category={feedback.category}
           comment={feedback.comment}
+          imgUrl={feedback.imageUrl}
         />
       ))}
       {modalState.type === 'delete' && (
