@@ -460,4 +460,55 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[2].likeCount", equalTo(3));
     }
 
+    @Test
+    @DisplayName("피드백 조회 시 imageUrl 필드가 포함되어야 한다 - imageUrl이 있는 경우")
+    void get_feedbacks_with_imageUrl() {
+        // given
+        final String imageUrl = "https://example.com/test-image.png";
+        final Feedback feedbackWithImage = FeedbackFixture.createFeedbackWithImageUrl(
+                organization, organizationCategory, imageUrl);
+        final Feedback savedFeedback = feedbackRepository.save(feedbackWithImage);
+
+        // when & then
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("sortBy", "LATEST")
+                .when()
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(1))
+                .body("data.feedbacks[0].feedbackId", equalTo(savedFeedback.getId().intValue()))
+                .body("data.feedbacks[0].imageUrl", equalTo(imageUrl));
+    }
+
+    @Test
+    @DisplayName("피드백 조회 시 imageUrl 필드가 포함되어야 한다 - imageUrl이 없는 경우")
+    void get_feedbacks_without_imageUrl() {
+        // given
+        final Feedback feedbackWithoutImage = FeedbackFixture.createFeedbackWithOrganization(
+                organization, organizationCategory);
+        final Feedback savedFeedback = feedbackRepository.save(feedbackWithoutImage);
+
+        // when & then
+        given()
+                .log().all()
+                .queryParam("size", 10)
+                .queryParam("sortBy", "LATEST")
+                .when()
+                .get("/organizations/{organizationUuid}/feedbacks", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(1))
+                .body("data.feedbacks[0].feedbackId", equalTo(savedFeedback.getId().intValue()))
+                .body("data.feedbacks[0].imageUrl", equalTo(null));
+    }
+
 }
