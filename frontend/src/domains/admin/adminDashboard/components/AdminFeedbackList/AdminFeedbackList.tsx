@@ -27,7 +27,6 @@ export default memo(function AdminFeedbackList({
   openFeedbackDeleteModal,
 }: AdminFeedbackListProps) {
   const { organizationId } = useOrganizationId();
-
   const apiUrl = useMemo(
     () =>
       createFeedbacksUrl({

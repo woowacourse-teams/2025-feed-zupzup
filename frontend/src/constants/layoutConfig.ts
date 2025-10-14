@@ -50,4 +50,16 @@ export const LAYOUT_CONFIGS: Record<string, LayoutConfig> = {
       show: true,
     },
   },
+  [`${ROUTES.ADMIN}/${ROUTES.AI_SUMMARY}`]: {
+    header: {
+      show: true,
+      title: 'AI 피드백',
+      subtitle: 'AI가 찾은 비슷한 피드백',
+      hasMoreIcon: true,
+      showBackButton: true,
+    },
+    bottomNav: {
+      show: false,
+    },
+  },
 };

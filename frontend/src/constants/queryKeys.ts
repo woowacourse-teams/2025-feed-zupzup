@@ -13,6 +13,9 @@ export const QUERY_KEYS = {
     ['myFeedbacks', organizationId] as const,
   infiniteList: (key: string, url: string, size: number) =>
     ['infinity', key, url, size] as const,
+  aiSummary: (organizationId: string) => ['aiSummary', organizationId] as const,
+  aiSummaryDetail: (organizationId: string, clusterId: string) =>
+    ['aiSummaryDetail', organizationId, clusterId] as const,
   myLikeFeedbackIds: (organizationId: string) =>
     ['myLikeFeedbackIds', organizationId] as const,
 };
