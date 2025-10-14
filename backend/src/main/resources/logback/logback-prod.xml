@@ -5,13 +5,32 @@
 
   <appender name="APP_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOGS_ROOT_PATH}/app.log</file>
+
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>${LOGS_ROOT_PATH}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <maxFileSize>10MB</maxFileSize>
       <maxHistory>90</maxHistory>
     </rollingPolicy>
-    <encoder>
-      <pattern>${FILE_LOG_PATTERN}</pattern>
+
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <timeZone>Asia/Seoul</timeZone>
+        </timestamp>
+        <logLevel>
+          <fieldName>level</fieldName>
+        </logLevel>
+        <loggerName>
+          <fieldName>logger</fieldName>
+        </loggerName>
+        <threadName>
+          <fieldName>thread</fieldName>
+        </threadName>
+        <mdc/>
+        <message/>
+        <arguments/>
+        <stackTrace/>
+      </providers>
     </encoder>
   </appender>
 

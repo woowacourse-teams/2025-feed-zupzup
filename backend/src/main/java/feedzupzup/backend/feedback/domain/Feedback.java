@@ -3,6 +3,8 @@ package feedzupzup.backend.feedback.domain;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Comment;
 import feedzupzup.backend.feedback.domain.vo.Content;
+import feedzupzup.backend.feedback.domain.vo.ImageUrl;
+import feedzupzup.backend.feedback.domain.vo.FeedbackClustering;
 import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
@@ -66,6 +68,12 @@ public class Feedback extends BaseTimeEntity {
     @Embedded
     private Comment comment;
 
+    @Embedded
+    private ImageUrl imageUrl;
+
+    @Embedded
+    private FeedbackClustering clustering;
+
     @Column(name = "deleted_at")
     protected LocalDateTime deletedAt;
 
@@ -79,7 +87,9 @@ public class Feedback extends BaseTimeEntity {
             final @NonNull UserName userName,
             final @NonNull PostedAt postedAt,
             final @NonNull OrganizationCategory organizationCategory,
-            final Comment comment
+            final Comment comment,
+            final ImageUrl imageUrl,
+            final FeedbackClustering clustering
     ) {
         this.content = content;
         this.isSecret = isSecret;
@@ -90,6 +100,8 @@ public class Feedback extends BaseTimeEntity {
         this.postedAt = postedAt;
         this.organizationCategory = organizationCategory;
         this.comment = comment;
+        this.imageUrl = imageUrl;
+        this.clustering = clustering;
     }
 
     public void updateStatus(final ProcessStatus status) {
@@ -101,7 +113,7 @@ public class Feedback extends BaseTimeEntity {
     }
 
     public void decreaseLikeCount() {
-        this.likeCount= this.likeCount.decrease();
+        this.likeCount = this.likeCount.decrease();
     }
 
     public void updateCommentAndStatus(final Comment comment) {
@@ -115,5 +127,9 @@ public class Feedback extends BaseTimeEntity {
 
     public int getLikeCountValue() {
         return this.likeCount.getValue();
+    }
+
+    public void updateClustering(final FeedbackClustering feedbackClustering) {
+        this.clustering = feedbackClustering;
     }
 }

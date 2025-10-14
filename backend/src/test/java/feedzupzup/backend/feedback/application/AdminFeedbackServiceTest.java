@@ -21,6 +21,10 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse.ClusterRepresentativeFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
@@ -778,6 +782,102 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.totalCount()).isEqualTo(3),
                     () -> assertThat(response.confirmedCount()).isEqualTo(1),
                     () -> assertThat(response.reflectionRate()).isEqualTo(33)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("클러스터 대표 피드백 조회 테스트")
+    class GetRepresentativeClusterTest {
+
+        @Test
+        @DisplayName("관리자가 속한 조직의 클러스터 대표 피드백을 성공적으로 조회한다")
+        void getRepresentativeCluster_success() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+            final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+            organizerRepository.save(organizer);
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
+            organizationCategoryRepository.save(organizationCategory);
+
+            // 클러스터별 피드백 생성
+            final UUID clusterId1 = UUID.randomUUID();
+            final UUID clusterId2 = UUID.randomUUID();
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "첫 번째 클러스터 대표", organizationCategory, clusterId1);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "첫 번째 클러스터 추가", organizationCategory, clusterId1);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "두 번째 클러스터 대표", organizationCategory, clusterId2);
+
+            feedBackRepository.save(feedback1);
+            feedBackRepository.save(feedback2);
+            feedBackRepository.save(feedback3);
+
+            // when
+            final ClusterRepresentativeFeedbacksResponse response = adminFeedbackService.getRepresentativeCluster(
+                    admin.getId(), organization.getUuid());
+
+            // then
+            assertAll(
+                    () -> assertThat(response.clusterRepresentativeFeedbacks()).hasSize(2),
+                    () -> assertThat(response.clusterRepresentativeFeedbacks())
+                            .extracting(ClusterRepresentativeFeedbackResponse::clusterId)
+                            .containsExactlyInAnyOrder(clusterId1, clusterId2),
+                    () -> assertThat(response.clusterRepresentativeFeedbacks())
+                            .anyMatch(cluster -> cluster.clusterId().equals(clusterId1) && cluster.totalCount() == 2),
+                    () -> assertThat(response.clusterRepresentativeFeedbacks())
+                            .anyMatch(cluster -> cluster.clusterId().equals(clusterId2) && cluster.totalCount() == 1)
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("특정 클러스터 피드백 조회 테스트")
+    class GetFeedbacksByClusterIdTest {
+
+        @Test
+        @DisplayName("특정 클러스터의 모든 피드백을 성공적으로 조회한다")
+        void getFeedbacksByClusterId_success() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final UUID targetClusterId = UUID.randomUUID();
+            final UUID otherClusterId = UUID.randomUUID();
+
+            // 같은 클러스터의 피드백 3개
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "첫 번째 피드백", organizationCategory, targetClusterId);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "두 번째 피드백", organizationCategory, targetClusterId);
+            final Feedback feedback3 = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "세 번째 피드백", organizationCategory, targetClusterId);
+
+            // 다른 클러스터의 피드백 1개 (결과에 포함되지 않아야 함)
+            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithCluster(
+                    organization, "다른 클러스터 피드백", organizationCategory, otherClusterId);
+
+            feedBackRepository.save(feedback1);
+            feedBackRepository.save(feedback2);
+            feedBackRepository.save(feedback3);
+            feedBackRepository.save(otherFeedback);
+
+            // when
+            final ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(targetClusterId);
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks())
+                            .extracting(FeedbackItem::content)
+                            .containsExactlyInAnyOrder("첫 번째 피드백", "두 번째 피드백", "세 번째 피드백")
             );
         }
     }

@@ -4,15 +4,17 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
 
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.LikeFeedbacks;
-import feedzupzup.backend.feedback.domain.UserLikeFeedbacksRepository;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
-import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.domain.like.LikeHistory;
+import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,48 +27,54 @@ import org.springframework.transaction.annotation.Transactional;
 public class FeedbackLikeService {
 
     private final FeedbackRepository feedBackRepository;
-    private final UserLikeFeedbacksRepository userLikeFeedbacksRepository;
+    private final GuestRepository guestRepository;
+    private final LikeHistoryRepository likeHistoryRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
-    public LikeResponse like(final Long feedbackId, final UUID visitorId) {
-        if (visitorId == null) {
-            throw new InvalidLikeException("잘못된 요청입니다.");
-        }
-
+    public LikeResponse like(final Long feedbackId, final GuestInfo guestInfo) {
+        final Guest guest = findGuestBy(guestInfo.guestUuid());
         final Feedback feedback = findFeedbackBy(feedbackId);
-        if (userLikeFeedbacksRepository.isAlreadyLike(visitorId, feedbackId)) {
-            throw new DuplicateLikeException(
-                    "해당 유저 " + visitorId + "는 이미 해당 feedbackId" + feedbackId + "에 좋아요를 눌렀습니다.");
-        }
 
+        if (likeHistoryRepository.existsByGuestAndFeedback(guest, feedback)) {
+            throw new DuplicateLikeException(
+                    "해당 유저 " + guest.getGuestUuid() + "는 이미 해당 feedbackId " + feedbackId
+                            + "에 좋아요를 눌렀습니다.");
+        }
         feedback.increaseLikeCount();
 
         // 캐시 핸들 이벤트 발행
-        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
-        userLikeFeedbacksRepository.save(visitorId, feedbackId);
+        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback),
+                feedback.getOrganization().getUuid());
 
+        likeHistoryRepository.save(new LikeHistory(guest, feedback));
         return LikeResponse.from(feedback);
     }
 
     @Transactional
-    public LikeResponse unlike(final Long feedbackId, final UUID visitorId) {
-        if (visitorId == null || !userLikeFeedbacksRepository.isAlreadyLike(visitorId,
-                feedbackId)) {
+    public LikeResponse unlike(final Long feedbackId, final GuestInfo guestInfo) {
+        final Guest guest = findGuestBy(guestInfo.guestUuid());
+        final Feedback feedback = findFeedbackBy(feedbackId);
+
+        final int count = likeHistoryRepository.deleteByGuestAndFeedback(guest, feedback);
+
+        if (count == 0) {
             throw new InvalidLikeException(
-                    "해당 유저 " + visitorId + "는 해당 feedbackId" + feedbackId
-                            + "에 대한 좋아요 기록이 존재하지 않습니다."
-            );
+                    "해당 유저 " + guest.getGuestUuid() + "는 feedbackId " + feedbackId + "에 좋아요 기록이 없습니다.");
         }
 
-        final Feedback feedback = findFeedbackBy(feedbackId);
         feedback.decreaseLikeCount();
 
         // 캐시 핸들 이벤트 발행
         publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
-        userLikeFeedbacksRepository.deleteLikeHistory(visitorId, feedbackId);
 
         return LikeResponse.from(feedback);
+    }
+
+    private Guest findGuestBy(final UUID guestUuid) {
+        return guestRepository.findByGuestUuid(guestUuid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "guestUuid" + guestUuid + "는 존재하지 않습니다."));
     }
 
     private Feedback findFeedbackBy(final Long feedbackId) {
@@ -75,14 +83,10 @@ public class FeedbackLikeService {
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
     }
 
-    public LikeHistoryResponse findLikeHistories(final UUID visitorId) {
-        final LikeFeedbacks likeFeedbacks = userLikeFeedbacksRepository.getUserLikeFeedbacksFrom(
-                visitorId);
-        return LikeHistoryResponse.from(likeFeedbacks);
-    }
-
-    private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
-        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LIKES);
+    private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem,
+            final UUID organizationUuid) {
+        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid,
+                LIKES);
         eventPublisher.publishEvent(event);
     }
 }

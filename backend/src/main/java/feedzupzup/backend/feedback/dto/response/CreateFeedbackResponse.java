@@ -26,7 +26,10 @@ public record CreateFeedbackResponse(
         LocalDateTime postedAt,
 
         @Schema(description = "카테고리", example = "시설")
-        String category
+        String category,
+
+        @Schema(description = "이미지 URL", example = "https://example.com/image.jpg")
+        String imageUrl
 ) {
 
     public static CreateFeedbackResponse from(final Feedback feedback) {
@@ -37,8 +40,8 @@ public record CreateFeedbackResponse(
                 feedback.isSecret(),
                 feedback.getUserName().getValue(),
                 feedback.getCreatedAt(),
-                feedback.getOrganizationCategory().getCategory().getKoreanName()
+                feedback.getOrganizationCategory().getCategory().getKoreanName(),
+                feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
         );
     }
-
 }

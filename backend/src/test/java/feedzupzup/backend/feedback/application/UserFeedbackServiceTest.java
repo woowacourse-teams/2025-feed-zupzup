@@ -22,9 +22,15 @@ import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,15 +43,22 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackRepository feedBackRepository;
-    
+
     @Autowired
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private FeedbackLikeService feedbackLikeService;
+    private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
-    private OrganizationCategoryRepository organizationCategoryRepository;
+    private GuestRepository guestRepository;
+
+    private final Guest guest = new Guest(UUID.randomUUID(), CurrentDateTime.create());
+
+    @BeforeEach
+    void init() {
+        guestRepository.save(guest);
+    }
 
     @Test
     @DisplayName("피드백을 성공적으로 생성한다")
@@ -56,12 +69,14 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         final OrganizationCategory organizationCategory = new OrganizationCategory(organization, SUGGESTION, true);
         organizationCategoryRepository.save(organizationCategory);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "건의");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "맛있어요", false, "윌슨",
+                "건의", "https://example.com/image.png");
 
         //when
         final Organization savedOrganization = organizationRepository.save(organization);
         final CreateFeedbackResponse response = userFeedbackService.create(
-                request, savedOrganization.getUuid());
+                request, savedOrganization.getUuid(), toGuestInfo(guest));
 
         //then
         assertAll(
@@ -84,10 +99,12 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
         organizationRepository.save(organization);
         organizationCategoryRepository.save(organizationCategory1);
 
-        final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "윌슨", "기타");
+        final CreateFeedbackRequest request = new CreateFeedbackRequest(
+                "맛있어요", false, "윌슨",
+                "기타", "https://example.com/image.png");
 
         // when & then
-        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid()))
+        assertThatThrownBy(() -> userFeedbackService.create(request, organization.getUuid(), toGuestInfo(guest)))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -513,5 +530,9 @@ class UserFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
             );
         }
+    }
+
+    private GuestInfo toGuestInfo(Guest guest) {
+        return new GuestInfo(guest.getGuestUuid());
     }
 }
