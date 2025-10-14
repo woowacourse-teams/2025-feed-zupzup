@@ -49,7 +49,8 @@ export default merge(common, {
               return cookie
                 .replace(/; Secure(?!=false)/g, '')
                 .replace(/; Secure=false/g, '')
-                .replace(/SameSite=None/g, 'SameSite=Lax');
+                .replace(/SameSite=None/g, 'SameSite=Lax')
+                .replace(/; Domain=[^;]+/gi, '');
             });
           }
         },

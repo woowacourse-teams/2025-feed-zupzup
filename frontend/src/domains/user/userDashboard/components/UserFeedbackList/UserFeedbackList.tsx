@@ -62,7 +62,7 @@ export default memo(function UserFeedbackList({
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const { myFeedbacks } = useMyFeedbackData(selectedSort);
+  const { myFeedbacks } = useMyFeedbackData();
 
   const { highlightedId } = useHighLighted();
 

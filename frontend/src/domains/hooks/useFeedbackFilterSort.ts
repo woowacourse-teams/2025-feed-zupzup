@@ -9,7 +9,7 @@ export default function useFeedbackFilterSort() {
   );
   const [selectedSort, setSelectedSort] = useState<SortType>('LATEST');
 
-  const { myFeedbacks } = useMyFeedbackData(selectedSort);
+  const { myFeedbacks } = useMyFeedbackData();
 
   const handleFilterChange = useCallback(
     (newFilter: FeedbackFilterType | '') => {
