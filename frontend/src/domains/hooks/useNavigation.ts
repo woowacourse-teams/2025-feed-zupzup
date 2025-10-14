@@ -7,8 +7,8 @@ export default function useNavigation() {
     navigate(-1);
   };
 
-  const goPath = (path: string) => {
-    navigate(path);
+  const goPath = <T = unknown>(path: string, state?: T) => {
+    navigate(path, { state });
   };
 
   return {
