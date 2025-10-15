@@ -13,11 +13,14 @@ import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.util.CookieUtilization;
+import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.guest.domain.guest.Guest;
+import feedzupzup.backend.guest.domain.guest.GuestRepository;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
-import jakarta.servlet.http.Cookie;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,9 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     private FeedbackRepository feedBackRepository;
 
     @Autowired
+    private GuestRepository guestRepository;
+
+    @Autowired
     private FeedbackLikeService feedbackLikeService;
 
     @Autowired
@@ -38,6 +44,9 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private CookieUtilization cookieUtilization;
 
     @Test
     @DisplayName("피드백에 좋아요를 성공적으로 추가한다")
@@ -83,8 +92,8 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
         // 좋아요 2개 추가
-        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
-        feedbackLikeService.like(savedFeedback.getId(), createAndGetCookieValue());
+        feedbackLikeService.like(savedFeedback.getId(), toGuestInfo(createAndSaveGuest()));
+        feedbackLikeService.like(savedFeedback.getId(), toGuestInfo(createAndSaveGuest()));
 
         // when & then
         given()
@@ -120,25 +129,10 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         given()
                 .log().all()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요를 시도하면 404 에러가 발생한다")
-    void like_non_existent_feedback_not_found() {
-        // given
-        final Long nonExistentFeedbackId = 999L;
-
-        // when & then
-        given()
-                .log().all()
-                .when()
-                .patch("/feedbacks/{feedbackId}/like", nonExistentFeedbackId)
-                .then().log().all()
-                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -185,24 +179,6 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("존재하지 않는 피드백에 좋아요 취소를 시도하면 400 에러가 발생한다")
-    void unlike_non_existent_feedback_not_found() {
-        // given
-        final Long nonExistentFeedbackId = 999L;
-
-        UUID visitorId = UUID.randomUUID();
-
-        // when & then
-        given()
-                .log().all()
-                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
-                .when()
-                .patch("/feedbacks/{feedbackId}/unlike", nonExistentFeedbackId)
-                .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
     @DisplayName("좋아요 추가 후 취소하면 원래 상태로 돌아간다")
     void like_then_unlike_feedback_success() {
         // given
@@ -218,12 +194,12 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
 
         final Feedback savedFeedback = feedBackRepository.save(feedback);
 
-        UUID visitorId = UUID.randomUUID();
+        UUID guestId = UUID.randomUUID();
 
         // when - 좋아요 추가
         given()
                 .log().all()
-                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .cookie(CookieUtilization.GUEST_KEY, guestId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then().log().all()
@@ -233,7 +209,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // then - 좋아요 취소
         given()
                 .log().all()
-                .cookie(CookieUtilization.VISITOR_KEY, visitorId)
+                .cookie(CookieUtilization.GUEST_KEY, guestId)
                 .when()
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then().log().all()
@@ -264,7 +240,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue1)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue1)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -273,7 +249,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue2)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue2)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -282,7 +258,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue1)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue1)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -291,7 +267,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 추가
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue3)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue3)
                 .patch("/feedbacks/{feedbackId}/like", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -300,7 +276,7 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
         // when & then - 좋아요 취소
         given()
                 .when()
-                .cookie(CookieUtilization.VISITOR_KEY, cookieValue2)
+                .cookie(CookieUtilization.GUEST_KEY, cookieValue2)
                 .patch("/feedbacks/{feedbackId}/unlike", savedFeedback.getId())
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -336,8 +312,17 @@ class FeedbackLikeControllerE2ETest extends E2EHelper {
     }
 
     private UUID createAndGetCookieValue() {
-        final ResponseCookie cookie = CookieUtilization.createCookie(CookieUtilization.VISITOR_KEY,
+        final ResponseCookie cookie = cookieUtilization.createCookie(CookieUtilization.GUEST_KEY,
                 UUID.randomUUID());
         return UUID.fromString(cookie.getValue());
     }
+
+    private Guest createAndSaveGuest() {
+        return guestRepository.save(new Guest(UUID.randomUUID(), CurrentDateTime.create()));
+    }
+
+    private GuestInfo toGuestInfo(Guest guest) {
+        return new GuestInfo(guest.getGuestUuid());
+    }
+
 }

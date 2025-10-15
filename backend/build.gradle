@@ -58,6 +58,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
+    //log
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -69,6 +72,9 @@ dependencies {
 
     //firebase
     implementation 'com.google.firebase:firebase-admin:9.5.0'
+
+    //profanity filter
+    implementation 'io.github.vaneproject:vane-badwordfiltering:1.0.0'
 }
 
 tasks.register('copySecret', Copy) {

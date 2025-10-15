@@ -31,7 +31,10 @@ public record UserFeedbackItem(
         String category,
 
         @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
-        String comment
+        String comment,
+
+        @Schema(description = "이미지 URL", example = "https://example.com/image.png")
+        String imageUrl
 ) {
 
     public static UserFeedbackItem from(final FeedbackItem feedbackItem) {
@@ -44,7 +47,8 @@ public record UserFeedbackItem(
                 feedbackItem.userName(),
                 feedbackItem.postedAt(),
                 feedbackItem.category(),
-                feedbackItem.comment()
+                feedbackItem.comment(),
+                feedbackItem.imageUrl()
         );
     }
 }

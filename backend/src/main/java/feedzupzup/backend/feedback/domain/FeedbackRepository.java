@@ -95,6 +95,48 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     FeedbackAmount findFeedbackStatisticsByAdminId(Long adminId);
 
     void deleteAllByOrganizationIdIn(List<Long> organizationIds);
-    
+
     void deleteAllByOrganizationId(Long organizationId);
+
+    @Query(value = """
+                SELECT 
+                    BIN_TO_UUID(f.cluster_id) AS clusterId,
+                    (
+                        SELECT f2.content
+                        FROM feedback f2
+                        WHERE f2.cluster_id = f.cluster_id
+                        ORDER BY f2.created_at ASC
+                        LIMIT 1
+                    ) AS content,
+                    COUNT(f.id) AS totalCount
+                FROM feedback f
+                    JOIN organization org
+                    ON f.organization_id = org.id
+                WHERE org.uuid = :organizationUuid
+                    AND f.deleted_at IS NULL
+                    AND f.cluster_id IS NOT NULL
+                GROUP BY f.cluster_id
+                ORDER BY MIN(f.id)
+            """, nativeQuery = true)
+    List<ClusterRepresentativeFeedback> findAllRepresentativeFeedbackPerCluster(final UUID organizationUuid);
+
+    List<Feedback> findAllByClustering_ClusterId(final UUID clusterId);
+
+    @Query("""
+                SELECT MIN(f.id)
+                FROM Feedback f
+                WHERE f.organization.uuid = :organizationUuid
+                    AND f.deletedAt IS NULL
+                    AND f.clustering.clusterId IS NOT NULL
+                GROUP BY f.clustering.clusterId
+            """)
+    List<Long> findOldestFeedbackIdPerCluster(final UUID organizationUuid);
+
+    @Query("""
+                SELECT f
+                FROM Feedback f
+                WHERE f.id IN :feedbackIds
+                ORDER BY f.id
+            """)
+    List<Feedback> findByIdIn(final List<Long> feedbackIds);
 }

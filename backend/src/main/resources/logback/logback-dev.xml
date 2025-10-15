@@ -1,17 +1,34 @@
 <configuration>
-  <property name="FILE_LOG_PATTERN"
-    value="[%d{yyyy-MM-dd HH:mm:ss,Asia/Seoul}] [dev] [%thread] %-5level [%C.%M:%L] [trace_id=%X{trace_id}] [span_id=%X{span_id}] - %msg%n"/>
   <property name="LOGS_ROOT_PATH" value="/var/log/spring"/>
 
   <appender name="APP_LOG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>${LOGS_ROOT_PATH}/app.log</file>
+
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <fileNamePattern>${LOGS_ROOT_PATH}/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
       <maxFileSize>10MB</maxFileSize>
       <maxHistory>30</maxHistory>
     </rollingPolicy>
-    <encoder>
-      <pattern>${FILE_LOG_PATTERN}</pattern>
+
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <timeZone>Asia/Seoul</timeZone>
+        </timestamp>
+        <logLevel>
+          <fieldName>level</fieldName>
+        </logLevel>
+        <loggerName>
+          <fieldName>logger</fieldName>
+        </loggerName>
+        <threadName>
+          <fieldName>thread</fieldName>
+        </threadName>
+        <mdc/>
+        <message/>
+        <arguments/>
+        <stackTrace/>
+      </providers>
     </encoder>
   </appender>
 
