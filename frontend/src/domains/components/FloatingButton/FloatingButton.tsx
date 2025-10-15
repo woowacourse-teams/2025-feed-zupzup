@@ -11,7 +11,8 @@ export interface Position {
 }
 
 interface FloatingButtonProps {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
+  text?: string;
   onClick: () => void;
   inset: Position;
   customCSS?: SerializedStyles | SerializedStyles[];
@@ -19,13 +20,14 @@ interface FloatingButtonProps {
 
 export default memo(function FloatingButton({
   icon,
+  text,
   onClick,
   inset,
   customCSS,
 }: FloatingButtonProps) {
   return (
     <Button onClick={onClick} css={[floatingButton(inset), customCSS]}>
-      {icon}
+      {icon} {text}
     </Button>
   );
 });

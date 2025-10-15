@@ -27,7 +27,7 @@ frontend/src/hooks/
 
 ```typescript
 // 기본 사용법 - overlay와 모달 박스는 자동 제공!
-<Modal isOpen={isOpen} onClose={onClose}>
+<Modal onClose={onClose}>
   {/* 모달 내용만 작성하면 됨 */}
   <h2>제목</h2>
   <p>내용</p>
@@ -35,7 +35,7 @@ frontend/src/hooks/
 </Modal>
 
 // 크기 조절
-<Modal isOpen={isOpen} onClose={onClose} width={400} height={300}>
+<Modal onClose={onClose} width={400} height={300}>
   {/* 내용 */}
 </Modal>
 ```

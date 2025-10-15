@@ -18,7 +18,7 @@ export default function RoomCategoryTag({
   const theme = useAppTheme();
 
   return (
-    <Tag customCSS={container(theme)}>
+    <Tag customCSS={container(theme)} onClick={onDeleteClick}>
       <p>{icon}</p>
       <p>{category}</p>
       <Button onClick={onDeleteClick}>&times;</Button>

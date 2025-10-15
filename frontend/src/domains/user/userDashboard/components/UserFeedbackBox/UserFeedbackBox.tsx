@@ -1,15 +1,16 @@
 import LockIcon from '@/components/icons/LockIcon';
+import { CategoryListType } from '@/constants/categoryList';
+import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader';
-import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
+
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { secretText } from './UserFeedbackBox.styles';
-import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
-import { CategoryListType } from '@/constants/categoryList';
 import { memo } from 'react';
 import { highlightStyle } from '../../UserDashboard.style';
+import { secretText } from './UserFeedbackBox.styles';
+import FeedbackContent from '@/domains/components/FeedbackText/FeedbackContent';
 
 interface UserFeedbackBox {
   userName: string;
@@ -24,6 +25,7 @@ interface UserFeedbackBox {
   isMyFeedback: boolean;
   comment: null | string;
   category: CategoryListType;
+  imgUrl: string | null;
 }
 
 export default memo(function UserFeedbackBox({
@@ -39,6 +41,7 @@ export default memo(function UserFeedbackBox({
   isMyFeedback = false,
   comment,
   category,
+  imgUrl,
 }: UserFeedbackBox) {
   const theme = useAppTheme();
 
@@ -56,12 +59,12 @@ export default memo(function UserFeedbackBox({
       <div css={isSecret ? secretText(theme) : undefined}>
         {isSecret ? (
           isMyFeedback ? (
-            <FeedbackText type={type} text={content} />
+            <FeedbackContent type={type} text={content} imgUrl={imgUrl} />
           ) : (
             <p>비밀글입니다.</p>
           )
         ) : (
-          <FeedbackText type={type} text={content} />
+          <FeedbackContent type={type} text={content} imgUrl={imgUrl} />
         )}
         {isSecret && <LockIcon />}
       </div>

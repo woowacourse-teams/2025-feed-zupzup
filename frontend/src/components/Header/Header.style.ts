@@ -44,3 +44,10 @@ export const captionSection = css`
   flex-direction: column;
   gap: 8px;
 `;
+
+export const backButton = (theme: Theme) => css`
+  &:hover {
+    background-color: ${theme.colors.darkGray[100]};
+    border-radius: 50%;
+  }
+`;

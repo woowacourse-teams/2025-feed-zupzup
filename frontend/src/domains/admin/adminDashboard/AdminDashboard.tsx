@@ -1,3 +1,4 @@
+import { SEO } from '@/components/SEO/SEO';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
@@ -12,6 +13,7 @@ import ArrowUpIcon from '@/components/icons/ArrowUpIcon';
 import { goTopButton } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import AdminFeedbackList from './components/AdminFeedbackList/AdminFeedbackList';
+import AISummaryFloatingButton from './components/AISummaryFloatingButton/AISummaryFloatingButton';
 
 export default function AdminDashboard() {
   const theme = useAppTheme();
@@ -31,45 +33,51 @@ export default function AdminDashboard() {
   const { showButton, scrollToTop } = useScrollUp();
 
   return (
-    <section css={dashboardLayout}>
-      <DashboardOverview />
-      <FilterSection
-        selectedFilter={selectedFilter}
-        onFilterChange={handleFilterChange}
-        selectedSort={selectedSort}
-        onSortChange={handleSortChange}
-        isAdmin={true}
+    <>
+      <SEO
+        title='피드백 관리'
+        description='수집된 피드백을 관리하고 답변하세요'
+        keywords='관리자, 대시보드, 피드백, 관리'
       />
-      <AdminFeedbackList
-        selectedFilter={selectedFilter}
-        selectedSort={selectedSort}
-        openFeedbackCompleteModal={openFeedbackCompleteModal}
-        openFeedbackDeleteModal={openFeedbackDeleteModal}
-      />
-      {showButton && (
-        <FloatingButton
-          icon={<ArrowUpIcon />}
-          onClick={scrollToTop}
-          inset={{ bottom: '80px' }}
-          customCSS={goTopButton(theme)}
+      <section css={dashboardLayout}>
+        <DashboardOverview />
+        <FilterSection
+          selectedFilter={selectedFilter}
+          onFilterChange={handleFilterChange}
+          selectedSort={selectedSort}
+          onSortChange={handleSortChange}
+          isAdmin={true}
         />
-      )}
-      {modalState.type === 'delete' && (
-        <ConfirmModal
-          title='삭제하시겠습니까?'
-          message='삭제한 건의는 되돌릴 수 없습니다.'
-          isOpen={true}
-          onClose={closeModal}
-          onConfirm={handleDeleteFeedback}
+        <AdminFeedbackList
+          selectedFilter={selectedFilter}
+          selectedSort={selectedSort}
+          openFeedbackCompleteModal={openFeedbackCompleteModal}
+          openFeedbackDeleteModal={openFeedbackDeleteModal}
         />
-      )}
-      {modalState.type === 'confirm' && (
-        <AnswerModal
-          isOpen={true}
-          handleCloseModal={closeModal}
-          handleSubmit={handleConfirmFeedback}
-        />
-      )}
-    </section>
+        <AISummaryFloatingButton />
+        {showButton && (
+          <FloatingButton
+            icon={<ArrowUpIcon />}
+            onClick={scrollToTop}
+            inset={{ bottom: '60px' }}
+            customCSS={goTopButton(theme)}
+          />
+        )}
+        {modalState.type === 'delete' && (
+          <ConfirmModal
+            title='삭제하시겠습니까?'
+            message='삭제한 건의는 되돌릴 수 없습니다.'
+            onClose={closeModal}
+            onConfirm={handleDeleteFeedback}
+          />
+        )}
+        {modalState.type === 'confirm' && (
+          <AnswerModal
+            handleCloseModal={closeModal}
+            handleSubmit={handleConfirmFeedback}
+          />
+        )}
+      </section>
+    </>
   );
 }

@@ -5,7 +5,8 @@ import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
-import OnBoarding from './domains/admin/OnBoarding/OnBoarding';
+import AISummary from './domains/admin/AISummary/AISummary';
+import Loading from './components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
@@ -47,11 +48,18 @@ const NotFoundPage = lazy(
     )
 );
 
+const OnBoarding = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "onboarding" */ './domains/admin/OnBoarding/OnBoarding'
+    )
+);
+
 export const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading />}>
         <App />
       </Suspense>
     ),
@@ -89,6 +97,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_HOME, element: <AdminHome /> },
           { path: ROUTES.DASHBOARD, element: <AdminDashboard /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <Settings /> },
+          { path: ROUTES.AI_SUMMARY, element: <AISummary /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

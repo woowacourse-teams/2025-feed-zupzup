@@ -4,6 +4,7 @@ import { Theme } from '@/theme';
 export const container = css`
   position: relative;
   width: 100%;
+  height: 400px;
   margin: 0 auto;
 `;
 
@@ -111,13 +112,22 @@ export const textarea = (theme: Theme) => css`
   border: none;
 `;
 
-export const toggleButtonContainer = css`
+export const formFooterContainer = css`
   position: absolute;
   top: 226px;
   left: 10px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  width: calc(100% - 20px);
+`;
+
+export const toggleButtonContainer = css`
+  display: flex;
   align-items: center;
+  gap: 4px;
+  margin-left: auto;
 `;
 
 export const toggleButtonText = (theme: Theme) => css`

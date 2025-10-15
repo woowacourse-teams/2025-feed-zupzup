@@ -11,6 +11,7 @@ export interface FeedbackType {
   likeCount: number;
   comment: null | string;
   category: CategoryListType;
+  imageUrl: string | null;
 }
 
 export interface FeedbackResponse<T> {

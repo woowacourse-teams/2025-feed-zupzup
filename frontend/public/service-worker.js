@@ -1,6 +1,8 @@
 /* eslint-env browser, serviceworker */
 /* global importScripts, firebase, self */
 
+const CACHE_NAME = 'feed-zupzup-v1';
+const urlsToCache = ['/', '/index.html'];
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -30,31 +32,107 @@ try {
     };
     self.registration.showNotification(title, options);
   });
-
-  console.log('[ServiceWorker] Firebase FCM 초기화 완료');
 } catch (error) {
-  console.warn('[ServiceWorker] Firebase FCM 초기화 실패:', error);
+  // Firebase FCM 초기화 실패
 }
 
 if (self.location.hostname === 'localhost') {
   try {
     importScripts('/mockServiceWorker.js');
-    console.log('[ServiceWorker] MSW 로드 완료');
   } catch (error) {
-    console.warn('[ServiceWorker] MSW 로드 실패 (정상):', error);
+    // MSW 로드 실패 (정상)
   }
 }
 
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Installed');
-  event.waitUntil(self.skipWaiting());
+  event.waitUntil(
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(urlsToCache);
+      })
+      .then(() => self.skipWaiting())
+  );
 });
-
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activated');
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            if (cacheName !== CACHE_NAME) {
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+      .then(() => self.clients.claim())
+  );
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(fetch(event.request));
+  const request = event.request;
+  const url = new URL(request.url);
+
+  const isApiRequest =
+    url.hostname === 'localhost' ||
+    url.hostname.startsWith('api-') ||
+    url.hostname.startsWith('api.') ||
+    request.headers.get('content-type')?.includes('application/json');
+
+  if (isApiRequest) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (
+            response &&
+            response.status === 200 &&
+            response.type !== 'error'
+          ) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request);
+        })
+    );
+  } else {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+
+        return fetch(request)
+          .then((response) => {
+            if (
+              !response ||
+              response.status !== 200 ||
+              response.type === 'error'
+            ) {
+              return response;
+            }
+
+            if (request.method === 'GET') {
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseToCache);
+              });
+            }
+
+            return response;
+          })
+          .catch(() => {
+            if (request.headers.get('accept')?.includes('text/html')) {
+              return caches.match('/index.html');
+            }
+          });
+      })
+    );
+  }
 });

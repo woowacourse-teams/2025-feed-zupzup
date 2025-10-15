@@ -5,9 +5,9 @@ interface TrashCanIconProps {
 export default function TrashCanIcon({ color }: TrashCanIconProps) {
   return (
     <svg
-      width='15'
-      height='14'
-      viewBox='0 0 15 14'
+      width='16'
+      height='16'
+      viewBox='0 0 15 15'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
     >

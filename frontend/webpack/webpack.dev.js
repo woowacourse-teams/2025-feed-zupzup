@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import webpack from 'webpack';
 import { merge } from 'webpack-merge';
-import common from './webpack.common.js';
 import { createDefineEnv } from './buildUtils.js';
+import common from './webpack.common.js';
 
 const result = dotenv.config({ path: '.env.dev' });
 const env = result.parsed || {};
@@ -10,7 +10,7 @@ const env = result.parsed || {};
 const defineEnv = createDefineEnv(env, 'development');
 
 export default merge(common, {
-  mode: 'development',
+  mode: 'production',
   devtool: 'inline-source-map',
   devServer: {
     static: './dist',

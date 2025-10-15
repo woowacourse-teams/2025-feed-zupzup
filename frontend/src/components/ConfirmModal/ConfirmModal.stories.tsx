@@ -1,6 +1,5 @@
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useState } from 'react';
 
 const meta: Meta<typeof ConfirmModal> = {
   title: 'components/ConfirmModal',
@@ -29,16 +28,12 @@ type Story = StoryObj<typeof ConfirmModal>;
 
 export const Default: Story = {
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
-
     return (
       <ConfirmModal
         {...args}
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
+        onClose={() => {}}
         onConfirm={() => {
           alert('확인 버튼이 클릭되었습니다.');
-          setIsOpen(false);
         }}
       />
     );
