@@ -113,7 +113,7 @@ public class UserFeedbackService {
     }
 
     private FeedbackItem withMaskedContent(final FeedbackItem feedbackItem, final List<Long> myFeedbackIds) {
-        if (myFeedbackIds.contains(feedbackItem.feedbackId())) {
+        if (feedbackItem.isSecret() && !myFeedbackIds.contains(feedbackItem.feedbackId())) {
             return feedbackItem.withMaskedContent();
         }
         return feedbackItem;
