@@ -1,5 +1,7 @@
 package feedzupzup.backend.auth.presentation.interceptor;
 
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.ADMIN_ID;
+
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
@@ -27,6 +29,7 @@ public class AdminCheckInterceptor implements HandlerInterceptor {
             httpSessionManager.removeAdminSession(request);
             throw new UnauthorizedException("해당 관리자 ID(adminId = " + adminId + ")에는 권한이 없습니다.");
         }
+        request.setAttribute(ADMIN_ID.getValue(), adminId);
         return true;
     }
 }

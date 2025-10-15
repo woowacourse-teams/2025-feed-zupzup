@@ -1,8 +1,9 @@
 package feedzupzup.backend.auth.presentation.resolver;
 
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.ADMIN_ID;
+
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
-import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -15,8 +16,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 @RequiredArgsConstructor
 public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolver {
-
-    private final HttpSessionManager sessionManager;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
@@ -32,7 +31,9 @@ public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolv
             final WebDataBinderFactory binderFactory
     ) {
         final HttpServletRequest request = extractHttpServletRequest(webRequest);
-        return sessionManager.getAdminSession(request);
+
+        final Long adminId = (Long) request.getAttribute(ADMIN_ID.getValue());
+        return new AdminSession(adminId);
     }
 
     private HttpServletRequest extractHttpServletRequest(final NativeWebRequest webRequest) {
