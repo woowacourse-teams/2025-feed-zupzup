@@ -85,19 +85,38 @@ public class UserFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortType sortBy
+            final FeedbackSortType sortBy,
+            final GuestInfo guestInfo
     ) {
 
         final Pageable pageable = createPageable(size);
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<FeedbackItem> feedbackItems = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
-        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbackItems, size);
+        final List<FeedbackItem> feedbackItems = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
+        final List<WriteHistory> writeHistoriesBy = writeHistoryRepository.findWriteHistoriesBy(guestInfo.guestUuid(),
+                organizationUuid);
+        final List<Long> myFeedbackIds = writeHistoriesBy.stream()
+                .map(WriteHistory::getFeedback)
+                .map(Feedback::getId)
+                .toList();
+
+        List<FeedbackItem> maskedFeedbackItems = feedbackItems.stream()
+                .map((FeedbackItem feedbackItem) -> withMaskedContent(feedbackItem, myFeedbackIds))
+                .toList();
+
+        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(maskedFeedbackItems, size);
 
         return UserFeedbackListResponse.of(
                 feedbackPage.getFeedbackItems(),
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
+    }
+
+    private FeedbackItem withMaskedContent(final FeedbackItem feedbackItem, final List<Long> myFeedbackIds) {
+        if (myFeedbackIds.contains(feedbackItem.feedbackId())) {
+            return feedbackItem.withMaskedContent();
+        }
+        return feedbackItem;
     }
 
     private Guest findGuestBy(final UUID guestUuid) {

@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.api;
 
 import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
@@ -42,7 +43,8 @@ public interface UserFeedbackApi {
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortType sortBy
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortType sortBy,
+            @Parameter(hidden = true) @VisitedGuest GuestInfo guestInfo
     );
 
     @Operation(summary = "피드백 생성", description = "새로운 피드백을 생성합니다.")
