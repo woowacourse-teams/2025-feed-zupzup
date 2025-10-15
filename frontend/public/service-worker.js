@@ -1,8 +1,21 @@
 /* eslint-env browser, serviceworker */
 /* global importScripts, firebase, self */
 
-const CACHE_NAME = 'feed-zupzup-v1';
+const CACHE_VERSION = 'v2';
+const CACHE_NAME = `feed-zupzup-${CACHE_VERSION}`;
 const urlsToCache = ['/', '/index.html'];
+
+const NEVER_CACHE = [
+  'service-worker.js',
+  'firebase-messaging-sw.js',
+  'mockServiceWorker.js',
+];
+
+const NETWORK_FIRST = ['manifest.json'];
+const NETWORK_FIRST_PATTERNS = [/\.css$/];
+
+const NEVER_CACHE_PATTERNS = [/\.(hot-update)\./, /sockjs-node/, /webpack/];
+
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -33,14 +46,14 @@ try {
     self.registration.showNotification(title, options);
   });
 } catch (error) {
-  // Firebase FCM 초기화 실패
+  console.error('Firebase messaging 초기화 실패:', error);
 }
 
 if (self.location.hostname === 'localhost') {
   try {
     importScripts('/mockServiceWorker.js');
   } catch (error) {
-    // MSW 로드 실패 (정상)
+    console.error('MSW 로드 실패:', error);
   }
 }
 
@@ -54,6 +67,7 @@ self.addEventListener('install', (event) => {
       .then(() => self.skipWaiting())
   );
 });
+
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
@@ -71,14 +85,65 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+function shouldNeverCache(url) {
+  if (NEVER_CACHE.some((pattern) => url.pathname.includes(pattern))) {
+    return true;
+  }
+  if (NEVER_CACHE_PATTERNS.some((pattern) => pattern.test(url.href))) {
+    return true;
+  }
+  return false;
+}
+
+function shouldNetworkFirst(url) {
+  if (NETWORK_FIRST.some((pattern) => url.pathname.includes(pattern))) {
+    return true;
+  }
+  if (NETWORK_FIRST_PATTERNS.some((pattern) => pattern.test(url.href))) {
+    return true;
+  }
+  return false;
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
+
+  if (url.origin !== location.origin) {
+    return;
+  }
+
+  if (request.method !== 'GET') {
+    return;
+  }
+
+  if (shouldNeverCache(url)) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
+  if (shouldNetworkFirst(url)) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match(request);
+        })
+    );
+    return;
+  }
 
   const isApiRequest =
     url.hostname === 'localhost' ||
     url.hostname.startsWith('api-') ||
     url.hostname.startsWith('api.') ||
+    url.pathname.startsWith('/api/') ||
     request.headers.get('content-type')?.includes('application/json');
 
   if (isApiRequest) {
@@ -118,12 +183,10 @@ self.addEventListener('fetch', (event) => {
               return response;
             }
 
-            if (request.method === 'GET') {
-              const responseToCache = response.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseToCache);
-              });
-            }
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
 
             return response;
           })
