@@ -1,15 +1,12 @@
 /* eslint-env browser, serviceworker */
 /* global importScripts, firebase, self */
 
+// ===== Configuration =====
 const CACHE_VERSION = 'v3';
 const CACHE_NAME = `feed-zupzup-${CACHE_VERSION}`;
 const urlsToCache = ['/', '/index.html'];
 
-const NEVER_CACHE = [
-  'service-worker.js',
-  'firebase-messaging-sw.js',
-  'mockServiceWorker.js',
-];
+const NEVER_CACHE = ['service-worker.js', 'mockServiceWorker.js'];
 
 const NETWORK_FIRST = ['manifest.json'];
 const NETWORK_FIRST_PATTERNS = [/\.html$/, /\.css$/, /\.js$/, /\.chunk\.js$/];
@@ -21,6 +18,7 @@ const CACHE_FIRST_PATTERNS = [
 
 const NEVER_CACHE_PATTERNS = [/\.(hot-update)\./, /sockjs-node/, /webpack/];
 
+// ===== Firebase Setup =====
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -54,6 +52,7 @@ try {
   console.error('Firebase messaging 초기화 실패:', error);
 }
 
+// ===== MSW Setup =====
 if (self.location.hostname === 'localhost') {
   try {
     importScripts('/mockServiceWorker.js');
@@ -62,6 +61,32 @@ if (self.location.hostname === 'localhost') {
   }
 }
 
+// ===== Cache Helpers =====
+function shouldNeverCache(url) {
+  if (NEVER_CACHE.some((pattern) => url.pathname.includes(pattern))) {
+    return true;
+  }
+  if (NEVER_CACHE_PATTERNS.some((pattern) => pattern.test(url.href))) {
+    return true;
+  }
+  return false;
+}
+
+function shouldNetworkFirst(url) {
+  if (NETWORK_FIRST.some((pattern) => url.pathname.includes(pattern))) {
+    return true;
+  }
+  if (NETWORK_FIRST_PATTERNS.some((pattern) => pattern.test(url.href))) {
+    return true;
+  }
+  return false;
+}
+
+function shouldCacheFirst(url) {
+  return CACHE_FIRST_PATTERNS.some((pattern) => pattern.test(url.href));
+}
+
+// ===== Lifecycle Events =====
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
@@ -90,30 +115,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-function shouldNeverCache(url) {
-  if (NEVER_CACHE.some((pattern) => url.pathname.includes(pattern))) {
-    return true;
-  }
-  if (NEVER_CACHE_PATTERNS.some((pattern) => pattern.test(url.href))) {
-    return true;
-  }
-  return false;
-}
-
-function shouldNetworkFirst(url) {
-  if (NETWORK_FIRST.some((pattern) => url.pathname.includes(pattern))) {
-    return true;
-  }
-  if (NETWORK_FIRST_PATTERNS.some((pattern) => pattern.test(url.href))) {
-    return true;
-  }
-  return false;
-}
-
-function shouldCacheFirst(url) {
-  return CACHE_FIRST_PATTERNS.some((pattern) => pattern.test(url.href));
-}
-
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
@@ -126,6 +127,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Never Cache
   if (shouldNeverCache(url)) {
     event.respondWith(
       fetch(request).catch(() => {
@@ -135,6 +137,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Network First
   if (shouldNetworkFirst(url)) {
     event.respondWith(
       fetch(request)
@@ -167,6 +170,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // API Request
   const isApiRequest =
     url.hostname === 'localhost' ||
     url.hostname.startsWith('api-') ||
@@ -213,6 +217,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Cache First
   if (shouldCacheFirst(url)) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
@@ -245,6 +250,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Default Strategy
   event.respondWith(
     fetch(request)
       .then((response) => {
