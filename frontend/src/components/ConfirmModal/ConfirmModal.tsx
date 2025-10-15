@@ -9,7 +9,6 @@ import {
 } from '@/components/Modal/Modal.styles';
 
 export interface ConfirmModalProps {
-  isOpen?: boolean;
   onClose: () => void;
   title: string;
   message?: string;
@@ -22,7 +21,6 @@ export interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({
-  isOpen = true,
   onClose,
   title: confirmTitle,
   message: confirmMessage,
@@ -41,7 +39,7 @@ export default function ConfirmModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width={width} height={height}>
+    <Modal onClose={onClose} width={width} height={height}>
       <div css={content}>
         <p css={title(theme)}>{confirmTitle}</p>
         {confirmMessage && <p css={message(theme)}>{confirmMessage}</p>}

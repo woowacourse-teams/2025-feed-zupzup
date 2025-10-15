@@ -82,7 +82,6 @@ export default function TimeDelayModal({
 
   return (
     <Modal
-      isOpen={isOpen}
       onClose={handleModalClose}
       width={width}
       height={height}

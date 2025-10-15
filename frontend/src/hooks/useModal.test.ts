@@ -14,7 +14,7 @@ describe('useModal', () => {
     it('모달이 닫혀있을 때 이벤트 리스너를 추가하지 않아야 한다', () => {
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
 
-      renderHook(() => useModal({ isOpen: false, onClose: mockOnClose }));
+      renderHook(() => useModal({ onClose: mockOnClose }));
 
       expect(addEventListenerSpy).not.toHaveBeenCalled();
 
@@ -24,7 +24,7 @@ describe('useModal', () => {
     it('모달이 열릴 때 이벤트 리스너를 추가해야 한다', () => {
       const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
 
-      renderHook(() => useModal({ isOpen: true, onClose: mockOnClose }));
+      renderHook(() => useModal({ onClose: mockOnClose }));
 
       expect(addEventListenerSpy).toHaveBeenCalledWith(
         'keydown',
@@ -37,12 +37,9 @@ describe('useModal', () => {
     it('모달이 닫힐 때 이벤트 리스너를 제거해야 한다', () => {
       const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
 
-      const { rerender } = renderHook(
-        ({ isOpen }) => useModal({ isOpen, onClose: mockOnClose }),
-        { initialProps: { isOpen: true } }
-      );
+      const { rerender } = renderHook(() => useModal({ onClose: mockOnClose }));
 
-      rerender({ isOpen: false });
+      rerender();
 
       expect(removeEventListenerSpy).toHaveBeenCalledWith(
         'keydown',
@@ -55,9 +52,7 @@ describe('useModal', () => {
     it('언마운트 시 이벤트 리스너를 제거해야 한다', () => {
       const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
 
-      const { unmount } = renderHook(() =>
-        useModal({ isOpen: true, onClose: mockOnClose })
-      );
+      const { unmount } = renderHook(() => useModal({ onClose: mockOnClose }));
 
       unmount();
 
@@ -76,10 +71,9 @@ describe('useModal', () => {
 
       const mockOnClose2 = jest.fn();
 
-      const { rerender } = renderHook(
-        ({ onClose }) => useModal({ isOpen: true, onClose }),
-        { initialProps: { onClose: mockOnClose } }
-      );
+      const { rerender } = renderHook(({ onClose }) => useModal({ onClose }), {
+        initialProps: { onClose: mockOnClose },
+      });
 
       // 초기 렌더링에서 한 번만 addEventListener가 호출되어야 함
       expect(addEventListenerSpy).toHaveBeenCalledTimes(1);
@@ -98,10 +92,9 @@ describe('useModal', () => {
     it('onClose가 변경되면 새로운 onClose가 호출되어야 한다', () => {
       const mockOnClose2 = jest.fn();
 
-      const { rerender } = renderHook(
-        ({ onClose }) => useModal({ isOpen: true, onClose }),
-        { initialProps: { onClose: mockOnClose } }
-      );
+      const { rerender } = renderHook(({ onClose }) => useModal({ onClose }), {
+        initialProps: { onClose: mockOnClose },
+      });
 
       // onClose를 변경
       rerender({ onClose: mockOnClose2 });
@@ -116,7 +109,7 @@ describe('useModal', () => {
 
   describe('키보드 상호작용', () => {
     it('Escape 키를 누르면 onClose를 호출해야 한다', () => {
-      renderHook(() => useModal({ isOpen: true, onClose: mockOnClose }));
+      renderHook(() => useModal({ onClose: mockOnClose }));
 
       fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
 
@@ -124,7 +117,7 @@ describe('useModal', () => {
     });
 
     it('다른 키를 누르면 onClose를 호출하지 않아야 한다', () => {
-      renderHook(() => useModal({ isOpen: true, onClose: mockOnClose }));
+      renderHook(() => useModal({ onClose: mockOnClose }));
 
       fireEvent.keyDown(window, { key: 'Enter', code: 'Enter' });
       fireEvent.keyDown(window, { key: 'Space', code: 'Space' });
@@ -134,7 +127,7 @@ describe('useModal', () => {
     });
 
     it('모달이 닫혀있을 때는 키보드 이벤트에 반응하지 않아야 한다', () => {
-      renderHook(() => useModal({ isOpen: false, onClose: mockOnClose }));
+      renderHook(() => useModal({ onClose: mockOnClose }));
 
       fireEvent.keyDown(window, { key: 'Escape', code: 'Escape' });
 
@@ -144,7 +137,6 @@ describe('useModal', () => {
     it('disableUserClose true일 때는 Escape 키에 반응하지 않아야 한다', () => {
       renderHook(() =>
         useModal({
-          isOpen: true,
           onClose: mockOnClose,
           disableUserClose: true,
         })
@@ -158,9 +150,7 @@ describe('useModal', () => {
 
   describe('오버레이 클릭 처리', () => {
     it('오버레이를 클릭할 때 onClose를 호출해야 한다 (target === currentTarget)', () => {
-      const { result } = renderHook(() =>
-        useModal({ isOpen: true, onClose: mockOnClose })
-      );
+      const { result } = renderHook(() => useModal({ onClose: mockOnClose }));
 
       const overlayElement = document.createElement('div');
       const mockEvent = {
@@ -176,9 +166,7 @@ describe('useModal', () => {
     });
 
     it('모달 내부를 클릭할 때 onClose를 호출하지 않아야 한다 (target !== currentTarget)', () => {
-      const { result } = renderHook(() =>
-        useModal({ isOpen: true, onClose: mockOnClose })
-      );
+      const { result } = renderHook(() => useModal({ onClose: mockOnClose }));
 
       const overlayElement = document.createElement('div');
       const contentElement = document.createElement('div');
@@ -197,7 +185,6 @@ describe('useModal', () => {
     it('disableUserClose가 true일 때는 오버레이 클릭에 반응하지 않아야 한다', () => {
       const { result } = renderHook(() =>
         useModal({
-          isOpen: true,
           onClose: mockOnClose,
           disableUserClose: true,
         })
@@ -221,7 +208,6 @@ describe('useModal', () => {
     it('handleConfirm이 호출되면 onConfirm과 onClose를 모두 호출해야 한다', () => {
       const { result } = renderHook(() =>
         useModal({
-          isOpen: true,
           onClose: mockOnClose,
           onConfirm: mockOnConfirm,
         })
@@ -236,9 +222,7 @@ describe('useModal', () => {
     });
 
     it('onConfirm 콜백이 제공되지 않았을 때는 onClose만 호출해야 한다', () => {
-      const { result } = renderHook(() =>
-        useModal({ isOpen: true, onClose: mockOnClose })
-      );
+      const { result } = renderHook(() => useModal({ onClose: mockOnClose }));
 
       act(() => {
         result.current.handleConfirm();
@@ -254,7 +238,6 @@ describe('useModal', () => {
 
       const { result } = renderHook(() =>
         useModal({
-          isOpen: true,
           onClose: mockOnCloseWithOrder,
           onConfirm: mockOnConfirmWithOrder,
         })
@@ -270,9 +253,7 @@ describe('useModal', () => {
 
   describe('반환값', () => {
     it('handleOverlayClick과 handleConfirm 함수를 반환해야 한다', () => {
-      const { result } = renderHook(() =>
-        useModal({ isOpen: true, onClose: mockOnClose })
-      );
+      const { result } = renderHook(() => useModal({ onClose: mockOnClose }));
 
       expect(typeof result.current.handleOverlayClick).toBe('function');
       expect(typeof result.current.handleConfirm).toBe('function');
@@ -280,7 +261,7 @@ describe('useModal', () => {
 
     it('함수들이 정상적으로 동작해야 한다', () => {
       const { result, rerender } = renderHook(() =>
-        useModal({ isOpen: true, onClose: mockOnClose })
+        useModal({ onClose: mockOnClose })
       );
 
       rerender();

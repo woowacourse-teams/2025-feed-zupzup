@@ -14,23 +14,22 @@ interface MoreMenuProps {
 }
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
-  const { openModal, closeModal, isOpen } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
 
   const handleRoomInfoEditClick = () => {
-    openModal(<EditRoomModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<EditRoomModal onClose={closeModal} />);
     closeMoreMenu();
   };
 
   const handleShareClick = () => {
-    openModal(<QRModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<QRModal onClose={closeModal} />);
     closeMoreMenu();
   };
 
   const handleDeleteClick = () => {
     openModal(
       <ConfirmModal
-        isOpen={isOpen}
         onClose={closeModal}
         title='방 삭제 확인'
         message={
