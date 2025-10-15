@@ -18,14 +18,12 @@ import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import useNavigation from '@/domains/hooks/useNavigation';
 
 interface AISummaryProps {
-  isOpen: boolean;
   onClose: () => void;
   onCategorySelect: (category: AISummaryCategory) => void;
   categories: AISummaryCategory[];
 }
 
 export default function AISummary({
-  isOpen,
   onClose,
   onCategorySelect,
   categories,
@@ -44,7 +42,7 @@ export default function AISummary({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} customCSS={modalWidth}>
+    <Modal onClose={onClose} customCSS={modalWidth}>
       <button css={closeButton(theme)} onClick={onClose}>
         <CloseIcon />
       </button>

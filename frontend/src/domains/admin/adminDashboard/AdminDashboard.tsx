@@ -67,14 +67,12 @@ export default function AdminDashboard() {
           <ConfirmModal
             title='삭제하시겠습니까?'
             message='삭제한 건의는 되돌릴 수 없습니다.'
-            isOpen={true}
             onClose={closeModal}
             onConfirm={handleDeleteFeedback}
           />
         )}
         {modalState.type === 'confirm' && (
           <AnswerModal
-            isOpen={true}
             handleCloseModal={closeModal}
             handleSubmit={handleConfirmFeedback}
           />

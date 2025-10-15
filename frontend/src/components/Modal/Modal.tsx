@@ -4,7 +4,6 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { overlay, modalBox } from './Modal.styles';
 
 export interface ModalProps {
-  isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   width?: number;
@@ -14,7 +13,6 @@ export interface ModalProps {
 }
 
 export default function Modal({
-  isOpen,
   onClose,
   children,
   width = 300,
@@ -24,7 +22,6 @@ export default function Modal({
 }: ModalProps) {
   const theme = useAppTheme();
   const { handleOverlayClick } = useModal({
-    isOpen,
     onClose,
     disableUserClose,
   });

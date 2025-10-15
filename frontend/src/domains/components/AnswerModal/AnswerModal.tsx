@@ -17,13 +17,11 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
 
 interface AnswerModalProps {
-  isOpen: boolean;
   handleCloseModal: () => void;
   handleSubmit: (comment: string) => void;
 }
 
 export default function AnswerModal({
-  isOpen,
   handleCloseModal,
   handleSubmit,
 }: AnswerModalProps) {
@@ -35,7 +33,7 @@ export default function AnswerModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCloseModal} customCSS={container}>
+    <Modal onClose={handleCloseModal} customCSS={container}>
       <div css={headerContainer}>
         <p css={headerTitle(theme)}>관리자 답변</p>
         <p css={headerSubtitle(theme)}>이 피드백에 답변을 남겨주세요</p>
