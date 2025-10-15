@@ -119,12 +119,10 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void latest_feedback_case_two_retrieve() {
             // given
             // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // when
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
@@ -135,15 +133,12 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void latest_feedback_case_three_retrieve() {
             // given
             // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // when
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
@@ -154,15 +149,12 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void latest_feedback_not_all_status() {
             // given
             // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, LATEST, toGuestInfo(guest));
 
             // when
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, LATEST, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, WAITING, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, LATEST, toGuestInfo(guest));
 
             // then
             verify(feedbackRepository, times(3)).findByLatest(any(), any(), any(), any());
@@ -173,7 +165,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void when_save_new_feedback_then_update_latest_cache() {
             // given
             saveMultipleFeedbacks(3);
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
                     "건의", "https://example.com/image.png");
@@ -186,8 +178,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // when
-            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(),
-                    10, null, null, LATEST);
+            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
             final List<UserFeedbackItem> feedbacks = feedbackPage2.feedbacks();
 
             // then
@@ -201,7 +192,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             // given
             saveMultipleFeedbacks(10);
 
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             final CreateFeedbackRequest request = new CreateFeedbackRequest("맛있어요", false, "젠슨",
                     "건의", "https://example.com/image.png");
@@ -214,8 +205,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // when
-            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LATEST);
+            final UserFeedbackListResponse feedbackPage2 = userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // then
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
@@ -236,14 +226,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void upper_10_likes_cache() {
             // given
             // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
             verify(feedbackRepository, times(1)).findByLikes(any(), any(), any(), any());
         }
@@ -251,14 +238,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         @DisplayName("특정 상태가 정해진 경우, 캐시가 되면 안 된다.")
         @Test
         void only_cached_all_status() {
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, LIKES, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, WAITING, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, LIKES, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, LIKES, toGuestInfo(guest));
 
             verify(feedbackRepository, times(3)).findByLikes(any(), any(), any(), any());
         }
@@ -273,14 +257,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         void oldest_waiting_feedback_cache() {
             // given
             // 첫 번째 조회는 캐시가 존재하지 않기에, DB에 접근해야 한다.
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
             verify(feedbackRepository, times(1)).findByOldest(any(), any(), any(), any());
         }
@@ -290,14 +271,11 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
         @Test
         void not_waiting_status_then_not_cached() {
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, OLDEST, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, OLDEST, toGuestInfo(guest));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, CONFIRMED, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, CONFIRMED, OLDEST, toGuestInfo(guest));
 
             verify(feedbackRepository, times(3)).findByOldest(any(), any(), any(), any());
         }
@@ -317,8 +295,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 // given
                 saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
 
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 // when - 캐시 비우기
                 feedbackLikeService.like(5L, toGuestInfo(guest));
@@ -328,8 +305,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                                 verify(likesCacheHandler, times(1)).handle(any(), any())
                         );
 
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 // then
                 verify(feedbackRepository, times(2)).findByLikes(any(), any(), any(), any());
@@ -341,8 +317,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 // given
                 saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
 
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 saveMultipleFeedbacksFromLikeCounts(List.of(1));
 
@@ -354,8 +329,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                                 verify(likesCacheHandler, times(1)).handle(any(), any())
                         );
 
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 // then
                 verify(feedbackRepository, times(2)).findByLikes(any(), any(), any(), any());
@@ -368,8 +342,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
 
                 // 1차 디비 조회
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 // 1차 캐시 클리어
                 feedbackLikeService.like(9L, toGuestInfo(guest));
@@ -380,8 +353,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         );
 
                 // 2차 디비 조회
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 // 2차 캐시 클리어
                 feedbackLikeService.unlike(9L, toGuestInfo(guest));
@@ -393,8 +365,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         );
 
                 // 3차 디비 조회
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, null, LIKES);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
                 // then
                 verify(feedbackRepository, times(3)).findByLikes(any(), any(), any(), any());
@@ -414,8 +385,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 saveMultipleFeedbacks(10, organization);
 
                 // 1차 조회 (DB 통신1)
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, WAITING, OLDEST);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
                 // when - 업데이트 시 기존 캐시 피드백 삭제
                 adminFeedbackService.updateFeedbackComment(
@@ -430,7 +400,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                         );
 
                 // (DB 통신2) 캐시가 비어있기 때문에 새로운 DB 통신 필요
-                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
                 // then
                 verify(feedbackRepository, times(2)).findByOldest(any(), any(), any(), any());
@@ -450,8 +420,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                 saveMultipleFeedbacks(10, organization);
 
                 // 1차 조회 (DB 통신1)
-                userFeedbackService.getFeedbackPage(
-                        organization.getUuid(), 10, null, WAITING, OLDEST);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
                 saveMultipleFeedbacks(1, organization);
 
@@ -467,7 +436,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                                 verify(oldestCacheHandler, times(1)).handle(any(), any()));
 
                 // 캐시 변경이 되지 않았기에, 기존 캐시값을 가져와야 한다
-                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+                userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
                 // then
                 verify(feedbackRepository, times(1)).findByOldest(any(), any(), any(), any());
@@ -487,8 +456,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             saveMultipleFeedbacks(10);
 
             // LATEST, OLDEST 캐시 생성
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
             // when - 좋아요 증가
             feedbackLikeService.like(5L, toGuestInfo(guest));
@@ -499,8 +468,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // 두 번째 조회 시 캐시가 삭제되었으므로 DB 접근 발생
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
             // then - LATEST, OLDEST 캐시가 삭제되어 각각 2번씩 DB 조회 발생
             verify(feedbackRepository, times(2)).findByLatest(any(), any(), any(), any());
@@ -522,8 +491,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // LATEST, OLDEST 캐시 생성
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
             // when - 좋아요 감소
             feedbackLikeService.unlike(5L, toGuestInfo(guest));
@@ -534,8 +503,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // 두 번째 조회 시 캐시가 삭제되었으므로 DB 접근 발생
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, WAITING, OLDEST, toGuestInfo(guest));
 
             // then - LATEST, OLDEST 캐시가 삭제되어 각각 2번씩 DB 조회 발생
             verify(feedbackRepository, times(2)).findByLatest(any(), any(), any(), any());
@@ -560,8 +529,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             saveMultipleFeedbacks(10, testOrganization);
 
             // LATEST, LIKES 캐시 생성
-            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LATEST);
-            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
             // when - 피드백 상태 변경
             adminFeedbackService.updateFeedbackComment(
@@ -576,8 +545,8 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // 두 번째 조회 시 캐시가 삭제되었으므로 DB 접근 발생
-            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LATEST);
-            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
+            userFeedbackService.getFeedbackPage(testOrganization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
             // then - LATEST, LIKES 캐시가 삭제되어 각각 2번씩 DB 조회 발생
             verify(feedbackRepository, times(2)).findByLatest(any(), any(), any(), any());
@@ -591,7 +560,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             saveMultipleFeedbacks(10);
 
             // LATEST 캐시 생성 (1~10번 피드백)
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // 새로운 피드백 생성 (11번 피드백)
             saveMultipleFeedbacks(1);
@@ -605,7 +574,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
                     );
 
             // 두 번째 조회 시 캐시가 유지되어 DB 접근 없음
-            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LATEST, toGuestInfo(guest));
 
             // then - LATEST 캐시가 유지되어 1번만 DB 조회
             verify(feedbackRepository, times(1)).findByLatest(any(), any(), any(), any());
@@ -654,8 +623,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             // given
             saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
             // when
             transactionTemplate.execute(status -> {
@@ -674,8 +642,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
             // given
             saveMultipleFeedbacksFromLikeCounts(List.of(10, 10, 10, 10, 10, 5, 4, 4, 3, 2));
 
-            userFeedbackService.getFeedbackPage(
-                    organization.getUuid(), 10, null, null, LIKES);
+            userFeedbackService.getFeedbackPage(organization.getUuid(), 10, null, null, LIKES, toGuestInfo(guest));
 
             // when
             feedbackLikeService.like(5L, toGuestInfo(guest));
@@ -766,11 +733,7 @@ class FeedbackCacheTest extends ServiceIntegrationHelper {
     private void assertFeedbackIds(List<UserFeedbackItem> feedbacks, Long... expectedIds) {
         assertThat(feedbacks)
                 .extracting("feedbackId")
-                .containsExactly(expectedIds);
-    }
-
-    private GuestInfo createGuestInfo() {
-        return new GuestInfo(UUID.randomUUID());
+                .containsExactly((Object[]) expectedIds);
     }
 
     private GuestInfo toGuestInfo(Guest guest) {
