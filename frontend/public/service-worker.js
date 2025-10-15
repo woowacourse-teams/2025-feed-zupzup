@@ -1,7 +1,7 @@
 /* eslint-env browser, serviceworker */
 /* global importScripts, firebase, self */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `feed-zupzup-${CACHE_VERSION}`;
 const urlsToCache = ['/', '/index.html'];
 
@@ -12,7 +12,12 @@ const NEVER_CACHE = [
 ];
 
 const NETWORK_FIRST = ['manifest.json'];
-const NETWORK_FIRST_PATTERNS = [/\.css$/];
+const NETWORK_FIRST_PATTERNS = [/\.html$/, /\.css$/, /\.js$/, /\.chunk\.js$/];
+
+const CACHE_FIRST_PATTERNS = [
+  /\.(png|jpg|jpeg|gif|svg|webp|ico)$/,
+  /\.(woff|woff2|ttf|eot)$/,
+];
 
 const NEVER_CACHE_PATTERNS = [/\.(hot-update)\./, /sockjs-node/, /webpack/];
 
@@ -105,6 +110,10 @@ function shouldNetworkFirst(url) {
   return false;
 }
 
+function shouldCacheFirst(url) {
+  return CACHE_FIRST_PATTERNS.some((pattern) => pattern.test(url.href));
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
@@ -118,7 +127,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (shouldNeverCache(url)) {
-    event.respondWith(fetch(request));
+    event.respondWith(
+      fetch(request).catch(() => {
+        return new Response('', { status: 408, statusText: 'Request Timeout' });
+      })
+    );
     return;
   }
 
@@ -126,14 +139,29 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
-          });
+          if (response && response.status === 200) {
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+          }
           return response;
         })
         .catch(() => {
-          return caches.match(request);
+          return caches.match(request).then((cached) => {
+            if (cached) {
+              return cached;
+            }
+
+            if (request.headers.get('accept')?.includes('text/html')) {
+              return caches.match('/index.html');
+            }
+
+            return new Response('', {
+              status: 503,
+              statusText: 'Service Unavailable',
+            });
+          });
         })
     );
     return;
@@ -163,10 +191,29 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          return caches.match(request);
+          return caches.match(request).then((cached) => {
+            if (cached) {
+              return cached;
+            }
+
+            return new Response(
+              JSON.stringify({
+                error: 'Service Unavailable',
+                message: '네트워크 연결을 확인해주세요',
+              }),
+              {
+                status: 503,
+                statusText: 'Service Unavailable',
+                headers: { 'Content-Type': 'application/json' },
+              }
+            );
+          });
         })
     );
-  } else {
+    return;
+  }
+
+  if (shouldCacheFirst(url)) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -176,26 +223,53 @@ self.addEventListener('fetch', (event) => {
         return fetch(request)
           .then((response) => {
             if (
-              !response ||
-              response.status !== 200 ||
-              response.type === 'error'
+              response &&
+              response.status === 200 &&
+              response.type !== 'error'
             ) {
-              return response;
+              const responseToCache = response.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseToCache);
+              });
             }
-
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache);
-            });
-
             return response;
           })
           .catch(() => {
-            if (request.headers.get('accept')?.includes('text/html')) {
-              return caches.match('/index.html');
-            }
+            return new Response(new Blob([]), {
+              status: 200,
+              headers: { 'Content-Type': 'image/png' },
+            });
           });
       })
     );
+    return;
   }
+
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (response && response.status === 200 && response.type !== 'error') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(request, responseToCache);
+          });
+        }
+        return response;
+      })
+      .catch(() => {
+        return caches.match(request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          if (request.headers.get('accept')?.includes('text/html')) {
+            return caches.match('/index.html');
+          }
+
+          return new Response('', {
+            status: 503,
+            statusText: 'Service Unavailable',
+          });
+        });
+      })
+  );
 });

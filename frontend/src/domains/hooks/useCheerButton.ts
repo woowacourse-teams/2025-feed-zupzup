@@ -44,12 +44,17 @@ export default function useCheerButton({
   };
 
   const debouncedSearch = useDebounce(
-    ((count: number) => {
-      postOrganizationCheer({
-        organizationId,
-        cheeringCount: count,
-      });
-      setCount(0);
+    (async (count: number) => {
+      try {
+        await postOrganizationCheer({
+          organizationId,
+          cheeringCount: count,
+        });
+        setCount(0);
+      } catch (err) {
+        console.error(err);
+        showToast('응원 전송에 실패했습니다. 다시 시도해주세요.');
+      }
     }) as (...args: unknown[]) => void,
     500
   );
