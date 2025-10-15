@@ -2,7 +2,7 @@
 /* global importScripts, firebase, self */
 
 // ===== Configuration =====
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `feed-zupzup-${CACHE_VERSION}`;
 const urlsToCache = ['/', '/index.html'];
 

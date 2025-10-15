@@ -10,12 +10,9 @@ export const offlineBannerStyle = (theme: Theme) => css`
   color: white;
   padding: 16px 24px;
   text-align: center;
-  z-index: 9999;
-  font-family: 'Pretendard', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  z-index: 1100;
+  font: ${theme.typography.pretendard.captionSmall};
   box-shadow: 0 4px 12px rgba(115, 86, 255, 0.3);
-  backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   animation: slideDown 0.3s ease-out;
 
@@ -28,11 +25,5 @@ export const offlineBannerStyle = (theme: Theme) => css`
       transform: translateY(0);
       opacity: 1;
     }
-  }
-
-  &:hover {
-    background: ${theme.colors.purple[200]};
-    box-shadow: 0 6px 16px rgba(115, 86, 255, 0.4);
-    transition: all 0.2s ease-in-out;
   }
 `;
