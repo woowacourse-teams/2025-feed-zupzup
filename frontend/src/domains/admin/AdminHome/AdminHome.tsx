@@ -24,10 +24,10 @@ export default function AdminHome() {
   const theme = useAppTheme();
   const adminName = getLocalStorage<AdminAuthData>('auth')?.adminName || ADMIN;
 
-  const { openModal, closeModal, isOpen } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
 
   const handleCreateAdminOrganization = () => {
-    openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<CreateRoomModal onClose={closeModal} />);
   };
 
   const { adminOrganizations, isLoading } = useAdminOrganization({ adminName });

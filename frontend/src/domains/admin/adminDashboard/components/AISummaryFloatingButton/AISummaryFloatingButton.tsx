@@ -6,7 +6,7 @@ import { aiFloatingButton } from '@/domains/admin/adminDashboard/AdminDashboard.
 
 export default function AISummaryFloatingButton() {
   const theme = useAppTheme();
-  const { openModal, closeModal: closeAiModal, isOpen } = useModalContext();
+  const { openModal, closeModal: closeAiModal } = useModalContext();
 
   const dummyCategories = [
     {
@@ -42,7 +42,6 @@ export default function AISummaryFloatingButton() {
         onCategorySelect={() => {
           '아직은 빈값 나중에 api 연결할 때 추가';
         }}
-        isOpen={isOpen}
         onClose={closeAiModal}
         categories={dummyCategories}
       />

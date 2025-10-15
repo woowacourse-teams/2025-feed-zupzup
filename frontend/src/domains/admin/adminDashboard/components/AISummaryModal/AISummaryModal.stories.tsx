@@ -10,10 +10,6 @@ const meta: Meta<typeof AISummaryModal> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    isOpen: {
-      control: 'boolean',
-      description: '모달 열림/닫힘 상태',
-    },
     onClose: {
       action: 'onClose',
       description: '모달 닫기 콜백',
@@ -38,7 +34,6 @@ type Story = StoryObj<typeof meta>;
 // 기본 스토리
 export const Default: Story = {
   args: {
-    isOpen: true,
     onClose: () => console.log('Modal closed'),
     onCategorySelect: (category: AISummaryCategory) => {
       console.log(category);

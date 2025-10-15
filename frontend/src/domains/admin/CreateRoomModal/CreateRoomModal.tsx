@@ -21,14 +21,10 @@ import { getLocalStorage } from '@/utils/localStorage';
 import { useMemo, useState } from 'react';
 
 interface CreateRoomModalProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-export default function CreateRoomModal({
-  isOpen,
-  onClose,
-}: CreateRoomModalProps) {
+export default function CreateRoomModal({ onClose }: CreateRoomModalProps) {
   const theme = useAppTheme();
   const [organizationName, setOrganizationName] = useState('');
 
@@ -48,7 +44,7 @@ export default function CreateRoomModal({
   }, [organizationName, selectedCategories.length]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} customCSS={modalWidth}>
+    <Modal onClose={onClose} customCSS={modalWidth}>
       <section css={roomModalContainer}>
         <p css={roomModalTitle}>새 피드백 방 만들기</p>
 

@@ -1,20 +1,20 @@
+import { useModalContext } from '@/contexts/useModal';
 import { useEffect, useRef } from 'react';
 
 interface UseModalProps {
-  isOpen: boolean;
   onClose: () => void;
   onConfirm?: (() => void) | undefined;
   disableUserClose?: boolean;
 }
 
 export const useModal = ({
-  isOpen,
   onClose,
   onConfirm,
   disableUserClose = false,
 }: UseModalProps) => {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
+  const { isOpen } = useModalContext();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -30,7 +30,7 @@ export const useModal = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, disableUserClose]);
+  }, [disableUserClose]);
 
   const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget && !disableUserClose) {

@@ -1,13 +1,11 @@
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useState } from 'react';
 
 const meta: Meta<typeof EditRoomModal> = {
   title: 'components/EditRoomModal',
   component: EditRoomModal,
   tags: ['autodocs'],
   argTypes: {
-    isOpen: { control: 'boolean' },
     onClose: { action: 'closed' },
   },
   decorators: [
@@ -25,8 +23,6 @@ type Story = StoryObj<typeof EditRoomModal>;
 
 export const Default: Story = {
   render: () => {
-    const [isOpen, setIsOpen] = useState(true);
-
-    return <EditRoomModal isOpen={isOpen} onClose={() => setIsOpen(false)} />;
+    return <EditRoomModal onClose={() => {}} />;
   },
 };
