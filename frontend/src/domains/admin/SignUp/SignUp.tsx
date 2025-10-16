@@ -1,3 +1,4 @@
+import { SEO } from '@/components/SEO/SEO';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { ROUTES } from '@/constants';
 import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
@@ -68,59 +69,66 @@ export default function SignUp() {
   });
 
   return (
-    <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
-      {toast && (
-        <Toast
-          message={toast}
-          onClose={() => setToast(null)}
-          duration={2000}
-          type='error'
-        />
-      )}
+    <>
+      <SEO
+        title='회원가입'
+        description='피드줍줍 관리자 회원가입 페이지입니다'
+        keywords='회원가입, 관리자, 피드줍줍, admin, signup'
+      />
+      <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
+        {toast && (
+          <Toast
+            message={toast}
+            onClose={() => setToast(null)}
+            duration={2000}
+            type='error'
+          />
+        )}
 
-      <form css={signUpForm(theme)} onSubmit={handleSignUp}>
-        <div css={fieldContainer}>
-          {signUpFields.map((field: SignUpField) => {
-            const isConfirm = field.name === 'passwordConfirm';
+        <form css={signUpForm(theme)} onSubmit={handleSignUp}>
+          <div css={fieldContainer}>
+            {signUpFields.map((field: SignUpField) => {
+              const isConfirm = field.name === 'passwordConfirm';
 
-            const props = {
-              value: isConfirm
-                ? confirmPasswordValue.confirmPassword
-                : signUpValue[field.name as SignUpFieldName],
-              onChange: isConfirm
-                ? handleChangeConfirmPassword
-                : handleChangeForm,
-              errorMessage: isConfirm
-                ? confirmPasswordErrors || ''
-                : errors[field.name as SignUpFieldName] || '',
-            };
+              const props = {
+                value: isConfirm
+                  ? confirmPasswordValue.confirmPassword
+                  : signUpValue[field.name as SignUpFieldName],
+                onChange: isConfirm
+                  ? handleChangeConfirmPassword
+                  : handleChangeForm,
+                errorMessage: isConfirm
+                  ? confirmPasswordErrors || ''
+                  : errors[field.name as SignUpFieldName] || '',
+              };
 
-            return (
-              <FormField
-                type={field.type}
-                key={field.name}
-                id={field.name}
-                label={field.labelKey}
-                maxLength={field.maxLength}
-                minLength={field.minLength}
-                placeholder={field.placeholder}
-                {...props}
-              />
-            );
-          })}
-        </div>
-        <BasicButton disabled={isLoading}>
-          {isLoading ? '가입 중...' : '계정 만들기'}
-        </BasicButton>
-        <div css={signUpCaptionContainer(theme)}>
-          <p>
-            이미 계정이 있으신가요?
-            <strong onClick={() => goPath('/' + ROUTES.LOGIN)}>
-              로그인하기
-            </strong>
-          </p>
-        </div>
-      </form>
-    </AuthLayout>
+              return (
+                <FormField
+                  type={field.type}
+                  key={field.name}
+                  id={field.name}
+                  label={field.labelKey}
+                  maxLength={field.maxLength}
+                  minLength={field.minLength}
+                  placeholder={field.placeholder}
+                  {...props}
+                />
+              );
+            })}
+          </div>
+          <BasicButton disabled={isLoading}>
+            {isLoading ? '가입 중...' : '계정 만들기'}
+          </BasicButton>
+          <div css={signUpCaptionContainer(theme)}>
+            <p>
+              이미 계정이 있으신가요?
+              <strong onClick={() => goPath('/' + ROUTES.LOGIN)}>
+                로그인하기
+              </strong>
+            </p>
+          </div>
+        </form>
+      </AuthLayout>
+    </>
   );
 }

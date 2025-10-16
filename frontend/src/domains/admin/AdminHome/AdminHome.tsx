@@ -1,4 +1,7 @@
 import { QUERY_KEYS } from '@/constants/queryKeys';
+import { SEO } from '@/components/SEO/SEO';
+import PlusIcon from '@/components/icons/PlusIcon';
+import { useModalContext } from '@/contexts/useModal';
 import {
   adminOrganizationListContainer,
   homeLayout,
@@ -35,6 +38,6 @@ export default function AdminHome() {
           <AdminOrganizationList />
         </LocalErrorBoundary>
       </div>
-    </div>
+    </>
   );
 }

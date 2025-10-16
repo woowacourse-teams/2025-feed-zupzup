@@ -1,24 +1,24 @@
 import { useAppTheme } from '@/hooks/useAppTheme';
-
 import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 import {
   container,
   formContainer,
+  randomButton,
+  textarea,
+  textareaContainer,
+  formFooterContainer,
+  toggleButtonText,
+  topInputBorder,
   userInfo,
   usernameInput,
-  randomButton,
-  topInputBorder,
-  textareaContainer,
-  textarea,
   toggleButtonContainer,
-  toggleButtonText,
 } from './FeedbackForm.styles';
-
 import Button from '@/components/@commons/Button/Button';
+import Input from '@/components/@commons/Input/Input';
 import TextArea from '@/components/@commons/TextArea/TextArea';
-import Input from '@/components/@commons/Input/Input'; // 추가
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 import TextareaCounter from '@/components/TextareaCounter/TextareaCounter';
+import ImageUploadWithPreview from '@/domains/user/home/components/ImageUploadWithPreview/ImageUploadWithPreview';
 
 export interface FeedbackFormProps {
   className?: string;
@@ -26,11 +26,15 @@ export interface FeedbackFormProps {
   username: string;
   isLocked: boolean;
   canSubmit: boolean;
+  file: File | null;
+  imgUrl: string | null;
+  onChangeFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFeedbackChange: (value: string) => void;
   onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onUsernameFocus: () => void;
   onRandomChange: () => void;
   onLockToggle: () => void;
+  handleCancelFile: () => void;
 }
 
 export default function FeedbackForm({
@@ -38,11 +42,15 @@ export default function FeedbackForm({
   feedback,
   username,
   isLocked,
+  file,
+  imgUrl,
+  onChangeFile,
   onFeedbackChange,
   onUsernameChange,
   onUsernameFocus,
   onRandomChange,
   onLockToggle,
+  handleCancelFile,
 }: FeedbackFormProps) {
   const theme = useAppTheme();
 
@@ -51,6 +59,7 @@ export default function FeedbackForm({
       <div css={formContainer}>
         <div css={userInfo(theme)}>
           <Input
+            css={topInputBorder(theme)}
             value={username}
             onChange={onUsernameChange}
             onFocus={onUsernameFocus}
@@ -83,13 +92,21 @@ export default function FeedbackForm({
           <TextareaCounter textLength={feedback.length} />
         </div>
       </div>
-      <div css={toggleButtonContainer}>
-        <BasicToggleButton
-          isToggled={isLocked}
-          onClick={onLockToggle}
-          name='lock'
+      <div css={formFooterContainer}>
+        <ImageUploadWithPreview
+          file={file}
+          imgUrl={imgUrl}
+          onChangeFile={onChangeFile}
+          onCancelFile={handleCancelFile}
         />
-        <p css={toggleButtonText(theme)}>비밀글로 작성</p>
+        <div css={toggleButtonContainer}>
+          <BasicToggleButton
+            isToggled={isLocked}
+            onClick={onLockToggle}
+            name='lock'
+          />
+          <p css={toggleButtonText(theme)}>비밀글로 작성</p>
+        </div>
       </div>
     </div>
   );

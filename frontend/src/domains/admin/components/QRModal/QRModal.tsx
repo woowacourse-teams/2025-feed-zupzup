@@ -6,23 +6,22 @@ import { useQRCode } from './hooks/useQRCode';
 import { modalWidth } from '@/components/Modal/Modal.styles';
 
 interface QRModalProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-export default function QRModal({ isOpen, onClose }: QRModalProps) {
+export default function QRModal({ onClose }: QRModalProps) {
   const { data, isLoading } = useQRCode();
 
   if (isLoading) {
     return (
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal onClose={onClose}>
         <div>로딩 중...</div>
       </Modal>
     );
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} customCSS={modalWidth}>
+    <Modal onClose={onClose} customCSS={modalWidth}>
       <QRImageSection url={data?.imageUrl || ''} />
       <QRUrlSection url={data?.siteUrl || ''} />
       <BasicButton

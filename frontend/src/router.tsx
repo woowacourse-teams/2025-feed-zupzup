@@ -7,6 +7,8 @@ import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { isAuthenticated } from './utils/isAuthenticated';
 import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
 import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
+import AISummary from './domains/admin/AISummary/AISummary';
+import Loading from './components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
@@ -102,6 +104,7 @@ export const router = createBrowserRouter([
           },
           { path: ROUTES.DASHBOARD, element: <AdminDashboard /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <Settings /> },
+          { path: ROUTES.AI_SUMMARY, element: <AISummary /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

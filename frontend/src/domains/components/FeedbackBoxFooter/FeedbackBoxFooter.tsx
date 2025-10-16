@@ -19,6 +19,7 @@ interface FeedbackBoxFooterProps {
   isSecret?: boolean;
   feedbackId: number;
   type: FeedbackStatusType;
+  isAdmin?: boolean;
 }
 
 export default function FeedbackBoxFooter({
@@ -28,6 +29,7 @@ export default function FeedbackBoxFooter({
   isSecret,
   feedbackId,
   type,
+  isAdmin = false,
 }: FeedbackBoxFooterProps) {
   const theme = useAppTheme();
 
@@ -44,9 +46,10 @@ export default function FeedbackBoxFooter({
         )}
         {!isSecret && (
           <LikeButton
-            like={isLiked}
+            like={isLiked ?? false}
             feedbackId={feedbackId}
             likeCount={likeCount}
+            isAdmin={isAdmin}
           />
         )}
       </div>
