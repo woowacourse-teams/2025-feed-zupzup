@@ -18,7 +18,7 @@ public record FeedbackClustering(
 ) {
 
     public static FeedbackClustering createNewCluster(final double[] embedding) {
-        return new FeedbackClustering(UUID.randomUUID(), 0.0, embedding);
+        return new FeedbackClustering(UUID.randomUUID(), 1.0, embedding);
     }
 
     public FeedbackClustering assignMyCluster(final double[] embedding) {

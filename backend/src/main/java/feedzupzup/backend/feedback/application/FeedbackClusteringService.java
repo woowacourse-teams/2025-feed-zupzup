@@ -34,7 +34,11 @@ public class FeedbackClusteringService {
                 feedback.getOrganization().getUuid());
 
         FeedbackClustering clustering = representationFeedbackPerCluster.stream()
-                .map(representation -> representation.getClustering().assignMyCluster(embedding))
+                .map(representation -> {
+                    FeedbackClustering feedbackClustering = representation.getClustering().assignMyCluster(embedding);
+                    log.info("유샤도 : {}", feedbackClustering.similarityScore());
+                    return feedbackClustering;
+                })
                 .max(Comparator.comparingDouble(FeedbackClustering::similarityScore))
                 .filter(best -> best.similarityScore() >= SIMILARITY_THRESHOLD)
                 .orElseGet(() -> FeedbackClustering.createNewCluster(embedding));

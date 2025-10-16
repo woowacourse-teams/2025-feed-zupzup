@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.infrastructure.ai;
+package feedzupzup.backend.feedback.infrastructure.embedding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,27 +7,26 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.TestPropertySource;
 
 @Disabled
-class OpenAIEmbeddingClientIntegrationTest extends ServiceIntegrationHelper {
+class VoyageAIEmbeddingClientIntegrationTest extends ServiceIntegrationHelper {
 
     @Autowired
-    private OpenAIEmbeddingClient openAIEmbeddingClient;
+    private VoyageAIEmbeddingClient voyageAIEmbeddingClient;
 
     @Test
-    @DisplayName("실제 OpenAI API를 호출하여 임베딩을 생성한다")
+    @DisplayName("실제 VoyageAI API를 호출하여 임베딩을 생성한다")
     void extractEmbedding_RealAPI_Success() {
         // given
         String inputText = "안녕하세요, 이것은 테스트용 텍스트입니다.";
 
         // when
-        double[] embedding = openAIEmbeddingClient.extractEmbedding(inputText);
+        double[] embedding = voyageAIEmbeddingClient.extractEmbedding(inputText);
 
         // then
         assertThat(embedding).isNotNull();
         assertThat(embedding.length).isGreaterThan(0);
-        assertThat(embedding.length).isEqualTo(1536);
+        assertThat(embedding.length).isEqualTo(1024); // voyage-3-large의 임베딩 차원
     }
 
     @Test
@@ -37,11 +36,11 @@ class OpenAIEmbeddingClientIntegrationTest extends ServiceIntegrationHelper {
         String specialText = "특수문자 테스트! @#$%^&*()_+{}[]|:;\"'<>,.?/~`";
 
         // when
-        double[] embedding = openAIEmbeddingClient.extractEmbedding(specialText);
+        double[] embedding = voyageAIEmbeddingClient.extractEmbedding(specialText);
 
         // then
         assertThat(embedding).isNotNull();
-        assertThat(embedding.length).isEqualTo(1536);
+        assertThat(embedding.length).isEqualTo(1024);
     }
 
     @Test
@@ -51,8 +50,8 @@ class OpenAIEmbeddingClientIntegrationTest extends ServiceIntegrationHelper {
         String text = "동일성 테스트 텍스트";
 
         // when
-        double[] embedding1 = openAIEmbeddingClient.extractEmbedding(text);
-        double[] embedding2 = openAIEmbeddingClient.extractEmbedding(text);
+        double[] embedding1 = voyageAIEmbeddingClient.extractEmbedding(text);
+        double[] embedding2 = voyageAIEmbeddingClient.extractEmbedding(text);
 
         // 각 요소가 충분히 가까운지 확인 (코사인 유사도 활용)
         double cosineSimilarity = calculateCosineSimilarity(embedding1, embedding2);
@@ -67,8 +66,8 @@ class OpenAIEmbeddingClientIntegrationTest extends ServiceIntegrationHelper {
         String text2 = "두 번째 텍스트";
 
         // when
-        double[] embedding1 = openAIEmbeddingClient.extractEmbedding(text1);
-        double[] embedding2 = openAIEmbeddingClient.extractEmbedding(text2);
+        double[] embedding1 = voyageAIEmbeddingClient.extractEmbedding(text1);
+        double[] embedding2 = voyageAIEmbeddingClient.extractEmbedding(text2);
 
         // then
         assertThat(embedding1).isNotEqualTo(embedding2);
