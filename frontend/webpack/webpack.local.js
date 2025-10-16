@@ -18,7 +18,7 @@ const enableServiceWorker = env.ENABLE_SW === 'true';
 
 export default merge(common, {
   mode: 'development',
-  devtool: 'inline-source-map',
+  devtool: 'eval-cheap-module-source-map',
 
   output: {
     filename: '[name].js',
@@ -88,31 +88,65 @@ export default merge(common, {
               /\.hot-update/,
               /analyze/,
               /bundle-report/,
+              /node_modules/,
+              /\.(woff|woff2)$/,
+              /screenshot.*\.png$/,
             ],
-            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+            maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
             mode: 'development',
           }),
         ]
       : [
           {
             apply: (compiler) => {
-              compiler.hooks.emit.tapAsync(
+              compiler.hooks.thisCompilation.tap(
                 'CreateDummySW',
-                (compilation, callback) => {
-                  const dummySW = `
-console.log('[SW Dev] Service Worker disabled for faster development');
+                (compilation) => {
+                  compilation.hooks.processAssets.tap(
+                    {
+                      name: 'CreateDummySW',
+                      stage:
+                        compiler.webpack.Compilation
+                          .PROCESS_ASSETS_STAGE_ADDITIONAL,
+                    },
+                    () => {
+                      const dummySW = `console.log('[SW Dev] Service Worker disabled for faster development');
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', () => self.clients.claim());
 `;
-                  compilation.assets['service-worker.js'] = {
-                    source: () => dummySW,
-                    size: () => dummySW.length,
-                  };
-                  callback();
+                      compilation.emitAsset(
+                        'service-worker.js',
+                        new compiler.webpack.sources.RawSource(dummySW)
+                      );
+                    }
+                  );
                 }
               );
             },
           },
         ]),
   ],
+
+  optimization: {
+    minimize: false,
+    splitChunks: enableServiceWorker
+      ? {
+          chunks: 'all',
+          maxSize: 2 * 1024 * 1024,
+        }
+      : false,
+    runtimeChunk: false,
+    removeAvailableModules: false,
+    removeEmptyChunks: false,
+  },
+
+  performance: {
+    hints: false,
+  },
+
+  stats: 'minimal',
+
+  infrastructureLogging: {
+    level: 'error',
+  },
 });
