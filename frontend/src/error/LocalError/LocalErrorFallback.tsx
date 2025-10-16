@@ -11,17 +11,19 @@ import {
   container,
 } from '../GlobalError/GlobalErrorFallback.styles';
 import useLocalError from './useLocalError';
-import { ApiError, NetworkError } from '@/apis/apiClient';
+import { ErrorType } from '../GlobalError/GlobalErrorFallback';
+
+interface LocalErrorFallbackProps {
+  resetErrorBoundary: () => void;
+  error: Exclude<ErrorType, Error>;
+  queryKey: readonly string[];
+}
 
 export default function LocalErrorFallback({
   resetErrorBoundary,
   error,
   queryKey,
-}: {
-  resetErrorBoundary: () => void;
-  error: ApiError | NetworkError;
-  queryKey: readonly string[];
-}) {
+}: LocalErrorFallbackProps) {
   const theme = useAppTheme();
   const { errorObject } = useLocalError({
     queryKey,

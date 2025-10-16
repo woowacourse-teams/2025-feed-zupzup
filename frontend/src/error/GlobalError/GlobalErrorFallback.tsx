@@ -13,13 +13,17 @@ import {
 import { ApiError, NetworkError } from '@/apis/apiClient';
 import useGlobalError from './useGlobalError';
 
+export type ErrorType = Error | ApiError | NetworkError;
+
+interface GlobalErrorFallbackProps {
+  resetErrorBoundary: () => void;
+  error: ErrorType;
+}
+
 export default function GlobalErrorFallback({
   resetErrorBoundary,
   error,
-}: {
-  resetErrorBoundary: () => void;
-  error: Error | ApiError | NetworkError;
-}) {
+}: GlobalErrorFallbackProps) {
   const theme = useAppTheme();
   const { errorObject } = useGlobalError({
     resetErrorBoundary,
