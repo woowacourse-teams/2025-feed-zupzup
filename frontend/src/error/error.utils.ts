@@ -17,5 +17,5 @@ export function getErrorName(error: Error | ApiError | NetworkError) {
       return 'AUTH_ERROR';
     }
   }
-  return 'FAULT_REQUEST';
+  return 'UNKNOWN_ERROR';
 }
