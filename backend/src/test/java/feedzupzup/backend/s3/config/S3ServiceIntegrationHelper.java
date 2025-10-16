@@ -21,16 +21,20 @@ public abstract class S3ServiceIntegrationHelper extends ServiceIntegrationHelpe
     @BeforeEach
     void setUpS3() {
         final String bucketName = s3Properties.bucketName();
+        createBucketIfNotExists(bucketName);
+        deleteAllObjectsInBucket(bucketName);
+    }
 
-        // 버킷이 없다면 생성
+    private void createBucketIfNotExists(final String bucketName) {
         if (s3Client.listBuckets().buckets().stream()
-                .noneMatch(b -> b.name().equals(bucketName))) {
+                .noneMatch(bucket -> bucket.name().equals(bucketName))) {
             s3Client.createBucket(CreateBucketRequest.builder()
                     .bucket(bucketName)
                     .build());
         }
+    }
 
-        // 버킷의 객체 정리
+    private void deleteAllObjectsInBucket(final String bucketName) {
         s3Client.listObjectsV2(
                         ListObjectsV2Request.builder()
                                 .bucket(bucketName)
