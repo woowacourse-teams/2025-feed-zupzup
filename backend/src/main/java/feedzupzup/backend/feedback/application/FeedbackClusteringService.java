@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FeedbackClusteringService {
 
-    private static final double SIMILARITY_THRESHOLD = 0.7;
+    private static final double SIMILARITY_THRESHOLD = 0.75;
 
     private final EmbeddingExtractor embeddingExtractor;
     private final FeedbackRepository feedbackRepository;
