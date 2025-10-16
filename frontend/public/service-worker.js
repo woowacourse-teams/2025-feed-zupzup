@@ -1,24 +1,24 @@
 /* eslint-env browser, serviceworker */
-/* global importScripts, firebase, self */
+/* global importScripts, self */
+
+import { precacheAndRoute } from 'workbox-precaching';
+import { registerRoute, NavigationRoute } from 'workbox-routing';
+import {
+  NetworkFirst,
+  CacheFirst,
+  StaleWhileRevalidate,
+  NetworkOnly,
+} from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { BackgroundSyncPlugin } from 'workbox-background-sync';
+import { BroadcastUpdatePlugin } from 'workbox-broadcast-update';
 
 // ===== Configuration =====
-const CACHE_VERSION = 'v2';
-const CACHE_NAME = `feed-zupzup-${CACHE_VERSION}`;
-const urlsToCache = ['/', '/index.html'];
-
-const NEVER_CACHE = ['service-worker.js', 'mockServiceWorker.js'];
-
-const NETWORK_FIRST = ['manifest.json'];
-const NETWORK_FIRST_PATTERNS = [/\.html$/, /\.css$/, /\.js$/, /\.chunk\.js$/];
-
-const CACHE_FIRST_PATTERNS = [
-  /\.(png|jpg|jpeg|gif|svg|webp|ico)$/,
-  /\.(woff|woff2|ttf|eot)$/,
-];
-
-const NEVER_CACHE_PATTERNS = [/\.(hot-update)\./, /sockjs-node/, /webpack/];
+const CACHE_VERSION = 'v3';
 
 // ===== Firebase Setup =====
+// Firebase는 Workbox와 별도로 동작하므로 그대로 유지
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -52,230 +52,302 @@ try {
   console.error('Firebase messaging 초기화 실패:', error);
 }
 
-// ===== MSW Setup =====
+// ===== MSW Setup (개발 환경) =====
 if (self.location.hostname === 'localhost') {
-  try {
-    importScripts('/mockServiceWorker.js');
-  } catch (error) {
-    console.error('MSW 로드 실패:', error);
-  }
+  self.addEventListener('fetch', (event) => {
+    if (event.request.url.includes('mockServiceWorker')) {
+      return;
+    }
+  });
 }
 
-// ===== Cache Helpers =====
-function shouldNeverCache(url) {
-  if (NEVER_CACHE.some((pattern) => url.pathname.includes(pattern))) {
-    return true;
-  }
-  if (NEVER_CACHE_PATTERNS.some((pattern) => pattern.test(url.href))) {
-    return true;
-  }
-  return false;
-}
+// ===== Precaching =====
+precacheAndRoute(
+  self.__WB_MANIFEST || [
+    { url: '/', revision: CACHE_VERSION },
+    { url: '/index.html', revision: CACHE_VERSION },
+  ]
+);
 
-function shouldNetworkFirst(url) {
-  if (NETWORK_FIRST.some((pattern) => url.pathname.includes(pattern))) {
-    return true;
-  }
-  if (NETWORK_FIRST_PATTERNS.some((pattern) => pattern.test(url.href))) {
-    return true;
-  }
-  return false;
-}
-
-function shouldCacheFirst(url) {
-  return CACHE_FIRST_PATTERNS.some((pattern) => pattern.test(url.href));
-}
-
-// ===== Lifecycle Events =====
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-      .then(() => self.skipWaiting())
+// ===== Never Cache Routes =====
+registerRoute(({ url }) => {
+  return (
+    url.pathname.includes('service-worker.js') ||
+    url.pathname.includes('mockServiceWorker.js') ||
+    url.href.includes('.hot-update') ||
+    url.href.includes('sockjs-node') ||
+    url.href.includes('webpack')
   );
+}, new NetworkOnly());
+
+// ===== HTML/JS/CSS - Network First =====
+
+registerRoute(
+  ({ url }) => {
+    return (
+      url.pathname.endsWith('.html') ||
+      url.pathname.endsWith('.js') ||
+      url.pathname.endsWith('.css') ||
+      url.pathname.endsWith('.chunk.js') ||
+      url.pathname.includes('manifest.json')
+    );
+  },
+  new NetworkFirst({
+    cacheName: `app-shell-cache-${CACHE_VERSION}`,
+    networkTimeoutSeconds: 3,
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 7 * 24 * 60 * 60,
+      }),
+    ],
+  })
+);
+
+// ===== 온보딩 페이지 - 항상 네트워크 우선 =====
+registerRoute(
+  ({ url }) => {
+    return url.pathname === '/' || url.pathname === '/index.html';
+  },
+  new NetworkFirst({
+    cacheName: `onboarding-cache-${CACHE_VERSION}`,
+    networkTimeoutSeconds: 1,
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxEntries: 5,
+        maxAgeSeconds: 60,
+      }),
+    ],
+  })
+);
+
+// ===== Images & Fonts - Cache First =====
+registerRoute(
+  ({ request, url }) => {
+    return (
+      request.destination === 'image' ||
+      request.destination === 'font' ||
+      /\.(png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|ttf|eot)$/i.test(
+        url.pathname
+      )
+    );
+  },
+  new CacheFirst({
+    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
+    cacheName: `static-assets-cache-${CACHE_VERSION}`,
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 30 * 24 * 60 * 60,
+        purgeOnQuotaError: true,
+      }),
+    ],
+  })
+);
+
+// ===== API Routes Configuration =====
+const isApiRequest = (url) => {
+  return (
+    // 치명 이슈 수정 #3: localhost도 /api/ 프리픽스일 때만 API로 취급
+    (url.hostname === 'localhost' && url.pathname.startsWith('/api/')) ||
+    url.hostname.startsWith('api-') ||
+    url.hostname.startsWith('api.') ||
+    url.hostname.endsWith('feedzupzup.com') ||
+    url.pathname.startsWith('/api/')
+  );
+};
+
+// 1. 민감/개인 영역 - NetworkOnly (+BG Sync 큐는 유지)
+registerRoute(
+  ({ url }) => {
+    return (
+      isApiRequest(url) &&
+      (url.pathname.includes('/user/profile') ||
+        url.pathname.includes('/user/settings') ||
+        url.pathname.includes('/auth') ||
+        url.pathname.includes('/private'))
+    );
+  },
+  new NetworkOnly({
+    plugins: [
+      new BackgroundSyncPlugin('private-api-queue', {
+        maxRetentionTime: 24 * 60,
+      }),
+    ],
+  })
+);
+
+// 2. 실시간성이 중요한 API - Network First (짧은 캐시)
+registerRoute(
+  ({ url, request }) => {
+    return (
+      isApiRequest(url) &&
+      request.method === 'GET' &&
+      (url.pathname.includes('/feedbacks') ||
+        url.pathname.includes('/notifications') ||
+        url.pathname.includes('/comments'))
+    );
+  },
+  new NetworkFirst({
+    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
+    cacheName: `realtime-api-cache-${CACHE_VERSION}`,
+    networkTimeoutSeconds: 5,
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+        headers: {
+          'X-Cache-Control': 'public',
+        },
+      }),
+      new ExpirationPlugin({
+        maxEntries: 50,
+        maxAgeSeconds: 5 * 60,
+      }),
+      new BroadcastUpdatePlugin({
+        headersToCheck: ['X-Last-Modified', 'ETag'],
+      }),
+    ],
+  })
+);
+
+// 3. 일반 API GET 요청 - Stale While Revalidate
+registerRoute(
+  ({ url, request }) => {
+    return isApiRequest(url) && request.method === 'GET';
+  },
+  new StaleWhileRevalidate({
+    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
+    cacheName: `api-cache-${CACHE_VERSION}`,
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 60 * 60,
+        purgeOnQuotaError: true,
+      }),
+      new BroadcastUpdatePlugin(),
+    ],
+  })
+);
+
+// 4. API Mutation 요청 - Background Sync로 오프라인 지원
+const bgSyncPlugin = new BackgroundSyncPlugin('api-mutations', {
+  maxRetentionTime: 24 * 60,
+  onSync: async ({ queue }) => {
+    let entry;
+    while ((entry = await queue.shiftRequest())) {
+      try {
+        const response = await fetch(entry.request.clone());
+
+        if (response.ok) {
+          const url = new URL(entry.request.url);
+          const cachesToUpdate = [
+            `realtime-api-cache-${CACHE_VERSION}`,
+            `api-cache-${CACHE_VERSION}`,
+          ];
+
+          for (const cacheName of cachesToUpdate) {
+            const cache = await caches.open(cacheName);
+            const keys = await cache.keys();
+
+            const keysToDelete = keys.filter((key) => {
+              const keyUrl = new URL(key.url);
+              const keyPathname = keyUrl.pathname;
+
+              const isFeedbackRelated =
+                /\/admin\/feedbacks/.test(keyPathname) ||
+                /\/organizations\/\d+\/feedbacks/.test(keyPathname) ||
+                /\/feedbacks\/\d+\/(like|unlike)/.test(keyPathname) ||
+                /\/admin\/feedbacks\/statistics/.test(keyPathname);
+
+              const isOrganizationRelated =
+                /\/admin\/organizations/.test(keyPathname) ||
+                /\/organizations\/\d+/.test(keyPathname);
+
+              const isSameResource = keyUrl.pathname.includes(
+                url.pathname.split('/').slice(0, -1).join('/')
+              );
+
+              return (
+                isFeedbackRelated || isOrganizationRelated || isSameResource
+              );
+            });
+
+            await Promise.all(keysToDelete.map((key) => cache.delete(key)));
+          }
+
+          const channel = new BroadcastChannel('api-updates');
+          channel.postMessage({
+            type: 'CACHE_INVALIDATED',
+            url: entry.request.url,
+            method: entry.request.method,
+          });
+        }
+
+        return response;
+      } catch (error) {
+        await queue.unshiftRequest(entry);
+        throw error;
+      }
+    }
+  },
+});
+
+registerRoute(
+  ({ url, request }) => {
+    return (
+      isApiRequest(url) &&
+      ['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)
+    );
+  },
+  new NetworkOnly({
+    plugins: [bgSyncPlugin],
+  })
+);
+
+// ===== Navigation Route (SPA) =====
+const navigationRoute = new NavigationRoute(
+  new NetworkFirst({
+    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
+    cacheName: `navigation-cache-${CACHE_VERSION}`,
+    plugins: [
+      new CacheableResponsePlugin({
+        statuses: [0, 200],
+      }),
+    ],
+  })
+);
+
+registerRoute(navigationRoute);
+
+// ===== Skip Waiting & Clients Claim =====
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-      .then(() => self.clients.claim())
-  );
-});
+    (async () => {
+      const cacheNames = await caches.keys();
+      const oldCaches = cacheNames.filter(
+        (name) => !name.includes(CACHE_VERSION) && !name.startsWith('workbox-')
+      );
+      await Promise.all(oldCaches.map((name) => caches.delete(name)));
 
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  if (url.origin !== location.origin) {
-    return;
-  }
-
-  if (request.method !== 'GET') {
-    return;
-  }
-
-  // Never Cache
-  if (shouldNeverCache(url)) {
-    event.respondWith(
-      fetch(request).catch(() => {
-        return new Response('', { status: 408, statusText: 'Request Timeout' });
-      })
-    );
-    return;
-  }
-
-  // Network First
-  if (shouldNetworkFirst(url)) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request).then((cached) => {
-            if (cached) {
-              return cached;
-            }
-
-            if (request.headers.get('accept')?.includes('text/html')) {
-              return caches.match('/index.html');
-            }
-
-            return new Response('', {
-              status: 503,
-              statusText: 'Service Unavailable',
-            });
-          });
-        })
-    );
-    return;
-  }
-
-  // API Request
-  const isApiRequest =
-    url.hostname === 'localhost' ||
-    url.hostname.startsWith('api-') ||
-    url.hostname.startsWith('api.') ||
-    url.pathname.startsWith('/api/') ||
-    request.headers.get('content-type')?.includes('application/json');
-
-  if (isApiRequest) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (
-            response &&
-            response.status === 200 &&
-            response.type !== 'error'
-          ) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request).then((cached) => {
-            if (cached) {
-              return cached;
-            }
-
-            return new Response(
-              JSON.stringify({
-                error: 'Service Unavailable',
-                message: '네트워크 연결을 확인해주세요',
-              }),
-              {
-                status: 503,
-                statusText: 'Service Unavailable',
-                headers: { 'Content-Type': 'application/json' },
-              }
-            );
-          });
-        })
-    );
-    return;
-  }
-
-  // Cache First
-  if (shouldCacheFirst(url)) {
-    event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(request)
-          .then((response) => {
-            if (
-              response &&
-              response.status === 200 &&
-              response.type !== 'error'
-            ) {
-              const responseToCache = response.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseToCache);
-              });
-            }
-            return response;
-          })
-          .catch(() => {
-            return new Response(new Blob([]), {
-              status: 200,
-              headers: { 'Content-Type': 'image/png' },
-            });
-          });
-      })
-    );
-    return;
-  }
-
-  // Default Strategy
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (response && response.status === 200 && response.type !== 'error') {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, responseToCache);
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          if (request.headers.get('accept')?.includes('text/html')) {
-            return caches.match('/index.html');
-          }
-
-          return new Response('', {
-            status: 503,
-            statusText: 'Service Unavailable',
-          });
-        });
-      })
+      await clients.claim();
+    })()
   );
 });
