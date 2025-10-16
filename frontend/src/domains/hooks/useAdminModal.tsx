@@ -1,13 +1,11 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { useState, useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-
-interface ModalState {
-  type: 'confirm' | 'delete' | null;
-  feedbackId?: number;
-}
+import { useModalContext } from '@/contexts/useModal';
+import AnswerModal from '../components/AnswerModal/AnswerModal';
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 
 interface UseAdminModalProps {
   organizationId: string;
@@ -15,20 +13,9 @@ interface UseAdminModalProps {
 
 export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
-  const [modalState, setModalState] = useState<ModalState>({ type: null });
+  const feedbackIdRef = useRef<number | null>(null);
+  const { openModal, closeModal } = useModalContext();
   const { showErrorModal } = useErrorModalContext();
-
-  const openFeedbackCompleteModal = useCallback(
-    (feedbackId: number) => setModalState({ type: 'confirm', feedbackId }),
-    []
-  );
-
-  const openFeedbackDeleteModal = useCallback(
-    (feedbackId: number) => setModalState({ type: 'delete', feedbackId }),
-    []
-  );
-
-  const closeModal = useCallback(() => setModalState({ type: null }), []);
 
   const invalidateFeedbackQueries = useCallback(() => {
     queryClient.invalidateQueries({
@@ -65,25 +52,52 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
 
   const handleConfirmFeedback = useCallback(
     async (comment: string) => {
-      const { feedbackId } = modalState;
+      const feedbackId = feedbackIdRef.current;
       if (!feedbackId) return;
 
       await confirmMutation.mutateAsync({ feedbackId, comment });
       closeModal();
     },
-    [modalState.feedbackId, confirmMutation.mutateAsync, closeModal]
+    [confirmMutation.mutateAsync, closeModal]
   );
 
   const handleDeleteFeedback = useCallback(async () => {
-    const { feedbackId } = modalState;
+    const feedbackId = feedbackIdRef.current;
     if (!feedbackId) return;
 
     await deleteMutation.mutateAsync({ feedbackId });
     closeModal();
-  }, [modalState.feedbackId, deleteMutation.mutateAsync, closeModal]);
+  }, [deleteMutation.mutateAsync, closeModal]);
+
+  const openFeedbackCompleteModal = useCallback(
+    (feedbackId: number) => {
+      feedbackIdRef.current = feedbackId;
+      openModal(
+        <AnswerModal
+          handleCloseModal={closeModal}
+          handleSubmit={handleConfirmFeedback}
+        />
+      );
+    },
+    [openModal, closeModal, handleConfirmFeedback]
+  );
+
+  const openFeedbackDeleteModal = useCallback(
+    (feedbackId: number) => {
+      feedbackIdRef.current = feedbackId;
+      openModal(
+        <ConfirmModal
+          title='삭제하시겠습니까?'
+          message='삭제한 건의는 되돌릴 수 없습니다.'
+          onClose={closeModal}
+          onConfirm={handleDeleteFeedback}
+        />
+      );
+    },
+    [openModal, closeModal, handleDeleteFeedback]
+  );
 
   return {
-    modalState,
     openFeedbackCompleteModal,
     openFeedbackDeleteModal,
     closeModal,
