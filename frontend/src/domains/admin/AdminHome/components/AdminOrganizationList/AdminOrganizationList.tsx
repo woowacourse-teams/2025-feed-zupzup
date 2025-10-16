@@ -26,10 +26,10 @@ export default function AdminOrganizationList() {
 
   const { goPath } = useNavigation();
 
-  const { openModal, closeModal, isOpen } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
 
   const handleCreateAdminOrganization = () => {
-    openModal(<CreateRoomModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<CreateRoomModal onClose={closeModal} />);
   };
 
   if (isLoading) {

@@ -8,7 +8,6 @@ import { isAuthenticated } from './utils/isAuthenticated';
 import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
 import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
 import AISummary from './domains/admin/AISummary/AISummary';
-import Loading from './components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
