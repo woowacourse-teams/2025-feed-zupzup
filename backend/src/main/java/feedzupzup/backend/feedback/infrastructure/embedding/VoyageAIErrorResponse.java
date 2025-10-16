@@ -8,7 +8,5 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VoyageAIErrorResponse {
-    private String status;
-    private String error;
-    private String message;
+    private String detail;
 }

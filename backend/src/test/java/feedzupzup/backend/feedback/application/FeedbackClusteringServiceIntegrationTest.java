@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-//@Disabled("실제 OpenAI API 호출이 필요한 테스트 - 필요시에만 활성화")
+@Disabled("실제 API 호출이 필요한 테스트 - 필요시에만 활성화")
 class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper {
 
     @Autowired
