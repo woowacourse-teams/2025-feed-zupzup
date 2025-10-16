@@ -1,0 +1,73 @@
+package feedzupzup.backend.global.config.datasource;
+
+import com.zaxxer.hikari.HikariDataSource;
+import java.util.HashMap;
+import java.util.Map;
+import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+
+@Slf4j
+@Configuration
+public class DataSourceConfig {
+
+    public enum DataSourceKey {
+        WRITER, READER;
+    }
+
+    @Bean
+    @Primary
+    @ConditionalOnProperty(
+            prefix = "spring.datasource.replication",
+            name = "enabled",
+            havingValue = "true"
+    )
+    public DataSource routingDataSource(
+            @Qualifier("writerDataSource") DataSource writer,
+            @Qualifier("readerDataSource") DataSource reader
+    ) {
+        Map<Object, Object> targetDataSources = new HashMap<>();
+        targetDataSources.put(DataSourceKey.WRITER, writer);
+        targetDataSources.put(DataSourceKey.READER, reader);
+
+        ReplicationRoutingDataSource routing = new ReplicationRoutingDataSource();
+        routing.setDefaultTargetDataSource(writer);
+        routing.setTargetDataSources(targetDataSources);
+        routing.afterPropertiesSet();
+
+        return new LazyConnectionDataSourceProxy(routing);
+    }
+
+    @Bean
+    @ConfigurationProperties("spring.datasource.writer")
+    @ConditionalOnProperty(
+            prefix = "spring.datasource.replication",
+            name = "enabled",
+            havingValue = "true"
+    )
+    public DataSource writerDataSource() {
+        return DataSourceBuilder.create()
+                .type(HikariDataSource.class)
+                .build();
+    }
+
+    @Bean
+    @ConfigurationProperties("spring.datasource.reader")
+    @ConditionalOnProperty(
+            prefix = "spring.datasource.replication",
+            name = "enabled",
+            havingValue = "true"
+    )
+    public DataSource readerDataSource() {
+        return DataSourceBuilder.create()
+                .type(HikariDataSource.class)
+                .build();
+    }
+}
