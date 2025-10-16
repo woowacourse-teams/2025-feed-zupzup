@@ -21,7 +21,7 @@ import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
 
 @LocalStackS3Test
-class S3ControllerE2eTest extends E2EHelper {
+class S3ControllerE2ETest extends E2EHelper {
 
     @Autowired
     private S3Client s3Client;
@@ -134,7 +134,7 @@ class S3ControllerE2eTest extends E2EHelper {
     }
 
     @Test
-    @DisplayName("objectDir가 null일 경우 500 에러를 반환한다")
+    @DisplayName("objectDir가 null일 경우 400 에러를 반환한다")
     void generate_presigned_url_with_null_object_dir() {
         // given
         createBucketIfNotExists();
@@ -149,13 +149,13 @@ class S3ControllerE2eTest extends E2EHelper {
                 .when()
                 .post("/presigned-url")
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .contentType(ContentType.JSON)
-                .body("status", equalTo(500));
+                .body("status", equalTo(400));
     }
 
     @Test
-    @DisplayName("extension이 null일 경우 500 에러를 반환한다")
+    @DisplayName("extension이 null일 경우 400 에러를 반환한다")
     void generate_presigned_url_with_null_extension() {
         // given
         createBucketIfNotExists();
@@ -170,9 +170,9 @@ class S3ControllerE2eTest extends E2EHelper {
                 .when()
                 .post("/presigned-url")
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .statusCode(HttpStatus.BAD_REQUEST.value())
                 .contentType(ContentType.JSON)
-                .body("status", equalTo(500));
+                .body("status", equalTo(400));
     }
 
     @Test

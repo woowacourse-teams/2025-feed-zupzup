@@ -7,6 +7,7 @@ import feedzupzup.backend.global.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus)
                 .body(ErrorResponse.error(e.getErrorCode()));
     }
-    
+
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomainException(final DomainException e) {
         log.warn(e.getMessage(), e);
@@ -47,4 +48,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(httpStatus)
                 .body(ErrorResponse.error(e.getErrorCode()));
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
+            final MethodArgumentNotValidException e) {
+        log.warn("MethodArgumentNotValidException occurred: {}", e.getMessage());
+        final HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        final ErrorCode errorCode = ErrorCode.INVALID_INPUT_VALUE;
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(errorCode));
+    }
+
 }

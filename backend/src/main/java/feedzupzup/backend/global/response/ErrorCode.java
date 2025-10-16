@@ -23,6 +23,7 @@ public enum ErrorCode {
     RESOURCE_EXISTS(BAD_REQUEST, "G03", "이미 존재하는 자원입니다."),
     INVALID_AUTHORIZE(UNAUTHORIZED, "G04", "접근 권한이 존재하지 않습니다."),
     REST_CLIENT_SERVER_FAIL(INTERNAL_SERVER_ERROR, "G05", "외부 API 처리 작업을 실패하였습니다."),
+    INVALID_INPUT_VALUE(BAD_REQUEST, "G06", "유효하지 않은 입력값입니다."),
 
     //Organization Error
     CHEERING_INVALID_NUMBER(BAD_REQUEST, "O01", "응원횟수에 유효하지 않은 숫자값입니다."),
