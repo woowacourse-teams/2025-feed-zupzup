@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.dto.response;
 
+import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -63,7 +64,7 @@ public record AdminFeedbackListResponse(
             String imageUrl
     ) {
 
-        private static AdminFeedbackItem from(final FeedbackItem feedbackItem) {
+        public static AdminFeedbackItem from(final FeedbackItem feedbackItem) {
             return new AdminFeedbackItem(
                     feedbackItem.feedbackId(),
                     feedbackItem.content(),
@@ -77,6 +78,5 @@ public record AdminFeedbackListResponse(
                     feedbackItem.imageUrl() == null ? null : feedbackItem.imageUrl()
             );
         }
-
     }
 }

@@ -5,8 +5,11 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.ClusterRepresentativeFeedback;
+import feedzupzup.backend.feedback.domain.EmbeddingCluster;
+import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
@@ -25,6 +28,7 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -42,6 +46,8 @@ public class AdminFeedbackService {
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final EmbeddingClusterRepository embeddingClusterRepository;
+    private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
 
     @Transactional
     @BusinessActionLog
@@ -143,10 +149,13 @@ public class AdminFeedbackService {
     }
 
     public ClusterFeedbacksResponse getFeedbacksByClusterId(final UUID clusterId) {
-        List<Feedback> feedbacks = feedBackRepository.findAllByClustering_ClusterId(clusterId);
+        EmbeddingCluster embeddingCluster = embeddingClusterRepository.findByClusterId(clusterId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 clusterid(uuid = " + clusterId + ")로 찾을 수 없습니다."));
+        Long totalCount = feedbackEmbeddingClusterRepository.countByEmbeddingCluster(embeddingCluster);
+        List<Feedback> feedbacks = feedBackRepository.findAllByClusterId(clusterId);
         if (feedbacks.isEmpty()) {
             throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
         }
-        return ClusterFeedbacksResponse.of(feedbacks);
+        return ClusterFeedbacksResponse.of(feedbacks, embeddingCluster.getLabel(), totalCount);
     }
 }
