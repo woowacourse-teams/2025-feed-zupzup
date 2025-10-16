@@ -71,9 +71,7 @@ function isKnownError(error: ApiError | NetworkError) {
   }
 
   if (error instanceof ApiError) {
-    return (
-      error.status === 400 || error.status === 500 || error.status === 1000
-    );
+    return error.status === 400 || error.status === 500;
   }
 
   return false;
