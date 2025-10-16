@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,12 +13,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
-@Slf4j
 @Configuration
 public class DataSourceConfig {
 
     public enum DataSourceKey {
-        WRITER, READER;
+        WRITER, READER,
+        ;
     }
 
     @Bean
@@ -30,14 +29,14 @@ public class DataSourceConfig {
             havingValue = "true"
     )
     public DataSource routingDataSource(
-            @Qualifier("writerDataSource") DataSource writer,
-            @Qualifier("readerDataSource") DataSource reader
+            @Qualifier("writerDataSource") final DataSource writer,
+            @Qualifier("readerDataSource") final DataSource reader
     ) {
-        Map<Object, Object> targetDataSources = new HashMap<>();
+        final Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceKey.WRITER, writer);
         targetDataSources.put(DataSourceKey.READER, reader);
 
-        ReplicationRoutingDataSource routing = new ReplicationRoutingDataSource();
+        final ReplicationRoutingDataSource routing = new ReplicationRoutingDataSource();
         routing.setDefaultTargetDataSource(writer);
         routing.setTargetDataSources(targetDataSources);
         routing.afterPropertiesSet();
