@@ -1,8 +1,5 @@
-import { SEO } from '@/components/SEO/SEO';
-import PlusIcon from '@/components/icons/PlusIcon';
-import { useModalContext } from '@/contexts/useModal';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import {
-  addAdminOrganization,
   adminOrganizationListContainer,
   homeLayout,
   infoContainer,
@@ -11,9 +8,8 @@ import {
 } from '@/domains/admin/AdminHome/AdminHome.style';
 import AdminHomeHeader from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader';
 import AdminOrganizationList from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList';
-import useAdminOrganization from '@/domains/admin/AdminHome/hooks/useAdminOrganization';
-import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
-import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
+import LocalErrorBoundary from '@/error/LocalError/LocalErrorBoundary';
+import LocalErrorFallback from '@/error/LocalError/LocalErrorFallback';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { AdminAuthData } from '@/types/adminAuth';
 import { getLocalStorage } from '@/utils/localStorage';
@@ -24,45 +20,21 @@ export default function AdminHome() {
   const theme = useAppTheme();
   const adminName = getLocalStorage<AdminAuthData>('auth')?.adminName || ADMIN;
 
-  const { openModal, closeModal } = useModalContext();
-
-  const handleCreateAdminOrganization = () => {
-    openModal(<CreateRoomModal onClose={closeModal} />);
-  };
-
-  const { adminOrganizations, isLoading } = useAdminOrganization({ adminName });
-
   return (
-    <>
-      <SEO
-        title='관리자 홈'
-        description='생성한 방을 확인하세요'
-        keywords='관리자, 방, 피드백, 홈'
-      />
-      <div css={homeLayout}>
-        <AdminHomeHeader adminName={adminName} />
-        <div css={adminOrganizationListContainer(theme)}>
-          <div css={infoContainer}>
-            <p css={listTitle(theme)}>피드백 방 목록</p>
-            <p css={listCaption(theme)}>
-              관리하고 있는 피드백 방들을 확인하세요
-            </p>
-          </div>
-          <AdminOrganizationList
-            adminOrganizations={adminOrganizations}
-            isLoading={isLoading}
-          />
-
-          {!isLoading && (
-            <FloatingButton
-              icon={<PlusIcon color='white' width='24' height='24' />}
-              onClick={handleCreateAdminOrganization}
-              inset={{ bottom: '80px', left: '100%' }}
-              customCSS={addAdminOrganization(theme)}
-            />
-          )}
+    <div css={homeLayout}>
+      <AdminHomeHeader adminName={adminName} />
+      <div css={adminOrganizationListContainer(theme)}>
+        <div css={infoContainer}>
+          <p css={listTitle(theme)}>피드백 방 목록</p>
+          <p css={listCaption(theme)}>관리하고 있는 피드백 방들을 확인하세요</p>
         </div>
+        <LocalErrorBoundary
+          fallback={LocalErrorFallback}
+          queryKey={QUERY_KEYS.adminOrganizations(adminName)}
+        >
+          <AdminOrganizationList />
+        </LocalErrorBoundary>
       </div>
-    </>
+    </div>
   );
 }
