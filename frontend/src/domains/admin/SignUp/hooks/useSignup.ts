@@ -6,7 +6,7 @@ import {
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import useNavigation from '@/domains/hooks/useNavigation';
-import { useErrorModalActions } from '@/hooks/useErrorModal';
+import { useErrorModal } from '@/hooks/useErrorModal';
 import { NotificationService } from '@/services/notificationService';
 import { useToastActions } from '@/stores/Toast/useToast';
 import { setLocalStorage } from '@/utils/localStorage';
@@ -31,7 +31,7 @@ export default function useSignup({
   signUpValue,
 }: UseSignupProps) {
   const { goPath } = useNavigation();
-  const { showErrorModal } = useErrorModalActions();
+  const { showErrorModal } = useErrorModal();
   const { showToast } = useToastActions();
 
   const { mutate: adminSignup, isPending } = useMutation<

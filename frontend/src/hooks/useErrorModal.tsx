@@ -3,7 +3,7 @@ import { ApiError } from '@/apis/apiClient';
 import { useModalActions } from '@/stores/Modal/useModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
 
-export function useErrorModalActions() {
+export function useErrorModal() {
   const { openModal, closeModal } = useModalActions();
   const showErrorModal = useCallback((error: unknown, title?: string) => {
     let message = '';

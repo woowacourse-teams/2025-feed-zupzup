@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { apiClient } from '@/apis/apiClient';
-import { useErrorModalActions } from './useErrorModal';
+import { useErrorModal } from './useErrorModal';
 
 const DEFAULT_SIZE = 10;
 const MAX_RETRY_COUNT = 3;
@@ -29,7 +29,7 @@ export default function useInfinityScroll<
   const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
   const [hasNext, setHasNext] = useState(initialHasNext);
   const [loading, setLoading] = useState(false);
-  const { showErrorModal } = useErrorModalActions();
+  const { showErrorModal } = useErrorModal();
 
   const retryCountRef = useRef(0);
   const prevUrlRef = useRef(url);

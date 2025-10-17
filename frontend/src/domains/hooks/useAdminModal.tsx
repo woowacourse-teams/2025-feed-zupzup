@@ -5,7 +5,7 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 import AnswerModal from '../components/AnswerModal/AnswerModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { useModalActions } from '@/stores/Modal/useModal';
-import { useErrorModalActions } from '@/hooks/useErrorModal';
+import { useErrorModal } from '@/hooks/useErrorModal';
 
 interface UseAdminModalProps {
   organizationId: string;
@@ -15,7 +15,7 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
   const feedbackIdRef = useRef<number | null>(null);
   const { openModal, closeModal } = useModalActions();
-  const { showErrorModal } = useErrorModalActions();
+  const { showErrorModal } = useErrorModal();
 
   const invalidateFeedbackQueries = useCallback(() => {
     queryClient.invalidateQueries({
