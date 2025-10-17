@@ -7,7 +7,7 @@ import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
-import { ModalProvider } from './contexts/useModal';
+import ModalProvider from './stores/ModalProvider';
 
 const gaId = process.env.GA_ID;
 
@@ -33,7 +33,8 @@ function AppContent() {
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
 
   return (
-    <ModalProvider>
+    <div>
+      <ModalProvider />
       <div css={appContainer(isShowHeader)}>
         {isShowHeader && <Header />}
         <main css={main}>
@@ -49,7 +50,7 @@ function AppContent() {
           />
         )}
       </div>
-    </ModalProvider>
+    </div>
   );
 }
 
