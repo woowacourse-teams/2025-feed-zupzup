@@ -89,7 +89,7 @@ export default merge(common, {
         /\.(woff|woff2)$/,
         /screenshot.*\.png$/,
       ],
-      maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+      maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       mode: 'development',
     }),
   ],
