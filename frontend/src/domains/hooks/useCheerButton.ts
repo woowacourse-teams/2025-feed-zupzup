@@ -1,6 +1,6 @@
 import { postOrganizationCheer } from '@/apis/organization.api';
-import { useToast } from '@/contexts/useToast';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useToastActions } from '@/stores/Toast/useToast';
 import { useState } from 'react';
 
 interface UseCheerButtonProps {
@@ -13,12 +13,9 @@ export default function useCheerButton({
   const [count, setCount] = useState(0);
   const [animate, setAnimate] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
-  const { showToast } = useToast();
+  const { showToast } = useToastActions();
 
   const handleCheerButton = () => {
-    showToast(
-      '응원은 한 번에 100개까지만 가능해요! 잠시 후 다시 시도해주세요.'
-    );
     if (isDisabled) {
       return;
     }
