@@ -8,6 +8,7 @@ import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { NotificationService } from '@/services/notificationService';
+import { useToastActions } from '@/stores/Toast/useToast';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
@@ -22,17 +23,16 @@ interface UseSignupProps {
     id: string;
     password: string;
   };
-  setToast: (message: string | null) => void;
 }
 
 export default function useSignup({
   confirmPasswordErrors,
   errors,
   signUpValue,
-  setToast,
 }: UseSignupProps) {
   const { goPath } = useNavigation();
   const { showErrorModal } = useErrorModalContext();
+  const { showToast } = useToastActions();
 
   const { mutate: adminSignup, isPending } = useMutation<
     AdminAuthResponse,
@@ -57,7 +57,7 @@ export default function useSignup({
       !confirmPasswordErrors && signUpValue.password !== '';
 
     if (!isValid || !isConfirmPasswordValid) {
-      setToast('입력하신 정보를 다시 확인해주세요.');
+      showToast('입력하신 정보를 다시 확인해주세요.');
       return;
     }
 

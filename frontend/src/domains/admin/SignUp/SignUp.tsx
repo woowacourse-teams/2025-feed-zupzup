@@ -20,10 +20,8 @@ import {
   validateName,
   validatePassword,
 } from '@/domains/admin/utils/authValidations';
-import Toast from '@/domains/components/Toast/Toast';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useState } from 'react';
 
 type SignUpFieldName = 'name' | 'id' | 'password';
 
@@ -42,7 +40,6 @@ const SIGNUP_VALIDATORS = {
 export default function SignUp() {
   const theme = useAppTheme();
   const { goPath } = useNavigation();
-  const [toast, setToast] = useState<string | null>(null);
 
   const {
     authValue: signUpValue,
@@ -65,7 +62,6 @@ export default function SignUp() {
     confirmPasswordErrors,
     errors,
     signUpValue,
-    setToast,
   });
 
   return (
@@ -76,15 +72,6 @@ export default function SignUp() {
         keywords='회원가입, 관리자, 피드줍줍, admin, signup'
       />
       <AuthLayout title='회원가입' caption='새로운 계정을 만들어보세요'>
-        {toast && (
-          <Toast
-            message={toast}
-            onClose={() => setToast(null)}
-            duration={2000}
-            type='error'
-          />
-        )}
-
         <form css={signUpForm(theme)} onSubmit={handleSignUp}>
           <div css={fieldContainer}>
             {signUpFields.map((field: SignUpField) => {
