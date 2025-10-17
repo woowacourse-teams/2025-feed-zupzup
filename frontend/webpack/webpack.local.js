@@ -14,7 +14,6 @@ const result = dotenv.config({ path: '.env.dev' });
 const env = result.parsed || {};
 
 const defineEnv = createDefineEnv(env, 'local');
-const enableServiceWorker = env.ENABLE_SW === 'true';
 
 export default merge(common, {
   mode: 'development',
@@ -74,67 +73,33 @@ export default merge(common, {
 
   plugins: [
     new webpack.DefinePlugin(defineEnv),
-    ...(enableServiceWorker
-      ? [
-          new InjectManifest({
-            swSrc: path.resolve(__dirname, '../public/service-worker.js'),
-            swDest: 'service-worker.js',
-            exclude: [
-              /\.map$/,
-              /manifest$/,
-              /\.htaccess$/,
-              /service-worker\.js$/,
-              /mockServiceWorker\.js$/,
-              /\.hot-update/,
-              /analyze/,
-              /bundle-report/,
-              /node_modules/,
-              /\.(woff|woff2)$/,
-              /screenshot.*\.png$/,
-            ],
-            maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
-            mode: 'development',
-          }),
-        ]
-      : [
-          {
-            apply: (compiler) => {
-              compiler.hooks.thisCompilation.tap(
-                'CreateDummySW',
-                (compilation) => {
-                  compilation.hooks.processAssets.tap(
-                    {
-                      name: 'CreateDummySW',
-                      stage:
-                        compiler.webpack.Compilation
-                          .PROCESS_ASSETS_STAGE_ADDITIONAL,
-                    },
-                    () => {
-                      const dummySW = `console.log('[SW Dev] Service Worker disabled for faster development');
-self.addEventListener('install', () => self.skipWaiting());
-self.addEventListener('activate', () => self.clients.claim());
-`;
-                      compilation.emitAsset(
-                        'service-worker.js',
-                        new compiler.webpack.sources.RawSource(dummySW)
-                      );
-                    }
-                  );
-                }
-              );
-            },
-          },
-        ]),
+    new InjectManifest({
+      swSrc: path.resolve(__dirname, '../public/service-worker.js'),
+      swDest: 'service-worker.js',
+      exclude: [
+        /\.map$/,
+        /manifest$/,
+        /\.htaccess$/,
+        /service-worker\.js$/,
+        /mockServiceWorker\.js$/,
+        /\.hot-update/,
+        /analyze/,
+        /bundle-report/,
+        /node_modules/,
+        /\.(woff|woff2)$/,
+        /screenshot.*\.png$/,
+      ],
+      maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+      mode: 'development',
+    }),
   ],
 
   optimization: {
     minimize: false,
-    splitChunks: enableServiceWorker
-      ? {
-          chunks: 'all',
-          maxSize: 2 * 1024 * 1024,
-        }
-      : false,
+    splitChunks: {
+      chunks: 'all',
+      maxSize: 2 * 1024 * 1024,
+    },
     runtimeChunk: false,
     removeAvailableModules: false,
     removeEmptyChunks: false,
