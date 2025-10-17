@@ -51,7 +51,6 @@ export function ToastProvider({ children }: ToastProviderProps) {
           <Toast
             type={toastData.type}
             message={toastData.message}
-            onClose={hideToast}
             duration={toastData.duration}
           />,
           portalTarget

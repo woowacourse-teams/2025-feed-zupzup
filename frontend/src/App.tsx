@@ -8,6 +8,7 @@ import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
 import ModalProvider from './stores/Modal/ModalProvider';
+import ToastProvider from './stores/Toast/ToastProvider';
 
 const gaId = process.env.GA_ID;
 
@@ -35,6 +36,7 @@ function AppContent() {
   return (
     <div>
       <ModalProvider />
+      <ToastProvider />
       <div css={appContainer(isShowHeader)}>
         {isShowHeader && <Header />}
         <main css={main}>
