@@ -15,38 +15,17 @@ export const errorRateStatistic = new Rate('errors_statistic');
 
 export const options = {
   scenarios: {
-    // 조직 조회 테스트 - 일반 부하 테스트
-    get_organization: {
-      executor: 'ramping-vus',
-      startVUs: 1,
+    normal_load: {
+      executor: 'ramping-arrival-rate',
+      startRate: 1,
+      timeUnit: '1s',
+      preAllocatedVUs: 50,
+      maxVUs: 500,
       stages: [
-        {duration: '1m', target: 150},  // 1분간 1 -> 150 VU 증가
-        {duration: '3m', target: 150},  // 3분간 150 VU 유지
-        {duration: '1m', target: 1},    // 1분간 150 -> 1 VU 감소
+        {duration: '1m', target: 150},  // 1분간 1 -> 150 iteration/s 증가
+        {duration: '3m', target: 150},  // 3분간 150 iteration/s 유지
+        {duration: '1m', target: 1},    // 1분간 150 -> 1 iteration/s 감소
       ],
-      exec: 'getOrganization',
-    },
-    // 피드백 조회 테스트 - 일반 부하 테스트
-    get_feedbacks: {
-      executor: 'ramping-vus',
-      startVUs: 1,
-      stages: [
-        {duration: '1m', target: 150},
-        {duration: '3m', target: 150},
-        {duration: '1m', target: 1},
-      ],
-      exec: 'getFeedbacks',
-    },
-    // 통계 조회 테스트 - 일반 부하 테스트
-    get_statistic: {
-      executor: 'ramping-vus',
-      startVUs: 1,
-      stages: [
-        {duration: '1m', target: 150},
-        {duration: '3m', target: 150},
-        {duration: '1m', target: 1},
-      ],
-      exec: 'getStatistic',
     },
   },
   thresholds: {
@@ -61,14 +40,13 @@ export const options = {
   },
 };
 
-// 조직 조회 API
-export function getOrganization() {
+// 1명의 VU가 3개 API를 순차적으로 호출
+export default function () {
   const orgUuid = ORGANIZATION_UUIDS[Math.floor(
       Math.random() * ORGANIZATION_UUIDS.length)];
 
-  const url = `${BASE_URL}/organizations/${orgUuid}`;
-
-  const response = http.get(url, {
+  // 1. 조직 조회 API
+  const orgResponse = http.get(`${BASE_URL}/organizations/${orgUuid}`, {
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -76,7 +54,7 @@ export function getOrganization() {
     tags: {name: 'GetOrganization'},
   });
 
-  const isSuccess = check(response, {
+  const orgSuccess = check(orgResponse, {
     '[Organization] status is 200': (r) => r.status === 200,
     '[Organization] response time < 500ms': (r) => r.timings.duration < 500,
     '[Organization] has valid data': (r) => {
@@ -91,17 +69,9 @@ export function getOrganization() {
       }
     },
   });
+  errorRateOrganization.add(!orgSuccess);
 
-  errorRateOrganization.add(!isSuccess);
-  sleep(0.1);
-}
-
-// 피드백 조회 API
-export function getFeedbacks() {
-  const orgUuid = ORGANIZATION_UUIDS[Math.floor(
-      Math.random() * ORGANIZATION_UUIDS.length)];
-
-  // 랜덤 파라미터 생성
+  // 2. 피드백 조회 API
   const size = 10;
   const sortBy = SORT_OPTIONS[Math.floor(Math.random() * SORT_OPTIONS.length)];
   const status = Math.random() > 0.5 ? PROCESS_STATUS[Math.floor(
@@ -109,7 +79,6 @@ export function getFeedbacks() {
   const cursorId = Math.random() > 0.7 ? Math.floor(Math.random() * 4000000) + 1
       : '';
 
-  // 쿼리 파라미터 구성
   let queryParams = `size=${size}&sortBy=${sortBy}`;
   if (status) {
     queryParams += `&status=${status}`;
@@ -118,45 +87,34 @@ export function getFeedbacks() {
     queryParams += `&cursorId=${cursorId}`;
   }
 
-  const url = `${BASE_URL}/organizations/${orgUuid}/feedbacks?${queryParams}`;
+  const feedbacksResponse = http.get(
+      `${BASE_URL}/organizations/${orgUuid}/feedbacks?${queryParams}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        tags: {name: 'GetFeedbacks'},
+      });
 
-  const response = http.get(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    tags: {name: 'GetFeedbacks'},
-  });
-
-  const isSuccess = check(response, {
+  const feedbacksSuccess = check(feedbacksResponse, {
     '[Feedbacks] status is 200': (r) => r.status === 200,
     '[Feedbacks] response time <= 500ms': (r) => r.timings.duration <= 500,
   });
+  errorRateFeedbacks.add(!feedbacksSuccess);
 
-  errorRateFeedbacks.add(!isSuccess);
-  sleep(0.1);
-}
+  // 3. 통계 조회 API
+  const statisticResponse = http.get(
+      `${BASE_URL}/organizations/${orgUuid}/statistic`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        tags: {name: 'GetStatistic'},
+      });
 
-// 통계 조회 API
-export function getStatistic() {
-  const orgUuid = ORGANIZATION_UUIDS[Math.floor(
-      Math.random() * ORGANIZATION_UUIDS.length)];
-
-  const url = `${BASE_URL}/organizations/${orgUuid}/statistic`;
-
-  const response = http.get(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    tags: {name: 'GetStatistic'},
-  });
-
-  const isSuccess = check(response, {
+  const statisticSuccess = check(statisticResponse, {
     '[Statistic] status is 200': (r) => r.status === 200,
     '[Statistic] response time <= 500ms': (r) => r.timings.duration <= 500,
   });
-
-  errorRateStatistic.add(!isSuccess);
-  sleep(0.1);
+  errorRateStatistic.add(!statisticSuccess);
 }
