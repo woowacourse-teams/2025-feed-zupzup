@@ -7,7 +7,7 @@ import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
-import { useModalActions } from '@/stores/useModal';
+import { useModalActions } from '@/stores/Modal/useModal';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;

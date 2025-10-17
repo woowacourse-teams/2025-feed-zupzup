@@ -1,4 +1,4 @@
-import { useModalState } from '@/stores/useModal';
+import { useModalState } from '@/stores/Modal/useModal';
 import { useEffect, useRef } from 'react';
 
 interface UseModalProps {

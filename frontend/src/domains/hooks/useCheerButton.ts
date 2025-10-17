@@ -16,6 +16,9 @@ export default function useCheerButton({
   const { showToast } = useToast();
 
   const handleCheerButton = () => {
+    showToast(
+      '응원은 한 번에 100개까지만 가능해요! 잠시 후 다시 시도해주세요.'
+    );
     if (isDisabled) {
       return;
     }

@@ -2,7 +2,7 @@ import { useAppTheme } from '@/hooks/useAppTheme';
 import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import AISummaryModal from '../AISummaryModal/AISummaryModal';
 import { aiFloatingButton } from '@/domains/admin/adminDashboard/AdminDashboard.style';
-import { useModalActions } from '@/stores/useModal';
+import { useModalActions } from '@/stores/Modal/useModal';
 
 export default function AISummaryFloatingButton() {
   const theme = useAppTheme();

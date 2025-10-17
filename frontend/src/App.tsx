@@ -7,7 +7,7 @@ import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
-import ModalProvider from './stores/ModalProvider';
+import ModalProvider from './stores/Modal/ModalProvider';
 
 const gaId = process.env.GA_ID;
 

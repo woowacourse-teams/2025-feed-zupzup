@@ -16,7 +16,7 @@ import useEditRoom from './hooks/useEditRoom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import { modalWidth } from '@/components/Modal/Modal.styles';
-import { useModalActions } from '@/stores/useModal';
+import { useModalActions } from '@/stores/Modal/useModal';
 
 interface EditRoomModalProps {
   onClose: () => void;

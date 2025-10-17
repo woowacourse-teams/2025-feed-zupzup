@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import AnswerModal from '../components/AnswerModal/AnswerModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
-import { useModalActions } from '@/stores/useModal';
+import { useModalActions } from '@/stores/Modal/useModal';
 
 interface UseAdminModalProps {
   organizationId: string;

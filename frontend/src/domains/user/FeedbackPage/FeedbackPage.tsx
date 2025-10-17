@@ -24,7 +24,7 @@ import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useCallback } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
-import { useModalActions, useModalState } from '@/stores/useModal';
+import { useModalActions, useModalState } from '@/stores/Modal/useModal';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;

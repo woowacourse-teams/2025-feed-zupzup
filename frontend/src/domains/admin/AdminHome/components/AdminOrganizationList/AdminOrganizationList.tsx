@@ -15,7 +15,7 @@ import PlusIcon from '@/components/icons/PlusIcon';
 import { addAdminOrganization } from '../../AdminHome.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
-import { useModalActions } from '@/stores/useModal';
+import { useModalActions } from '@/stores/Modal/useModal';
 
 const ADMIN = '관리자1';
 
