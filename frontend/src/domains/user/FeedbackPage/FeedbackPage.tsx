@@ -106,7 +106,6 @@ export default function FeedbackPage({
 
       openModal(
         <TimeDelayModal
-          isOpen={true}
           onClose={() => handleModalClose(submitStatus === 'error')}
           loadingDuration={800}
           autoCloseDuration={1000}
