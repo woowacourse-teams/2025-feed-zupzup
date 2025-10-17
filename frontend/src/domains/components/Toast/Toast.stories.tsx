@@ -1,8 +1,5 @@
-//@ts-expect-error: react error
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import Toast from './Toast';
-import { useState } from 'react';
 
 // Storybook 메타 정보
 const meta: Meta<typeof Toast> = {
@@ -20,20 +17,7 @@ type Story = StoryObj<typeof Toast>;
 // 기본 토스트
 export const Default: Story = {
   render: (args) => {
-    const [visible, setVisible] = useState(true);
-
-    return (
-      <>
-        {visible && (
-          <Toast
-            {...args}
-            onClose={() => {
-              setVisible(false);
-            }}
-          />
-        )}
-      </>
-    );
+    return <Toast {...args} />;
   },
 };
 
@@ -44,11 +28,7 @@ export const ShortDuration: Story = {
     duration: 1000,
   },
   render: (args) => {
-    const [visible, setVisible] = useState(true);
-
-    return (
-      <>{visible && <Toast {...args} onClose={() => setVisible(false)} />}</>
-    );
+    return <Toast {...args} />;
   },
 };
 
@@ -59,10 +39,6 @@ export const LongDuration: Story = {
     duration: 5000,
   },
   render: (args) => {
-    const [visible, setVisible] = useState(true);
-
-    return (
-      <>{visible && <Toast {...args} onClose={() => setVisible(false)} />}</>
-    );
+    return <Toast {...args} />;
   },
 };

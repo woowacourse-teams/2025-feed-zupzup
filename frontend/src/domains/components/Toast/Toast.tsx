@@ -5,8 +5,8 @@ import {
 import ToastDangerIcon from '@/components/icons/ToastDangerIcon';
 import { useEffect, useState } from 'react';
 import ToastCheckIcon from '@/components/icons/ToastCheckIcon';
-import { ToastType } from '@/contexts/useToast';
 import { useToastActions } from '@/stores/Toast/useToast';
+import { ToastType } from '@/stores/Toast/toastStore';
 
 interface ToastProps {
   type: ToastType;
