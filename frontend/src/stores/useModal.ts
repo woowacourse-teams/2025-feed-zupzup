@@ -1,7 +1,7 @@
 import { useCallback, useSyncExternalStore } from 'react';
 import { modalStore } from './modalStore';
 
-export function useSyncModalActions() {
+export function useModalActions() {
   const openModal = useCallback((content: React.ReactNode) => {
     modalStore.setState({ content, isOpen: true });
   }, []);
@@ -13,7 +13,7 @@ export function useSyncModalActions() {
   return { openModal, closeModal };
 }
 
-export function useSyncModalState() {
+export function useModalState() {
   const { isOpen, content } = useSyncExternalStore(
     modalStore.subscribe,
     modalStore.getSnapshot
