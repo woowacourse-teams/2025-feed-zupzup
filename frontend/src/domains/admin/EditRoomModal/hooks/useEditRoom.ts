@@ -1,9 +1,9 @@
 import { ApiError } from '@/apis/apiClient';
 import { putOrganizations } from '@/apis/organization.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { PutOrganizationsBody } from '@/types/organization.types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -11,7 +11,7 @@ export default function useEditRoom({
   organizationName,
   categories,
 }: PutOrganizationsBody) {
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
   const { organizationId } = useOrganizationId();
   const { handleApiError } = useApiErrorHandler();
   const queryClient = useQueryClient();

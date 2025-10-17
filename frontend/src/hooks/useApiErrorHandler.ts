@@ -1,12 +1,12 @@
 import { ApiError } from '@/apis/apiClient';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { resetLocalStorage } from '@/utils/localStorage';
 import { NotificationService } from '@/services/notificationService';
+import { useErrorModalActions } from './useErrorModal';
 
 export function useApiErrorHandler() {
   const { goPath } = useNavigation();
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
 
   const handleApiError = async (error: ApiError) => {
     resetLocalStorage('auth');

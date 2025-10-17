@@ -1,8 +1,8 @@
 import { ApiError } from '@/apis/apiClient';
 import { getOrganizationName } from '@/apis/organization.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { useQuery } from '@tanstack/react-query';
 
 interface UseOrganizationNameProps {
@@ -12,7 +12,7 @@ interface UseOrganizationNameProps {
 export default function useOrganizationName({
   organizationId,
 }: UseOrganizationNameProps) {
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
   const { handleApiError } = useApiErrorHandler();
 
   const { data, error, isLoading } = useQuery({

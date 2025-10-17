@@ -1,13 +1,13 @@
 import { getQRDownloadUrl } from '@/apis/qr.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { ONE_DAY } from '@/domains/admin/components/QRModal/hooks/useQRCode';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { useQuery } from '@tanstack/react-query';
 
 export function useQRImageDownload() {
   const { organizationId } = useOrganizationId();
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
 
   const query = useQuery({
     queryKey: [...QUERY_KEYS.qrImageDownload, organizationId],

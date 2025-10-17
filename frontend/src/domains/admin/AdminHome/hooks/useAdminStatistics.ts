@@ -1,8 +1,8 @@
 import { getFeedbackStatistics } from '@/apis/adminFeedback.api';
 import { ApiError } from '@/apis/apiClient';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useApiErrorHandler } from '@/hooks/useApiErrorHandler';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { useQuery } from '@tanstack/react-query';
 
 const DEFAULT_STATISTICS = {
@@ -25,7 +25,7 @@ export default function useAdminStatistics({
   });
 
   const { handleApiError } = useApiErrorHandler();
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
 
   if (error) {
     showErrorModal(

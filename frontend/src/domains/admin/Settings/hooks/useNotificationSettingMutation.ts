@@ -4,7 +4,7 @@ import { patchNotificationSettings } from '@/apis/notifications.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { NotificationSettingsResponse } from '@/types/notification.types';
 import { ApiError } from '@/apis/apiClient';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 
 interface UpdateNotificationSettingParams {
   enabled: boolean;
@@ -20,7 +20,7 @@ export const useNotificationSettingMutation = ({
   updateState,
 }: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
 
   return useMutation({
     mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {

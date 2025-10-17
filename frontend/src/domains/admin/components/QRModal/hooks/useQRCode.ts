@@ -1,13 +1,13 @@
 import { getQRCode } from '@/apis/qr.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { useQuery } from '@tanstack/react-query';
 
 export const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const useQRCode = () => {
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
   const { organizationId } = useOrganizationId();
 
   const {

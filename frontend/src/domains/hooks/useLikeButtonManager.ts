@@ -1,7 +1,7 @@
 import { ApiError } from '@/apis/apiClient';
 import { deleteLike, postLike } from '@/apis/userFeedback.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useMyLikedFeedback from '@/domains/user/userDashboard/hooks/useMyLikedFeedback';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
@@ -22,7 +22,7 @@ export default function useLikeButtonManager({
   const isLiked = optimisticLike ?? like;
   const tempLikeCount = optimisticCount ?? likeCount;
 
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
   const { refetchMyLikeFeedbackIds } = useMyLikedFeedback();
 
   const { mutate: likeMutation } = useMutation({

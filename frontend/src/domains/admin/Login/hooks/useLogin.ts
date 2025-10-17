@@ -5,8 +5,8 @@ import {
 } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
+import { useErrorModalActions } from '@/hooks/useErrorModal';
 import { NotificationService } from '@/services/notificationService';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useMutation } from '@tanstack/react-query';
@@ -20,7 +20,7 @@ interface UseLoginProps {
 
 export default function useLogin({ loginValue }: UseLoginProps) {
   const { goPath } = useNavigation();
-  const { showErrorModal } = useErrorModalContext();
+  const { showErrorModal } = useErrorModalActions();
 
   const { mutate: adminLogin } = useMutation<
     AdminAuthResponse | void,

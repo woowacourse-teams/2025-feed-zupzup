@@ -2,8 +2,6 @@ import { Outlet } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { usePageTracking } from './hooks/usePageTracking';
 import { useLayoutConfig } from './hooks/useLayoutConfig';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
-import AlertModal from '@/components/AlertModal/AlertModal';
 import Header from './components/Header/Header';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
@@ -30,7 +28,6 @@ if (gaId) {
 
 function AppContent() {
   usePageTracking();
-  const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
 
   return (
@@ -43,9 +40,6 @@ function AppContent() {
           <Outlet />
         </main>
         {isShowBottomNav && <BottomNavigation />}
-        {isError && (
-          <AlertModal onClose={setErrorFalse} title={title} message={message} />
-        )}
       </div>
     </div>
   );
