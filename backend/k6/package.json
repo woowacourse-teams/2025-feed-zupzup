@@ -2,6 +2,8 @@
   "scripts": {
     "test:get-user-feedbacks": "./scripts/get-user-feedbacks/get-user-feedbacks-run.sh",
     "test:get-statistic": "./scripts/get-statistic/get-statistic-run.sh",
-    "test:get-organization": "./scripts/get-organization/get-organization-run.sh"
+    "test:get-organization": "./scripts/get-organization/get-organization-run.sh",
+    "test:spike": "scripts/spike/spike-test-run.sh",
+    "test:normal": "scripts/normal/normal-test-run.sh"
   }
 }

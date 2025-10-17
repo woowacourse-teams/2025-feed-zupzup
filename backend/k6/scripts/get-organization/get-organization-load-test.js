@@ -74,7 +74,5 @@ export default function () {
   errorRate.add(!isSuccess);
 
   // 요청 간격 (1초)
-  sleep(1);
+  sleep(0.5);
 }
-
-
