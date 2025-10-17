@@ -1,9 +1,7 @@
 import { SEO } from '@/components/SEO/SEO';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { dashboardLayout } from '@/domains/admin/adminDashboard/AdminDashboard.style';
 import DashboardOverview from '@/domains/components/DashboardOverview/DashboardOverview';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
-import AnswerModal from '@/domains/components/AnswerModal/AnswerModal';
 import FilterSection from '@/domains/components/FilterSection/FilterSection';
 import useFeedbackFilterSort from '@/domains/hooks/useFeedbackFilterSort';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
@@ -21,14 +19,9 @@ export default function AdminDashboard() {
     useFeedbackFilterSort();
   const { organizationId } = useOrganizationId();
 
-  const {
-    modalState,
-    openFeedbackCompleteModal,
-    openFeedbackDeleteModal,
-    closeModal,
-    handleConfirmFeedback,
-    handleDeleteFeedback,
-  } = useAdminModal({ organizationId });
+  const { openFeedbackCompleteModal, openFeedbackDeleteModal } = useAdminModal({
+    organizationId,
+  });
 
   const { showButton, scrollToTop } = useScrollUp();
 
@@ -61,22 +54,6 @@ export default function AdminDashboard() {
             onClick={scrollToTop}
             inset={{ bottom: '60px' }}
             customCSS={goTopButton(theme)}
-          />
-        )}
-        {modalState.type === 'delete' && (
-          <ConfirmModal
-            title='삭제하시겠습니까?'
-            message='삭제한 건의는 되돌릴 수 없습니다.'
-            isOpen={true}
-            onClose={closeModal}
-            onConfirm={handleDeleteFeedback}
-          />
-        )}
-        {modalState.type === 'confirm' && (
-          <AnswerModal
-            isOpen={true}
-            handleCloseModal={closeModal}
-            handleSubmit={handleConfirmFeedback}
           />
         )}
       </section>

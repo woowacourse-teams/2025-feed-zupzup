@@ -35,7 +35,17 @@ initSentry();
 registerServiceWorker();
 //setupMockServiceWorker();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    mutations: {
+      networkMode: 'always',
+    },
+    queries: {
+      networkMode: 'always',
+      throwOnError: true,
+    },
+  },
+});
 
 const root = createRoot(document.getElementById('root')!);
 root.render(

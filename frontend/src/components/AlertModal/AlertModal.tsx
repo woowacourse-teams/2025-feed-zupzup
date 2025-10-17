@@ -9,7 +9,6 @@ import {
 } from '@/components/Modal/Modal.styles';
 
 export interface AlertModalProps {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   message?: string;
@@ -18,7 +17,6 @@ export interface AlertModalProps {
 }
 
 export default function AlertModal({
-  isOpen,
   onClose,
   title: alertTitle,
   message: alertMessage,
@@ -33,7 +31,7 @@ export default function AlertModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose}>
       <div css={content}>
         <p css={title(theme)}>{alertTitle}</p>
         {alertMessage && <p css={message(theme)}>{alertMessage}</p>}

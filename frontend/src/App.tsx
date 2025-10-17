@@ -42,12 +42,7 @@ function AppContent() {
         </main>
         {isShowBottomNav && <BottomNavigation />}
         {isError && (
-          <AlertModal
-            onClose={setErrorFalse}
-            isOpen={isError}
-            title={title}
-            message={message}
-          />
+          <AlertModal onClose={setErrorFalse} title={title} message={message} />
         )}
       </div>
     </div>
