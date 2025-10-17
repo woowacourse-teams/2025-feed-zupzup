@@ -1,4 +1,10 @@
-import { ToastData } from '@/contexts/useToast';
+export type ToastType = 'success' | 'error' | 'origin';
+
+export interface ToastData {
+  message: string;
+  type: ToastType;
+  duration: number;
+}
 
 type Listener = () => void;
 

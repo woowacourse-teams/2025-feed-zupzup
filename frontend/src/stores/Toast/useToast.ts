@@ -1,6 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import { toastStore } from './toastStore';
-import { ToastType } from '@/contexts/useToast';
+import { toastStore, ToastType } from './toastStore';
 
 export function useToastActions() {
   const showToast = useCallback(
