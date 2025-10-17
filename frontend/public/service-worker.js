@@ -18,7 +18,6 @@ import { BroadcastUpdatePlugin } from 'workbox-broadcast-update';
 const CACHE_VERSION = 'v3';
 
 // ===== Firebase Setup =====
-// Firebase는 Workbox와 별도로 동작하므로 그대로 유지
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -139,7 +138,6 @@ registerRoute(
     );
   },
   new CacheFirst({
-    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
     cacheName: `static-assets-cache-${CACHE_VERSION}`,
     plugins: [
       new CacheableResponsePlugin({
@@ -157,7 +155,6 @@ registerRoute(
 // ===== API Routes Configuration =====
 const isApiRequest = (url) => {
   return (
-    // 치명 이슈 수정 #3: localhost도 /api/ 프리픽스일 때만 API로 취급
     (url.hostname === 'localhost' && url.pathname.startsWith('/api/')) ||
     url.hostname.startsWith('api-') ||
     url.hostname.startsWith('api.') ||
@@ -166,27 +163,25 @@ const isApiRequest = (url) => {
   );
 };
 
-// 1. 민감/개인 영역 - NetworkOnly (+BG Sync 큐는 유지)
 registerRoute(
   ({ url }) => {
     return (
       isApiRequest(url) &&
-      (url.pathname.includes('/user/profile') ||
-        url.pathname.includes('/user/settings') ||
-        url.pathname.includes('/auth') ||
-        url.pathname.includes('/private'))
+      (url.pathname.includes('/admin/login') ||
+        url.pathname.includes('/admin/logout') ||
+        url.pathname.includes('/admin/sign-up') ||
+        url.pathname.includes('/admin/me'))
     );
   },
   new NetworkOnly({
     plugins: [
-      new BackgroundSyncPlugin('private-api-queue', {
+      new BackgroundSyncPlugin('auth-api-queue', {
         maxRetentionTime: 24 * 60,
       }),
     ],
   })
 );
 
-// 2. 실시간성이 중요한 API - Network First (짧은 캐시)
 registerRoute(
   ({ url, request }) => {
     return (
@@ -194,11 +189,10 @@ registerRoute(
       request.method === 'GET' &&
       (url.pathname.includes('/feedbacks') ||
         url.pathname.includes('/notifications') ||
-        url.pathname.includes('/comments'))
+        url.pathname.includes('/organizations'))
     );
   },
   new NetworkFirst({
-    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
     cacheName: `realtime-api-cache-${CACHE_VERSION}`,
     networkTimeoutSeconds: 5,
     plugins: [
@@ -219,13 +213,11 @@ registerRoute(
   })
 );
 
-// 3. 일반 API GET 요청 - Stale While Revalidate
 registerRoute(
   ({ url, request }) => {
     return isApiRequest(url) && request.method === 'GET';
   },
   new StaleWhileRevalidate({
-    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
     cacheName: `api-cache-${CACHE_VERSION}`,
     plugins: [
       new CacheableResponsePlugin({
@@ -241,7 +233,6 @@ registerRoute(
   })
 );
 
-// 4. API Mutation 요청 - Background Sync로 오프라인 지원
 const bgSyncPlugin = new BackgroundSyncPlugin('api-mutations', {
   maxRetentionTime: 24 * 60,
   onSync: async ({ queue }) => {
@@ -319,7 +310,6 @@ registerRoute(
 // ===== Navigation Route (SPA) =====
 const navigationRoute = new NavigationRoute(
   new NetworkFirst({
-    // 치명 이슈 수정 #1: 캐시 이름에 버전 포함
     cacheName: `navigation-cache-${CACHE_VERSION}`,
     plugins: [
       new CacheableResponsePlugin({
