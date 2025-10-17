@@ -14,8 +14,8 @@ import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
 import PlusIcon from '@/components/icons/PlusIcon';
 import { addAdminOrganization } from '../../AdminHome.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useModalContext } from '@/contexts/useModal';
 import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
+import { useModalActions } from '@/stores/useModal';
 
 const ADMIN = '관리자1';
 
@@ -26,7 +26,7 @@ export default function AdminOrganizationList() {
 
   const { goPath } = useNavigation();
 
-  const { openModal, closeModal } = useModalContext();
+  const { openModal, closeModal } = useModalActions();
 
   const handleCreateAdminOrganization = () => {
     openModal(<CreateRoomModal onClose={closeModal} />);

@@ -14,9 +14,9 @@ import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import useEditRoom from './hooks/useEditRoom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import { useModalContext } from '@/contexts/useModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import { modalWidth } from '@/components/Modal/Modal.styles';
+import { useModalActions } from '@/stores/useModal';
 
 interface EditRoomModalProps {
   onClose: () => void;
@@ -28,7 +28,7 @@ export default function EditRoomModal({ onClose }: EditRoomModalProps) {
   const { groupName, categories } = useOrganizationName({
     organizationId,
   });
-  const { openModal, closeModal } = useModalContext();
+  const { openModal, closeModal } = useModalActions();
 
   const [organizationName, setOrganizationName] = useState('');
 

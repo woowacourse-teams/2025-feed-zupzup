@@ -24,7 +24,7 @@ import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useCallback } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
-import { useModalContext } from '@/contexts/useModal';
+import { useModalActions, useModalState } from '@/stores/useModal';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
@@ -37,7 +37,8 @@ export default function FeedbackPage({
 }: FeedbackPageProps) {
   const theme = useAppTheme();
   const { goPath } = useNavigation();
-  const { isOpen: isModalOpen, openModal, closeModal } = useModalContext();
+  const { openModal, closeModal } = useModalActions();
+  const { isOpen: isModalOpen } = useModalState();
   const { organizationId } = useOrganizationId();
 
   const {

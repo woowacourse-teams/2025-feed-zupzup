@@ -4,17 +4,17 @@ import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
 import TrashCanIcon from '@/components/icons/TrashCanIcon';
-import { useModalContext } from '@/contexts/useModal';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
+import { useModalActions } from '@/stores/useModal';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
 }
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
-  const { openModal, closeModal } = useModalContext();
+  const { openModal, closeModal } = useModalActions();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
 
   const handleRoomInfoEditClick = () => {

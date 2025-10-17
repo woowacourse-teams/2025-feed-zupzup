@@ -3,9 +3,9 @@ import { useErrorModalContext } from '@/contexts/useErrorModal';
 import { useCallback, useRef } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import { useModalContext } from '@/contexts/useModal';
 import AnswerModal from '../components/AnswerModal/AnswerModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import { useModalActions } from '@/stores/useModal';
 
 interface UseAdminModalProps {
   organizationId: string;
@@ -14,7 +14,7 @@ interface UseAdminModalProps {
 export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
   const feedbackIdRef = useRef<number | null>(null);
-  const { openModal, closeModal } = useModalContext();
+  const { openModal, closeModal } = useModalActions();
   const { showErrorModal } = useErrorModalContext();
 
   const invalidateFeedbackQueries = useCallback(() => {

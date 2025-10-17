@@ -1,4 +1,4 @@
-import { useModalContext } from '@/contexts/useModal';
+import { useModalState } from '@/stores/useModal';
 import { useEffect, useRef } from 'react';
 
 interface UseModalProps {
@@ -14,7 +14,7 @@ export const useModal = ({
 }: UseModalProps) => {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
-  const { isOpen } = useModalContext();
+  const { isOpen } = useModalState();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
