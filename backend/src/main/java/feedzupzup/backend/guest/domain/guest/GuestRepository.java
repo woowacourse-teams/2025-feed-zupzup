@@ -1,6 +1,7 @@
 package feedzupzup.backend.guest.domain.guest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -23,4 +24,8 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
             @Param("ids") Set<UUID> ids,
             @Param("time") LocalDateTime time
     );
+
+    @Query("SELECT g.id FROM Guest g WHERE g.connectedTime < :targetDateTime")
+    List<Long> findAllByConnectedTimeBefore(@Param("targetDateTime") LocalDateTime connectedTimeBefore);
+
 }
