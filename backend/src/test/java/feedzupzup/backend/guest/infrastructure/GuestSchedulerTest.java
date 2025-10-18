@@ -1,8 +1,8 @@
 package feedzupzup.backend.guest.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
@@ -59,11 +59,18 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
     private Guest guest1;
     private Guest guest2;
 
+    private Organization organization;
+    private OrganizationCategory organizationCategory;
+    private Feedback feedback;
+
     @BeforeEach
     void init() {
         guestActiveTracker.clear();
         guest1 = guestRepository.save(new Guest(UUID.randomUUID(), CurrentDateTime.create()));
         guest2 = guestRepository.save(new Guest(UUID.randomUUID(), CurrentDateTime.create()));
+        organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+        organizationCategory = organizationCategoryRepository.save(OrganizationCategoryFixture.createOrganizationCategory(organization));
+        feedback = feedbackRepository.save(FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 0));
     }
 
 
@@ -123,26 +130,20 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
         @DisplayName("3개월 이상 접속하지 않은 Guest는 삭제된다")
         void removeUnActiveGuest_withOldGuest_success() {
             // given - 3개월 이상 접속하지 않은 Guest 생성
-            final LocalDateTime fourMonthsAgo = CurrentDateTime.create().minusMonths(4);
-            final Guest inactiveGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), fourMonthsAgo)
-            );
+            final Guest unActiveGuest = createAndSaveUnActiveGuest();
 
             // when
             guestScheduler.removeUnActiveGuest();
 
             // then
-            assertThat(guestRepository.findById(inactiveGuest.getId())).isEmpty();
+            assertThat(guestRepository.findById(unActiveGuest.getId())).isEmpty();
         }
 
         @Test
         @DisplayName("3개월 이내에 접속한 Guest는 삭제되지 않는다")
         void removeUnActiveGuest_withRecentGuest_notDeleted() {
             // given - 2개월 전에 접속한 Guest 생성
-            final LocalDateTime twoMonthsAgo = CurrentDateTime.create().minusMonths(2);
-            final Guest activeGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), twoMonthsAgo)
-            );
+            final Guest activeGuest = createAndSaveActiveGuest();
 
             // when
             guestScheduler.removeUnActiveGuest();
@@ -155,30 +156,15 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
         @DisplayName("비활성 Guest의 WriteHistory도 함께 삭제된다")
         void removeUnActiveGuest_deletesWriteHistory() {
             // given - 3개월 이상 접속하지 않은 Guest와 WriteHistory 생성
-            final LocalDateTime fourMonthsAgo = CurrentDateTime.create().minusMonths(4);
-            final Guest inactiveGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), fourMonthsAgo)
-            );
-
-            final Organization organization = organizationRepository.save(
-                    OrganizationFixture.createAllBlackBox()
-            );
-            final OrganizationCategory category = organizationCategoryRepository.save(
-                    OrganizationCategoryFixture.createOrganizationCategory(organization, Category.SUGGESTION)
-            );
-            final Feedback feedback = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithLikes(organization, category, 0)
-            );
-
-            final WriteHistory writeHistory = writeHistoryRepository.save(
-                    new WriteHistory(inactiveGuest, feedback)
-            );
+            final Guest unActiveGuest = createAndSaveUnActiveGuest();
+            final WriteHistory writeHistory = createAndSaveWriteHistory(unActiveGuest,
+                    feedback);
 
             // when
             guestScheduler.removeUnActiveGuest();
 
             // then
-            assertThat(guestRepository.findById(inactiveGuest.getId())).isEmpty();
+            assertThat(guestRepository.findById(unActiveGuest.getId())).isEmpty();
             assertThat(writeHistoryRepository.findById(writeHistory.getId())).isEmpty();
         }
 
@@ -186,30 +172,14 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
         @DisplayName("비활성 Guest의 LikeHistory도 함께 삭제된다")
         void removeUnActiveGuest_deletesLikeHistory() {
             // given - 3개월 이상 접속하지 않은 Guest와 LikeHistory 생성
-            final LocalDateTime fourMonthsAgo = CurrentDateTime.create().minusMonths(4);
-            final Guest inactiveGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), fourMonthsAgo)
-            );
-
-            final Organization organization = organizationRepository.save(
-                    OrganizationFixture.createAllBlackBox()
-            );
-            final OrganizationCategory category = organizationCategoryRepository.save(
-                    OrganizationCategoryFixture.createOrganizationCategory(organization, Category.SUGGESTION)
-            );
-            final Feedback feedback = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithLikes(organization, category, 0)
-            );
-
-            final LikeHistory likeHistory = likeHistoryRepository.save(
-                    new LikeHistory(inactiveGuest, feedback)
-            );
+            final Guest unActiveGuest = createAndSaveUnActiveGuest();
+            final LikeHistory likeHistory = createAndSaveLikeHistory(unActiveGuest, feedback);
 
             // when
             guestScheduler.removeUnActiveGuest();
 
             // then
-            assertThat(guestRepository.findById(inactiveGuest.getId())).isEmpty();
+            assertThat(guestRepository.findById(unActiveGuest.getId())).isEmpty();
             assertThat(likeHistoryRepository.findById(likeHistory.getId())).isEmpty();
         }
 
@@ -217,24 +187,8 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
         @DisplayName("활성 Guest의 WriteHistory는 삭제되지 않는다")
         void removeUnActiveGuest_keepsActiveGuestWriteHistory() {
             // given - 2개월 전에 접속한 Guest와 WriteHistory 생성
-            final LocalDateTime twoMonthsAgo = CurrentDateTime.create().minusMonths(2);
-            final Guest activeGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), twoMonthsAgo)
-            );
-
-            final Organization organization = organizationRepository.save(
-                    OrganizationFixture.createAllBlackBox()
-            );
-            final OrganizationCategory category = organizationCategoryRepository.save(
-                    OrganizationCategoryFixture.createOrganizationCategory(organization, Category.SUGGESTION)
-            );
-            final Feedback feedback = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithLikes(organization, category, 0)
-            );
-
-            final WriteHistory writeHistory = writeHistoryRepository.save(
-                    new WriteHistory(activeGuest, feedback)
-            );
+            final Guest activeGuest = createAndSaveActiveGuest();
+            final WriteHistory writeHistory = createAndSaveWriteHistory(activeGuest, feedback);
 
             // when
             guestScheduler.removeUnActiveGuest();
@@ -248,24 +202,8 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
         @DisplayName("활성 Guest의 LikeHistory는 삭제되지 않는다")
         void removeUnActiveGuest_keepsActiveGuestLikeHistory() {
             // given - 2개월 전에 접속한 Guest와 LikeHistory 생성
-            final LocalDateTime twoMonthsAgo = CurrentDateTime.create().minusMonths(2);
-            final Guest activeGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), twoMonthsAgo)
-            );
-
-            final Organization organization = organizationRepository.save(
-                    OrganizationFixture.createAllBlackBox()
-            );
-            final OrganizationCategory category = organizationCategoryRepository.save(
-                    OrganizationCategoryFixture.createOrganizationCategory(organization, Category.SUGGESTION)
-            );
-            final Feedback feedback = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithLikes(organization, category, 0)
-            );
-
-            final LikeHistory likeHistory = likeHistoryRepository.save(
-                    new LikeHistory(activeGuest, feedback)
-            );
+            final Guest activeGuest = createAndSaveActiveGuest();
+            final LikeHistory likeHistory = createAndSaveLikeHistory(activeGuest, feedback);
 
             // when
             guestScheduler.removeUnActiveGuest();
@@ -279,44 +217,29 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
         @DisplayName("비활성 Guest와 활성 Guest가 섞여 있을 때 비활성 Guest만 삭제된다")
         void removeUnActiveGuest_withMixedGuests_deletesOnlyInactive() {
             // given
-            final LocalDateTime fourMonthsAgo = CurrentDateTime.create().minusMonths(4);
-            final Guest inactiveGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), fourMonthsAgo)
-            );
+            final Guest activeGuest = createAndSaveActiveGuest();
+            final Guest unActiveGuest = createAndSaveUnActiveGuest();
 
-            final LocalDateTime twoMonthsAgo = CurrentDateTime.create().minusMonths(2);
-            final Guest activeGuest = guestRepository.save(
-                    new Guest(UUID.randomUUID(), twoMonthsAgo)
-            );
-
-            final Organization organization = organizationRepository.save(
-                    OrganizationFixture.createAllBlackBox()
-            );
-            final OrganizationCategory category = organizationCategoryRepository.save(
-                    OrganizationCategoryFixture.createOrganizationCategory(organization, Category.SUGGESTION)
-            );
             final Feedback feedback1 = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithLikes(organization, category, 0)
+                    FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 0)
             );
             final Feedback feedback2 = feedbackRepository.save(
-                    FeedbackFixture.createFeedbackWithLikes(organization, category, 0)
+                    FeedbackFixture.createFeedbackWithLikes(organization, organizationCategory, 0)
             );
 
-            final WriteHistory inactiveWriteHistory = writeHistoryRepository.save(
-                    new WriteHistory(inactiveGuest, feedback1)
-            );
-            final WriteHistory activeWriteHistory = writeHistoryRepository.save(
-                    new WriteHistory(activeGuest, feedback2)
-            );
+            final WriteHistory unActiveGuestWriteHistory = createAndSaveWriteHistory(unActiveGuest, feedback1);
+            final WriteHistory activeGuestWriteHistory = createAndSaveWriteHistory(activeGuest, feedback2);
 
             // when
             guestScheduler.removeUnActiveGuest();
 
             // then
-            assertThat(guestRepository.findById(inactiveGuest.getId())).isEmpty();
-            assertThat(guestRepository.findById(activeGuest.getId())).isPresent();
-            assertThat(writeHistoryRepository.findById(inactiveWriteHistory.getId())).isEmpty();
-            assertThat(writeHistoryRepository.findById(activeWriteHistory.getId())).isPresent();
+            assertAll(
+                    () -> assertThat(guestRepository.findById(unActiveGuest.getId())).isEmpty(),
+                    () -> assertThat(guestRepository.findById(activeGuest.getId())).isPresent(),
+                    () -> assertThat(writeHistoryRepository.findById(unActiveGuestWriteHistory.getId())).isEmpty(),
+                    () -> assertThat(writeHistoryRepository.findById(activeGuestWriteHistory.getId())).isPresent()
+            );
         }
 
         @Test
@@ -331,5 +254,23 @@ public class GuestSchedulerTest extends ServiceIntegrationHelper {
             // then
             assertThat(guestRepository.count()).isEqualTo(initialGuestCount);
         }
+    }
+
+    private LikeHistory createAndSaveLikeHistory(Guest guest, Feedback feedback) {
+        return likeHistoryRepository.save(new LikeHistory(guest, feedback));
+    }
+
+    private WriteHistory createAndSaveWriteHistory(Guest guest, Feedback feedback) {
+        return writeHistoryRepository.save(new WriteHistory(guest, feedback));
+    }
+
+    private Guest createAndSaveActiveGuest() {
+        final LocalDateTime currentDate = CurrentDateTime.create();
+        return guestRepository.save(new Guest(UUID.randomUUID(), currentDate));
+    }
+
+    private Guest createAndSaveUnActiveGuest() {
+        final LocalDateTime fourMonthsAgo = CurrentDateTime.create().minusMonths(4);
+        return guestRepository.save(new Guest(UUID.randomUUID(), fourMonthsAgo));
     }
 }
