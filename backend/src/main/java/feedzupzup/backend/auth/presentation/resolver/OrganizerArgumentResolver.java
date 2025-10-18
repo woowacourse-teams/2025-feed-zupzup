@@ -1,10 +1,12 @@
 package feedzupzup.backend.auth.presentation.resolver;
 
 import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.ADMIN_ID;
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.ORGANIZATION_ID;
 
-import feedzupzup.backend.admin.dto.AdminSession;
-import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
+import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
+import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -15,28 +17,25 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class AdminSessionArgumentResolver implements HandlerMethodArgumentResolver {
+public class OrganizerArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AdminAuthenticationPrincipal.class) &&
-                parameter.getParameterType().equals(AdminSession.class);
+        return parameter.hasParameterAnnotation(LoginOrganizer.class) &&
+                parameter.getParameterType().equals(LoginOrganizerInfo.class);
     }
 
     @Override
-    public Object resolveArgument(
-            final MethodParameter parameter,
+    public Object resolveArgument(final MethodParameter parameter,
             final ModelAndViewContainer mavContainer,
             final NativeWebRequest webRequest,
             final WebDataBinderFactory binderFactory
-    ) {
-        final HttpServletRequest request = extractHttpServletRequest(webRequest);
+    ) throws Exception {
+        final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
 
+        final UUID organizationUuid = (UUID) request.getAttribute(ORGANIZATION_ID.getValue());
         final Long adminId = (Long) request.getAttribute(ADMIN_ID.getValue());
-        return new AdminSession(adminId);
-    }
 
-    private HttpServletRequest extractHttpServletRequest(final NativeWebRequest webRequest) {
-        return webRequest.getNativeRequest(HttpServletRequest.class);
+        return new LoginOrganizerInfo(adminId, organizationUuid);
     }
 }
