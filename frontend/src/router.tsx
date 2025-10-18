@@ -1,13 +1,14 @@
+import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
+import { ADMIN_BASE, ROUTES } from '@/constants/routes';
+import { ErrorCatcher } from '@/contexts/ErrorCatcher';
+import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import App from './App';
-import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
-import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
-import { isAuthenticated } from './utils/isAuthenticated';
+import AISummary from './domains/admin/AISummary/AISummary';
 import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
 import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
-import AISummary from './domains/admin/AISummary/AISummary';
+import { isAuthenticated } from './utils/isAuthenticated';
 
 const AdminDashboard = lazy(
   () =>
@@ -61,6 +62,7 @@ export const router = createBrowserRouter([
     path: ROUTES.HOME,
     element: (
       <GlobalErrorBoundary fallback={GlobalErrorFallback}>
+        <ErrorCatcher />
         <Suspense fallback={<div>Loading...</div>}>
           <App />
         </Suspense>
