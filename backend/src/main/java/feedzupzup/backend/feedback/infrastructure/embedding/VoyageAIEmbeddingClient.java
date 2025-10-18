@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.infrastructure.ai;
+package feedzupzup.backend.feedback.infrastructure.embedding;
 
 import feedzupzup.backend.global.exception.InfrastructureException.RestClientServerException;
 import java.util.Map;
@@ -12,33 +12,35 @@ import org.springframework.web.client.RestClient;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class OpenAIEmbeddingClient {
+public class VoyageAIEmbeddingClient {
 
-    private final OpenAIProperties openAIProperties;
-    private final RestClient openAiEmbeddingRestClient;
-    private final OpenAIErrorHandler openAIErrorHandler;
+    private final VoyageAIProperties voyageAIProperties;
+    private final RestClient voyageAiEmbeddingRestClient;
+    private final VoyageAIErrorHandler voyageAIErrorHandler;
 
     public double[] extractEmbedding(final String text) {
         try {
             Map<String, Object> requestBody = Map.of(
                     "input", text,
-                    "model", openAIProperties.getEmbeddingModel()
+                    "model", voyageAIProperties.getEmbeddingModel(),
+                    "input_type", "document"
             );
-            log.info("[OpenAI] 임베딩 요청 시작 - model: {}, input: {}",
-                    openAIProperties.getEmbeddingModel(),
+            log.info("[VoyageAI] 임베딩 요청 시작 - model: {}, input: {}",
+                    voyageAIProperties.getEmbeddingModel(),
                     summarizeInput(text));
 
-            OpenAIEmbeddingResponse response = openAiEmbeddingRestClient.post()
+            VoyageAIEmbeddingResponse response = voyageAiEmbeddingRestClient.post()
                     .body(requestBody)
                     .retrieve()
-                    .onStatus(HttpStatusCode::isError, openAIErrorHandler::handleError)
-                    .body(OpenAIEmbeddingResponse.class);
+                    .onStatus(HttpStatusCode::isError, voyageAIErrorHandler::handleError)
+                    .body(VoyageAIEmbeddingResponse.class);
 
             double[] embedding = extractEmbeddingOrThrow(response);
 
-            log.info("[OpenAI] 임베딩 요청 성공 - inputLength: {}, embeddingLength: {}",
+            log.info("[VoyageAI] 임베딩 요청 성공 - inputLength: {}, embeddingLength: {}, totalTokens: {}",
                     text.length(),
-                    embedding.length
+                    embedding.length,
+                    response.getUsage().getTotalTokens()
             );
 
             return embedding;
@@ -48,15 +50,14 @@ public class OpenAIEmbeddingClient {
         }
     }
 
-    private double[] extractEmbeddingOrThrow(final OpenAIEmbeddingResponse response) {
+    private double[] extractEmbeddingOrThrow(final VoyageAIEmbeddingResponse response) {
         return Optional.ofNullable(response)
-                .map(OpenAIEmbeddingResponse::getData)
+                .map(VoyageAIEmbeddingResponse::getData)
                 .filter(data -> !data.isEmpty())
                 .map(data -> data.getFirst().getEmbedding())
                 .orElseThrow(() -> new RestClientServerException("임베딩 데이터가 비어 있거나 응답이 없습니다"));
     }
 
-    // 로그용
     private String summarizeInput(String text) {
         int maxLen = 50;
         if (text == null) return "null";
