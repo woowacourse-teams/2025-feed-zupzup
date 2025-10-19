@@ -1,6 +1,7 @@
 package feedzupzup.backend.global.exception;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import feedzupzup.backend.global.response.ErrorCode;
 import feedzupzup.backend.global.response.ErrorResponse;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 @Slf4j
@@ -24,6 +26,15 @@ public class GlobalExceptionHandler {
         log.error(errorCode.getMessage(), e);
         return ErrorResponse.error(errorCode);
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ErrorResponse handleException(final NoResourceFoundException e) {
+        final ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
+        log.error(errorCode.getMessage(), e);
+        return ErrorResponse.error(errorCode);
+    }
+
 
     @ExceptionHandler(ResourceException.class)
     public ResponseEntity<ErrorResponse> handleException(final ResourceException e) {
