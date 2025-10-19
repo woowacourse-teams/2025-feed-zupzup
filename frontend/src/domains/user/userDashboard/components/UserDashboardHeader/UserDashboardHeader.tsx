@@ -22,11 +22,7 @@ export default function UserDashboardHeader() {
 
   return (
     <div css={headerLayout(backgroundImage)}>
-      <div
-        css={logoContainer}
-        onClick={handleNavigateToOnboarding}
-        style={{ cursor: 'pointer' }}
-      >
+      <div css={logoContainer} onClick={handleNavigateToOnboarding}>
         <img src={basketImage} alt='basket' css={basketIcon} />
         <p css={logoText(theme)}>FEEDZUPZUP</p>
       </div>
