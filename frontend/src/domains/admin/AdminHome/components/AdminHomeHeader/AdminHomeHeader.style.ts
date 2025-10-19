@@ -2,7 +2,7 @@ import { PAGE_PADDING_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const headerLayout = (theme: Theme) => css`
+export const headerLayout = () => css`
   position: absolute;
   top: -${PAGE_PADDING_PX}px;
   left: 0;
@@ -12,16 +12,16 @@ export const headerLayout = (theme: Theme) => css`
   align-items: center;
   gap: 24px;
   width: 100%;
-  padding: 52px ${PAGE_PADDING_PX / 2}px 32px ${PAGE_PADDING_PX / 2}px;
-  background-color: ${theme.colors.blue[100]};
+  padding: 52px 30px 0px 30px;
+  background-color: transparent;
 `;
 
 export const homeCaptionContainer = (theme: Theme) => css`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
   width: 100%;
-  margin-top: 16px;
   color: ${theme.colors.gray[500]};
   ${theme.typography.pretendard.caption};
 
@@ -34,6 +34,43 @@ export const homeCaptionContainer = (theme: Theme) => css`
 export const homeTitle = (theme: Theme) => css`
   ${theme.typography.pretendard.bodyBold};
 
+  color: ${theme.colors.white[100]};
+`;
+
+export const logoContainer = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const basketIcon = css`
+  width: 24px;
+  height: 24px;
+`;
+
+export const logoText = (theme: Theme) => css`
+  ${theme.typography.pretendard.captionBold};
+  color: ${theme.colors.white[100]};
+  letter-spacing: 0.1em;
+`;
+
+export const greetingContainer = css`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 50px;
+`;
+
+export const greetingBold = (theme: Theme) => css`
+  font-size: 30px;
+  font-weight: 700;
+  color: ${theme.colors.white[100]};
+`;
+
+export const greetingLight = (theme: Theme) => css`
+  font-size: 30px;
+  font-weight: 300;
   color: ${theme.colors.white[100]};
 `;
 

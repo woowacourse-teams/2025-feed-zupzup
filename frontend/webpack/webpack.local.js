@@ -12,6 +12,14 @@ const defineEnv = createDefineEnv(env, 'local');
 export default merge(common, {
   mode: 'development',
   devtool: 'inline-source-map',
+
+  output: {
+    filename: '[name].js',
+    chunkFilename: '[name].js',
+    assetModuleFilename: 'assets/[name][ext]',
+    publicPath: '/',
+  },
+
   devServer: {
     static: './dist',
     host: '0.0.0.0',

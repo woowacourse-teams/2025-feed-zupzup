@@ -1,6 +1,7 @@
 import { PAGE_PADDING_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
+import backgroundImage from '@/assets/images/background.png';
 
 export const homeLayout = css`
   display: flex;
@@ -8,17 +9,26 @@ export const homeLayout = css`
   justify-content: start;
   align-items: center;
   gap: 36px;
-  width: 100%;
-  max-height: calc(100vh - ${PAGE_PADDING_PX * 2}px);
-  padding: 52px 16px 0;
+  width: calc(100% + ${PAGE_PADDING_PX * 2}px);
+  padding-top: 52px;
+  background-image: url(${backgroundImage});
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-top: calc(-${PAGE_PADDING_PX}px - 20px);
+  margin-left: ${-PAGE_PADDING_PX}px;
+  margin-right: ${-PAGE_PADDING_PX}px;
 `;
 
 export const adminOrganizationListContainer = (theme: Theme) => css`
-  width: calc(100% + ${PAGE_PADDING_PX}px);
+  width: 100%;
   height: calc(100vh - 500px);
   min-height: calc(100% - ${PAGE_PADDING_PX}px);
   margin-top: 160px;
   background-color: ${theme.colors.white[100]};
+  padding: ${PAGE_PADDING_PX}px;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
 `;
 
 export const infoContainer = css`
