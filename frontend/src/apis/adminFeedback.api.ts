@@ -19,19 +19,16 @@ type FeedbackStatisticsType = {
 export type GetFeedbackStatisticsResponse = ApiResponse<FeedbackStatisticsType>;
 
 export async function deleteFeedback({ feedbackId }: DeleteFeedbackParams) {
-  const response = await apiClient.delete(`/admin/feedbacks/${feedbackId}`);
-  if (!response) return;
+  return await apiClient.delete(`/admin/feedbacks/${feedbackId}`);
 }
 
 export async function patchFeedbackStatus({
   feedbackId,
   comment,
 }: PatchFeedbackStatusParams) {
-  const response = await apiClient.patch(
-    `/admin/feedbacks/${feedbackId}/comment`,
-    { comment }
-  );
-  if (!response) return;
+  return await apiClient.patch(`/admin/feedbacks/${feedbackId}/comment`, {
+    comment,
+  });
 }
 
 export async function getFeedbackStatistics(): Promise<GetFeedbackStatisticsResponse> {

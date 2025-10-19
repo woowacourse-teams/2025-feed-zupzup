@@ -24,7 +24,7 @@ export default function QueryClientBoundary({
             networkMode: 'always',
           },
           queries: {
-            throwOnError: true,
+            throwOnError: false,
           },
         },
         queryCache: new QueryCache({

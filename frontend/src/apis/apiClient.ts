@@ -1,8 +1,8 @@
-import { logError, ErrorType, ErrorSeverity } from '@/utils/errorLogger';
 import {
   DEFAULT_ERROR_MESSAGE,
   FETCH_ERROR_MESSAGE,
 } from '@/constants/errorMessage';
+import { ErrorSeverity, ErrorType, logError } from '@/utils/errorLogger';
 import {
   isEmptyResponse,
   isErrorWithStatus,
