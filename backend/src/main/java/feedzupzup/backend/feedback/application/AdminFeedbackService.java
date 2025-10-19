@@ -21,9 +21,12 @@ import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
+import feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelExporter;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +44,7 @@ public class AdminFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
+    private final FeedbackExcelExporter feedbackExcelExporter;
     private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
@@ -148,5 +152,15 @@ public class AdminFeedbackService {
             throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
         }
         return ClusterFeedbacksResponse.of(feedbacks);
+    }
+
+    public void downloadFeedbacks(final UUID organizationUuid, final HttpServletResponse response) {
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
+
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganizationId(organization.getId());
+
+        feedbackExcelExporter.export(organization, feedbacks, response);
     }
 }

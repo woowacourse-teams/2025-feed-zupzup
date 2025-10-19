@@ -8,11 +8,12 @@ import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -87,5 +88,14 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     ) {
         ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(clusterId);
         return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<Void> downloadFeedbacks(
+            final LoginOrganizerInfo loginOrganizerInfo,
+            final HttpServletResponse httpServletResponse
+    ) {
+        adminFeedbackService.downloadFeedbacks(loginOrganizerInfo.organizationUuid(), httpServletResponse);
+        return SuccessResponse.success(HttpStatus.OK);
     }
 }

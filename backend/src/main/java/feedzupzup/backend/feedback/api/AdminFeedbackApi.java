@@ -5,11 +5,11 @@ import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrinci
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
-import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
-import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -121,5 +122,19 @@ public interface AdminFeedbackApi {
     @GetMapping("/admin/organizations/clusters/{clusterId}")
     SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
             @PathVariable("clusterId") UUID clusterId
+    );
+
+    @Operation(summary = "관리자용 전체 피드백 정리 파일 다운로드", description = "관리자용 피드백 정리 파일을 다운로드합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "다운로드 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations/{organizationUuid}/feedbacks/download")
+    SuccessResponse<Void> downloadFeedbacks(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            final HttpServletResponse httpServletResponse
     );
 }

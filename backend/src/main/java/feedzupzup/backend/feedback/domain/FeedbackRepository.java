@@ -139,4 +139,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
                 ORDER BY f.id
             """)
     List<Feedback> findByIdIn(final List<Long> feedbackIds);
+
+    List<Feedback> findByOrganizationId(final Long organizationId);
 }
