@@ -12,7 +12,7 @@ export interface ConfirmModalProps {
   onClose: () => void;
   title: string;
   message?: string;
-  onConfirm?: () => void;
+  onConfirm?: () => Promise<void>;
   confirmText?: string;
   cancelText?: string;
   width?: number;
@@ -33,9 +33,14 @@ export default function ConfirmModal({
 }: ConfirmModalProps) {
   const theme = useAppTheme();
 
-  const handleConfirm = () => {
-    onConfirm?.();
-    onClose();
+  const handleConfirm = async () => {
+    try {
+      await onConfirm?.();
+      onClose();
+    } catch (e) {
+      console.error(e);
+      return;
+    }
   };
 
   return (

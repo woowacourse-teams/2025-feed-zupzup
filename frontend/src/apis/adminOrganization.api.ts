@@ -45,5 +45,5 @@ export async function postAdminOrganization({
 export async function deleteAdminOrganization({
   organizationUuid,
 }: DeleteAdminOrganizationType): Promise<void> {
-  await apiClient.delete(`/admin/organizations/${organizationUuid}`);
+  await apiClient.delete(`/admin/organizations/${organizationUuid}00`);
 }
