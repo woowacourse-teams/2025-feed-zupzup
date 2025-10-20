@@ -15,7 +15,7 @@ import { BackgroundSyncPlugin } from 'workbox-background-sync';
 import { BroadcastUpdatePlugin } from 'workbox-broadcast-update';
 
 // ===== Configuration =====
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v6';
 
 // ===== Firebase Setup =====
 try {
@@ -163,24 +163,16 @@ const isApiRequest = (url) => {
   );
 };
 
-registerRoute(
-  ({ url }) => {
-    return (
-      isApiRequest(url) &&
-      (url.pathname.includes('/admin/login') ||
-        url.pathname.includes('/admin/logout') ||
-        url.pathname.includes('/admin/sign-up') ||
-        url.pathname.includes('/admin/me'))
-    );
-  },
-  new NetworkOnly({
-    plugins: [
-      new BackgroundSyncPlugin('auth-api-queue', {
-        maxRetentionTime: 24 * 60,
-      }),
-    ],
-  })
-);
+// ===== Auth Routes - Immediate Failure (Background Sync 제거) =====
+registerRoute(({ url }) => {
+  return (
+    isApiRequest(url) &&
+    (url.pathname.includes('/admin/login') ||
+      url.pathname.includes('/admin/logout') ||
+      url.pathname.includes('/admin/sign-up') ||
+      url.pathname.includes('/admin/me'))
+  );
+}, new NetworkOnly());
 
 registerRoute(
   ({ url, request }) => {
@@ -233,7 +225,8 @@ registerRoute(
   })
 );
 
-const bgSyncPlugin = new BackgroundSyncPlugin('api-mutations', {
+// ===== Background Sync for Critical Mutations =====
+const criticalMutationsBgSync = new BackgroundSyncPlugin('critical-mutations', {
   maxRetentionTime: 24 * 60,
   onSync: async ({ queue }) => {
     let entry;
@@ -295,17 +288,35 @@ const bgSyncPlugin = new BackgroundSyncPlugin('api-mutations', {
   },
 });
 
+// ===== Critical Mutations with Background Sync (피드백 작성, 좋아요, 응원하기) =====
 registerRoute(
   ({ url, request }) => {
-    return (
-      isApiRequest(url) &&
-      ['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)
-    );
+    if (!isApiRequest(url)) return false;
+
+    const pathname = url.pathname;
+
+    const isFeedbackCreation =
+      request.method === 'POST' &&
+      /\/organizations\/\d+\/feedbacks$/.test(pathname);
+
+    const isLike = /\/feedbacks\/\d+\/(like|unlike)$/.test(pathname);
+
+    const isCheer = /\/feedbacks\/\d+\/cheer$/.test(pathname);
+
+    return isFeedbackCreation || isLike || isCheer;
   },
   new NetworkOnly({
-    plugins: [bgSyncPlugin],
+    plugins: [criticalMutationsBgSync],
   })
 );
+
+// ===== Other Mutations (Background Sync 없이) =====
+registerRoute(({ url, request }) => {
+  return (
+    isApiRequest(url) &&
+    ['POST', 'PUT', 'PATCH', 'DELETE'].includes(request.method)
+  );
+}, new NetworkOnly());
 
 // ===== Navigation Route (SPA) =====
 const navigationRoute = new NavigationRoute(
