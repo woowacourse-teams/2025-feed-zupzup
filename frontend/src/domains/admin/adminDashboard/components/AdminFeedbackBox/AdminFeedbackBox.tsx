@@ -48,11 +48,13 @@ export default memo(function AdminFeedbackBox({
             <IconButton
               icon={<CheckIcon />}
               onClick={() => onConfirm(feedbackId)}
+              ariaLabel='피드백 확인'
             />
           )}
           <IconButton
             icon={<TrashCanIcon />}
             onClick={() => onDelete(feedbackId)}
+            ariaLabel='피드백 삭제'
           />
         </div>
       </div>
