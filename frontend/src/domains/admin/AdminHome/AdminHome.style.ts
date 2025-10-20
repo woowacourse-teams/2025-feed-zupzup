@@ -34,6 +34,16 @@ export const adminOrganizationListContainer = (theme: Theme) => css`
   padding: ${PAGE_PADDING_PX}px;
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
+
+  @media (max-height: 700px) {
+    margin-top: 100px;
+    height: calc(100vh - 380px);
+  }
+
+  @media (max-height: 600px) {
+    margin-top: 80px;
+    height: calc(100vh - 330px);
+  }
 `;
 
 export const infoContainer = css`

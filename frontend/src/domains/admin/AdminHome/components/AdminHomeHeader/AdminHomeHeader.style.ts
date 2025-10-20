@@ -14,6 +14,16 @@ export const headerLayout = () => css`
   width: 100%;
   padding: 52px 30px 0px 30px;
   background-color: transparent;
+
+  @media (max-height: 700px) {
+    padding: 52px 24px 0px 24px;
+    gap: 16px;
+  }
+
+  @media (max-height: 600px) {
+    padding: 52px 20px 0px 20px;
+    gap: 12px;
+  }
 `;
 
 export const homeCaptionContainer = (theme: Theme) => css`
@@ -47,12 +57,30 @@ export const logoContainer = css`
 export const basketIcon = css`
   width: 24px;
   height: 24px;
+
+  @media (max-height: 700px) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media (max-height: 600px) {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 export const logoText = (theme: Theme) => css`
   ${theme.typography.pretendard.captionBold};
   color: ${theme.colors.white[100]};
   letter-spacing: 0.1em;
+
+  @media (max-height: 700px) {
+    font-size: 12px;
+  }
+
+  @media (max-height: 600px) {
+    font-size: 11px;
+  }
 `;
 
 export const greetingContainer = css`
@@ -61,18 +89,44 @@ export const greetingContainer = css`
   align-items: flex-start;
   gap: 8px;
   margin-top: 50px;
+
+  @media (max-height: 700px) {
+    margin-top: 32px;
+    gap: 4px;
+  }
+
+  @media (max-height: 600px) {
+    margin-top: 24px;
+    gap: 2px;
+  }
 `;
 
 export const greetingBold = (theme: Theme) => css`
   font-size: 30px;
   font-weight: 700;
   color: ${theme.colors.white[100]};
+
+  @media (max-height: 700px) {
+    font-size: 24px;
+  }
+
+  @media (max-height: 600px) {
+    font-size: 20px;
+  }
 `;
 
 export const greetingLight = (theme: Theme) => css`
   font-size: 30px;
   font-weight: 300;
   color: ${theme.colors.white[100]};
+
+  @media (max-height: 700px) {
+    font-size: 24px;
+  }
+
+  @media (max-height: 600px) {
+    font-size: 20px;
+  }
 `;
 
 export const homeTag = (theme: Theme) => css`
