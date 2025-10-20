@@ -24,12 +24,12 @@ export default function QueryClientBoundary({
             networkMode: 'always',
           },
           queries: {
-            throwOnError: false,
+            throwOnError: true,
           },
         },
         queryCache: new QueryCache({
           onError: (error: Error) => {
-            updateAppError(error);
+            throw error;
           },
         }),
         mutationCache: new MutationCache({
