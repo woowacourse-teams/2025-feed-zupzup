@@ -7,6 +7,7 @@ import {
   message,
   buttonContainer,
 } from '@/components/Modal/Modal.styles';
+import { useEffect, useRef } from 'react';
 
 export interface ConfirmModalProps {
   onClose: () => void;
@@ -32,16 +33,29 @@ export default function ConfirmModal({
   disabled = false,
 }: ConfirmModalProps) {
   const theme = useAppTheme();
+  const titleId = 'confirm-modal-title';
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleConfirm = () => {
     onConfirm?.();
     onClose();
   };
 
+  useEffect(() => {
+    confirmButtonRef.current?.focus();
+  }, []);
+
   return (
-    <Modal onClose={onClose} width={width} height={height}>
+    <Modal
+      onClose={onClose}
+      width={width}
+      height={height}
+      ariaLabelledby={titleId}
+    >
       <div css={content}>
-        <p css={title(theme)}>{confirmTitle}</p>
+        <p id={titleId} css={title(theme)}>
+          {confirmTitle}
+        </p>
         {confirmMessage && <p css={message(theme)}>{confirmMessage}</p>}
       </div>
       <div css={buttonContainer}>
@@ -54,6 +68,7 @@ export default function ConfirmModal({
           {cancelText}
         </BasicButton>
         <BasicButton
+          ref={confirmButtonRef}
           variant='primary'
           width='calc(50% - 12px)'
           onClick={handleConfirm}
