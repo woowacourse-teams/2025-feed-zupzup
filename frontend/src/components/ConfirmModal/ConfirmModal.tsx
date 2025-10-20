@@ -7,12 +7,13 @@ import {
   message,
   buttonContainer,
 } from '@/components/Modal/Modal.styles';
+import { PostAdminLogoutResponse } from '@/apis/admin.api';
 
 export interface ConfirmModalProps {
   onClose: () => void;
   title: string;
   message?: string;
-  onConfirm?: () => Promise<void>;
+  onConfirm?: () => Promise<void | PostAdminLogoutResponse> | void;
   confirmText?: string;
   cancelText?: string;
   width?: number;

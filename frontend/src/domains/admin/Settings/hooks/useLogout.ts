@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 export function useLogout() {
   const { goPath } = useNavigation();
 
-  const { mutate: handleLogout } = useMutation({
+  const { mutateAsync: handleLogout } = useMutation({
     mutationFn: postAdminLogout,
     onSuccess: () => {
       resetLocalStorage('auth');
