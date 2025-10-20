@@ -34,16 +34,28 @@ export default function AdminOrganizationList() {
 
   if (isLoading) {
     return (
-      <div css={loadingContainer}>
+      <div css={loadingContainer} role='status' aria-live='polite'>
         <div css={adminSpinner} />
         데이터를 불러오는 중입니다...
       </div>
     );
   }
 
+  const organizationCount = adminOrganizations.length;
+  const ariaLabel =
+    organizationCount === 0
+      ? '등록된 피드백 방이 없습니다.'
+      : `총 ${organizationCount}개의 피드백 방이 있습니다.`;
+
   return (
-    <div css={adminOrganizationList}>
-      {adminOrganizations.length === 0 ? (
+    <div>
+      <div
+        role='region'
+        aria-label={ariaLabel}
+        tabIndex={0}
+        className='srOnly'
+      />
+      {organizationCount === 0 ? (
         <div css={emptyAdminOrganization}>
           <StatusBox
             width={'100%'}
@@ -54,15 +66,18 @@ export default function AdminOrganizationList() {
           />
         </div>
       ) : (
-        adminOrganizations.map((organizations) => (
-          <AdminOrganization
-            key={organizations.uuid}
-            organizationName={organizations.name}
-            waitingCount={organizations.waitingCount}
-            postedAt={organizations.postedAt}
-            onClick={() => goPath(`/admin/${organizations.uuid}/dashboard`)}
-          />
-        ))
+        <ul role='list' css={adminOrganizationList}>
+          {adminOrganizations.map((organizations) => (
+            <li key={organizations.uuid}>
+              <AdminOrganization
+                organizationName={organizations.name}
+                waitingCount={organizations.waitingCount}
+                postedAt={organizations.postedAt}
+                onClick={() => goPath(`/admin/${organizations.uuid}/dashboard`)}
+              />
+            </li>
+          ))}
+        </ul>
       )}
 
       {!isLoading && (
@@ -71,6 +86,7 @@ export default function AdminOrganizationList() {
           onClick={handleCreateAdminOrganization}
           inset={{ bottom: '80px', left: '100%' }}
           customCSS={addAdminOrganization(theme)}
+          aria-label='새 피드백 방 추가'
         />
       )}
     </div>

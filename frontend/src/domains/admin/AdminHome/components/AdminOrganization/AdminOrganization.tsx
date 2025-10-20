@@ -24,7 +24,7 @@ export default function AdminOrganization({
   const theme = useAppTheme();
 
   return (
-    <div css={adminOrganizationContainer(theme)} onClick={onClick}>
+    <button css={adminOrganizationContainer(theme)} onClick={onClick}>
       <div css={organizationTitleContainer}>
         <div css={organizationTitle(theme)}>
           <div css={dot(theme)} />
@@ -40,6 +40,6 @@ export default function AdminOrganization({
       ) : (
         <p>최근 피드백: 없음</p>
       )}
-    </div>
+    </button>
   );
 }
