@@ -10,20 +10,14 @@ import {
 } from '@/domains/admin/AdminHome/components/AdminHomeHeader/AdminHomeHeader.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import basketImage from '@/assets/images/basket.png';
-import useNavigation from '@/domains/hooks/useNavigation';
 
 export default function AdminHomeHeader() {
   const theme = useAppTheme();
-  const { goPath } = useNavigation();
-
-  const handleNavigateToHome = () => {
-    goPath('/');
-  };
 
   return (
     <div css={headerLayout()}>
       <div css={homeCaptionContainer(theme)}>
-        <div css={logoContainer} onClick={handleNavigateToHome}>
+        <div css={logoContainer}>
           <img src={basketImage} alt='basket' css={basketIcon} />
           <p css={logoText(theme)}>FEEDZUPZUP</p>
         </div>

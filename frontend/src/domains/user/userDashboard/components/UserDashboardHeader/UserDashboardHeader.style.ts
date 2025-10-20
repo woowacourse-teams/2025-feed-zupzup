@@ -11,7 +11,7 @@ export const headerLayout = (
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   width: 100%;
   max-width: 600px;
   padding: 20px 30px;
@@ -29,7 +29,6 @@ export const logoContainer = css`
   display: flex;
   align-items: center;
   gap: 8px;
-  cursor: pointer;
 `;
 
 export const basketIcon = css`
