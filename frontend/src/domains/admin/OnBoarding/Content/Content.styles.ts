@@ -7,6 +7,7 @@ export const container = css`
   justify-content: center;
   position: relative;
   overflow: hidden;
+  min-height: 400px;
 `;
 
 export const slideContainer = css`
