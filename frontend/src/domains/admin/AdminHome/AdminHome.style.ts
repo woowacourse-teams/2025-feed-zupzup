@@ -1,7 +1,8 @@
 import { PAGE_PADDING_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
-import backgroundImage from '@/assets/images/background.png';
+import backgroundImageWebp from '@/assets/images/background.webp';
+import backgroundImagePng from '@/assets/images/background.png';
 
 export const homeLayout = css`
   display: flex;
@@ -11,7 +12,11 @@ export const homeLayout = css`
   gap: 36px;
   width: calc(100% + ${PAGE_PADDING_PX * 2}px);
   padding-top: 52px;
-  background-image: url(${backgroundImage});
+  background-image: url(${backgroundImagePng});
+  background-image: image-set(
+    url(${backgroundImageWebp}) type('image/webp'),
+    url(${backgroundImagePng}) type('image/png')
+  );
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

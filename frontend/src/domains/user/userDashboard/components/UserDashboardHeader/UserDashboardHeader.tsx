@@ -6,7 +6,8 @@ import {
 } from '@/domains/user/userDashboard/components/UserDashboardHeader/UserDashboardHeader.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import basketImage from '@/assets/images/basket.png';
-import backgroundImage from '@/assets/images/background.png';
+import backgroundImageWebp from '@/assets/images/background.webp';
+import backgroundImagePng from '@/assets/images/background.png';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { Analytics, userDashboardEvents } from '@/analytics';
 
@@ -21,7 +22,7 @@ export default function UserDashboardHeader() {
   };
 
   return (
-    <div css={headerLayout(backgroundImage)}>
+    <div css={headerLayout(backgroundImagePng, backgroundImageWebp)}>
       <div css={logoContainer} onClick={handleNavigateToOnboarding}>
         <img src={basketImage} alt='basket' css={basketIcon} />
         <p css={logoText(theme)}>FEEDZUPZUP</p>

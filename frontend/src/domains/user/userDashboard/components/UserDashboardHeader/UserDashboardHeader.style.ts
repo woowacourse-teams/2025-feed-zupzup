@@ -1,7 +1,10 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const headerLayout = (backgroundImage: string) => css`
+export const headerLayout = (
+  backgroundPng: string,
+  backgroundWebp: string
+) => css`
   position: fixed;
   top: 0;
   left: 50%;
@@ -12,7 +15,11 @@ export const headerLayout = (backgroundImage: string) => css`
   width: 100%;
   max-width: 600px;
   padding: 20px 30px;
-  background-image: url(${backgroundImage});
+  background-image: url(${backgroundPng});
+  background-image: image-set(
+    url(${backgroundWebp}) type('image/webp'),
+    url(${backgroundPng}) type('image/png')
+  );
   background-size: cover;
   background-position: center;
   transform: translateX(-50%);
