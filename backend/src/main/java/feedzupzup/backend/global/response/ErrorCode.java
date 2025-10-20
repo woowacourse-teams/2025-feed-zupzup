@@ -35,6 +35,7 @@ public enum ErrorCode {
     INVALID_VALUE_RANGE(INTERNAL_SERVER_ERROR, "F03", "좋아요는 음수가 될 수 없습니다."),
     LIKE_ALREADY_EXISTS(BAD_REQUEST, "F04", "좋아요는 한 번만 누를 수 있습니다."),
     INVALID_LIKE_REQUEST(BAD_REQUEST, "F05", "잘못된 요청입니다."),
+    EXCEL_EXPORT_FAILED(INTERNAL_SERVER_ERROR, "F06", "엑셀 파일 생성 중 오류가 발생했습니다."),
 
     //Admin Domain Error
     INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),
