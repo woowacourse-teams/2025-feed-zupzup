@@ -12,6 +12,8 @@ import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColu
 import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.USER_NAME;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
+import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.s3.service.S3DownloadService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -38,10 +40,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FeedbackExcelExporter {
+public class FeedbackExcelExporterPoi implements FeedbackExcelExporter {
 
     private final S3DownloadService s3DownloadService;
 
+    @Override
     public void export(
             final Organization organization,
             final List<Feedback> feedbacks,
@@ -57,7 +60,7 @@ public class FeedbackExcelExporter {
 
             streamExcelResponse(response, workbook);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PoiExcelExportException("엑셀 파일 생성 중 오류가 발생했습니다.");
         }
     }
 
@@ -137,7 +140,7 @@ public class FeedbackExcelExporter {
             picture.resize(1, 1);
         } catch (Exception e) {
             row.createCell(IMAGE.columnIndex()).setCellValue("");
-            log.warn("엑셀 파일 생성을 위한 이미지 다운로드 실패");
+            log.error("엑셀 파일 생성을 위한 이미지 다운로드 실패");
         }
     }
 
@@ -155,7 +158,7 @@ public class FeedbackExcelExporter {
             workbook.write(outputStream);
             outputStream.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new PoiExcelExportException("엑셀 파일 스트리밍 중 오류가 발생했습니다.");
         }
     }
 
