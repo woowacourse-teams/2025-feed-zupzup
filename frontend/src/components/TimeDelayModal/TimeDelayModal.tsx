@@ -14,7 +14,6 @@ import {
 import { StatusType } from '@/types/status.types';
 
 export interface TimeDelayModalProps {
-  isOpen: boolean;
   onClose: () => void;
   loadingDuration?: number;
   autoCloseDuration?: number;
@@ -28,7 +27,6 @@ export interface TimeDelayModalProps {
 }
 
 export default function TimeDelayModal({
-  isOpen,
   onClose,
   loadingDuration = 1000,
   autoCloseDuration = 2000,
@@ -43,7 +41,6 @@ export default function TimeDelayModal({
   const theme = useAppTheme();
 
   const { isMinimumDelayActive, handleModalClose } = useTimeDelayModal({
-    isOpen,
     loadingDuration,
     autoCloseDuration,
     onClose,
@@ -77,8 +74,6 @@ export default function TimeDelayModal({
       </div>
     );
   };
-
-  if (!isOpen) return null;
 
   return (
     <Modal
