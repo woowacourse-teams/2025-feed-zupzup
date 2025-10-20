@@ -49,7 +49,7 @@ export default function () {
   const sortBy = SORT_OPTIONS[Math.floor(Math.random() * SORT_OPTIONS.length)];
   const status = Math.random() > 0.5 ? PROCESS_STATUS[Math.floor(
       Math.random() * PROCESS_STATUS.length)] : '';
-  const cursorId = Math.random() > 0.7 ? Math.floor(Math.random() * 4000000) + 1
+  const cursorId = Math.random() > 0.7 ? Math.floor(Math.random() * 633) + 1
       : '';
 
   let queryParams = `size=${size}&sortBy=${sortBy}`;
@@ -86,7 +86,7 @@ export default function () {
     '[Organization] has valid data': (r) => {
       try {
         const body = JSON.parse(r.body);
-        return body.success === true &&
+        return body.status === 200 &&
             body.data &&
             body.data.hasOwnProperty('organizationName') &&
             body.data.hasOwnProperty('categories');
