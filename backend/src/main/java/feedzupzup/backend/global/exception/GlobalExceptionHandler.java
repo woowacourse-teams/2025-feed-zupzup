@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(NOT_FOUND)
     public ErrorResponse handleException(final NoResourceFoundException e) {
         final ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
-        log.error(errorCode.getMessage(), e);
+        log.warn(errorCode.getMessage(), e);
         return ErrorResponse.error(errorCode);
     }
 
