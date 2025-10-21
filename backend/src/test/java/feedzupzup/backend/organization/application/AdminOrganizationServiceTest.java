@@ -17,9 +17,11 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
+import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
@@ -234,6 +236,38 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
 
         // then - 한글 사전순으로 정렬되어 반환: 기타, 정보공유, 칭찬
         assertThat(updateResponse.updateCategories()).containsExactly("기타", "정보공유", "칭찬");
+    }
+
+    @Test
+    @DisplayName("조직 조회 시 완료 건수와 대기 건수를 정확하게 반환해야 한다")
+    void get_organizations_info_with_confirmed_and_waiting_count() {
+        // given
+        final Admin admin = createAndSaveAdmin();
+        final Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+        organizerRepository.save(new Organizer(organization, admin, OrganizerRole.OWNER));
+
+        final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(organization,
+                Category.SUGGESTION);
+        organizationCategoryRepository.save(category);
+
+        // WAITING 상태의 피드백 3개 생성
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING, category));
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING, category));
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING, category));
+
+        // CONFIRMED 상태의 피드백 2개 생성
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.CONFIRMED, category));
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.CONFIRMED, category));
+
+        // when
+        final List<AdminInquireOrganizationResponse> responses = adminOrganizationService.getOrganizationsInfo(
+                admin.getId());
+
+        // then
+        assertThat(responses).hasSize(1);
+        final AdminInquireOrganizationResponse response = responses.get(0);
+        assertThat(response.confirmedCount()).isEqualTo(2L);
+        assertThat(response.waitingCount()).isEqualTo(3L);
     }
 
     private Admin createAndSaveAdmin() {
