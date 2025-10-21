@@ -18,13 +18,6 @@ const defineEnv = createDefineEnv(env, 'local');
 export default merge(common, {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
-
-  output: {
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-    assetModuleFilename: 'assets/[name][ext]',
-  },
-
   devServer: {
     static: './dist',
     host: '0.0.0.0',
