@@ -195,6 +195,36 @@ public class GuestServiceTest extends ServiceIntegrationHelper {
             // then
             assertThat(response.feedbacks()).isEmpty();
         }
+
+        @Test
+        @DisplayName("작성한 피드백 목록을 최신순으로 정렬하여 조회한다")
+        void getMyFeedbacks_sorted_by_latest() throws InterruptedException {
+            // given
+            final Guest guest = createAndSaveRandomGuest();
+            final Feedback feedback1 = createAndSaveFeedback();
+            Thread.sleep(100);  // createdAt이 다르게 설정되도록 시간차 부여
+            final Feedback feedback2 = createAndSaveFeedback();
+            Thread.sleep(100);
+            final Feedback feedback3 = createAndSaveFeedback();
+
+            createAndSaveWriteHistory(guest, feedback1);
+            Thread.sleep(100);
+            createAndSaveWriteHistory(guest, feedback2);
+            Thread.sleep(100);
+            createAndSaveWriteHistory(guest, feedback3);
+
+            // when
+            final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
+                    organization.getUuid(), toGuestInfo(guest));
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(feedback3.getId()),
+                    () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(feedback2.getId()),
+                    () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(feedback1.getId())
+            );
+        }
     }
 
     @Nested
