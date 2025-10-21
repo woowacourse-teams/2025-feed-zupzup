@@ -15,9 +15,18 @@ export const skipIcon = css`
 export const container = css`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
+  padding-bottom: 80px;
   text-align: center;
+`;
+
+export const bottomButton = css`
+  position: fixed;
+  bottom: 50px;
+  left: 32px;
+  right: 32px;
+  max-width: 536px;
+  margin: 0 auto;
 `;
 
 export const title = (theme: Theme) => css`
