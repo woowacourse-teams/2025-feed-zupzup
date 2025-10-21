@@ -7,7 +7,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
-import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
@@ -105,7 +105,7 @@ public interface AdminFeedbackApi {
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/clusters")
-    SuccessResponse<ClusterRepresentativeFeedbacksResponse> getRepresentativeCluster(
+    SuccessResponse<ClustersResponse> getRepresentativeCluster(
             @Parameter(hidden = true) @LoginOrganizer final AdminSession adminSession,
             @PathVariable("organizationUuid") UUID organizationUuid
     );
@@ -120,6 +120,6 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/clusters/{clusterId}")
     SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
-            @PathVariable("clusterId") UUID clusterId
+            @PathVariable("clusterId") Long clusterId
     );
 }

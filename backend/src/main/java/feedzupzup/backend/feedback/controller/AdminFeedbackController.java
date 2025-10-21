@@ -9,7 +9,7 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
-import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
@@ -72,18 +72,17 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<ClusterRepresentativeFeedbacksResponse> getRepresentativeCluster(
+    public SuccessResponse<ClustersResponse> getRepresentativeCluster(
             final AdminSession adminSession,
             final UUID organizationUuid
     ) {
-        ClusterRepresentativeFeedbacksResponse response = adminFeedbackService.getRepresentativeCluster(
-                adminSession.adminId(), organizationUuid);
+        ClustersResponse response = adminFeedbackService.getRepresentativeCluster(organizationUuid);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
     public SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
-            final UUID clusterId
+            final Long clusterId
     ) {
         ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(clusterId);
         return SuccessResponse.success(HttpStatus.OK, response);
