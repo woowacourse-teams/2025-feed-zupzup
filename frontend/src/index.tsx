@@ -1,5 +1,4 @@
 import { ErrorProvider } from '@/contexts/useErrorContext';
-import { ErrorModalProvider } from '@/contexts/useErrorModal';
 import { ToastProvider } from '@/contexts/useToast';
 import { router } from '@/router';
 import { initSentry } from '@/services/sentry';
@@ -40,18 +39,16 @@ const root = createRoot(document.getElementById('root')!);
 root.render(
   <ErrorProvider>
     <QueryClientBoundary>
-      <ErrorModalProvider>
-        <ThemeProvider theme={theme}>
-          <ToastProvider>
-            <Sentry.ErrorBoundary>
-              <RouterProvider router={router} />
-              {process.env.NODE_ENV === 'development' && (
-                <ReactQueryDevtools initialIsOpen={false} />
-              )}
-            </Sentry.ErrorBoundary>
-          </ToastProvider>
-        </ThemeProvider>
-      </ErrorModalProvider>
+      <ThemeProvider theme={theme}>
+        <ToastProvider>
+          <Sentry.ErrorBoundary>
+            <RouterProvider router={router} />
+            {process.env.NODE_ENV === 'development' && (
+              <ReactQueryDevtools initialIsOpen={false} />
+            )}
+          </Sentry.ErrorBoundary>
+        </ToastProvider>
+      </ThemeProvider>
     </QueryClientBoundary>
   </ErrorProvider>
 );
