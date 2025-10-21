@@ -8,6 +8,7 @@ import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
 import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.guest.application.GuestService;
+import feedzupzup.backend.guest.domain.guest.GuestActiveTracker;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ public class GuestInterceptor implements HandlerInterceptor {
 
     private final GuestService guestService;
     private final CookieUtilization cookieUtilization;
+    private final GuestActiveTracker guestActiveTracker;
 
     @Override
     public boolean preHandle(
@@ -62,6 +64,8 @@ public class GuestInterceptor implements HandlerInterceptor {
         if (isSavedGuestAnnotation(guestParameter.get()) && !isSavedGuest(guestUuid)) {
             guestService.save(guestUuid);
         }
+
+        guestActiveTracker.trackActivity(guestUuid);
 
         createAndAddCookie(response, guestUuid);
         request.setAttribute(GUEST_ID.getValue(), guestUuid);
