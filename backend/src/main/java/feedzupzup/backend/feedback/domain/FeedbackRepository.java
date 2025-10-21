@@ -95,9 +95,9 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("""
         SELECT new feedzupzup.backend.feedback.domain.ClusterInfo(
-            ec.id AS embeddingClusterId,
-            ec.label AS label,
-            COUNT(fec.id) AS totalCount
+            ec.id,
+            ec.label,
+            COUNT(fec.id)
         )
         FROM Feedback f
         JOIN f.organization org
@@ -105,6 +105,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         JOIN fec.embeddingCluster ec
         WHERE org.uuid = :organizationUuid
         GROUP BY ec.id, ec.label
+        HAVING COUNT(f.id) >= 1
         ORDER BY COUNT(fec.id) DESC
         LIMIT :limit
         """)
@@ -112,27 +113,4 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             @Param("organizationUuid") UUID organizationUuid,
             @Param("limit") int limit
             );
-
-    @Query("""
-                SELECT f
-                FROM Feedback f
-                WHERE f.id IN :feedbackIds
-                ORDER BY f.id
-            """)
-    List<Feedback> findByIdIn(final List<Long> feedbackIds);
-
-    @Query("""
-              SELECT f
-              FROM Feedback f
-              JOIN FeedbackEmbeddingCluster fec ON f.id = fec.feedback.id
-              WHERE fec.id = :feedbackEmbeddingClusterId
-          """)
-    List<Feedback> findAllByClusterId(@Param("feedbackEmbeddingClusterId") final Long feedbackEmbeddingClusterId);
-
-//    @Query("""
-//    SELECT fec.feedback
-//    FROM FeedbackEmbeddingCluster fec
-//    WHERE fec.embeddingCluster.clusterId = :clusterId
-//    """)
-//    List<Feedback> findAllByClusterId(@Param("clusterId") UUID clusterId);
 }

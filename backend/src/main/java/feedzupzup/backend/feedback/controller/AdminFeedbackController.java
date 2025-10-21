@@ -72,11 +72,12 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<ClustersResponse> getRepresentativeCluster(
+    public SuccessResponse<ClustersResponse> getTopClusters(
             final AdminSession adminSession,
-            final UUID organizationUuid
+            final UUID organizationUuid,
+            final int limit
     ) {
-        ClustersResponse response = adminFeedbackService.getRepresentativeCluster(organizationUuid);
+        ClustersResponse response = adminFeedbackService.getTopClusters(organizationUuid, limit);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 

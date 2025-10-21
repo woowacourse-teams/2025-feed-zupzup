@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.dto.response;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse.AdminFeedbackItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
@@ -19,5 +20,12 @@ public record ClusterFeedbacksResponse(
                 .map(feedback -> AdminFeedbackItem.from(FeedbackItem.from(feedback)))
                 .toList();
         return new ClusterFeedbacksResponse(feedbackItems, label, totalCount);
+    }
+
+    public static ClusterFeedbacksResponse of(final List<FeedbackEmbeddingCluster> embeddingClusters, final String label) {
+        final List<AdminFeedbackItem> feedbackItems = embeddingClusters.stream()
+                .map(embeddingCluster -> AdminFeedbackItem.from(FeedbackItem.from(embeddingCluster.getFeedback())))
+                .toList();
+        return new ClusterFeedbacksResponse(feedbackItems, label, (long) embeddingClusters.size());
     }
 }

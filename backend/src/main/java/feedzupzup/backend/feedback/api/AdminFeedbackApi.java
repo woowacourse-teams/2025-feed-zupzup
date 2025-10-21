@@ -105,9 +105,10 @@ public interface AdminFeedbackApi {
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/clusters")
-    SuccessResponse<ClustersResponse> getRepresentativeCluster(
+    SuccessResponse<ClustersResponse> getTopClusters(
             @Parameter(hidden = true) @LoginOrganizer final AdminSession adminSession,
-            @PathVariable("organizationUuid") UUID organizationUuid
+            @PathVariable("organizationUuid") UUID organizationUuid,
+            @RequestParam(required = false, defaultValue = "5") final int limit
     );
 
     @Operation(summary = "특정 클러스터 피드백 전체 조회", description = "특정 클러스터에 속한 전체 피드백을 조회합니다. (관리자 전용)")

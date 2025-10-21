@@ -39,7 +39,7 @@ public class FeedbackEmbeddingCluster extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Feedback feedback;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     private EmbeddingCluster embeddingCluster;
 
     @Column(name = "deleted_at")
@@ -61,9 +61,9 @@ public class FeedbackEmbeddingCluster extends BaseTimeEntity {
         return new FeedbackEmbeddingCluster( 1.0, embedding, feedback, embeddingCluster);
     }
 
-    public FeedbackEmbeddingCluster assignMyCluster(final double[] embedding) {
+    public FeedbackEmbeddingCluster assignMyCluster(final Feedback feedback, final double[] embedding) {
         double similarity = calculateSimilarityTo(embedding);
-        return new FeedbackEmbeddingCluster(similarity, embedding, this.feedback, this.embeddingCluster);
+        return new FeedbackEmbeddingCluster(similarity, embedding, feedback, this.embeddingCluster);
     }
 
     private double calculateSimilarityTo(final double[] other) {

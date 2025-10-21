@@ -8,8 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface FeedbackEmbeddingClusterRepository extends JpaRepository<FeedbackEmbeddingCluster, Long> {
 
-    Long countByEmbeddingCluster(EmbeddingCluster embeddingCluster);
-
     @Query("""
     SELECT fec
     FROM FeedbackEmbeddingCluster fec
@@ -24,4 +22,6 @@ public interface FeedbackEmbeddingClusterRepository extends JpaRepository<Feedba
     );
 
     List<FeedbackEmbeddingCluster> findAllByEmbeddingCluster(EmbeddingCluster embeddingCluster);
+
+    boolean existsByFeedback(Feedback feedback);
 }

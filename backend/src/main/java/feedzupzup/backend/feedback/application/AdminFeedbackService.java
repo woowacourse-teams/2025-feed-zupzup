@@ -9,6 +9,7 @@ import feedzupzup.backend.feedback.domain.EmbeddingCluster;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
@@ -45,8 +46,7 @@ public class AdminFeedbackService {
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final EmbeddingClusterRepository embeddingClusterRepos
-        itory;
+    private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
 
     @Transactional
@@ -142,20 +142,22 @@ public class AdminFeedbackService {
         feedBackRepository.deleteAllByOrganizationId(organizationId);
     }
 
-    public ClustersResponse getRepresentativeCluster(final UUID organizationUuid) {
-        List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(
-                organizationUuid,  5);
+    public ClustersResponse getTopClusters(final UUID organizationUuid, final int limit) {
+        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
+            throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
+        }
+        List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  limit);
         return ClustersResponse.from(clusterInfos);
     }
 
     public ClusterFeedbacksResponse getFeedbacksByClusterId(final Long clusterId) {
         EmbeddingCluster embeddingCluster = embeddingClusterRepository.findById(clusterId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 clusterid(id = " + clusterId + ")로 찾을 수 없습니다."));
-        Long totalCount = feedbackEmbeddingClusterRepository.countByEmbeddingCluster(embeddingCluster);
-        List<Feedback> feedbacks = feedBackRepository.findAllByClusterId(clusterId);
-        if (feedbacks.isEmpty()) {
+        List<FeedbackEmbeddingCluster> embeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
+                embeddingCluster);
+        if (embeddingClusters.isEmpty()) {
             throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
         }
-        return ClusterFeedbacksResponse.of(feedbacks, embeddingCluster.getLabel(), totalCount);
+        return ClusterFeedbacksResponse.of(embeddingClusters, embeddingCluster.getLabel());
     }
 }

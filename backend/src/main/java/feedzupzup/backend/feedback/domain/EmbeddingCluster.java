@@ -1,9 +1,11 @@
 package feedzupzup.backend.feedback.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -21,6 +23,9 @@ public class EmbeddingCluster {
     private Long id;
 
     private String label;
+
+    @Column(name = "deleted_at")
+    protected LocalDateTime deletedAt;
 
     public static EmbeddingCluster createEmpty() {
         return new EmbeddingCluster();

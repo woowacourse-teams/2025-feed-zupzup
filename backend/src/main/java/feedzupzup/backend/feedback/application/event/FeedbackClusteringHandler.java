@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.application.event;
 
 import feedzupzup.backend.feedback.application.FeedbackClusteringService;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.event.FeedbackCreatedEvent2;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +18,7 @@ public class FeedbackClusteringHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Async
     public void handleFeedbackCreatedEvent(final FeedbackCreatedEvent2 event) {
-        feedbackClusteringService.cluster(event.feedbackId());
+        FeedbackEmbeddingCluster createdCluster = feedbackClusteringService.cluster(event.feedbackId());
+        feedbackClusteringService.createLabel(createdCluster);
     }
 }
