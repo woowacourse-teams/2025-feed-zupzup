@@ -17,9 +17,11 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
+import feedzupzup.backend.organization.dto.response.AdminInquireOrganizationResponse;
 import feedzupzup.backend.organization.dto.response.AdminUpdateOrganizationResponse;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
@@ -27,6 +29,7 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +65,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("건의", "신고")
+                        List.of("건의", "신고")
                 );
 
         final Admin savedAdmin = createAndSaveAdmin();
@@ -79,7 +82,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("건의", "신고")
+                        List.of("건의", "신고")
                 );
 
         assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, 999L))
@@ -92,7 +95,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("크롱크롱", "대나무헬리콥터")
+                        List.of("크롱크롱", "대나무헬리콥터")
                 );
         final Admin admin = createAndSaveAdmin();
         assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, admin.getId()))
@@ -106,7 +109,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest request =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("건의", "신고")
+                        List.of("건의", "신고")
                 );
 
         final Admin savedAdmin = createAndSaveAdmin();
@@ -115,7 +118,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
                 request, savedAdmin.getId());
 
         UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest(
-                "우테코코코", Set.of("기타", "칭찬", "정보공유")
+                "우테코코코", List.of("기타", "칭찬", "정보공유")
         );
         final UUID organizationUuid = UUID.fromString(createResponse.organizationUuid());
 
@@ -202,6 +205,69 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
 
         // then - 피드백도 함께 소프트 삭제되어야 함
         assertThat(feedbackRepository.findById(savedFeedback.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("조직 수정 시 카테고리가 정렬되어 반환되어야 한다")
+    void update_organization_with_sorted_categories() {
+        // given
+        CreateOrganizationRequest request =
+                new CreateOrganizationRequest(
+                        "우테코",
+                        List.of("건의", "신고")
+                );
+
+        final Admin savedAdmin = createAndSaveAdmin();
+
+        final AdminCreateOrganizationResponse createResponse = adminOrganizationService.createOrganization(
+                request, savedAdmin.getId());
+
+        // 정렬되지 않은 순서로 카테고리 입력: 칭찬, 기타, 정보공유
+        UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest(
+                "우테코코코", List.of("칭찬", "기타", "정보공유")
+        );
+        final UUID organizationUuid = UUID.fromString(createResponse.organizationUuid());
+
+        // when
+        final AdminUpdateOrganizationResponse updateResponse = adminOrganizationService.updateOrganization(
+                organizationUuid,
+                updateOrganizationRequest
+        );
+
+        // then - 한글 사전순으로 정렬되어 반환: 기타, 정보공유, 칭찬
+        assertThat(updateResponse.updateCategories()).containsExactly("기타", "정보공유", "칭찬");
+    }
+
+    @Test
+    @DisplayName("조직 조회 시 완료 건수와 대기 건수를 정확하게 반환해야 한다")
+    void get_organizations_info_with_confirmed_and_waiting_count() {
+        // given
+        final Admin admin = createAndSaveAdmin();
+        final Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+        organizerRepository.save(new Organizer(organization, admin, OrganizerRole.OWNER));
+
+        final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(organization,
+                Category.SUGGESTION);
+        organizationCategoryRepository.save(category);
+
+        // WAITING 상태의 피드백 3개 생성
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING, category));
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING, category));
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.WAITING, category));
+
+        // CONFIRMED 상태의 피드백 2개 생성
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.CONFIRMED, category));
+        feedbackRepository.save(FeedbackFixture.createFeedbackWithStatus(organization, ProcessStatus.CONFIRMED, category));
+
+        // when
+        final List<AdminInquireOrganizationResponse> responses = adminOrganizationService.getOrganizationsInfo(
+                admin.getId());
+
+        // then
+        assertThat(responses).hasSize(1);
+        final AdminInquireOrganizationResponse response = responses.get(0);
+        assertThat(response.confirmedCount()).isEqualTo(2L);
+        assertThat(response.waitingCount()).isEqualTo(3L);
     }
 
     private Admin createAndSaveAdmin() {

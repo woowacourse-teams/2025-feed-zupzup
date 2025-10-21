@@ -6,11 +6,11 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,16 +19,16 @@ import lombok.NoArgsConstructor;
 public class OrganizationCategories {
 
     @OneToMany(mappedBy = "organization", cascade = CascadeType.PERSIST)
-    private final Set<OrganizationCategory> organizationCategories = new HashSet<>();
+    private final List<OrganizationCategory> organizationCategories = new ArrayList<>();
 
-    public void addAll(final Set<String> categories, final Organization organization) {
-        final Set<OrganizationCategory> mapToCategories = mapToOrganizationCategories(
+    public void addAll(final List<String> categories, final Organization organization) {
+        final List<OrganizationCategory> mapToCategories = mapToOrganizationCategories(
                 categories, organization);
         this.organizationCategories.addAll(mapToCategories);
     }
 
-    private Set<OrganizationCategory> mapToOrganizationCategories(
-            final Set<String> categories,
+    private List<OrganizationCategory> mapToOrganizationCategories(
+            final List<String> categories,
             final Organization organization
     ) {
         validateCategories(categories);
@@ -36,10 +36,10 @@ public class OrganizationCategories {
                 .map(category ->
                         new OrganizationCategory(organization, category,
                                 categories.contains(category.getKoreanName())))
-                .collect(Collectors.toSet());
+                .toList();
     }
 
-    private void validateCategories(final Set<String> categories) {
+    private void validateCategories(final List<String> categories) {
         for (String category : categories) {
             if (!Category.hasCategory(category)) {
                 throw new ResourceNotFoundException("category " + category + " 는 존재하지 않는 카테고리입니다.");
@@ -47,7 +47,7 @@ public class OrganizationCategories {
         }
     }
 
-    public void updateOrganizationCategories(final Set<String> categories) {
+    public void updateOrganizationCategories(final List<String> categories) {
         for (OrganizationCategory organizationCategory : this.organizationCategories) {
             if (categories.contains(organizationCategory.getCategory().getKoreanName())) {
                 organizationCategory.updateStatus(true);
@@ -69,13 +69,13 @@ public class OrganizationCategories {
         return resultCategory;
     }
 
-    public Set<OrganizationCategory> getOrganizationCategories() {
-        return Collections.unmodifiableSet(organizationCategories);
+    public List<OrganizationCategory> getOrganizationCategories() {
+        return Collections.unmodifiableList(organizationCategories);
     }
 
-    public Set<OrganizationCategory> getActiveCategories() {
+    public List<OrganizationCategory> getActiveCategories() {
         return organizationCategories.stream()
                 .filter(OrganizationCategory::isActive)
-                .collect(Collectors.toUnmodifiableSet());
+                .toList();
     }
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -73,12 +74,12 @@ public class Organization extends BaseTimeEntity {
         return this.organizationCategories.findOrganizationCategoryBy(category);
     }
 
-    public void addOrganizationCategories(final Set<String> organizationCategories) {
+    public void addOrganizationCategories(final List<String> organizationCategories) {
         this.organizationCategories.addAll(organizationCategories, this);
     }
 
     public void updateOrganizationCategoriesAndName(
-            final Set<String> categories,
+            final List<String> categories,
             final String name
     ) {
         this.organizationCategories.updateOrganizationCategories(categories);

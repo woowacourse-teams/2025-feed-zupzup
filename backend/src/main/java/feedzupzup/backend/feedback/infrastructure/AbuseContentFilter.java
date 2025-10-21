@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AbuseContentFilter implements ContentFilter {
 
-    private static final String[] SUBSTITUTION_WORDS = {"멍멍", "야옹", "음메"};
+    private static final String SUBSTITUTION_WORD = "OO";
     private static final String ASTERISK_PLACEHOLDER = "\u0000";
 
     @Override
@@ -25,9 +25,8 @@ public class AbuseContentFilter implements ContentFilter {
         }
 
         String result = filter.change(processedText);
-        int index = 0;
         while (result.contains("*")) {
-            result = result.replaceFirst("\\*+", SUBSTITUTION_WORDS[index++ % SUBSTITUTION_WORDS.length]);
+            result = result.replaceFirst("\\*+", SUBSTITUTION_WORD);
         }
         String filteredResult = result.replace(ASTERISK_PLACEHOLDER, "*");
 

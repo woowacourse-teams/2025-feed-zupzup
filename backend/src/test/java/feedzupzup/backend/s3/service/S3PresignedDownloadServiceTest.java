@@ -1,77 +1,68 @@
 package feedzupzup.backend.s3.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
-import feedzupzup.backend.global.response.ErrorCode;
 import feedzupzup.backend.s3.config.S3Properties;
-import feedzupzup.backend.s3.exception.S3PresignedException;
+import feedzupzup.backend.s3.config.S3ServiceIntegrationHelper;
+import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.services.s3.model.S3Exception;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-@ExtendWith(MockitoExtension.class)
-class S3PresignedDownloadServiceTest {
+class S3PresignedDownloadServiceTest extends S3ServiceIntegrationHelper {
 
-    @Mock
-    private S3Presigner s3Presigner;
-
-    @Mock
-    private S3Properties s3Properties;
-
-    @InjectMocks
+    @Autowired
     private S3PresignedDownloadService s3PresignedDownloadService;
 
-    @Test
-    @DisplayName("S3Exception 발생 시 S3PresignedException으로 변환한다")
-    void generateDownloadUrl_S3Exception_ThrowsS3PresignedException() {
-        // given
-        when(s3Properties.bucketName()).thenReturn("test-bucket");
-        when(s3Properties.signatureDuration()).thenReturn(5);
-        when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class)))
-                .thenThrow(S3Exception.builder()
-                        .message("S3 서버 오류")
-                        .build());
+    @Autowired
+    private S3Properties s3Properties;
 
-        // when & then
-        assertThatThrownBy(() -> s3PresignedDownloadService.generateDownloadUrl("test-key", "test.png"))
-                .isInstanceOf(S3PresignedException.class)
-                .hasMessageContaining("S3 서버 오류로 파일 다운로드 URL 생성에 실패했습니다");
+    @Autowired
+    private S3Client s3Client;
+
+    private String testObjectKey;
+    private String testImageUrl;
+
+    @BeforeEach
+    void setUpTestFile() {
+        // 테스트용 파일 업로드
+        testObjectKey = String.format("%s/%s/test/test-image.png",
+                s3Properties.rootDirName(),
+                s3Properties.environmentDir());
+
+        s3Client.putObject(
+                PutObjectRequest.builder()
+                        .bucket(s3Properties.bucketName())
+                        .key(testObjectKey)
+                        .contentType("image/png")
+                        .build(),
+                RequestBody.fromString("test image content", StandardCharsets.UTF_8)
+        );
+
+        // S3 이미지 URL 생성
+        testImageUrl = String.format("https://%s.s3.%s.amazonaws.com/%s",
+                s3Properties.bucketName(),
+                s3Properties.region(),
+                testObjectKey);
     }
 
     @Test
-    @DisplayName("SdkClientException 발생 시 S3PresignedException으로 변환한다")
-    void generateDownloadUrl_SdkClientException_ThrowsS3PresignedException() {
+    @DisplayName("이미지 URL로 다운로드 URL을 생성한다")
+    void generateDownloadUrlFromImageUrl_Success() {
         // given
-        when(s3Properties.bucketName()).thenReturn("test-bucket");
-        when(s3Properties.signatureDuration()).thenReturn(5);
-        when(s3Presigner.presignGetObject(any(GetObjectPresignRequest.class)))
-                .thenThrow(SdkClientException.builder()
-                        .message("클라이언트 오류")
-                        .build());
+        final String filename = "download-image.png";
 
-        // when & then
-        assertThatThrownBy(() -> s3PresignedDownloadService.generateDownloadUrl("test-key", "test.png"))
-                .isInstanceOf(S3PresignedException.class)
-                .hasMessageContaining("클라이언트 오류로 파일 다운로드 URL 생성에 실패했습니다");
-    }
+        // when
+        final String downloadUrl = s3PresignedDownloadService.generateDownloadUrlFromImageUrl(testImageUrl, filename);
 
-    @Test
-    @DisplayName("S3PresignedException이 올바른 ErrorCode를 반환한다")
-    void s3PresignedException_ReturnsCorrectErrorCode() {
-        // given
-        final S3PresignedException exception = new S3PresignedException("테스트 메시지");
-
-        // when & then
-        assertThat(exception.getErrorCode()).isEqualTo(ErrorCode.S3_UPLOAD_FAILED);
+        // then
+        assertThat(downloadUrl).contains(s3Properties.bucketName());
+        assertThat(downloadUrl).contains(testObjectKey);
+        assertThat(downloadUrl).contains("response-content-disposition");
+        assertThat(downloadUrl).contains(filename);
     }
 }
