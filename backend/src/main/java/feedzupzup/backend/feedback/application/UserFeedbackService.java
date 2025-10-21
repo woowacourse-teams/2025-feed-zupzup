@@ -1,6 +1,5 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
 
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
@@ -17,7 +16,6 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
-import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
@@ -68,9 +66,6 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedbackRepository.save(newFeedback);
 
         writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
-
-        // 최신순 캐시 업데이트
-        publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
 
         // 새로운 피드백이 생성되면 이벤트 발행
         eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
@@ -131,10 +126,5 @@ public class UserFeedbackService {
 
     private Pageable createPageable(int size) {
         return Pageable.ofSize(size + 1);
-    }
-
-    private void publishLatestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
-        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
-        eventPublisher.publishEvent(event);
     }
 }
