@@ -15,7 +15,7 @@ export default function AdminHomeHeader() {
   const theme = useAppTheme();
 
   return (
-    <div css={headerLayout()}>
+    <div css={headerLayout}>
       <div css={homeCaptionContainer(theme)}>
         <div css={logoContainer}>
           <img src={basketImage} alt='basket' css={basketIcon} />

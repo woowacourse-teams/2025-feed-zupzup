@@ -2,7 +2,7 @@ import { PAGE_PADDING_PX } from '@/constants';
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const headerLayout = () => css`
+export const headerLayout = css`
   position: absolute;
   top: -${PAGE_PADDING_PX}px;
   left: 0;
