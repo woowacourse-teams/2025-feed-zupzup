@@ -22,8 +22,9 @@ import useUploadImage from '@/domains/user/home/hooks/useUploadImage';
 import { useUploadS3Image } from '@/domains/user/home/hooks/useUploadS3Image';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
+import { useModalContext } from '@/contexts/useModal';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
@@ -36,7 +37,7 @@ export default function FeedbackPage({
 }: FeedbackPageProps) {
   const theme = useAppTheme();
   const { goPath } = useNavigation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isOpen: isModalOpen, openModal, closeModal } = useModalContext();
   const { organizationId } = useOrganizationId();
 
   const {
@@ -85,7 +86,7 @@ export default function FeedbackPage({
 
   const handleModalClose = useCallback(
     (isError: boolean) => {
-      setIsModalOpen(false);
+      closeModal();
       if (!isError) {
         goPath(`/${organizationId}/dashboard`);
       }
@@ -103,7 +104,13 @@ export default function FeedbackPage({
     try {
       Analytics.track(suggestionFormEvents.formSubmit());
 
-      setIsModalOpen(true);
+      openModal(
+        <TimeDelayModal
+          onClose={() => handleModalClose(submitStatus === 'error')}
+          loadingDuration={800}
+          autoCloseDuration={1000}
+        />
+      );
 
       if (file && presignedUrl)
         await uploadS3PreSignUrl({
@@ -121,7 +128,7 @@ export default function FeedbackPage({
         imageUrl: file ? presignedUrl : null,
       });
     } catch (error) {
-      setIsModalOpen(false);
+      closeModal();
       console.error('피드백 제출 실패:', error);
     }
   };
@@ -139,7 +146,7 @@ export default function FeedbackPage({
           <div css={contentContainer}>
             <div css={titleContainer}>
               <span css={combinedTitle(theme)}>
-                <strong>소중한 의견</strong>을 들려주세요
+                <strong>소중한 {category}</strong>을(를) 남겨주세요
               </span>
             </div>
           </div>
@@ -194,18 +201,6 @@ export default function FeedbackPage({
           </BasicButton>
         </div>
       </form>
-
-      <TimeDelayModal
-        isOpen={isModalOpen}
-        onClose={() => handleModalClose(submitStatus === 'error')}
-        loadingDuration={800}
-        autoCloseDuration={1000}
-        loadingMessage='피드백을 전송하고 있어요...'
-        completeMessage='소중한 의견 감사해요!'
-        width={320}
-        height={200}
-        modalStatus={submitStatus}
-      />
     </section>
   );
 }

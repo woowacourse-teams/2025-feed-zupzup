@@ -1,7 +1,8 @@
-import dotenv from 'dotenv';
-import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 import common from './webpack.common.js';
+import webpack from 'webpack';
+import dotenv from 'dotenv';
+
 import { createDefineEnv } from './buildUtils.js';
 
 const result = dotenv.config({ path: '.env.dev' });
@@ -11,8 +12,7 @@ const defineEnv = createDefineEnv(env, 'local');
 
 export default merge(common, {
   mode: 'development',
-  devtool: 'inline-source-map',
-
+  devtool: 'eval-cheap-module-source-map',
   devServer: {
     static: './dist',
     host: '0.0.0.0',
@@ -58,5 +58,6 @@ export default merge(common, {
       },
     ],
   },
+
   plugins: [new webpack.DefinePlugin(defineEnv)],
 });

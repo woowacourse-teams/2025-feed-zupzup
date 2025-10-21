@@ -1,8 +1,7 @@
 /* eslint-env browser, serviceworker */
-/* global importScripts, firebase, self */
+/* global importScripts, self */
 
-const CACHE_NAME = 'feed-zupzup-v1';
-const urlsToCache = ['/', '/index.html'];
+// ===== Firebase Setup =====
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -33,106 +32,41 @@ try {
     self.registration.showNotification(title, options);
   });
 } catch (error) {
-  // Firebase FCM 초기화 실패
+  console.error('Firebase messaging 초기화 실패:', error);
 }
 
-if (self.location.hostname === 'localhost') {
-  try {
-    importScripts('/mockServiceWorker.js');
-  } catch (error) {
-    // MSW 로드 실패 (정상)
-  }
-}
-
+// ===== Install - 모든 캐시 삭제 및 즉시 활성화 =====
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-      .then(() => self.skipWaiting())
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+    })()
   );
+  self.skipWaiting();
 });
+
+// ===== Activate - 모든 캐시 삭제 및 클라이언트 제어 =====
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((cacheNames) => {
-        return Promise.all(
-          cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-      .then(() => self.clients.claim())
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+      await clients.claim();
+    })()
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
+  if (event.request.url.includes('mockServiceWorker')) {
+    return;
+  }
 
-  const isApiRequest =
-    url.hostname === 'localhost' ||
-    url.hostname.startsWith('api-') ||
-    url.hostname.startsWith('api.') ||
-    request.headers.get('content-type')?.includes('application/json');
+  event.respondWith(fetch(event.request));
+});
 
-  if (isApiRequest) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (
-            response &&
-            response.status === 200 &&
-            response.type !== 'error'
-          ) {
-            const responseToCache = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseToCache);
-            });
-          }
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request);
-        })
-    );
-  } else {
-    event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return fetch(request)
-          .then((response) => {
-            if (
-              !response ||
-              response.status !== 200 ||
-              response.type === 'error'
-            ) {
-              return response;
-            }
-
-            if (request.method === 'GET') {
-              const responseToCache = response.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseToCache);
-              });
-            }
-
-            return response;
-          })
-          .catch(() => {
-            if (request.headers.get('accept')?.includes('text/html')) {
-              return caches.match('/index.html');
-            }
-          });
-      })
-    );
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
   }
 });
