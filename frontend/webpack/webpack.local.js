@@ -1,14 +1,9 @@
 import { merge } from 'webpack-merge';
 import common from './webpack.common.js';
 import webpack from 'webpack';
-import { InjectManifest } from 'workbox-webpack-plugin';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
-import { createDefineEnv } from './buildUtils.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { createDefineEnv } from './buildUtils.js';
 
 const result = dotenv.config({ path: '.env.dev' });
 const env = result.parsed || {};
@@ -64,46 +59,5 @@ export default merge(common, {
     ],
   },
 
-  plugins: [
-    new webpack.DefinePlugin(defineEnv),
-    new InjectManifest({
-      swSrc: path.resolve(__dirname, '../public/service-worker.js'),
-      swDest: 'service-worker.js',
-      exclude: [
-        /\.map$/,
-        /manifest$/,
-        /\.htaccess$/,
-        /service-worker\.js$/,
-        /mockServiceWorker\.js$/,
-        /\.hot-update/,
-        /analyze/,
-        /bundle-report/,
-        /node_modules/,
-        /\.(woff|woff2)$/,
-        /screenshot.*\.png$/,
-      ],
-      maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
-    }),
-  ],
-
-  optimization: {
-    minimize: false,
-    splitChunks: {
-      chunks: 'all',
-      maxSize: 2 * 1024 * 1024,
-    },
-    runtimeChunk: false,
-    removeAvailableModules: false,
-    removeEmptyChunks: false,
-  },
-
-  performance: {
-    hints: false,
-  },
-
-  stats: 'minimal',
-
-  infrastructureLogging: {
-    level: 'error',
-  },
+  plugins: [new webpack.DefinePlugin(defineEnv)],
 });

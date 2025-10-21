@@ -86,16 +86,13 @@ export default {
         { from: 'public/manifest.json', to: '.' },
         { from: 'public/512x512.png', to: '.' },
         { from: 'public/192x192.png', to: '.' },
+        { from: 'public/service-worker.js', to: '.' },
         { from: 'src/assets/fonts', to: 'assets/fonts' },
         {
           from: 'public',
           to: '.',
           globOptions: {
-            ignore: [
-              '**/index.html',
-              '**/service-worker.js',
-              '**/mockServiceWorker.js',
-            ],
+            ignore: ['**/index.html'],
           },
         },
       ],
@@ -115,12 +112,6 @@ export default {
     splitChunks: {
       chunks: 'all',
       cacheGroups: {
-        workbox: {
-          test: /[\\/]node_modules[\\/]workbox-(.*)[\\/]/,
-          name: 'workbox',
-          chunks: 'all',
-          priority: 50,
-        },
         react: {
           test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
           name: 'react',
