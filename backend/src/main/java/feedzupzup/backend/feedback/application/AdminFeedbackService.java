@@ -1,7 +1,5 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
-
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.ClusterRepresentativeFeedback;
@@ -20,7 +18,6 @@ import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksRe
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -41,7 +38,6 @@ public class AdminFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @BusinessActionLog
@@ -88,9 +84,6 @@ public class AdminFeedbackService {
 
         feedback.updateCommentAndStatus(request.toComment());
 
-        // 캐시 핸들 이벤트 발행
-        publishOldestFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
-
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
@@ -109,11 +102,6 @@ public class AdminFeedbackService {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
             throw new ForbiddenException("admin" + adminId + "는 해당 요청에 대한 권한이 없습니다.");
         }
-    }
-
-    private void publishOldestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
-        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, OLDEST);
-        eventPublisher.publishEvent(event);
     }
 
     public FeedbackStatisticResponse calculateFeedbackStatistics(final Long adminId) {

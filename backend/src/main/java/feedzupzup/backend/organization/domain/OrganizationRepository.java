@@ -14,6 +14,7 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
                 SELECT new feedzupzup.backend.organization.domain.AdminOrganizationInfo(
                     o.uuid,
                     o.name.value,
+                    SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END),
                     SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING THEN 1L ELSE 0L END),
                     MAX(f.postedAt.value)
                 )

@@ -3,7 +3,6 @@ package feedzupzup.backend.category.application;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public class OrganizationCategoryService {
     }
 
     @Transactional
-    public void saveAll(final Set<OrganizationCategory> organizationCategories) {
+    public void saveAll(final List<OrganizationCategory> organizationCategories) {
         organizationCategoryRepository.saveAll(organizationCategories);
     }
 }

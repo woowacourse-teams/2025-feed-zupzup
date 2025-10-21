@@ -74,7 +74,7 @@ class OrganizationCategoryServiceTest extends ServiceIntegrationHelper {
         OrganizationCategory category1 = OrganizationCategoryFixture.createOrganizationCategory(organization1, SUGGESTION);
         OrganizationCategory category2 = OrganizationCategoryFixture.createOrganizationCategory(organization2, SUGGESTION);
         
-        Set<OrganizationCategory> categories = Set.of(category1, category2);
+        List<OrganizationCategory> categories = List.of(category1, category2);
 
         // when
         organizationCategoryService.saveAll(categories);

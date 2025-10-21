@@ -31,6 +31,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class GuestServiceTest extends ServiceIntegrationHelper {
 
@@ -194,6 +195,46 @@ public class GuestServiceTest extends ServiceIntegrationHelper {
 
             // then
             assertThat(response.feedbacks()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("작성한 피드백 목록을 최신순으로 정렬하여 조회한다")
+        void getMyFeedbacks_sorted_by_latest() throws InterruptedException {
+            // given
+            final Guest guest = createAndSaveRandomGuest();
+
+            final Feedback feedback1 = createAndSaveFeedback();
+            ReflectionTestUtils.setField(feedback1, "createdAt",
+                    LocalDateTime.now().minusMinutes(3));
+            feedbackRepository.saveAndFlush(feedback1);
+
+            final Feedback feedback2 = createAndSaveFeedback();
+            ReflectionTestUtils.setField(feedback2, "createdAt",
+                    LocalDateTime.now().minusMinutes(2));
+            feedbackRepository.saveAndFlush(feedback2);
+
+            final Feedback feedback3 = createAndSaveFeedback();
+            ReflectionTestUtils.setField(feedback3, "createdAt",
+                    LocalDateTime.now().minusMinutes(1));
+            feedbackRepository.saveAndFlush(feedback3);
+
+            createAndSaveWriteHistory(guest, feedback1);
+            Thread.sleep(100);
+            createAndSaveWriteHistory(guest, feedback2);
+            Thread.sleep(100);
+            createAndSaveWriteHistory(guest, feedback3);
+
+            // when
+            final MyFeedbackListResponse response = guestService.getMyFeedbackPage(
+                    organization.getUuid(), toGuestInfo(guest));
+
+            // then
+            assertAll(
+                    () -> assertThat(response.feedbacks()).hasSize(3),
+                    () -> assertThat(response.feedbacks().get(0).feedbackId()).isEqualTo(feedback3.getId()),
+                    () -> assertThat(response.feedbacks().get(1).feedbackId()).isEqualTo(feedback2.getId()),
+                    () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(feedback1.getId())
+            );
         }
     }
 

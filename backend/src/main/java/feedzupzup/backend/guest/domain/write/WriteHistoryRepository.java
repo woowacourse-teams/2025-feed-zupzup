@@ -17,6 +17,7 @@ public interface WriteHistoryRepository extends JpaRepository<WriteHistory, Long
             JOIN FETCH fb.organization o
             WHERE g.guestUuid = :guestUuid
             AND o.uuid = :organizationUuid
+            ORDER BY wh.createdAt DESC
             """)
     List<WriteHistory> findWriteHistoriesBy(
             @Param("guestUuid") final UUID guestUuid,
