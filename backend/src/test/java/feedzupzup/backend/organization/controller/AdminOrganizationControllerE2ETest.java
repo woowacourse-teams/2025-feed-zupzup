@@ -33,6 +33,7 @@ import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
 import io.restassured.http.ContentType;
+import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,7 +85,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .extract()
                 .cookie(SESSION_ID);
 
-        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", Set.of("신고", "건의"));
+        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", List.of("신고", "건의"));
 
         // When & Then
         given()
@@ -103,7 +104,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
     @DisplayName("admin 권한 없이 요청이 올 경우, 권한 오류가 발생해야 한다.")
     void not_authorization_case() {
         // given
-        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", Set.of("신고", "건의"));
+        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", List.of("신고", "건의"));
 
         // When & Then
         given()
@@ -202,7 +203,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
         Admin admin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
 
-        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", Set.of("신고", "건의"));
+        CreateOrganizationRequest request = new CreateOrganizationRequest("우아한테크코스", List.of("신고", "건의"));
 
         final AdminCreateOrganizationResponse response = adminOrganizationService.createOrganization(
                 request, admin.getId());
@@ -217,7 +218,7 @@ class AdminOrganizationControllerE2ETest extends E2EHelper {
                 .extract()
                 .cookie(SESSION_ID);
 
-        UpdateOrganizationRequest updateRequest = new UpdateOrganizationRequest("새로운 조직", Set.of("신고", "건의", "기타"));
+        UpdateOrganizationRequest updateRequest = new UpdateOrganizationRequest("새로운 조직", List.of("신고", "건의", "기타"));
 
         // when & then
         given()

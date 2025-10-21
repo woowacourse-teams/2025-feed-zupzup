@@ -27,6 +27,7 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +63,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("건의", "신고")
+                        List.of("건의", "신고")
                 );
 
         final Admin savedAdmin = createAndSaveAdmin();
@@ -79,7 +80,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("건의", "신고")
+                        List.of("건의", "신고")
                 );
 
         assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, 999L))
@@ -92,7 +93,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest createOrganizationRequest =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("크롱크롱", "대나무헬리콥터")
+                        List.of("크롱크롱", "대나무헬리콥터")
                 );
         final Admin admin = createAndSaveAdmin();
         assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, admin.getId()))
@@ -106,7 +107,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         CreateOrganizationRequest request =
                 new CreateOrganizationRequest(
                         "우테코",
-                        Set.of("건의", "신고")
+                        List.of("건의", "신고")
                 );
 
         final Admin savedAdmin = createAndSaveAdmin();
@@ -115,7 +116,7 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
                 request, savedAdmin.getId());
 
         UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest(
-                "우테코코코", Set.of("기타", "칭찬", "정보공유")
+                "우테코코코", List.of("기타", "칭찬", "정보공유")
         );
         final UUID organizationUuid = UUID.fromString(createResponse.organizationUuid());
 

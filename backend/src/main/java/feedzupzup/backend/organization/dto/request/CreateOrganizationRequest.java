@@ -4,6 +4,7 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.vo.CheeringCount;
 import feedzupzup.backend.organization.domain.vo.Name;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ public record CreateOrganizationRequest(
         String organizationName,
 
         @Schema(description = "카테고리 리스트", example = "[\"건의\", \"신고\"]")
-        Set<String> categories
+        List<String> categories
 ) {
 
     public Organization toOrganization() {

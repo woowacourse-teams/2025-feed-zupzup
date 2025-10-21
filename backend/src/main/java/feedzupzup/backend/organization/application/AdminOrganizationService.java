@@ -20,7 +20,6 @@ import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.service.QRService;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -48,7 +47,7 @@ public class AdminOrganizationService {
         final Organization organization = request.toOrganization();
         final Organization savedOrganization = organizationRepository.save(organization);
 
-        final Set<String> categories = request.categories();
+        final List<String> categories = request.categories();
 
         saveOrganizationCategory(categories, savedOrganization);
 
@@ -81,7 +80,7 @@ public class AdminOrganizationService {
     }
 
     private void saveOrganizationCategory(
-            final Set<String> categories,
+            final List<String> categories,
             final Organization organization
     ) {
         organizationCategoryService.saveAll(organization.getOrganizationCategories().getOrganizationCategories());
@@ -96,7 +95,7 @@ public class AdminOrganizationService {
         final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 UUID를 가진 단체는 존재하지 않습니다."));
 
-        final Set<String> categories = request.categories();
+        final List<String> categories = request.categories();
         organization.updateOrganizationCategoriesAndName(categories, request.organizationName());
         return AdminUpdateOrganizationResponse.from(organization);
     }

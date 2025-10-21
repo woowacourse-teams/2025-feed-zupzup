@@ -2,10 +2,8 @@ package feedzupzup.backend.organization.dto.response;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.organization.domain.OrganizationCategories;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Schema(description = "단체 조회 응답")
 public record UserOrganizationResponse(
@@ -14,7 +12,7 @@ public record UserOrganizationResponse(
         @Schema(description = "응원 총 횟수", example = "10")
         long totalCheeringCount,
         @Schema(description = "카테고리 리스트", example = "[\"건의\", \"신고\", \"기타\"]")
-        Set<String> categories
+        List<String> categories
 ) {
 
     public static UserOrganizationResponse from(final Organization organization) {
@@ -25,11 +23,12 @@ public record UserOrganizationResponse(
         );
     }
 
-    private static Set<String> convertCategories(
-            final Set<OrganizationCategory> organizationCategories
+    private static List<String> convertCategories(
+            final List<OrganizationCategory> organizationCategories
     ) {
         return organizationCategories.stream()
                 .map(result -> result.getCategory().getKoreanName())
-                .collect(Collectors.toSet());
+                .sorted()
+                .toList();
     }
 }
