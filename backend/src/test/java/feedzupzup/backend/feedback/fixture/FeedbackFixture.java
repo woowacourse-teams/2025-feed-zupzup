@@ -3,7 +3,6 @@ package feedzupzup.backend.feedback.fixture;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.vo.FeedbackClustering;
 import feedzupzup.backend.feedback.domain.vo.ImageUrl;
 import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
@@ -11,7 +10,6 @@ import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.domain.vo.UserName;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.global.util.CurrentDateTime;
-import java.util.UUID;
 
 public class FeedbackFixture {
 
@@ -84,18 +82,11 @@ public class FeedbackFixture {
                 .build();
     }
 
-    public static Feedback createFeedbackWithCluster(
+    public static Feedback createFeedback(
             final Organization organization,
             final String content,
-            final OrganizationCategory category,
-            final UUID clusterId
+            final OrganizationCategory category
     ) {
-        FeedbackClustering clustering = new FeedbackClustering(
-                clusterId,
-                0.8, // similarity score
-                new double[]{0.1, 0.2, 0.3} // embedding vector
-        );
-        
         return Feedback.builder()
                 .content(new Content(content))
                 .isSecret(false)
@@ -105,33 +96,6 @@ public class FeedbackFixture {
                 .userName(new UserName("테스트유저"))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(category)
-                .clustering(clustering)
-                .build();
-    }
-
-    public static Feedback createFeedbackWithCluster(
-            final Organization organization,
-            final String content,
-            final OrganizationCategory category,
-            final UUID clusterId,
-            final double[] embeddingVector
-    ) {
-        FeedbackClustering clustering = new FeedbackClustering(
-                clusterId,
-                0.8, // similarity score
-                embeddingVector
-        );
-
-        return Feedback.builder()
-                .content(new Content(content))
-                .isSecret(false)
-                .status(ProcessStatus.WAITING)
-                .organization(organization)
-                .likeCount(new LikeCount(0))
-                .userName(new UserName("테스트유저"))
-                .postedAt(new PostedAt(CurrentDateTime.create()))
-                .organizationCategory(category)
-                .clustering(clustering)
                 .build();
     }
 
