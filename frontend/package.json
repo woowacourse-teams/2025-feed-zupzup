@@ -76,7 +76,7 @@
     "eslint-plugin-storybook": "^9.0.17",
     "google-auth-library": "^10.3.0",
     "google-spreadsheet": "^5.0.2",
-    "html-webpack-plugin": "^5.6.3",
+    "html-webpack-plugin": "^5.6.4",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
     "msw": "^2.10.4",
