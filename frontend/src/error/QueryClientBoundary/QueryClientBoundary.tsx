@@ -1,7 +1,6 @@
 import { useErrorContext } from '@/contexts/useErrorContext';
 import {
   MutationCache,
-  QueryCache,
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
@@ -27,11 +26,6 @@ export default function QueryClientBoundary({
             throwOnError: true,
           },
         },
-        queryCache: new QueryCache({
-          onError: (error: Error) => {
-            throw error;
-          },
-        }),
         mutationCache: new MutationCache({
           onError: (error: Error) => {
             updateAppError(error);
