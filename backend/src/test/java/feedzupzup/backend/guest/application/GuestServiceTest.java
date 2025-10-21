@@ -31,6 +31,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class GuestServiceTest extends ServiceIntegrationHelper {
 
@@ -201,11 +202,21 @@ public class GuestServiceTest extends ServiceIntegrationHelper {
         void getMyFeedbacks_sorted_by_latest() throws InterruptedException {
             // given
             final Guest guest = createAndSaveRandomGuest();
+
             final Feedback feedback1 = createAndSaveFeedback();
-            Thread.sleep(100);  // createdAt이 다르게 설정되도록 시간차 부여
+            ReflectionTestUtils.setField(feedback1, "createdAt",
+                    LocalDateTime.now().minusMinutes(3));
+            feedbackRepository.saveAndFlush(feedback1);
+
             final Feedback feedback2 = createAndSaveFeedback();
-            Thread.sleep(100);
+            ReflectionTestUtils.setField(feedback2, "createdAt",
+                    LocalDateTime.now().minusMinutes(2));
+            feedbackRepository.saveAndFlush(feedback2);
+
             final Feedback feedback3 = createAndSaveFeedback();
+            ReflectionTestUtils.setField(feedback3, "createdAt",
+                    LocalDateTime.now().minusMinutes(1));
+            feedbackRepository.saveAndFlush(feedback3);
 
             createAndSaveWriteHistory(guest, feedback1);
             Thread.sleep(100);
