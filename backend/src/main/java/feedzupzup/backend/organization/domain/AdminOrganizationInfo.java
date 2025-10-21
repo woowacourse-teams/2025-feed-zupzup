@@ -6,6 +6,7 @@ import java.util.UUID;
 public record AdminOrganizationInfo(
         UUID organizationUuid,
         String organizationName,
+        long confirmedCount,
         long waitingCount,
         LocalDateTime postedAt
 ) {

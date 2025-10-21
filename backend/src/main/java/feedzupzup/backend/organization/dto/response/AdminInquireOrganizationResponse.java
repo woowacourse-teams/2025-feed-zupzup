@@ -13,6 +13,9 @@ public record AdminInquireOrganizationResponse(
         @Schema(description = "단체 이름", example = "우테코")
         String name,
 
+        @Schema(description = "완료된 피드백 수", example = "5")
+        long confirmedCount,
+
         @Schema(description = "대기중인 피드백 수", example = "5")
         long waitingCount,
 
@@ -24,6 +27,7 @@ public record AdminInquireOrganizationResponse(
         return new AdminInquireOrganizationResponse(
                 info.organizationUuid(),
                 info.organizationName(),
+                info.confirmedCount(),
                 info.waitingCount(),
                 info.postedAt()
         );
