@@ -56,7 +56,21 @@ export default function useSignup({
     const isConfirmPasswordValid =
       !confirmPasswordErrors && signUpValue.password !== '';
 
-    if (!isValid || !isConfirmPasswordValid) {
+    if (
+      signUpValue.name === '' ||
+      signUpValue.id === '' ||
+      signUpValue.password === ''
+    ) {
+      setToast('모든 항목을 입력해주세요.');
+      return;
+    }
+
+    if (!isConfirmPasswordValid) {
+      setToast('비밀번호 확인을 다시 확인해주세요.');
+      return;
+    }
+
+    if (!isValid) {
       setToast('입력하신 정보를 다시 확인해주세요.');
       return;
     }
