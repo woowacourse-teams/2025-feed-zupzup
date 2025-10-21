@@ -18,7 +18,12 @@ public class S3PresignedDownloadService {
     private final S3Presigner s3Presigner;
     private final S3Properties s3Properties;
 
-    public String generateDownloadUrl(final String objectKey, final String filename) {
+    public String generateDownloadUrlFromImageUrl(final String imageUrl, final String filename) {
+        final String objectKey = extractObjectKeyFromUrl(imageUrl);
+        return generateDownloadUrl(objectKey, filename);
+    }
+
+    private String generateDownloadUrl(final String objectKey, final String filename) {
         final GetObjectPresignRequest presignRequest = build(objectKey, filename);
 
         try {
@@ -32,11 +37,6 @@ public class S3PresignedDownloadService {
         } catch (final Exception e) {
             throw new S3PresignedException("파일 다운로드 URL 생성에 실패했습니다: " + objectKey);
         }
-    }
-
-    public String generateDownloadUrlFromImageUrl(final String imageUrl, final String filename) {
-        final String objectKey = extractObjectKeyFromUrl(imageUrl);
-        return generateDownloadUrl(objectKey, filename);
     }
 
     private GetObjectPresignRequest build(final String objectKey, final String filename) {

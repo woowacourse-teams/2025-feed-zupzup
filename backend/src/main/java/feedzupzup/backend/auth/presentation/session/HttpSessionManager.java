@@ -50,7 +50,6 @@ public class HttpSessionManager {
     private HttpSession getExistingSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(false);
         if (session == null) {
-            removeAdminSession(request);
             throw new UnauthorizedException("세션을 찾을 수 없습니다");
         }
         return session;
