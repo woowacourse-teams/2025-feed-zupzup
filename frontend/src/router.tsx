@@ -1,10 +1,9 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { ADMIN_BASE, ROUTES } from '@/constants/routes';
+import { createBrowserRouter } from 'react-router-dom';
+import { ROUTES } from '@/constants/routes';
 import App from './App';
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
-import { isAuthenticated } from './utils/isAuthenticated';
 import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
 import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
 import AISummary from './domains/admin/AISummary/AISummary';
@@ -69,11 +68,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: isAuthenticated() ? (
-          <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />
-        ) : (
-          <OnBoarding />
-        ),
+        element: <OnBoarding />,
       },
       { path: ROUTES.SUBMIT, element: <Home /> },
       { path: ROUTES.DASHBOARD, element: <UserDashboard /> },
