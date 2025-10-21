@@ -84,15 +84,11 @@ export default function FeedbackPage({
     handleLockToggle();
   };
 
-  const handleModalClose = useCallback(
-    (isError: boolean) => {
-      closeModal();
-      if (!isError) {
-        goPath(`/${organizationId}/dashboard`);
-      }
-    },
-    [goPath]
-  );
+  const handleModalClose = useCallback(() => {
+    closeModal();
+
+    goPath(`/${organizationId}/dashboard`);
+  }, [goPath]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -106,7 +102,7 @@ export default function FeedbackPage({
 
       openModal(
         <TimeDelayModal
-          onClose={() => handleModalClose(submitStatus === 'error')}
+          onClose={() => handleModalClose()}
           loadingDuration={800}
           autoCloseDuration={1000}
         />
