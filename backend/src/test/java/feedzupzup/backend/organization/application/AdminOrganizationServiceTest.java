@@ -205,6 +205,37 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
         assertThat(feedbackRepository.findById(savedFeedback.getId())).isEmpty();
     }
 
+    @Test
+    @DisplayName("조직 수정 시 카테고리가 정렬되어 반환되어야 한다")
+    void update_organization_with_sorted_categories() {
+        // given
+        CreateOrganizationRequest request =
+                new CreateOrganizationRequest(
+                        "우테코",
+                        List.of("건의", "신고")
+                );
+
+        final Admin savedAdmin = createAndSaveAdmin();
+
+        final AdminCreateOrganizationResponse createResponse = adminOrganizationService.createOrganization(
+                request, savedAdmin.getId());
+
+        // 정렬되지 않은 순서로 카테고리 입력: 칭찬, 기타, 정보공유
+        UpdateOrganizationRequest updateOrganizationRequest = new UpdateOrganizationRequest(
+                "우테코코코", List.of("칭찬", "기타", "정보공유")
+        );
+        final UUID organizationUuid = UUID.fromString(createResponse.organizationUuid());
+
+        // when
+        final AdminUpdateOrganizationResponse updateResponse = adminOrganizationService.updateOrganization(
+                organizationUuid,
+                updateOrganizationRequest
+        );
+
+        // then - 한글 사전순으로 정렬되어 반환: 기타, 정보공유, 칭찬
+        assertThat(updateResponse.updateCategories()).containsExactly("기타", "정보공유", "칭찬");
+    }
+
     private Admin createAndSaveAdmin() {
         final Admin admin = AdminFixture.create();
         return adminRepository.save(admin);
