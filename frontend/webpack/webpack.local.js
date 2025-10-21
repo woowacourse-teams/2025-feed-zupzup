@@ -83,7 +83,6 @@ export default merge(common, {
         /screenshot.*\.png$/,
       ],
       maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
-      mode: 'development',
     }),
   ],
 

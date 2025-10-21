@@ -1,6 +1,17 @@
 /* eslint-env browser, serviceworker */
 /* global importScripts, self */
 
+// Completely disable Workbox logger
+self.__WB_DISABLE_DEV_LOGS = true;
+
+const originalLog = console.log;
+console.log = function (...args) {
+  const message = args[0];
+  if (typeof message === 'string' && message.includes('workbox')) return;
+  if (message?.includes?.('workbox')) return;
+  originalLog.apply(console, args);
+};
+
 import { precacheAndRoute } from 'workbox-precaching';
 import { registerRoute, NavigationRoute } from 'workbox-routing';
 import {
