@@ -29,6 +29,8 @@ export default function BasicButton({
   gap = '14px',
   variant = 'primary',
   disabled,
+  type = 'button',
+  ...rest
 }: BasicButtonProps) {
   const theme = useAppTheme();
 
@@ -37,6 +39,8 @@ export default function BasicButton({
       css={basicButton(theme, width, variant, height, gap, padding)}
       onClick={onClick}
       disabled={disabled}
+      type={type}
+      {...rest}
     >
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant, fontSize)}>{children}</span>

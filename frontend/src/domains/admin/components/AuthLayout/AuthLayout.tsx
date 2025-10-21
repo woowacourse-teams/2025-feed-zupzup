@@ -21,7 +21,7 @@ export default function AuthLayout({
   return (
     <div css={authLayout(theme)}>
       <div css={titleContainer(theme)}>
-        <p css={authTitle(theme)}>{title}</p>
+        <h1 css={authTitle(theme)}>{title}</h1>
         <p css={authDescription(theme)}>{caption}</p>
       </div>
       {children}

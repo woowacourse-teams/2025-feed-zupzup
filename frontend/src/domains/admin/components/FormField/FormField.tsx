@@ -34,11 +34,16 @@ export default memo(function FormField({
 
   const [touched, setTouched] = useState(false);
   const isValidForUI = touched ? !errorMessage : true;
+  const errorId = `${id}-error`;
+  const hasError = touched && !!errorMessage;
 
   return (
     <div css={loginForm}>
-      <div css={fieldLabel(theme)}>{label}</div>
+      <label htmlFor={id} css={fieldLabel(theme)}>
+        {label}
+      </label>
       <Input
+        id={id}
         name={id}
         type={type}
         placeholder={placeholder}
@@ -48,8 +53,14 @@ export default memo(function FormField({
         maxLength={maxLength}
         minLength={minLength}
         customCSS={inputFormField(theme, isValidForUI)}
+        aria-invalid={hasError}
+        aria-describedby={hasError ? errorId : undefined}
       />
-      <p css={errorMessageStyle(theme)}>{errorMessage}</p>
+      {errorMessage && (
+        <p id={errorId} css={errorMessageStyle(theme)} role='alert'>
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 });

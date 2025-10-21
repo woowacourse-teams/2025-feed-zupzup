@@ -54,7 +54,7 @@ export default function Login() {
         keywords='로그인, 관리자, 피드줍줍, admin, login'
       />
       <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
-        <form css={loginForm(theme)} onSubmit={handleSubmit}>
+        <form css={loginForm(theme)} onSubmit={handleSubmit} noValidate>
           <div css={fieldContainer}>
             {loginFields.map((field: LoginField) => (
               <FormField
@@ -71,14 +71,26 @@ export default function Login() {
               />
             ))}
           </div>
-          <BasicButton>로그인</BasicButton>
+          <BasicButton type='submit'>로그인</BasicButton>
           <div css={loginCaptionContainer(theme)}>
             {/* <p>비밀번호를 잊으셨나요?</p> */}
             <p>
-              계정이 없으신가요?
-              <strong onClick={() => goPath('/' + ROUTES.SIGN_UP)}>
+              계정이 없으신가요?{' '}
+              <button
+                type='button'
+                onClick={() => goPath('/' + ROUTES.SIGN_UP)}
+                css={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  font: 'inherit',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontWeight: 700,
+                }}
+              >
                 회원가입하기
-              </strong>
+              </button>
             </p>
           </div>
         </form>

@@ -20,6 +20,7 @@ export default function Input({
   customCSS,
   maxLength,
   minLength,
+  ...rest
 }: InputProps) {
   return (
     <input
@@ -32,6 +33,7 @@ export default function Input({
       onChange={onChange}
       onFocus={onFocus}
       placeholder={placeholder}
+      {...rest}
     />
   );
 }
