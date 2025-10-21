@@ -31,4 +31,19 @@ public record FeedbackItem(
                 feedback.getImageUrl() == null ? null : feedback.getImageUrl().getValue()
         );
     }
+
+    public FeedbackItem withMaskedContent() {
+        return new FeedbackItem(
+                this.feedbackId,
+                "비밀글 입니다.",
+                this.status,
+                this.isSecret,
+                this.likeCount,
+                this.userName,
+                this.postedAt,
+                this.category,
+                this.comment,
+                this.imageUrl
+        );
+    }
 }
