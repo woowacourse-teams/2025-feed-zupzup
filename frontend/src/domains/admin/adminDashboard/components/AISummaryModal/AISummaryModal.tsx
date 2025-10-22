@@ -17,6 +17,7 @@ import { AISummaryCategory } from '@/types/ai.types';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import useNavigation from '@/domains/hooks/useNavigation';
 import useAISummary from './useAISummary';
+import { useParams } from 'react-router-dom';
 
 interface AISummaryProps {
   onClose: () => void;
@@ -27,9 +28,13 @@ export default function AISummary({ onClose }: AISummaryProps) {
   const { goPath } = useNavigation();
   const theme = useAppTheme();
   const { data, isLoading } = useAISummary({ organizationId });
+  const { clusterId } = useParams();
 
   const handleCategoryClick = (category: AISummaryCategory) => {
-    console.log(category);
+    if (clusterId === category.clusterId.toString()) {
+      onClose();
+      return;
+    }
     goPath(`/admin/${organizationId}/ai/summary/${category.clusterId}`);
     onClose();
   };

@@ -26,6 +26,9 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
     queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.adminOrganizations(adminName),
     });
+    queryClient.invalidateQueries({
+      queryKey: ['aiSummaryDetail', organizationId],
+    });
   }, [queryClient, organizationId, adminName]);
 
   const confirmMutation = useMutation({

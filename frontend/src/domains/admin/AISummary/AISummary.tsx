@@ -8,6 +8,7 @@ import useAIDetail from './useAIDetail';
 import { aiSummaryTitle } from './AISummary.styles';
 import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 import NotFoundPage from '@/components/NotFoundPage/NotFoundPage';
+import AISummaryFloatingButton from '../adminDashboard/components/AISummaryFloatingButton/AISummaryFloatingButton';
 
 export default function AISummary() {
   const theme = useAppTheme();
@@ -49,6 +50,7 @@ export default function AISummary() {
           imgUrl={feedback.imageUrl}
         />
       ))}
+      <AISummaryFloatingButton />
     </FeedbackBoxList>
   );
 }
