@@ -1,8 +1,7 @@
 import { apiClient } from '@/apis/apiClient';
 import { AdminAuthData } from '@/types/adminAuth';
-import { AISummaryData } from '@/types/ai.types';
+import { AISummaryData, AISummaryDetailData } from '@/types/ai.types';
 import { ApiResponse } from '@/types/apiResponse';
-import { FeedbackType } from '@/types/feedback.types';
 
 export interface PostAdminLoginParams {
   loginId: string;
@@ -21,13 +20,13 @@ export interface AISummaryParams {
 
 export interface AISummaryDetailParams {
   organizationId: string;
-  clusterId: string;
+  clusterId: number;
 }
 
 type PostAdminLogoutResponse = ApiResponse<string>;
 export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 export type AISummaryResponse = ApiResponse<AISummaryData>;
-export type AISummaryDetailResponse = ApiResponse<FeedbackType>;
+export type AISummaryDetailResponse = ApiResponse<AISummaryDetailData>;
 
 export async function postAdminLogin({
   loginId,

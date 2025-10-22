@@ -1,31 +1,38 @@
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
 import { useAdminModal } from '@/domains/hooks/useAdminModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import { feedbackData } from '@/mocks/data/feedbackData';
-import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
-import { aiSummaryTitle } from './AISummary.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useGoTop from './useGoTop';
-import { useLocation } from 'react-router-dom';
-import { AISummaryCategory } from '@/types/ai.types';
+import { useParams } from 'react-router-dom';
+import useAIDetail from './useAIDetail';
+import { aiSummaryTitle } from './AISummary.styles';
+import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
+import NotFoundPage from '@/components/NotFoundPage/NotFoundPage';
 
 export default function AISummary() {
   const theme = useAppTheme();
   const { organizationId } = useOrganizationId();
+  const { clusterId } = useParams();
   const { openFeedbackCompleteModal, openFeedbackDeleteModal } = useAdminModal({
     organizationId,
   });
   useGoTop();
-  const { categoryData } = useLocation().state as {
-    categoryData: AISummaryCategory;
-  };
+
+  if (!clusterId || isNaN(Number(clusterId))) {
+    return <NotFoundPage />;
+  }
+
+  const { data } = useAIDetail({
+    organizationId,
+    clusterId: Number(clusterId),
+  });
 
   return (
     <FeedbackBoxList>
       <p css={aiSummaryTitle(theme)}>
-        {categoryData.content} ({categoryData.totalCount})
+        {data?.label} ({data?.totalCount})
       </p>
-      {feedbackData.map((feedback) => (
+      {data?.feedbacks.map((feedback) => (
         <AdminFeedbackBox
           key={feedback.feedbackId}
           feedbackId={feedback.feedbackId}
