@@ -8,6 +8,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import prettierPlugin from 'eslint-plugin-prettier';
 import prettierConfig from 'eslint-config-prettier';
 import pluginQuery from '@tanstack/eslint-plugin-query';
+import globals from 'globals';
 
 export default [
   js.configs.recommended,
@@ -60,6 +61,14 @@ export default [
     env: {
       browser: true,
       serviceworker: true,
+    },
+  },
+  {
+    files: ['src/generate-sitemap.js'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
     },
   },
   ...storybook.configs['flat/recommended'],
