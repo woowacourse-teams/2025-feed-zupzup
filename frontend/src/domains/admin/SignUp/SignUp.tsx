@@ -85,7 +85,12 @@ export default function SignUp() {
           />
         )}
 
-        <form css={signUpForm(theme)} onSubmit={handleSignUp}>
+        <form
+          css={signUpForm(theme)}
+          onSubmit={handleSignUp}
+          aria-label='회원가입 폼'
+          aria-busy={isLoading}
+        >
           <div css={fieldContainer}>
             {signUpFields.map((field: SignUpField) => {
               const isConfirm = field.name === 'passwordConfirm';
@@ -116,13 +121,24 @@ export default function SignUp() {
               );
             })}
           </div>
-          <BasicButton disabled={isLoading}>
-            {isLoading ? '가입 중...' : '계정 만들기'}
+          <BasicButton disabled={isLoading} aria-busy={isLoading}>
+            계정 만들기
           </BasicButton>
           <div css={signUpCaptionContainer(theme)}>
             <p>
-              이미 계정이 있으신가요?
-              <strong onClick={() => goPath('/' + ROUTES.LOGIN)}>
+              <span aria-hidden='true'>이미 계정이 있으신가요? </span>
+              <strong
+                onClick={() => goPath('/' + ROUTES.LOGIN)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    goPath('/' + ROUTES.LOGIN);
+                  }
+                }}
+                role='button'
+                tabIndex={0}
+                aria-label='이미 계정이 있으신가요? 로그인하기'
+              >
                 로그인하기
               </strong>
             </p>
