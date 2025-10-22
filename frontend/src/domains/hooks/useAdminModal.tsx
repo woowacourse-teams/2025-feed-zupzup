@@ -1,5 +1,4 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useModalContext } from '@/contexts/useModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -17,7 +16,6 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
   const feedbackIdRef = useRef<number | null>(null);
   const { openModal, closeModal } = useModalContext();
-  const { showErrorModal } = useErrorModalContext();
   const adminName =
     getLocalStorage<AdminAuthData>('auth')?.adminName || '관리자';
   const invalidateFeedbackQueries = useCallback(() => {
