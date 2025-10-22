@@ -27,11 +27,9 @@ function BasicButtonComponent(
     padding,
     fontSize,
     icon,
-    onClick,
     gap = '14px',
     variant = 'primary',
-    disabled,
-    ...restProps
+    ...buttonProps
   }: BasicButtonProps,
   ref: React.ForwardedRef<HTMLButtonElement>
 ) {
@@ -41,9 +39,7 @@ function BasicButtonComponent(
     <Button
       ref={ref}
       css={basicButton(theme, width, variant, height, gap, padding)}
-      onClick={onClick}
-      disabled={disabled}
-      {...restProps}
+      {...buttonProps}
     >
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant, fontSize)}>{children}</span>
