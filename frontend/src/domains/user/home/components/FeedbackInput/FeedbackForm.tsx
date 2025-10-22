@@ -58,7 +58,11 @@ export default function FeedbackForm({
     <div css={container} className={className}>
       <div css={formContainer}>
         <div css={userInfo(theme)}>
+          <label htmlFor='username' className='srOnly'>
+            사용자 이름
+          </label>
           <Input
+            id='username'
             css={topInputBorder(theme)}
             value={username}
             onChange={onUsernameChange}
@@ -74,6 +78,7 @@ export default function FeedbackForm({
           onClick={onRandomChange}
           css={randomButton(theme)}
           type='button'
+          aria-label='사용자 이름을 랜덤으로 변경'
         >
           랜덤변경
         </Button>
@@ -82,6 +87,7 @@ export default function FeedbackForm({
 
         <div css={textareaContainer(theme)}>
           <TextArea
+            id='feedbackText'
             value={feedback}
             onChange={(e) => onFeedbackChange(e.target.value)}
             placeholder={FEEDBACK_FORM_CONSTANTS.PLACEHOLDER}
@@ -89,7 +95,7 @@ export default function FeedbackForm({
             maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
             minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
-          <TextareaCounter textLength={feedback.length} />
+          <TextareaCounter textLength={feedback.length} aria-live='polite' />
         </div>
       </div>
       <div css={formFooterContainer}>
@@ -98,6 +104,7 @@ export default function FeedbackForm({
           imgUrl={imgUrl}
           onChangeFile={onChangeFile}
           onCancelFile={handleCancelFile}
+          aria-label='이미지 업로드 또는 미리보기'
         />
         <div css={toggleButtonContainer}>
           <BasicToggleButton

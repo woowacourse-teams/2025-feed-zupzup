@@ -145,7 +145,7 @@ export default function FeedbackPage({
         <div>
           <div css={contentContainer}>
             <div css={titleContainer}>
-              <span css={combinedTitle(theme)}>
+              <span css={combinedTitle(theme)} aria-hidden='true'>
                 <strong>소중한 {category}</strong>을(를) 남겨주세요
               </span>
             </div>

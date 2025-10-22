@@ -10,28 +10,6 @@ export interface InputProps extends React.ComponentProps<'input'> {
   minLength: number;
 }
 
-export default function Input({
-  name,
-  value,
-  type = 'text',
-  onChange,
-  onFocus,
-  placeholder,
-  customCSS,
-  maxLength,
-  minLength,
-}: InputProps) {
-  return (
-    <input
-      type={type}
-      name={name}
-      css={customCSS}
-      maxLength={maxLength}
-      minLength={minLength}
-      value={value}
-      onChange={onChange}
-      onFocus={onFocus}
-      placeholder={placeholder}
-    />
-  );
+export default function Input({ customCSS, ...rest }: InputProps) {
+  return <input css={customCSS} {...rest} />;
 }
