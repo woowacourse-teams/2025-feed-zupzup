@@ -249,7 +249,7 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             FeedbackEmbeddingCluster cluster = feedbackClusteringService.cluster(savedFeedback.getId());
 
             // when
-            feedbackClusteringService.createLabel(cluster);
+            feedbackClusteringService.createLabel(cluster.getId());
 
             // then
             verify(clusterLabelGenerator).generate(List.of("테스트 피드백"));
@@ -276,7 +276,7 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             }
 
             // when
-            feedbackClusteringService.createLabel(firstCluster);
+            feedbackClusteringService.createLabel(firstCluster.getId());
 
             // then
             verify(clusterLabelGenerator).generate(anyList());
@@ -302,7 +302,7 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             feedbackClusteringService.cluster(savedFeedback2.getId());
 
             // when
-            feedbackClusteringService.createLabel(firstCluster);
+            feedbackClusteringService.createLabel(firstCluster.getId());
 
             // then
             verify(clusterLabelGenerator, never()).generate(anyList());

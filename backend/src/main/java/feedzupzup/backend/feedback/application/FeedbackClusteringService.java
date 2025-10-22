@@ -70,10 +70,13 @@ public class FeedbackClusteringService {
     }
 
     @Transactional
-    public void createLabel(final FeedbackEmbeddingCluster createdCluster) {
+    public void createLabel(final Long createdClusterId) {
+        final FeedbackEmbeddingCluster feedbackEmbeddingCluster = feedbackEmbeddingClusterRepository.findById(
+                createdClusterId).orElseThrow(() -> new ResourceNotFoundException("해당 clusterId(id=" + createdClusterId + ")로 찾을 수 없습니다."));
+
         final List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository
-                .findAllByEmbeddingCluster(createdCluster.getEmbeddingCluster());
-        if (!NEW_CLUSTER_LABEL_THRESHOLDS.contains(feedbackEmbeddingClusters.size()) && !createdCluster.isEmptyLabel()) {
+                .findAllByEmbeddingCluster(feedbackEmbeddingCluster.getEmbeddingCluster());
+        if (!NEW_CLUSTER_LABEL_THRESHOLDS.contains(feedbackEmbeddingClusters.size()) && !feedbackEmbeddingCluster.isEmptyLabel()) {
             return;
         }
 
@@ -81,7 +84,9 @@ public class FeedbackClusteringService {
                 .map(FeedbackEmbeddingCluster::getFeedbackContentValue)
                 .toList();
         final String label = clusterLabelGenerator.generate(feedbackContents);
-        final EmbeddingCluster embeddingCluster = createdCluster.getEmbeddingCluster();
+        log.info("현재 생성된 라벨: {}", label);
+
+        final EmbeddingCluster embeddingCluster = feedbackEmbeddingCluster.getEmbeddingCluster();
         embeddingCluster.updateLabel(label);
     }
 }

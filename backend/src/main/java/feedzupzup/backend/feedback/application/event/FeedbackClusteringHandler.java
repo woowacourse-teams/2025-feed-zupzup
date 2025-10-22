@@ -19,6 +19,6 @@ public class FeedbackClusteringHandler {
     @Async
     public void handleFeedbackCreatedEvent(final FeedbackCreatedEvent2 event) {
         FeedbackEmbeddingCluster createdCluster = feedbackClusteringService.cluster(event.feedbackId());
-        feedbackClusteringService.createLabel(createdCluster);
+        feedbackClusteringService.createLabel(createdCluster.getId());
     }
 }

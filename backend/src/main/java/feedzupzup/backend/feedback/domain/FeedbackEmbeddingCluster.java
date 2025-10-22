@@ -16,9 +16,11 @@ import jakarta.persistence.OneToOne;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+@Slf4j
 @Entity
 @Getter
 @NoArgsConstructor
@@ -64,6 +66,8 @@ public class FeedbackEmbeddingCluster extends BaseTimeEntity {
 
     public FeedbackEmbeddingCluster assignMyCluster(final Feedback feedback, final double[] embedding) {
         double similarity = calculateSimilarityTo(embedding);
+        log.info("비교 클러스터 내용: {} vs {}, 유사도 결과: {}", this.feedback.getContent().getValue(),
+                feedback.getContent().getValue(), similarity);
         return new FeedbackEmbeddingCluster(similarity, embedding, feedback, this.embeddingCluster);
     }
 
