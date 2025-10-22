@@ -1,10 +1,12 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useModalContext } from '@/contexts/useModal';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useRef } from 'react';
 import AnswerModal from '../components/AnswerModal/AnswerModal';
+import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import { getLocalStorage } from '@/utils/localStorage';
+import { AdminAuthData } from '@/types/adminAuth';
 
 interface UseAdminModalProps {
   organizationId: string;
@@ -14,13 +16,17 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
   const feedbackIdRef = useRef<number | null>(null);
   const { openModal, closeModal } = useModalContext();
-
+  const adminName =
+    getLocalStorage<AdminAuthData>('auth')?.adminName || '관리자';
   const invalidateFeedbackQueries = useCallback(() => {
     queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.organizationStatistics(organizationId),
     });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.infiniteFeedbacks });
-  }, [queryClient, organizationId]);
+    queryClient.invalidateQueries({
+      queryKey: QUERY_KEYS.adminOrganizations(adminName),
+    });
+  }, [queryClient, organizationId, adminName]);
 
   const confirmMutation = useMutation({
     mutationFn: ({
