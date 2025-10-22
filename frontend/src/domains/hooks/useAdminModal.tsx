@@ -22,6 +22,7 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
       queryKey: QUERY_KEYS.organizationStatistics(organizationId),
     });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.infiniteFeedbacks });
+    queryClient.invalidateQueries({ queryKey: ['adminOrganizations'] });
   }, [queryClient, organizationId]);
 
   const confirmMutation = useMutation({
