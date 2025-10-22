@@ -1,3 +1,4 @@
+import Button from '@/components/@commons/Button/Button';
 import ArrowRightIcon from '@/components/icons/ArrowRightIcon';
 import {
   adminOrganizationContainer,
@@ -24,7 +25,7 @@ export default function AdminOrganization({
   const theme = useAppTheme();
 
   return (
-    <button css={adminOrganizationContainer(theme)} onClick={onClick}>
+    <Button css={adminOrganizationContainer(theme)} onClick={onClick}>
       <div css={organizationTitleContainer}>
         <div css={organizationTitle(theme)}>
           <div css={dot(theme)} />
@@ -40,6 +41,6 @@ export default function AdminOrganization({
       ) : (
         <p>최근 피드백: 없음</p>
       )}
-    </button>
+    </Button>
   );
 }
