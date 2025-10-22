@@ -52,6 +52,7 @@ public class AdminFeedbackService {
             final Long feedbackId
     ) {
         validateAuthentication(adminId, feedbackId);
+        feedbackEmbeddingClusterRepository.deleteByFeedback_Id(feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
 
