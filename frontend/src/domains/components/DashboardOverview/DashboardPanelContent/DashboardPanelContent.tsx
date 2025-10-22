@@ -18,7 +18,7 @@ export default function DashboardPanelContent() {
       caption: `총 ${statistics?.confirmedCount}개 반영`,
     },
     {
-      title: '총 건의 수',
+      title: '총 건의',
       content: statistics?.totalCount,
       caption: '접수 완료',
     },
