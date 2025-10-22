@@ -1,14 +1,21 @@
 import { SerializedStyles } from '@emotion/react';
+import { forwardRef } from 'react';
 
 export interface ButtonProps extends React.ComponentProps<'button'> {
   children: React.ReactNode;
   customCSS?: SerializedStyles | SerializedStyles[];
 }
 
-export default function Button({ children, customCSS, ...props }: ButtonProps) {
+function ButtonComponent(
+  { children, customCSS, ...props }: ButtonProps,
+  ref: React.ForwardedRef<HTMLButtonElement>
+) {
   return (
-    <button css={customCSS} {...props}>
+    <button ref={ref} css={customCSS} {...props}>
       {children}
     </button>
   );
 }
+
+const Button = forwardRef(ButtonComponent);
+export default Button;
