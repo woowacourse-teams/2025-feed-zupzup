@@ -55,8 +55,9 @@ public class FeedbackClusteringService {
     }
 
     private Optional<FeedbackEmbeddingCluster> assignCluster(final Feedback createdFeedback, final double[] createdFeedbackEmbedding) {
+        double originClusterScore = 1.0;
         final List<FeedbackEmbeddingCluster> representations = feedbackEmbeddingClusterRepository.findAllRepresentativeClusters(
-                createdFeedback.getOrganization().getUuid(), 1.0);
+                createdFeedback.getOrganization().getUuid(), originClusterScore);
 
         return representations.stream()
                 .map(representation -> representation.assignMyCluster(createdFeedback, createdFeedbackEmbedding))

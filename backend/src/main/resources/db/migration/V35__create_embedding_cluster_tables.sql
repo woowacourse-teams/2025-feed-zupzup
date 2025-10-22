@@ -7,9 +7,11 @@ ALTER TABLE feedback
 -- 임베딩 클러스터 테이블 생성
 CREATE TABLE embedding_cluster
 (
-    id         BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    label      VARCHAR(255),
-    deleted_at DATETIME(6)
+    id              BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    label           VARCHAR(255),
+    created_at      DATETIME(6) NOT NULL,
+    modified_at     DATETIME(6) NOT NULL,
+    deleted_at      DATETIME(6)
 );
 
 -- 피드백 임베딩 클러스터 테이블 생성

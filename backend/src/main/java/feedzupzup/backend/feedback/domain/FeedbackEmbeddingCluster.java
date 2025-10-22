@@ -61,7 +61,8 @@ public class FeedbackEmbeddingCluster extends BaseTimeEntity {
     }
 
     public static FeedbackEmbeddingCluster createNewCluster(final double[] embedding, final Feedback feedback, final EmbeddingCluster embeddingCluster) {
-        return new FeedbackEmbeddingCluster( 1.0, embedding, feedback, embeddingCluster);
+        double originClusterScore = 1.0;
+        return new FeedbackEmbeddingCluster( originClusterScore, embedding, feedback, embeddingCluster);
     }
 
     public FeedbackEmbeddingCluster assignMyCluster(final Feedback feedback, final double[] embedding) {
