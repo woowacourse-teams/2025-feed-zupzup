@@ -8,7 +8,10 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.exception.FeedbackException;
+import feedzupzup.backend.feedback.exception.FeedbackException.AlreadyClusteringException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import java.rmi.AlreadyBoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +39,7 @@ public class FeedbackClusteringService {
     public FeedbackEmbeddingCluster cluster(final Long createdFeedbackId) {
         Feedback createdFeedback = getFeedback(createdFeedbackId);
         if (feedbackEmbeddingClusterRepository.existsByFeedback(createdFeedback)) {
-            throw new IllegalArgumentException("이미 클러스터링 된 피드백입니다.");
+            throw new AlreadyClusteringException("이미 클러스터링 된 피드백입니다. (feedabckId = " + createdFeedbackId + ")");
         }
         double[] createdFeedbackEmbedding = embeddingExtractor.extract(createdFeedback.getContent().getValue());
 

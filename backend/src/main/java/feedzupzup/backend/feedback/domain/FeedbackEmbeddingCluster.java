@@ -1,5 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.feedback.exception.FeedbackException.InvalidVectorDimensionException;
 import feedzupzup.backend.global.BaseTimeEntity;
 import feedzupzup.backend.global.convert.DoubleArrayConverter;
 import jakarta.persistence.CascadeType;
@@ -68,7 +69,7 @@ public class FeedbackEmbeddingCluster extends BaseTimeEntity {
 
     private double calculateSimilarityTo(final double[] other) {
         if (this.embeddingVector.length != other.length) {
-            throw new IllegalArgumentException("벡터 차원 불일치");
+            throw new InvalidVectorDimensionException("벡터 차원 불일치");
         }
 
         double dotProduct = 0.0;

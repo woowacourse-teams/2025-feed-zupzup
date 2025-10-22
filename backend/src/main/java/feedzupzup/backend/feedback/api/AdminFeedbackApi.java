@@ -106,7 +106,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/clusters")
     SuccessResponse<ClustersResponse> getTopClusters(
-            @Parameter(hidden = true) @LoginOrganizer final AdminSession adminSession,
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @PathVariable("organizationUuid") UUID organizationUuid,
             @RequestParam(required = false, defaultValue = "5") final int limit
     );
@@ -121,6 +121,7 @@ public interface AdminFeedbackApi {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/clusters/{clusterId}")
     SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @PathVariable("clusterId") Long clusterId
     );
 }

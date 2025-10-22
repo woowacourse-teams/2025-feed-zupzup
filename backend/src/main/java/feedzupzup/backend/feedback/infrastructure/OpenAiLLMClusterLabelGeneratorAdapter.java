@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.infrastructure;
 
 import feedzupzup.backend.feedback.domain.ClusterLabelGenerator;
+import feedzupzup.backend.feedback.exception.ClusterException.EmptyClusteringContentException;
 import feedzupzup.backend.feedback.infrastructure.ai.OpenAICompletionClient;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class OpenAiLLMClusterLabelGeneratorAdapter implements ClusterLabelGenera
     public String generate(final List<String> feedbackContents) {
         if (feedbackContents == null || feedbackContents.isEmpty()) {
             log.warn("클러스터 내용이 비어있습니다.");
-            throw new IllegalArgumentException();
+            throw new EmptyClusteringContentException();
         }
 
         String combinedContents = combineContents(feedbackContents);

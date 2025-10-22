@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import feedzupzup.backend.feedback.exception.FeedbackException.InvalidVectorDimensionException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,11 @@ public enum ErrorCode {
     INVALID_VALUE_RANGE(INTERNAL_SERVER_ERROR, "F03", "좋아요는 음수가 될 수 없습니다."),
     LIKE_ALREADY_EXISTS(BAD_REQUEST, "F04", "좋아요는 한 번만 누를 수 있습니다."),
     INVALID_LIKE_REQUEST(BAD_REQUEST, "F05", "잘못된 요청입니다."),
+    ALREADY_CLUSTERING_FEEDBACK(BAD_REQUEST, "F06", "이미 클러스터링된 피드백입니다."),
+
+    //cluster error
+    EMPTY_CLUSTERING_CONTENT(BAD_REQUEST, "C01", "클러스터링 내용은 비어있을 수 없습니다."),
+    INVALID_VECTOR_DIMENSION(BAD_REQUEST, "C02", "벡터 차원이 일치하지 않습니다."),
 
     //Admin Domain Error
     INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),

@@ -73,7 +73,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<ClustersResponse> getTopClusters(
-            final AdminSession adminSession,
+            final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid,
             final int limit
     ) {
@@ -83,6 +83,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
     @Override
     public SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
+            final LoginOrganizerInfo loginOrganizerInfo,
             final Long clusterId
     ) {
         ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(clusterId);

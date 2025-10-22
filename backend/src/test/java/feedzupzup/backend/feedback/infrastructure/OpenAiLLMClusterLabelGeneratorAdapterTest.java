@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import feedzupzup.backend.feedback.exception.ClusterException.EmptyClusteringContentException;
 import feedzupzup.backend.feedback.infrastructure.ai.OpenAICompletionClient;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +73,7 @@ class OpenAiLLMClusterLabelGeneratorAdapterTest {
 
         // when & then
         assertThatThrownBy(() -> openAiLLMClusterLabelGeneratorAdapter.generate(feedbackContents))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EmptyClusteringContentException.class);
     }
 
     @Test
@@ -83,6 +84,6 @@ class OpenAiLLMClusterLabelGeneratorAdapterTest {
 
         // when & then
         assertThatThrownBy(() -> openAiLLMClusterLabelGeneratorAdapter.generate(feedbackContents))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(EmptyClusteringContentException.class);
     }
 }
