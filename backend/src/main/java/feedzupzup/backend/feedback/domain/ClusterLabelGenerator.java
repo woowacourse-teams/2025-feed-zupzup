@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface ClusterLabelGenerator {
 
-    String generate(List<String> clusterContents);
+    String generate(final List<String> clusterContents);
 }

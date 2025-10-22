@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,7 +136,7 @@ public class AdminFeedbackService {
         if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
             throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
         }
-        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  limit);
+        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  PageRequest.of(0, limit));
         return ClustersResponse.from(clusterInfos);
     }
 

@@ -105,12 +105,11 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
         JOIN fec.embeddingCluster ec
         WHERE org.uuid = :organizationUuid
         GROUP BY ec.id, ec.label
-        HAVING COUNT(f.id) >= 1
+        HAVING COUNT(fec.id) >= 1
         ORDER BY COUNT(fec.id) DESC
-        LIMIT :limit
         """)
     List<ClusterInfo> findTopClusters(
             @Param("organizationUuid") UUID organizationUuid,
-            @Param("limit") int limit
+            Pageable pageable
             );
 }

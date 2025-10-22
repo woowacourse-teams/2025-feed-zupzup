@@ -119,7 +119,7 @@ public interface AdminFeedbackApi {
     })
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/admin/organizations/clusters/{clusterId}")
+    @GetMapping("/admin/organizations/{organizationUuid}/clusters/{clusterId}")
     SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
             @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @PathVariable("clusterId") Long clusterId

@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 class FeedbackRepositoryTest extends RepositoryHelper {
 
@@ -83,19 +84,19 @@ class FeedbackRepositoryTest extends RepositoryHelper {
             createFeedbackWithCluster(organization, "세 번째 클러스터 피드백1", organizationCategory, cluster3);
 
             // when
-            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), 10);
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), PageRequest.of(0, 10));
 
             // then
             assertAll(
                     () -> assertThat(result).hasSize(3),
                     () -> assertThat(result.get(0).totalCount()).isEqualTo(3), // 첫 번째 클러스터
-                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(cluster1.getId().intValue()),
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(cluster1.getId()),
                     () -> assertThat(result.get(0).label()).isEqualTo("첫 번째 클러스터"),
                     () -> assertThat(result.get(1).totalCount()).isEqualTo(2), // 두 번째 클러스터
-                    () -> assertThat(result.get(1).embeddingClusterId()).isEqualTo(cluster2.getId().intValue()),
+                    () -> assertThat(result.get(1).embeddingClusterId()).isEqualTo(cluster2.getId()),
                     () -> assertThat(result.get(1).label()).isEqualTo("두 번째 클러스터"),
                     () -> assertThat(result.get(2).totalCount()).isEqualTo(1), // 세 번째 클러스터
-                    () -> assertThat(result.get(2).embeddingClusterId()).isEqualTo(cluster3.getId().intValue()),
+                    () -> assertThat(result.get(2).embeddingClusterId()).isEqualTo(cluster3.getId()),
                     () -> assertThat(result.get(2).label()).isEqualTo("세 번째 클러스터")
             );
         }
@@ -141,7 +142,7 @@ class FeedbackRepositoryTest extends RepositoryHelper {
             createFeedbackWithCluster(organization, "클러스터5 피드백1", organizationCategory, cluster5);
 
             // when - limit 3으로 상위 3개만 조회
-            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), 3);
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(),  PageRequest.of(0, 3));
 
             // then
             assertAll(
@@ -152,6 +153,70 @@ class FeedbackRepositoryTest extends RepositoryHelper {
                     () -> assertThat(result.get(1).embeddingClusterId()).isEqualTo(cluster2.getId().intValue()),
                     () -> assertThat(result.get(2).totalCount()).isEqualTo(3), // 세 번째로 많은 피드백 수
                     () -> assertThat(result.get(2).embeddingClusterId()).isEqualTo(cluster3.getId().intValue())
+            );
+        }
+
+        @Test
+        @DisplayName("피드백이 0개인 클러스터는 조회되지 않는다")
+        void findTopClusters_DoesNotReturnEmptyClusters() {
+            // given
+            // 피드백이 있는 클러스터 생성
+            final EmbeddingCluster clusterWithFeedback = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            clusterWithFeedback.updateLabel("피드백이 있는 클러스터");
+            embeddingClusterRepository.save(clusterWithFeedback);
+
+            // 피드백이 없는 클러스터 생성
+            final EmbeddingCluster emptyCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            emptyCluster.updateLabel("피드백이 없는 클러스터");
+            embeddingClusterRepository.save(emptyCluster);
+
+            // 첫 번째 클러스터에만 피드백 추가
+            createFeedbackWithCluster(organization, "유일한 피드백", organizationCategory, clusterWithFeedback);
+
+            // when
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), PageRequest.of(0, 10));
+
+            // then
+            assertAll(
+                    () -> assertThat(result).hasSize(1),
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(clusterWithFeedback.getId().intValue()),
+                    () -> assertThat(result.get(0).label()).isEqualTo("피드백이 있는 클러스터"),
+                    () -> assertThat(result.get(0).totalCount()).isEqualTo(1)
+            );
+        }
+
+        @Test
+        @DisplayName("다른 조직의 클러스터는 조회되지 않는다")
+        void findTopClusters_DoesNotReturnOtherOrganizationClusters() {
+            // given
+            // 다른 조직 생성
+            final Organization otherOrganization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+            final OrganizationCategory otherCategory = organizationCategoryRepository.save(
+                    OrganizationCategoryFixture.createOrganizationCategory(otherOrganization, SUGGESTION));
+
+            // 내 조직의 클러스터
+            final EmbeddingCluster myCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            myCluster.updateLabel("내 조직 클러스터");
+            embeddingClusterRepository.save(myCluster);
+
+            // 다른 조직의 클러스터
+            final EmbeddingCluster otherCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            otherCluster.updateLabel("다른 조직 클러스터");
+            embeddingClusterRepository.save(otherCluster);
+
+            // 각 조직에 피드백 추가
+            createFeedbackWithCluster(organization, "내 조직 피드백", organizationCategory, myCluster);
+            createFeedbackWithCluster(otherOrganization, "다른 조직 피드백", otherCategory, otherCluster);
+
+            // when
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), PageRequest.of(0, 10));
+
+            // then
+            assertAll(
+                    () -> assertThat(result).hasSize(1),
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(myCluster.getId().intValue()),
+                    () -> assertThat(result.get(0).label()).isEqualTo("내 조직 클러스터"),
+                    () -> assertThat(result.get(0).totalCount()).isEqualTo(1)
             );
         }
 

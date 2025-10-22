@@ -717,7 +717,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .log().all()
                 .cookie(SESSION_ID, sessionCookie)
                 .when()
-                .get("/admin/organizations/clusters/{clusterId}", targetCluster.getId())
+                .get("/admin/organizations/{organizationUuid}/clusters/{clusterId}", organization.getUuid(), targetCluster.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
@@ -734,12 +734,21 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
     @Test
     @DisplayName("관리자가 존재하지 않는 클러스터를 조회하면 404 예외를 발생시킨다.")
     void admin_get_cluster_feedbacks_not_found() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
         // when & then
         given()
                 .log().all()
                 .cookie(SESSION_ID, sessionCookie)
                 .when()
-                .get("/admin/organizations/clusters/{clusterId}", 99999L)
+                .get("/admin/organizations/{organizationUuid}/clusters/{clusterId}", organization.getUuid(), 99999L)
                 .then().log().all()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
