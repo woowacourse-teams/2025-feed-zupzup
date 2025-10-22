@@ -148,7 +148,7 @@ export default function FeedbackPage({
           <div css={contentContainer}>
             <div css={titleContainer}>
               <span css={combinedTitle(theme)}>
-                <strong>소중한 의견</strong>을 들려주세요
+                <strong>소중한 {category}</strong>을(를) 남겨주세요
               </span>
             </div>
           </div>

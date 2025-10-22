@@ -20,13 +20,33 @@ export const topContainer = css`
   justify-content: space-between;
 `;
 
-export const iconWrap = css`
+export const iconWrap = (theme: Theme) => css`
   display: flex;
   gap: 14px;
+
+  button {
+    ${theme.typography.pretendard.caption};
+
+    :hover {
+      opacity: 0.6;
+    }
+
+    :active {
+      opacity: 0.6;
+    }
+  }
 `;
 
 export const textWrap = css`
   display: flex;
   align-items: center;
   gap: 4px;
+`;
+
+export const deleteButton = (theme: Theme) => css`
+  color: ${theme.colors.red[200]};
+`;
+
+export const checkButton = (theme: Theme) => css`
+  color: ${theme.colors.green[200]};
 `;

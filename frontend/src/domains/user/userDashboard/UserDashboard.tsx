@@ -16,6 +16,7 @@ import {
 } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import UserFeedbackList from './components/UserFeedbackList/UserFeedbackList';
+import UserDashboardHeader from './components/UserDashboardHeader/UserDashboardHeader';
 
 export default function UserDashboard() {
   const theme = useAppTheme();
@@ -40,6 +41,7 @@ export default function UserDashboard() {
         keywords='피드백, 피드백확인, 피드백조회, 피드백상태, 건의사항, 피드백방'
       />
       <div css={dashboardLayout}>
+        <UserDashboardHeader />
         <DashboardOverview />
         <FilterSection
           selectedFilter={selectedFilter}
