@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class HttpSessionManager {
 
-    private static final int TWO_WEEKS_IN_SECONDS = 14 * 24 * 60 * 60;
     private final String adminIdSessionKey;
     private final ActiveSessionStore activeSessionStore;
 
@@ -32,7 +31,6 @@ public class HttpSessionManager {
     public void createAdminSession(final HttpServletRequest request, final Long adminId) {
         final HttpSession session = request.getSession(true);
         session.setAttribute(adminIdSessionKey, adminId);
-        session.setMaxInactiveInterval(TWO_WEEKS_IN_SECONDS);
         activeSessionStore.addActiveSession(adminId);
     }
 

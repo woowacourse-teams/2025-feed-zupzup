@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AdminRepository extends JpaRepository<Admin, Long> {
 
     Optional<Admin> findByLoginId(final LoginId loginId);
-    
+
     boolean existsByLoginId(final LoginId loginId);
 
     @Query("""
