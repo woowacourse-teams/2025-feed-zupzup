@@ -16,7 +16,7 @@ export const ErrorCatcher = () => {
     }
 
     throw appError;
-  }, [appError]);
+  }, [appError, showToast]);
 
   return <></>;
 };
