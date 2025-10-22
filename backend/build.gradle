@@ -38,6 +38,9 @@ dependencies {
     //security
     implementation 'org.springframework.security:spring-security-crypto'
 
+    //session
+    implementation 'org.springframework.session:spring-session-jdbc'
+
     //aws
     implementation 'software.amazon.awssdk:s3:2.30.16'
 
