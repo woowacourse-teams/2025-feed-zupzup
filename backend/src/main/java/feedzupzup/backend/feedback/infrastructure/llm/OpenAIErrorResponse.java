@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.infrastructure.ai;
+package feedzupzup.backend.feedback.infrastructure.llm;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

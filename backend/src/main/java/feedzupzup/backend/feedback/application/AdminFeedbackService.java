@@ -68,8 +68,8 @@ public class AdminFeedbackService {
         }
         final Pageable pageable = Pageable.ofSize(size + 1);
 
-        FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<FeedbackItem> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
+        final FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
+        final List<FeedbackItem> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
                 pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
@@ -135,14 +135,14 @@ public class AdminFeedbackService {
         if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
             throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
         }
-        List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  limit);
+        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  limit);
         return ClustersResponse.from(clusterInfos);
     }
 
     public ClusterFeedbacksResponse getFeedbacksByClusterId(final Long clusterId) {
-        EmbeddingCluster embeddingCluster = embeddingClusterRepository.findById(clusterId)
+        final EmbeddingCluster embeddingCluster = embeddingClusterRepository.findById(clusterId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 clusterid(id = " + clusterId + ")로 찾을 수 없습니다."));
-        List<FeedbackEmbeddingCluster> embeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
+        final List<FeedbackEmbeddingCluster> embeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
                 embeddingCluster);
         if (embeddingClusters.isEmpty()) {
             throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");

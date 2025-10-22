@@ -1,6 +1,6 @@
-package feedzupzup.backend.feedback.infrastructure.ai;
+package feedzupzup.backend.feedback.infrastructure.llm;
 
-import static feedzupzup.backend.feedback.infrastructure.ai.OpenAIErrorResponse.*;
+import static feedzupzup.backend.feedback.infrastructure.llm.OpenAIErrorResponse.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feedzupzup.backend.global.exception.InfrastructureException.RestClientServerException;

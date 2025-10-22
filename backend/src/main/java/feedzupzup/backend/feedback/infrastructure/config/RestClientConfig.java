@@ -1,6 +1,6 @@
 package feedzupzup.backend.feedback.infrastructure.config;
 
-import feedzupzup.backend.feedback.infrastructure.ai.OpenAIProperties;
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAIProperties;
 import feedzupzup.backend.feedback.infrastructure.embedding.VoyageAIProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

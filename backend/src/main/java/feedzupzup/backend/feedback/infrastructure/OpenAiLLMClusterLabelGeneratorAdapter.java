@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.infrastructure;
 
 import feedzupzup.backend.feedback.domain.ClusterLabelGenerator;
 import feedzupzup.backend.feedback.exception.ClusterException.EmptyClusteringContentException;
-import feedzupzup.backend.feedback.infrastructure.ai.OpenAICompletionClient;
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAICompletionClient;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,15 +45,15 @@ public class OpenAiLLMClusterLabelGeneratorAdapter implements ClusterLabelGenera
             throw new EmptyClusteringContentException();
         }
 
-        String combinedContents = combineContents(feedbackContents);
-        String prompt = String.format(CLUSTER_LABEL_PROMPT_TEMPLATE, combinedContents);
+        final String combinedContents = combineContents(feedbackContents);
+        final String prompt = String.format(CLUSTER_LABEL_PROMPT_TEMPLATE, combinedContents);
         log.info("클러스터 라벨 생성 시작 - 피드백 개수: {}, 총 길이: {}", feedbackContents.size(), combinedContents.length());
 
         return openAICompletionClient.generateCompletion(prompt, SYSTEM_MESSAGE);
     }
 
     private String combineContents(final List<String> clusterContents) {
-        StringBuilder combined = new StringBuilder();
+        final StringBuilder combined = new StringBuilder();
 
         for (int i = 0; i < clusterContents.size(); i++) {
             combined.append(String.format("%d. %s\n", i + 1, clusterContents.get(i).trim()));

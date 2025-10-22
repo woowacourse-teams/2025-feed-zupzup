@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.infrastructure.ai;
+package feedzupzup.backend.feedback.infrastructure.llm;
 
 import feedzupzup.backend.global.exception.InfrastructureException.RestClientServerException;
 import java.util.List;
@@ -21,7 +21,7 @@ public class OpenAICompletionClient {
 
     public String generateCompletion(final String prompt, final String systemMessage) {
         try {
-            Map<String, Object> requestBody = Map.of(
+            final Map<String, Object> requestBody = Map.of(
                     "model", openAIProperties.getCompletionModel(),
                     "messages", List.of(
                             Map.of("role", "system", "content", systemMessage),
@@ -35,13 +35,13 @@ public class OpenAICompletionClient {
                     openAIProperties.getCompletionModel(),
                     prompt.length());
 
-            OpenAICompletionResponse response = openAiCompletionRestClient.post()
+            final OpenAICompletionResponse response = openAiCompletionRestClient.post()
                     .body(requestBody)
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, openAIErrorHandler::handleError)
                     .body(OpenAICompletionResponse.class);
 
-            String completion = extractCompletionOrThrow(response);
+            final String completion = extractCompletionOrThrow(response);
 
             log.info("[OpenAI] 텍스트 생성 성공 - completionLength: {}, totalTokens: {}",
                     completion.length(),

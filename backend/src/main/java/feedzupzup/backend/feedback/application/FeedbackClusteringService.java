@@ -8,10 +8,8 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.exception.FeedbackException;
 import feedzupzup.backend.feedback.exception.FeedbackException.AlreadyClusteringException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
-import java.rmi.AlreadyBoundException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -37,18 +35,18 @@ public class FeedbackClusteringService {
     // TODO : embedding 트랜잭션애 포함되어 커넥션 잡아먹음. 추후 수정 필요
     @Transactional
     public FeedbackEmbeddingCluster cluster(final Long createdFeedbackId) {
-        Feedback createdFeedback = getFeedback(createdFeedbackId);
+        final Feedback createdFeedback = getFeedback(createdFeedbackId);
         if (feedbackEmbeddingClusterRepository.existsByFeedback(createdFeedback)) {
             throw new AlreadyClusteringException("이미 클러스터링 된 피드백입니다. (feedabckId = " + createdFeedbackId + ")");
         }
-        double[] createdFeedbackEmbedding = embeddingExtractor.extract(createdFeedback.getContent().getValue());
+        final double[] createdFeedbackEmbedding = embeddingExtractor.extract(createdFeedback.getContent().getValue());
 
-        Optional<FeedbackEmbeddingCluster> assignedCluster = assignCluster(createdFeedback, createdFeedbackEmbedding);
+        final Optional<FeedbackEmbeddingCluster> assignedCluster = assignCluster(createdFeedback, createdFeedbackEmbedding);
 
         if (assignedCluster.isEmpty()) {
-            EmbeddingCluster empty = EmbeddingCluster.createEmpty();
+            final EmbeddingCluster empty = EmbeddingCluster.createEmpty();
             embeddingClusterRepository.save(empty);
-            FeedbackEmbeddingCluster newCluster = FeedbackEmbeddingCluster.createNewCluster(createdFeedbackEmbedding,
+            final FeedbackEmbeddingCluster newCluster = FeedbackEmbeddingCluster.createNewCluster(createdFeedbackEmbedding,
                     createdFeedback, empty);
             return feedbackEmbeddingClusterRepository.save(newCluster);
         }
@@ -57,7 +55,7 @@ public class FeedbackClusteringService {
     }
 
     private Optional<FeedbackEmbeddingCluster> assignCluster(final Feedback createdFeedback, final double[] createdFeedbackEmbedding) {
-        List<FeedbackEmbeddingCluster> representations = feedbackEmbeddingClusterRepository.findAllRepresentativeClusters(
+        final List<FeedbackEmbeddingCluster> representations = feedbackEmbeddingClusterRepository.findAllRepresentativeClusters(
                 createdFeedback.getOrganization().getUuid(), 1.0);
 
         return representations.stream()
@@ -73,17 +71,17 @@ public class FeedbackClusteringService {
 
     @Transactional
     public void createLabel(final FeedbackEmbeddingCluster createdCluster) {
-        List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository
+        final List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository
                 .findAllByEmbeddingCluster(createdCluster.getEmbeddingCluster());
         if (!NEW_CLUSTER_LABEL_THRESHOLDS.contains(feedbackEmbeddingClusters.size()) && !createdCluster.isEmptyLabel()) {
             return;
         }
 
-        List<String> feedbackContents = feedbackEmbeddingClusters.stream()
+        final List<String> feedbackContents = feedbackEmbeddingClusters.stream()
                 .map(FeedbackEmbeddingCluster::getFeedbackContentValue)
                 .toList();
-        String label = clusterLabelGenerator.generate(feedbackContents);
-        EmbeddingCluster embeddingCluster = createdCluster.getEmbeddingCluster();
+        final String label = clusterLabelGenerator.generate(feedbackContents);
+        final EmbeddingCluster embeddingCluster = createdCluster.getEmbeddingCluster();
         embeddingCluster.updateLabel(label);
     }
 }
