@@ -1,10 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { NotificationService } from '@/services/notificationService';
 import { patchNotificationSettings } from '@/apis/notifications.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
+import { NotificationService } from '@/services/notificationService';
 import { NotificationSettingsResponse } from '@/types/notification.types';
-import { ApiError } from '@/apis/apiClient';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 interface UpdateNotificationSettingParams {
   enabled: boolean;
@@ -20,7 +18,6 @@ export const useNotificationSettingMutation = ({
   updateState,
 }: UseNotificationSettingMutationProps) => {
   const queryClient = useQueryClient();
-  const { showErrorModal } = useErrorModalContext();
 
   return useMutation({
     mutationFn: async ({ enabled }: UpdateNotificationSettingParams) => {
@@ -52,7 +49,7 @@ export const useNotificationSettingMutation = ({
 
       return { previousServerData, previousLocalState: localEnabled };
     },
-    onError: (error, _, context) => {
+    onError: (_, __, context) => {
       queryClient.removeQueries({
         queryKey: QUERY_KEYS.notificationSettings(),
       });
@@ -60,7 +57,6 @@ export const useNotificationSettingMutation = ({
       if (context?.previousLocalState !== undefined) {
         updateState(context.previousLocalState);
       }
-      showErrorModal(error as ApiError, '알림 설정 실패');
     },
   });
 };
