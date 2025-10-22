@@ -9,6 +9,7 @@ import feedzupzup.backend.notification.domain.NotificationPayload;
 import feedzupzup.backend.notification.domain.NotificationRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class FcmPushNotifier implements PushNotifier {
     private final FcmErrorHandler fcmErrorHandler;
 
     @Override
-    public void sendBatchMessage(List<NotificationPayload> payloads) {
+    public void sendBatchMessage(List<NotificationPayload> payloads, final UUID organizationUuid) {
         if (payloads.isEmpty()) {
             log.warn("전송할 NotificationPayload가 없습니다.");
             return;
@@ -54,17 +55,18 @@ public class FcmPushNotifier implements PushNotifier {
         int chunkSize = 500;
         for (int i = 0; i < tokens.size(); i += chunkSize) {
             List<String> tokenChunk = tokens.subList(i, Math.min(i + chunkSize, tokens.size()));
-            sendBatch(tokenChunk, title, message);
+            sendBatch(tokenChunk, title, message, organizationUuid);
         }
     }
 
-    private void sendBatch(List<String> tokens, String title, String message) {
+    private void sendBatch(List<String> tokens, String title, String message, final UUID organizationUuid) {
         try {
             MulticastMessage multicastMessage = MulticastMessage.builder()
                     .setNotification(com.google.firebase.messaging.Notification.builder()
                             .setTitle(title)
                             .setBody(message)
                             .build())
+                    .putData("organizationUuid", organizationUuid.toString())
                     .addAllTokens(tokens)
                     .build();
 
