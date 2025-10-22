@@ -40,7 +40,6 @@ export default function ConfirmModal({
       onClose();
     } catch (e) {
       console.error(e);
-      return;
     }
   };
 
