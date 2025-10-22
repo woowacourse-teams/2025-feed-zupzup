@@ -22,12 +22,14 @@ function NavItem({ item, isActive, onNavigate }: NavItemProps) {
   const theme = useAppTheme();
   const { Icon, label, path } = item;
 
-  const iconColor = theme.colors.white[100];
+  const iconColor = isActive
+    ? theme.colors.purple[100]
+    : theme.colors.gray[600];
 
   return (
     <div css={navItemStyle(theme, isActive)} onClick={() => onNavigate(path)}>
       <Icon color={iconColor} />
-      <span css={navTextStyle(theme)}>{label}</span>
+      <span css={navTextStyle(theme, isActive)}>{label}</span>
     </div>
   );
 }

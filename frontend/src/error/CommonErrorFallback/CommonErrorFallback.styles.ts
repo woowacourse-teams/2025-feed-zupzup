@@ -2,14 +2,10 @@ import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 
 export const container = css`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
   padding: 12px;
 `;
 

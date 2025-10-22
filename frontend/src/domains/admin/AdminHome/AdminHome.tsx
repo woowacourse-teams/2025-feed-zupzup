@@ -22,7 +22,7 @@ export default function AdminHome() {
 
   return (
     <div css={homeLayout}>
-      <AdminHomeHeader />
+      <AdminHomeHeader adminName={adminName} />
       <div css={adminOrganizationListContainer(theme)}>
         <div css={infoContainer}>
           <p css={listTitle(theme)}>피드백 방 목록</p>

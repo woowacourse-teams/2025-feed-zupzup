@@ -1,12 +1,11 @@
 import { deleteFeedback, patchFeedbackStatus } from '@/apis/adminFeedback.api';
+import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { useCallback, useRef } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useModalContext } from '@/contexts/useModal';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useRef } from 'react';
 import AnswerModal from '../components/AnswerModal/AnswerModal';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
-import { getLocalStorage } from '@/utils/localStorage';
-import { AdminAuthData } from '@/types/adminAuth';
 
 interface UseAdminModalProps {
   organizationId: string;
@@ -16,17 +15,14 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
   const queryClient = useQueryClient();
   const feedbackIdRef = useRef<number | null>(null);
   const { openModal, closeModal } = useModalContext();
-  const adminName =
-    getLocalStorage<AdminAuthData>('auth')?.adminName || '관리자';
+  const { showErrorModal } = useErrorModalContext();
+
   const invalidateFeedbackQueries = useCallback(() => {
     queryClient.invalidateQueries({
       queryKey: QUERY_KEYS.organizationStatistics(organizationId),
     });
     queryClient.invalidateQueries({ queryKey: QUERY_KEYS.infiniteFeedbacks });
-    queryClient.invalidateQueries({
-      queryKey: QUERY_KEYS.adminOrganizations(adminName),
-    });
-  }, [queryClient, organizationId, adminName]);
+  }, [queryClient, organizationId]);
 
   const confirmMutation = useMutation({
     mutationFn: ({
@@ -36,12 +32,21 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
       feedbackId: number;
       comment: string;
     }) => patchFeedbackStatus({ feedbackId, comment }),
+    onError: () => {
+      showErrorModal(
+        '피드백 완료 상태 변경에 실패했습니다. 다시 시도해 주세요',
+        '에러'
+      );
+    },
     onSuccess: invalidateFeedbackQueries,
   });
 
   const deleteMutation = useMutation({
     mutationFn: ({ feedbackId }: { feedbackId: number }) =>
       deleteFeedback({ feedbackId }),
+    onError: () => {
+      showErrorModal('피드백 삭제에 실패했습니다. 다시 시도해 주세요', '에러');
+    },
     onSuccess: invalidateFeedbackQueries,
   });
 
@@ -50,13 +55,7 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
       const feedbackId = feedbackIdRef.current;
       if (!feedbackId) return;
 
-      try {
-        await confirmMutation.mutateAsync({ feedbackId, comment });
-      } catch (e) {
-        console.error(e);
-        return;
-      }
-
+      await confirmMutation.mutateAsync({ feedbackId, comment });
       closeModal();
     },
     [confirmMutation.mutateAsync, closeModal]
@@ -66,13 +65,7 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
     const feedbackId = feedbackIdRef.current;
     if (!feedbackId) return;
 
-    try {
-      await deleteMutation.mutateAsync({ feedbackId });
-    } catch (e) {
-      console.error(e);
-      return;
-    }
-
+    await deleteMutation.mutateAsync({ feedbackId });
     closeModal();
   }, [deleteMutation.mutateAsync, closeModal]);
 

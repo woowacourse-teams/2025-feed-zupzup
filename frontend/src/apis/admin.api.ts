@@ -24,7 +24,7 @@ export interface AISummaryDetailParams {
   clusterId: string;
 }
 
-export type PostAdminLogoutResponse = ApiResponse<string>;
+type PostAdminLogoutResponse = ApiResponse<string>;
 export type AdminAuthResponse = ApiResponse<AdminAuthData>;
 export type AISummaryResponse = ApiResponse<AISummaryData>;
 export type AISummaryDetailResponse = ApiResponse<FeedbackType>;

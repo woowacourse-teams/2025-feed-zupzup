@@ -49,14 +49,9 @@ export default function EditRoomModal({ onClose }: EditRoomModalProps) {
   });
 
   const handleRoomEditButton = async () => {
-    try {
-      await editRoom();
-      onClose();
-      openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
-    } catch (e) {
-      console.error(e);
-      return;
-    }
+    await editRoom();
+    onClose();
+    openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
   };
 
   return (

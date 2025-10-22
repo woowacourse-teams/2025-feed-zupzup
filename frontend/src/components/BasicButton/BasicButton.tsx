@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { useAppTheme } from '../../hooks/useAppTheme';
 
 import {
@@ -18,28 +19,34 @@ export interface BasicButtonProps extends React.ComponentProps<'button'> {
   variant?: 'primary' | 'secondary' | 'disabled';
 }
 
-export default function BasicButton({
-  children,
-  width = '100%',
-  height = '54px',
-  padding,
-  fontSize,
-  icon,
-  onClick,
-  gap = '14px',
-  variant = 'primary',
-  disabled,
-}: BasicButtonProps) {
+function BasicButtonComponent(
+  {
+    children,
+    width = '100%',
+    height = '54px',
+    padding,
+    fontSize,
+    icon,
+    gap = '14px',
+    variant = 'primary',
+    ...buttonProps
+  }: BasicButtonProps,
+  ref: React.ForwardedRef<HTMLButtonElement>
+) {
   const theme = useAppTheme();
 
   return (
     <Button
+      ref={ref}
       css={basicButton(theme, width, variant, height, gap, padding)}
-      onClick={onClick}
-      disabled={disabled}
+      {...buttonProps}
     >
       {icon && <span css={basicButtonIcon}>{icon}</span>}
       <span css={basicButtonText(theme, variant, fontSize)}>{children}</span>
     </Button>
   );
 }
+
+const BasicButton = forwardRef(BasicButtonComponent);
+
+export default BasicButton;

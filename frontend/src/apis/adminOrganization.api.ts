@@ -5,7 +5,6 @@ import { ApiResponse } from '@/types/apiResponse';
 export type AdminOrganizationType = {
   uuid: string;
   name: string;
-  confirmedCount: number;
   waitingCount: number;
   postedAt: string;
 };

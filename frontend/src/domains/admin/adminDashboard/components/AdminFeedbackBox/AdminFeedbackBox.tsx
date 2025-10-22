@@ -54,6 +54,7 @@ export default memo(function AdminFeedbackBox({
             <button
               css={checkButton(theme)}
               onClick={() => onConfirm(feedbackId)}
+              aria-label='피드백 확인'
             >
               완료
             </button>
@@ -61,6 +62,7 @@ export default memo(function AdminFeedbackBox({
           <button
             css={deleteButton(theme)}
             onClick={() => onDelete(feedbackId)}
+            aria-label='피드백 삭제'
           >
             삭제
           </button>

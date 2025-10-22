@@ -12,18 +12,11 @@ export const adminOrganizationContainer = (theme: Theme) => css`
   border-radius: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 100%;
 
   &:hover {
     background-color: ${theme.colors.gray[100]};
   }
-`;
-
-export const organizationCountContainer = css`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: baseline;
-  gap: 8px;
 `;
 
 export const organizationTitleContainer = css`
@@ -60,14 +53,5 @@ export const pendingText = (theme: Theme) => css`
   & strong {
     color: ${theme.colors.purple[100]};
     ${theme.typography.pretendard.h1};
-  }
-`;
-
-export const smallText = (theme: Theme) => css`
-  ${theme.typography.pretendard.caption};
-
-  & strong {
-    color: #cbc1ff;
-    ${theme.typography.pretendard.smallBold};
   }
 `;

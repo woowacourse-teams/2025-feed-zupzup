@@ -84,11 +84,15 @@ export default function FeedbackPage({
     handleLockToggle();
   };
 
-  const handleModalClose = useCallback(() => {
-    closeModal();
-
-    goPath(`/${organizationId}/dashboard`);
-  }, [goPath]);
+  const handleModalClose = useCallback(
+    (isError: boolean) => {
+      closeModal();
+      if (!isError) {
+        goPath(`/${organizationId}/dashboard`);
+      }
+    },
+    [goPath]
+  );
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,19 +106,18 @@ export default function FeedbackPage({
 
       openModal(
         <TimeDelayModal
-          onClose={() => handleModalClose()}
+          onClose={() => handleModalClose(submitStatus === 'error')}
           loadingDuration={800}
           autoCloseDuration={1000}
         />
       );
 
-      if (file && presignedUrl) {
+      if (file && presignedUrl)
         await uploadS3PreSignUrl({
           presignedUrl,
           file,
           contentType: contentType ?? 'image/png',
         });
-      }
 
       await submitFeedback({
         organizationId,
@@ -127,7 +130,6 @@ export default function FeedbackPage({
     } catch (error) {
       closeModal();
       console.error('피드백 제출 실패:', error);
-      return;
     }
   };
 
