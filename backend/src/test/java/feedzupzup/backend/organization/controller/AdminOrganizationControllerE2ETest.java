@@ -41,7 +41,7 @@ import org.springframework.http.HttpStatus;
 
 class AdminOrganizationControllerE2ETest extends E2EHelper {
 
-    private static final String SESSION_ID = "JSESSIONID";
+    private static final String SESSION_ID = "SESSION";
 
     @Autowired
     private AdminOrganizationService adminOrganizationService;
