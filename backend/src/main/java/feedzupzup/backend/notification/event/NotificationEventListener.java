@@ -49,7 +49,7 @@ public class NotificationEventListener {
                 List<NotificationPayload> payloads = validSessionAdminIds.stream()
                         .map(adminId -> new NotificationPayload(adminId, event.title(), organizationName))
                         .toList();
-                pushNotifier.sendBatchMessage(payloads);
+                pushNotifier.sendBatchMessage(payloads, organization.getUuid());
                 log.info(organizationName + "알림 전송 완료");
             }
         } catch (NotificationException e) {
