@@ -29,7 +29,7 @@ export function useFeedbackForm(): UseFeedbackFormReturn {
     resetUsername,
   } = useUsername();
 
-  const canSubmit = feedback.trim().length > 0;
+  const canSubmit = feedback.trim().length > 0 && username.trim().length > 0;
 
   const resetForm = useCallback(() => {
     resetFeedback();
