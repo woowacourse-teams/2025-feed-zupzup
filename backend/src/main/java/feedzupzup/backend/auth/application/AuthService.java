@@ -37,7 +37,8 @@ public class AuthService {
     public SignUpResponse signUp(final SignUpRequest request) {
         validateDuplicateLoginId(request.toLoginId());
         final EncodedPassword encodedPassword = passwordEncoder.encode(request.toPassword());
-        final Admin savedAdmin = adminRepository.save(request.toAdmin(encodedPassword));
+        final Admin admin = request.toAdmin(encodedPassword);
+        final Admin savedAdmin = adminRepository.save(admin);
         return SignUpResponse.from(savedAdmin);
     }
 
@@ -62,8 +63,8 @@ public class AuthService {
         return LoginResponse.from(admin);
     }
 
-    public void logout(final Long adminId) {
-        activeSessionStore.removeActiveSession(adminId);
+    public void logout(final AdminSession adminSession) {
+        activeSessionStore.removeActiveSession(adminSession.adminId());
     }
 
 }
