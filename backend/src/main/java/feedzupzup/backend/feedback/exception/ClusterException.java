@@ -11,7 +11,7 @@ public class ClusterException extends DomainException {
 
     public static class EmptyClusteringContentException extends ClusterException {
 
-        private static final ErrorCode errorCode = ErrorCode.INVALID_VALUE_RANGE;
+        private static final ErrorCode errorCode = ErrorCode.EMPTY_CLUSTERING_CONTENT;
 
         public EmptyClusteringContentException(final String message) {
             super(errorCode, message);
