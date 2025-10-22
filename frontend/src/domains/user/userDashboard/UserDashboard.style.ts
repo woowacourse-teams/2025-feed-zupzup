@@ -5,6 +5,7 @@ export const dashboardLayout = css`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 40px;
 `;
 
 export const goOnboardButton = (theme: Theme) => css`

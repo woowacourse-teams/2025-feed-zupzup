@@ -9,9 +9,15 @@ export const skipText = (theme: Theme) => css`
 `;
 
 export const buttonGroupContainer = css`
+  position: fixed;
+  right: 32px;
+  bottom: 50px;
+  left: 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-width: 536px;
+  margin: 0 auto;
 `;
 
 export const submitButtonContainer = css`
@@ -43,6 +49,7 @@ export const mainContent = css`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  padding-bottom: 160px;
 `;
 
 export const arrowLeftIconContainer = css`

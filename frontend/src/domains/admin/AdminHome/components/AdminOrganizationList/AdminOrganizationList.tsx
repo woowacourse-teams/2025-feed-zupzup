@@ -59,6 +59,7 @@ export default function AdminOrganizationList() {
             key={organizations.uuid}
             organizationName={organizations.name}
             waitingCount={organizations.waitingCount}
+            confirmedCount={organizations.confirmedCount}
             postedAt={organizations.postedAt}
             onClick={() => goPath(`/admin/${organizations.uuid}/dashboard`)}
           />

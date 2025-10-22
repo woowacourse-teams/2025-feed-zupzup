@@ -15,7 +15,9 @@
     "lint": "eslint src --ext .ts,.tsx",
     "prettier": "prettier --write .",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "sitemap": "babel-node ./src/generate-sitemap.js",
+    "postbuild:prod": "npm run sitemap"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +25,7 @@
   "type": "module",
   "description": "",
   "dependencies": {
+    "@babel/node": "^7.28.0",
     "@emotion/react": "^11.14.0",
     "@sentry/react": "^9.42.1",
     "@tanstack/react-query": "^5.85.0",
@@ -34,7 +37,8 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-helmet-async": "^2.0.5",
-    "react-router-dom": "^7.7.0"
+    "react-router-dom": "^7.7.0",
+    "sitemap": "^8.0.1"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
@@ -76,7 +80,7 @@
     "eslint-plugin-storybook": "^9.0.17",
     "google-auth-library": "^10.3.0",
     "google-spreadsheet": "^5.0.2",
-    "html-webpack-plugin": "^5.6.3",
+    "html-webpack-plugin": "^5.6.4",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
     "msw": "^2.10.4",
