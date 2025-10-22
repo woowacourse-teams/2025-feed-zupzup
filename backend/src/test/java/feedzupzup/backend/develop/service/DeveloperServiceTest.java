@@ -31,7 +31,7 @@ class DeveloperServiceTest extends ServiceIntegrationHelper {
 
         UpdateAdminPasswordRequest request = new UpdateAdminPasswordRequest(
                 "any-value",
-                savedAdmin.getId(),
+                savedAdmin.getLoginId().value(),
                 "newPassword789"
         );
 
@@ -49,7 +49,7 @@ class DeveloperServiceTest extends ServiceIntegrationHelper {
         // given
         UpdateAdminPasswordRequest request = new UpdateAdminPasswordRequest(
                 "any-value",
-                999L,
+                "999L",
                 "newPassword789"
         );
 

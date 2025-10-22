@@ -21,10 +21,9 @@ public class DeveloperService {
 
     @Transactional
     public void changePassword(final UpdateAdminPasswordRequest request) {
-        Admin admin = adminRepository.findById(request.adminId())
+        Admin admin = adminRepository.findByLoginId_Value(request.loginId())
                 .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 adminId 입니다."));
-        final EncodedPassword newPassword = passwordEncoder.encode(
-                new Password(request.changePasswordValue()));
+        final EncodedPassword newPassword = passwordEncoder.encode(new Password(request.changePasswordValue()));
         admin.changePassword(newPassword);
     }
 }

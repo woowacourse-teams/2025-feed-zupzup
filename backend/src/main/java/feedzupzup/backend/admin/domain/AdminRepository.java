@@ -29,14 +29,5 @@ public interface AdminRepository extends JpaRepository<Admin, Long> {
     @Query("SELECT a.id FROM Admin a WHERE a.id IN :adminIds AND a.alertsOn = true")
     List<Long> findAlertsEnabledAdminIds(List<Long> adminIds);
 
-    @Query("""
-      SELECT EXISTS (
-        SELECT 1
-        FROM Admin admin
-        INNER JOIN Organizer orger ON orger.admin.id = :adminId
-        INNER JOIN Organization org ON orger.organization.id = org.id
-        WHERE org.uuid = :organizationUuid
-      )
-      """)
-    boolean existsByOrganizationUuid(Long adminId, UUID organizationUuid);
+    Optional<Admin> findByLoginId_Value(String loginId);
 }

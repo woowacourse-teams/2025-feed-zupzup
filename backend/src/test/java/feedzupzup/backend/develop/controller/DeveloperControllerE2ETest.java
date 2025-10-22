@@ -42,7 +42,7 @@ class DeveloperControllerE2ETest extends E2EHelper {
 
         UpdateAdminPasswordRequest request = new UpdateAdminPasswordRequest(
                 developerSecretPassword,
-                savedAdmin.getId(),
+                savedAdmin.getLoginId().value(),
                 "newPassword123"  // 변경할 새 비밀번호
         );
 
@@ -70,7 +70,7 @@ class DeveloperControllerE2ETest extends E2EHelper {
 
         UpdateAdminPasswordRequest request = new UpdateAdminPasswordRequest(
                 "wrong-developer-password",  // 잘못된 개발자 인증 비밀번호
-                savedAdmin.getId(),
+                savedAdmin.getLoginId().value(),
                 "newPassword123"
         );
 
@@ -92,7 +92,7 @@ class DeveloperControllerE2ETest extends E2EHelper {
         // given
         UpdateAdminPasswordRequest request = new UpdateAdminPasswordRequest(
                 developerSecretPassword,
-                999L,  // 존재하지 않는 ID
+                "1",  // 존재하지 않는 ID
                 "newPassword123"
         );
 
@@ -138,7 +138,7 @@ class DeveloperControllerE2ETest extends E2EHelper {
         // 개발자 비밀번호 변경 API로 비밀번호 변경
         UpdateAdminPasswordRequest changePasswordRequest = new UpdateAdminPasswordRequest(
                 developerSecretPassword,
-                savedAdmin.getId(),
+                savedAdmin.getLoginId().value(),
                 newPassword
         );
 

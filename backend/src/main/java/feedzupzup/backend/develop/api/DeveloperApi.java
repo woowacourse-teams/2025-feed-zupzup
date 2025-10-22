@@ -20,7 +20,6 @@ public interface DeveloperApi {
             @ApiResponse(responseCode = "200", description = "비밀번호 변경 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", description = "권한 없음", useReturnTypeSchema = true)
     })
-
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/develop/change-password")
     SuccessResponse<Void> change(
