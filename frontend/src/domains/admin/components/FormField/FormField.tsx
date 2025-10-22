@@ -5,6 +5,7 @@ import {
   inputFormField,
   loginForm,
 } from '@/domains/admin/components/FormField/FormField.style';
+import { useAccessibleError } from '@/domains/admin/components/FormField/hooks/useAccessibleError';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { memo, useState } from 'react';
 
@@ -37,6 +38,8 @@ export default memo(function FormField({
   const errorId = `${id}-error`;
   const hasError = touched && !!errorMessage;
 
+  const displayError = useAccessibleError(value, errorMessage, touched);
+
   return (
     <div css={loginForm}>
       <label htmlFor={id} css={fieldLabel(theme)}>
@@ -56,9 +59,14 @@ export default memo(function FormField({
         aria-invalid={hasError}
         aria-describedby={hasError ? errorId : undefined}
       />
-      {errorMessage && (
-        <p id={errorId} css={errorMessageStyle(theme)} role='alert'>
-          {errorMessage}
+      {touched && (
+        <p
+          id={errorId}
+          css={errorMessageStyle(theme, hasError)}
+          aria-live='assertive'
+          aria-atomic='true'
+        >
+          {displayError}
         </p>
       )}
     </div>
