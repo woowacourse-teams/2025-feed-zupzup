@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FeedbackClusteringService {
 
-    private static final double SIMILARITY_THRESHOLD = 0.75;
+    private static final double SIMILARITY_THRESHOLD = 0.83;
     private static final List<Integer> NEW_CLUSTER_LABEL_THRESHOLDS = List.of(1, 5, 15, 30);
 
     private final EmbeddingExtractor embeddingExtractor;
