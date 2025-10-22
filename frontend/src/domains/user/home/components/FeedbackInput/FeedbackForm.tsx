@@ -1,24 +1,25 @@
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
-import {
-  container,
-  formContainer,
-  randomButton,
-  textarea,
-  textareaContainer,
-  formFooterContainer,
-  toggleButtonText,
-  topInputBorder,
-  userInfo,
-  usernameInput,
-  toggleButtonContainer,
-} from './FeedbackForm.styles';
 import Button from '@/components/@commons/Button/Button';
 import Input from '@/components/@commons/Input/Input';
 import TextArea from '@/components/@commons/TextArea/TextArea';
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 import TextareaCounter from '@/components/TextareaCounter/TextareaCounter';
+import { CategoryListType } from '@/constants/categoryList';
 import ImageUploadWithPreview from '@/domains/user/home/components/ImageUploadWithPreview/ImageUploadWithPreview';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import {
+  container,
+  formContainer,
+  formFooterContainer,
+  randomButton,
+  textarea,
+  textareaContainer,
+  toggleButtonContainer,
+  toggleButtonText,
+  topInputBorder,
+  userInfo,
+  usernameInput,
+} from './FeedbackForm.styles';
 
 export interface FeedbackFormProps {
   className?: string;
@@ -28,6 +29,7 @@ export interface FeedbackFormProps {
   canSubmit: boolean;
   file: File | null;
   imgUrl: string | null;
+  feedbackCategory: CategoryListType;
   onChangeFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFeedbackChange: (value: string) => void;
   onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -44,6 +46,7 @@ export default function FeedbackForm({
   isLocked,
   file,
   imgUrl,
+  feedbackCategory,
   onChangeFile,
   onFeedbackChange,
   onUsernameChange,
@@ -88,15 +91,21 @@ export default function FeedbackForm({
         <div css={textareaContainer(theme)}>
           <TextArea
             id='feedbackText'
+            aria-labelledby='feedbackLabel'
             value={feedback}
             onChange={(e) => onFeedbackChange(e.target.value)}
-            placeholder={FEEDBACK_FORM_CONSTANTS.PLACEHOLDER}
+            placeholder={FEEDBACK_FORM_CONSTANTS.PLACEHOLDER(feedbackCategory)}
             customCSS={textarea(theme)}
             maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
             minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
-          <TextareaCounter textLength={feedback.length} aria-live='polite' />
+          <TextareaCounter textLength={feedback.length} />
         </div>
+
+        <p id='nicknameStatus' aria-live='polite' className='srOnly'>
+          현재 <strong>{username || '익명'}</strong> 닉네임으로 글을 작성
+          중입니다. 닉네임을 변경하거나 편집하시려면 상위 입력란을 이용하세요.
+        </p>
       </div>
       <div css={formFooterContainer}>
         <ImageUploadWithPreview
