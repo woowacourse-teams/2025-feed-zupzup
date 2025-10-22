@@ -112,12 +112,13 @@ export default function FeedbackPage({
         />
       );
 
-      if (file && presignedUrl)
+      if (file && presignedUrl) {
         await uploadS3PreSignUrl({
           presignedUrl,
           file,
           contentType: contentType ?? 'image/png',
         });
+      }
 
       await submitFeedback({
         organizationId,
@@ -130,6 +131,7 @@ export default function FeedbackPage({
     } catch (error) {
       closeModal();
       console.error('피드백 제출 실패:', error);
+      return;
     }
   };
 
