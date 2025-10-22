@@ -19,6 +19,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 class FeedbackRepositoryTest extends RepositoryHelper {
 
@@ -31,6 +32,12 @@ class FeedbackRepositoryTest extends RepositoryHelper {
     @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
 
+    @Autowired
+    private EmbeddingClusterRepository embeddingClusterRepository;
+
+    @Autowired
+    private FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
+
     private Organization organization;
     private OrganizationCategory organizationCategory;
 
@@ -42,93 +49,185 @@ class FeedbackRepositoryTest extends RepositoryHelper {
     }
 
     @Nested
-    @DisplayName("클러스터 대표 피드백 조회 테스트")
-    class FindAllRepresentativeFeedbackPerClusterTest {
+    @DisplayName("상위 클러스터 조회 테스트")
+    class FindTopClustersTest {
 
         @Test
-        @DisplayName("조직의 모든 클러스터 대표 피드백을 조회한다")
-        void findAllRepresentativeFeedbackPerCluster_success() {
+        @DisplayName("피드백 수가 많은 순서대로 클러스터를 조회한다")
+        void findTopClusters_ReturnsClustersSortedByFeedbackCount() {
             // given
-            final UUID clusterId1 = UUID.randomUUID();
-            final UUID clusterId2 = UUID.randomUUID();
+            // 첫 번째 클러스터 생성 (피드백 3개)
+            final EmbeddingCluster cluster1 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster1.updateLabel("첫 번째 클러스터");
+            embeddingClusterRepository.save(cluster1);
 
-            // 첫 번째 클러스터의 피드백 3개 (가장 오래된 것이 대표가 됨)
-            final Feedback feedback1_1 = FeedbackFixture.createFeedbackWithCluster(
-                    organization, "첫 번째 클러스터 대표", organizationCategory, clusterId1);
-            final Feedback feedback1_2 = FeedbackFixture.createFeedbackWithCluster(
-                    organization, "첫 번째 클러스터 추가1", organizationCategory, clusterId1);
-            final Feedback feedback1_3 = FeedbackFixture.createFeedbackWithCluster(
-                    organization, "첫 번째 클러스터 추가2", organizationCategory, clusterId1);
+            // 두 번째 클러스터 생성 (피드백 2개)
+            final EmbeddingCluster cluster2 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster2.updateLabel("두 번째 클러스터");
+            embeddingClusterRepository.save(cluster2);
 
-            // 두 번째 클러스터의 피드백 2개
-            final Feedback feedback2_1 = FeedbackFixture.createFeedbackWithCluster(
-                    organization, "두 번째 클러스터 대표", organizationCategory, clusterId2);
-            final Feedback feedback2_2 = FeedbackFixture.createFeedbackWithCluster(
-                    organization, "두 번째 클러스터 추가", organizationCategory, clusterId2);
+            // 세 번째 클러스터 생성 (피드백 1개)
+            final EmbeddingCluster cluster3 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster3.updateLabel("세 번째 클러스터");
+            embeddingClusterRepository.save(cluster3);
 
-            feedbackRepository.save(feedback1_1);
-            feedbackRepository.save(feedback1_2);
-            feedbackRepository.save(feedback1_3);
-            feedbackRepository.save(feedback2_1);
-            feedbackRepository.save(feedback2_2);
+            // 첫 번째 클러스터에 피드백 3개 추가
+            createFeedbackWithCluster(organization, "첫 번째 클러스터 피드백1", organizationCategory, cluster1);
+            createFeedbackWithCluster(organization, "첫 번째 클러스터 피드백2", organizationCategory, cluster1);
+            createFeedbackWithCluster(organization, "첫 번째 클러스터 피드백3", organizationCategory, cluster1);
+
+            // 두 번째 클러스터에 피드백 2개 추가
+            createFeedbackWithCluster(organization, "두 번째 클러스터 피드백1", organizationCategory, cluster2);
+            createFeedbackWithCluster(organization, "두 번째 클러스터 피드백2", organizationCategory, cluster2);
+
+            // 세 번째 클러스터에 피드백 1개 추가
+            createFeedbackWithCluster(organization, "세 번째 클러스터 피드백1", organizationCategory, cluster3);
 
             // when
-            final List<ClusterRepresentativeFeedback> result = feedbackRepository
-                    .findAllRepresentativeFeedbackPerCluster(organization.getUuid());
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), PageRequest.of(0, 10));
 
             // then
-            ClusterRepresentativeFeedback cluster1 = result.stream()
-                    .filter(cluster -> cluster.clusterUuid().equals(clusterId1))
-                    .findFirst()
-                    .orElseThrow();
-            ClusterRepresentativeFeedback cluster2 = result.stream()
-                    .filter(cluster -> cluster.clusterUuid().equals(clusterId2))
-                    .findFirst()
-                    .orElseThrow();
             assertAll(
-                    () -> assertThat(result).hasSize(2),
-                    () -> {
-                        assertThat(cluster1.content()).isEqualTo("첫 번째 클러스터 대표");
-                        assertThat(cluster1.totalCount()).isEqualTo(3);
-                    },
-                    () -> {
-                        assertThat(cluster2.content()).isEqualTo("두 번째 클러스터 대표");
-                        assertThat(cluster2.totalCount()).isEqualTo(2);
-                    }
+                    () -> assertThat(result).hasSize(3),
+                    () -> assertThat(result.get(0).totalCount()).isEqualTo(3), // 첫 번째 클러스터
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(cluster1.getId()),
+                    () -> assertThat(result.get(0).label()).isEqualTo("첫 번째 클러스터"),
+                    () -> assertThat(result.get(1).totalCount()).isEqualTo(2), // 두 번째 클러스터
+                    () -> assertThat(result.get(1).embeddingClusterId()).isEqualTo(cluster2.getId()),
+                    () -> assertThat(result.get(1).label()).isEqualTo("두 번째 클러스터"),
+                    () -> assertThat(result.get(2).totalCount()).isEqualTo(1), // 세 번째 클러스터
+                    () -> assertThat(result.get(2).embeddingClusterId()).isEqualTo(cluster3.getId()),
+                    () -> assertThat(result.get(2).label()).isEqualTo("세 번째 클러스터")
             );
         }
 
         @Test
-        @DisplayName("다른 조직의 피드백은 결과에 포함되지 않는다")
-        void findAllRepresentativeFeedbackPerCluster_excludes_other_organization() {
+        @DisplayName("limit 파라미터에 따라 제한된 개수의 클러스터를 조회한다")
+        void findTopClusters_ReturnsLimitedClusters() {
             // given
-            final Organization otherOrganization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
-            final OrganizationCategory otherOrgCategory = organizationCategoryRepository.save(
-                    OrganizationCategoryFixture.createOrganizationCategory(otherOrganization, SUGGESTION));
+            // 5개의 클러스터 생성
+            final EmbeddingCluster cluster1 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster1.updateLabel("클러스터1");
+            embeddingClusterRepository.save(cluster1);
 
-            final UUID clusterId = UUID.randomUUID();
+            final EmbeddingCluster cluster2 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster2.updateLabel("클러스터2");
+            embeddingClusterRepository.save(cluster2);
 
-            // 내 조직의 피드백
-            final Feedback myFeedback = FeedbackFixture.createFeedbackWithCluster(
-                    organization, "내 조직 피드백", organizationCategory, clusterId);
+            final EmbeddingCluster cluster3 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster3.updateLabel("클러스터3");
+            embeddingClusterRepository.save(cluster3);
 
-            // 다른 조직의 피드백 (같은 클러스터 ID)
-            final Feedback otherFeedback = FeedbackFixture.createFeedbackWithCluster(
-                    otherOrganization, "다른 조직 피드백", otherOrgCategory, clusterId);
+            final EmbeddingCluster cluster4 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster4.updateLabel("클러스터4");
+            embeddingClusterRepository.save(cluster4);
 
-            feedbackRepository.save(myFeedback);
-            feedbackRepository.save(otherFeedback);
+            final EmbeddingCluster cluster5 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            cluster5.updateLabel("클러스터5");
+            embeddingClusterRepository.save(cluster5);
+
+            // 각 클러스터에 피드백 추가 (5개, 4개, 3개, 2개, 1개)
+            for (int i = 0; i < 5; i++) {
+                createFeedbackWithCluster(organization, "클러스터1 피드백" + i, organizationCategory, cluster1);
+            }
+            for (int i = 0; i < 4; i++) {
+                createFeedbackWithCluster(organization, "클러스터2 피드백" + i, organizationCategory, cluster2);
+            }
+            for (int i = 0; i < 3; i++) {
+                createFeedbackWithCluster(organization, "클러스터3 피드백" + i, organizationCategory, cluster3);
+            }
+            for (int i = 0; i < 2; i++) {
+                createFeedbackWithCluster(organization, "클러스터4 피드백" + i, organizationCategory, cluster4);
+            }
+            createFeedbackWithCluster(organization, "클러스터5 피드백1", organizationCategory, cluster5);
+
+            // when - limit 3으로 상위 3개만 조회
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(),  PageRequest.of(0, 3));
+
+            // then
+            assertAll(
+                    () -> assertThat(result).hasSize(3), // limit 3개만 반환
+                    () -> assertThat(result.get(0).totalCount()).isEqualTo(5), // 가장 많은 피드백 수
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(cluster1.getId().intValue()),
+                    () -> assertThat(result.get(1).totalCount()).isEqualTo(4), // 두 번째로 많은 피드백 수
+                    () -> assertThat(result.get(1).embeddingClusterId()).isEqualTo(cluster2.getId().intValue()),
+                    () -> assertThat(result.get(2).totalCount()).isEqualTo(3), // 세 번째로 많은 피드백 수
+                    () -> assertThat(result.get(2).embeddingClusterId()).isEqualTo(cluster3.getId().intValue())
+            );
+        }
+
+        @Test
+        @DisplayName("피드백이 0개인 클러스터는 조회되지 않는다")
+        void findTopClusters_DoesNotReturnEmptyClusters() {
+            // given
+            // 피드백이 있는 클러스터 생성
+            final EmbeddingCluster clusterWithFeedback = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            clusterWithFeedback.updateLabel("피드백이 있는 클러스터");
+            embeddingClusterRepository.save(clusterWithFeedback);
+
+            // 피드백이 없는 클러스터 생성
+            final EmbeddingCluster emptyCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            emptyCluster.updateLabel("피드백이 없는 클러스터");
+            embeddingClusterRepository.save(emptyCluster);
+
+            // 첫 번째 클러스터에만 피드백 추가
+            createFeedbackWithCluster(organization, "유일한 피드백", organizationCategory, clusterWithFeedback);
 
             // when
-            final List<ClusterRepresentativeFeedback> result = feedbackRepository
-                    .findAllRepresentativeFeedbackPerCluster(organization.getUuid());
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), PageRequest.of(0, 10));
 
             // then
             assertAll(
                     () -> assertThat(result).hasSize(1),
-                    () -> assertThat(result.get(0).content()).isEqualTo("내 조직 피드백"),
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(clusterWithFeedback.getId().intValue()),
+                    () -> assertThat(result.get(0).label()).isEqualTo("피드백이 있는 클러스터"),
                     () -> assertThat(result.get(0).totalCount()).isEqualTo(1)
             );
+        }
+
+        @Test
+        @DisplayName("다른 조직의 클러스터는 조회되지 않는다")
+        void findTopClusters_DoesNotReturnOtherOrganizationClusters() {
+            // given
+            // 다른 조직 생성
+            final Organization otherOrganization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
+            final OrganizationCategory otherCategory = organizationCategoryRepository.save(
+                    OrganizationCategoryFixture.createOrganizationCategory(otherOrganization, SUGGESTION));
+
+            // 내 조직의 클러스터
+            final EmbeddingCluster myCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            myCluster.updateLabel("내 조직 클러스터");
+            embeddingClusterRepository.save(myCluster);
+
+            // 다른 조직의 클러스터
+            final EmbeddingCluster otherCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+            otherCluster.updateLabel("다른 조직 클러스터");
+            embeddingClusterRepository.save(otherCluster);
+
+            // 각 조직에 피드백 추가
+            createFeedbackWithCluster(organization, "내 조직 피드백", organizationCategory, myCluster);
+            createFeedbackWithCluster(otherOrganization, "다른 조직 피드백", otherCategory, otherCluster);
+
+            // when
+            final List<ClusterInfo> result = feedbackRepository.findTopClusters(organization.getUuid(), PageRequest.of(0, 10));
+
+            // then
+            assertAll(
+                    () -> assertThat(result).hasSize(1),
+                    () -> assertThat(result.get(0).embeddingClusterId()).isEqualTo(myCluster.getId().intValue()),
+                    () -> assertThat(result.get(0).label()).isEqualTo("내 조직 클러스터"),
+                    () -> assertThat(result.get(0).totalCount()).isEqualTo(1)
+            );
+        }
+
+        private void createFeedbackWithCluster(Organization organization, String content, 
+                                               OrganizationCategory category, EmbeddingCluster cluster) {
+            final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, content, category);
+            final Feedback savedFeedback = feedbackRepository.save(feedback);
+            
+            final FeedbackEmbeddingCluster feedbackCluster = FeedbackEmbeddingCluster.createNewCluster(
+                    new double[]{0.1, 0.2, 0.3}, savedFeedback, cluster);
+            feedbackEmbeddingClusterRepository.save(feedbackCluster);
         }
     }
 }

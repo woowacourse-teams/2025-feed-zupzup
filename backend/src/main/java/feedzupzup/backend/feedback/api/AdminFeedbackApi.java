@@ -7,7 +7,7 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
-import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
@@ -105,9 +105,10 @@ public interface AdminFeedbackApi {
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/clusters")
-    SuccessResponse<ClusterRepresentativeFeedbacksResponse> getRepresentativeCluster(
-            @Parameter(hidden = true) @LoginOrganizer final AdminSession adminSession,
-            @PathVariable("organizationUuid") UUID organizationUuid
+    SuccessResponse<ClustersResponse> getTopClusters(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            @PathVariable("organizationUuid") UUID organizationUuid,
+            @RequestParam(required = false, defaultValue = "5") final int limit
     );
 
     @Operation(summary = "특정 클러스터 피드백 전체 조회", description = "특정 클러스터에 속한 전체 피드백을 조회합니다. (관리자 전용)")
@@ -118,8 +119,9 @@ public interface AdminFeedbackApi {
     })
     @SecurityRequirement(name = "SessionAuth")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/admin/organizations/clusters/{clusterId}")
+    @GetMapping("/admin/organizations/{organizationUuid}/clusters/{clusterId}")
     SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
-            @PathVariable("clusterId") UUID clusterId
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            @PathVariable("clusterId") Long clusterId
     );
 }

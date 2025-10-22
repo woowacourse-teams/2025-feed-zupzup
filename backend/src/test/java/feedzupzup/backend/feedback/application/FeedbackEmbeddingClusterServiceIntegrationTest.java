@@ -9,6 +9,8 @@ import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
@@ -24,13 +26,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Disabled("실제 API 호출이 필요한 테스트 - 필요시에만 활성화")
-class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper {
+class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackClusteringService feedbackClusteringService;
 
     @Autowired
     private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -67,18 +72,16 @@ class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper 
             final Feedback savedSecondFeedback = feedbackRepository.save(secondFeedback);
 
             // when
-            feedbackClusteringService.cluster(savedFirstFeedback.getId());
-            feedbackClusteringService.cluster(savedSecondFeedback.getId());
+            FeedbackEmbeddingCluster firstCluster = feedbackClusteringService.cluster(savedFirstFeedback.getId());
+            FeedbackEmbeddingCluster secondCluster = feedbackClusteringService.cluster(savedSecondFeedback.getId());
 
             // then
-            final Feedback clusteredFirst = feedbackRepository.findById(savedFirstFeedback.getId()).orElseThrow();
-            final Feedback clusteredSecond = feedbackRepository.findById(savedSecondFeedback.getId()).orElseThrow();
             assertAll(
-                    () -> assertThat(clusteredFirst.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredSecond.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredFirst.getClustering().clusterId())
-                            .isEqualTo(clusteredSecond.getClustering().clusterId()),
-                    () -> assertThat(clusteredSecond.getClustering().similarityScore()).isGreaterThan(0.75)
+                    () -> assertThat(firstCluster).isNotNull(),
+                    () -> assertThat(secondCluster).isNotNull(),
+                    () -> assertThat(firstCluster.getEmbeddingCluster().getId())
+                            .isEqualTo(secondCluster.getEmbeddingCluster().getId()),
+                    () -> assertThat(secondCluster.getSimilarityScore()).isGreaterThan(0.75)
             );
         }
 
@@ -97,18 +100,15 @@ class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper 
             final Feedback savedServiceFeedback = feedbackRepository.save(serviceFeedback);
 
             // when
-            feedbackClusteringService.cluster(savedFoodFeedback.getId());
-            feedbackClusteringService.cluster(savedServiceFeedback.getId());
+            FeedbackEmbeddingCluster foodCluster = feedbackClusteringService.cluster(savedFoodFeedback.getId());
+            FeedbackEmbeddingCluster serviceCluster = feedbackClusteringService.cluster(savedServiceFeedback.getId());
 
             // then
-            final Feedback clusteredFood = feedbackRepository.findById(savedFoodFeedback.getId()).orElseThrow();
-            final Feedback clusteredService = feedbackRepository.findById(savedServiceFeedback.getId()).orElseThrow();
-
             assertAll(
-                    () -> assertThat(clusteredFood.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredService.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredFood.getClustering().clusterId())
-                            .isNotEqualTo(clusteredService.getClustering().clusterId())
+                    () -> assertThat(foodCluster).isNotNull(),
+                    () -> assertThat(serviceCluster).isNotNull(),
+                    () -> assertThat(foodCluster.getEmbeddingCluster().getId())
+                            .isNotEqualTo(serviceCluster.getEmbeddingCluster().getId())
             );
         }
 
@@ -145,31 +145,27 @@ class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper 
             final Feedback savedComplexITFeedback = feedbackRepository.save(complexITFeedback);
 
             // when
-            feedbackClusteringService.cluster(savedComplexRestaurantFeedback.getId());
-            feedbackClusteringService.cluster(savedSimilarRestaurantFeedback.getId());
-            feedbackClusteringService.cluster(savedComplexITFeedback.getId());
+            FeedbackEmbeddingCluster restaurantCluster1 = feedbackClusteringService.cluster(savedComplexRestaurantFeedback.getId());
+            FeedbackEmbeddingCluster restaurantCluster2 = feedbackClusteringService.cluster(savedSimilarRestaurantFeedback.getId());
+            FeedbackEmbeddingCluster itCluster = feedbackClusteringService.cluster(savedComplexITFeedback.getId());
 
             // then
-            final Feedback clusteredRestaurant1 = feedbackRepository.findById(savedComplexRestaurantFeedback.getId()).orElseThrow();
-            final Feedback clusteredRestaurant2 = feedbackRepository.findById(savedSimilarRestaurantFeedback.getId()).orElseThrow();
-            final Feedback clusteredIT = feedbackRepository.findById(savedComplexITFeedback.getId()).orElseThrow();
-
             assertAll(
                     // 모든 피드백이 클러스터링되었는지 확인
-                    () -> assertThat(clusteredRestaurant1.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredRestaurant2.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredIT.getClustering()).isNotNull(),
+                    () -> assertThat(restaurantCluster1).isNotNull(),
+                    () -> assertThat(restaurantCluster2).isNotNull(),
+                    () -> assertThat(itCluster).isNotNull(),
                     
                     // 유사한 레스토랑 리뷰들이 같은 클러스터로 묶였는지 확인
-                    () -> assertThat(clusteredRestaurant1.getClustering().clusterId())
-                            .isEqualTo(clusteredRestaurant2.getClustering().clusterId()),
+                    () -> assertThat(restaurantCluster1.getEmbeddingCluster().getId())
+                            .isEqualTo(restaurantCluster2.getEmbeddingCluster().getId()),
                     
                     // IT 서비스 리뷰는 다른 클러스터로 분류되었는지 확인
-                    () -> assertThat(clusteredRestaurant1.getClustering().clusterId())
-                            .isNotEqualTo(clusteredIT.getClustering().clusterId()),
+                    () -> assertThat(restaurantCluster1.getEmbeddingCluster().getId())
+                            .isNotEqualTo(itCluster.getEmbeddingCluster().getId()),
                     
                     // 유사도 점수가 임계값 이상인지 확인
-                    () -> assertThat(clusteredRestaurant2.getClustering().similarityScore()).isGreaterThan(0.75)
+                    () -> assertThat(restaurantCluster2.getSimilarityScore()).isGreaterThan(0.75)
             );
         }
 
@@ -187,10 +183,9 @@ class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper 
             final Feedback firstFeedback = FeedbackFixture.createFeedbackWithContent(
                     organization, positiveFoodReviews[0], organizationCategory);
             final Feedback savedFirstFeedback = feedbackRepository.save(firstFeedback);
-            feedbackClusteringService.cluster(savedFirstFeedback.getId());
+            FeedbackEmbeddingCluster firstCluster = feedbackClusteringService.cluster(savedFirstFeedback.getId());
 
-            final UUID firstClusterId = feedbackRepository.findById(savedFirstFeedback.getId())
-                    .orElseThrow().getClustering().clusterId();
+            final Long firstClusterId = firstCluster.getEmbeddingCluster().getId();
 
             // when
             for (int i = 1; i < positiveFoodReviews.length; i++) {
@@ -201,12 +196,12 @@ class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper 
             }
 
             //then
-            final List<Feedback> clusteredFeedback = feedbackRepository.findAllByClustering_ClusterId(firstClusterId);
+            final List<FeedbackEmbeddingCluster> clusteredFeedbacks = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(firstCluster.getEmbeddingCluster());
             assertAll(
-                    () -> assertThat(clusteredFeedback).hasSize(3),
-                    () -> assertThat(clusteredFeedback)
-                            .allSatisfy(feedback ->
-                                    assertThat(feedback.getClustering().similarityScore()).isGreaterThan(0.75)
+                    () -> assertThat(clusteredFeedbacks).hasSize(3),
+                    () -> assertThat(clusteredFeedbacks)
+                            .allSatisfy(cluster ->
+                                    assertThat(cluster.getSimilarityScore()).isGreaterThan(0.75)
                             )
             );
         }
@@ -241,31 +236,27 @@ class FeedbackClusteringServiceIntegrationTest extends ServiceIntegrationHelper 
             final Feedback savedNeutralEducationFeedback = feedbackRepository.save(neutralEducationFeedback);
 
             // when
-            feedbackClusteringService.cluster(savedPositiveFoodFeedback.getId());
-            feedbackClusteringService.cluster(savedNegativeFoodFeedback.getId());
-            feedbackClusteringService.cluster(savedNeutralEducationFeedback.getId());
+            FeedbackEmbeddingCluster positiveFoodCluster = feedbackClusteringService.cluster(savedPositiveFoodFeedback.getId());
+            FeedbackEmbeddingCluster negativeFoodCluster = feedbackClusteringService.cluster(savedNegativeFoodFeedback.getId());
+            FeedbackEmbeddingCluster educationCluster = feedbackClusteringService.cluster(savedNeutralEducationFeedback.getId());
 
             // then
-            final Feedback clusteredPositiveFood = feedbackRepository.findById(savedPositiveFoodFeedback.getId()).orElseThrow();
-            final Feedback clusteredNegativeFood = feedbackRepository.findById(savedNegativeFoodFeedback.getId()).orElseThrow();
-            final Feedback clusteredEducation = feedbackRepository.findById(savedNeutralEducationFeedback.getId()).orElseThrow();
-
             assertAll(
                     // 모든 피드백이 클러스터링되었는지 확인
-                    () -> assertThat(clusteredPositiveFood.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredNegativeFood.getClustering()).isNotNull(),
-                    () -> assertThat(clusteredEducation.getClustering()).isNotNull(),
+                    () -> assertThat(positiveFoodCluster).isNotNull(),
+                    () -> assertThat(negativeFoodCluster).isNotNull(),
+                    () -> assertThat(educationCluster).isNotNull(),
                     
                     // 같은 음식 주제지만 감정이 다른 리뷰들의 클러스터링 결과 확인
                     // (임베딩 모델에 따라 같거나 다를 수 있음)
-                    () -> assertThat(clusteredPositiveFood.getClustering().clusterId()).isNotNull(),
-                    () -> assertThat(clusteredNegativeFood.getClustering().clusterId()).isNotNull(),
+                    () -> assertThat(positiveFoodCluster.getEmbeddingCluster().getId()).isNotNull(),
+                    () -> assertThat(negativeFoodCluster.getEmbeddingCluster().getId()).isNotNull(),
                     
                     // 다른 주제(교육)는 확실히 다른 클러스터로 분류되어야 함
-                    () -> assertThat(clusteredPositiveFood.getClustering().clusterId())
-                            .isNotEqualTo(clusteredEducation.getClustering().clusterId()),
-                    () -> assertThat(clusteredNegativeFood.getClustering().clusterId())
-                            .isNotEqualTo(clusteredEducation.getClustering().clusterId())
+                    () -> assertThat(positiveFoodCluster.getEmbeddingCluster().getId())
+                            .isNotEqualTo(educationCluster.getEmbeddingCluster().getId()),
+                    () -> assertThat(negativeFoodCluster.getEmbeddingCluster().getId())
+                            .isNotEqualTo(educationCluster.getEmbeddingCluster().getId())
             );
         }
     }

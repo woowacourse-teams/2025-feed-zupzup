@@ -1,0 +1,38 @@
+package feedzupzup.backend.feedback.domain;
+
+import feedzupzup.backend.global.BaseTimeEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
+@Entity
+@Getter
+@NoArgsConstructor
+@SQLDelete(sql = "UPDATE embedding_cluster SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
+@SQLRestriction("deleted_at IS NULL")
+public class EmbeddingCluster extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String label;
+
+    @Column(name = "deleted_at")
+    protected LocalDateTime deletedAt;
+
+    public static EmbeddingCluster createEmpty() {
+        return new EmbeddingCluster();
+    }
+
+    public void updateLabel(final String label) {
+        this.label = label;
+    }
+}

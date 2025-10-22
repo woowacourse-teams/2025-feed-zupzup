@@ -1,7 +1,6 @@
 package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +56,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
                 (f.likeCount = (SELECT f2.likeCount FROM Feedback f2 WHERE f2.id = :cursorId) AND f.id < :cursorId)
             )
             AND f.deletedAt IS NULL
-            ORDER BY f.likeCount DESC, f.id ASC
+            ORDER BY f.likeCount.value DESC, f.id ASC
             """)
     List<Feedback> findByLikes(
             @Param("organizationUuid") UUID organizationUuid,
@@ -65,10 +64,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             @Param("cursorId") Long cursorId,
             Pageable pageable
     );
-
-    List<Feedback> findByIdIn(Collection<Long> ids);
-
-    List<Feedback> findByOrganizationUuidAndIdIn(final UUID uuid, final Collection<Long> id);
 
     @Query("""
             SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
@@ -98,45 +93,23 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     void deleteAllByOrganizationId(Long organizationId);
 
-    @Query(value = """
-                SELECT 
-                    BIN_TO_UUID(f.cluster_id) AS clusterId,
-                    (
-                        SELECT f2.content
-                        FROM feedback f2
-                        WHERE f2.cluster_id = f.cluster_id
-                        ORDER BY f2.created_at ASC
-                        LIMIT 1
-                    ) AS content,
-                    COUNT(f.id) AS totalCount
-                FROM feedback f
-                    JOIN organization org
-                    ON f.organization_id = org.id
-                WHERE org.uuid = :organizationUuid
-                    AND f.deleted_at IS NULL
-                    AND f.cluster_id IS NOT NULL
-                GROUP BY f.cluster_id
-                ORDER BY MIN(f.id)
-            """, nativeQuery = true)
-    List<ClusterRepresentativeFeedback> findAllRepresentativeFeedbackPerCluster(final UUID organizationUuid);
-
-    List<Feedback> findAllByClustering_ClusterId(final UUID clusterId);
-
     @Query("""
-                SELECT MIN(f.id)
-                FROM Feedback f
-                WHERE f.organization.uuid = :organizationUuid
-                    AND f.deletedAt IS NULL
-                    AND f.clustering.clusterId IS NOT NULL
-                GROUP BY f.clustering.clusterId
-            """)
-    List<Long> findOldestFeedbackIdPerCluster(final UUID organizationUuid);
-
-    @Query("""
-                SELECT f
-                FROM Feedback f
-                WHERE f.id IN :feedbackIds
-                ORDER BY f.id
-            """)
-    List<Feedback> findByIdIn(final List<Long> feedbackIds);
+        SELECT new feedzupzup.backend.feedback.domain.ClusterInfo(
+            ec.id,
+            ec.label,
+            COUNT(fec.id)
+        )
+        FROM Feedback f
+        JOIN f.organization org
+        JOIN FeedbackEmbeddingCluster fec ON fec.feedback.id = f.id
+        JOIN fec.embeddingCluster ec
+        WHERE org.uuid = :organizationUuid
+        GROUP BY ec.id, ec.label
+        HAVING COUNT(fec.id) >= 1
+        ORDER BY COUNT(fec.id) DESC
+        """)
+    List<ClusterInfo> findTopClusters(
+            @Param("organizationUuid") UUID organizationUuid,
+            Pageable pageable
+            );
 }
