@@ -11,6 +11,7 @@ import {
   buttonContainer,
   title,
   skipIcon,
+  bottomButton,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Analytics, onboardingEvents } from '@/analytics';
@@ -64,13 +65,15 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           ))}
         </div>
       </div>
-      <BasicButton
-        icon={<p css={skipIcon}>📄</p>}
-        variant='secondary'
-        onClick={handleViewSuggestionsClick}
-      >
-        <p css={skipText(theme)}>건의 목록 보러가기</p>
-      </BasicButton>
+      <div css={bottomButton}>
+        <BasicButton
+          icon={<p css={skipIcon}>📄</p>}
+          variant='secondary'
+          onClick={handleViewSuggestionsClick}
+        >
+          <p css={skipText(theme)}>건의 목록 보러가기</p>
+        </BasicButton>
+      </div>
     </section>
   );
 }

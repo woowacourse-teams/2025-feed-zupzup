@@ -5,7 +5,6 @@ import {
 } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { NotificationService } from '@/services/notificationService';
 import { setLocalStorage } from '@/utils/localStorage';
@@ -32,7 +31,6 @@ export default function useSignup({
   setToast,
 }: UseSignupProps) {
   const { goPath } = useNavigation();
-  const { showErrorModal } = useErrorModalContext();
 
   const { mutate: adminSignup, isPending } = useMutation<
     AdminAuthResponse,
@@ -40,9 +38,6 @@ export default function useSignup({
     PostAdminSignupParams
   >({
     mutationFn: postAdminSignup,
-    onError: (error) => {
-      showErrorModal(error, '회원가입 요청 실패');
-    },
     onSuccess: (response) => {
       setLocalStorage('auth', response.data);
       goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);

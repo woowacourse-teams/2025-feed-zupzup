@@ -8,12 +8,14 @@ import {
   buttonContainer,
 } from '@/components/Modal/Modal.styles';
 import { useEffect, useRef } from 'react';
+import { PostAdminLogoutResponse } from '@/apis/admin.api';
+
 
 export interface ConfirmModalProps {
   onClose: () => void;
   title: string;
   message?: string;
-  onConfirm?: () => void;
+  onConfirm?: () => Promise<void | PostAdminLogoutResponse> | void;
   confirmText?: string;
   cancelText?: string;
   width?: number;
@@ -36,9 +38,13 @@ export default function ConfirmModal({
   const titleId = 'confirm-modal-title';
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleConfirm = () => {
-    onConfirm?.();
-    onClose();
+  const handleConfirm = async () => {
+    try {
+      await onConfirm?.();
+      onClose();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {

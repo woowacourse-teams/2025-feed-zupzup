@@ -55,14 +55,18 @@ export default function AnswerModal({
           <TextArea
             ref={textareaRef}
             minLength={1}
-            maxLength={200}
+            maxLength={500}
             value={answer}
             onChange={handleAnswerChange}
             placeholder='사용자에게 전달할 메시지를 작성해주세요.(선택사항)'
             customCSS={contentTextarea(theme)}
             aria-label='답변 작성'
           />
-          <TextareaCounter textLength={answer.length} />
+          <TextareaCounter
+            textLength={answer.length}
+            right='16px'
+            bottom='-23px'
+          />
         </div>
         {answer.length === 0 ? (
           <p>답변 없이 완료 처리됩니다.</p>
