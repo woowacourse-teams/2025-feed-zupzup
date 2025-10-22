@@ -81,7 +81,7 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
                     () -> assertThat(secondCluster).isNotNull(),
                     () -> assertThat(firstCluster.getEmbeddingCluster().getId())
                             .isEqualTo(secondCluster.getEmbeddingCluster().getId()),
-                    () -> assertThat(secondCluster.getSimilarityScore()).isGreaterThan(0.75)
+                    () -> assertThat(secondCluster.getSimilarityScore()).isGreaterThan(0.83)
             );
         }
 
@@ -165,7 +165,7 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
                             .isNotEqualTo(itCluster.getEmbeddingCluster().getId()),
                     
                     // 유사도 점수가 임계값 이상인지 확인
-                    () -> assertThat(restaurantCluster2.getSimilarityScore()).isGreaterThan(0.75)
+                    () -> assertThat(restaurantCluster2.getSimilarityScore()).isGreaterThan(0.83)
             );
         }
 
@@ -201,7 +201,7 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
                     () -> assertThat(clusteredFeedbacks).hasSize(3),
                     () -> assertThat(clusteredFeedbacks)
                             .allSatisfy(cluster ->
-                                    assertThat(cluster.getSimilarityScore()).isGreaterThan(0.75)
+                                    assertThat(cluster.getSimilarityScore()).isGreaterThan(0.83)
                             )
             );
         }

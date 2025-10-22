@@ -109,7 +109,7 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result.getEmbeddingCluster().getId()).isEqualTo(existingClusterId),
-                    () -> assertThat(result.getSimilarityScore()).isGreaterThan(0.75)
+                    () -> assertThat(result.getSimilarityScore()).isGreaterThan(0.83)
             );
             verify(embeddingExtractor).extract("기존 피드백");
             verify(embeddingExtractor).extract("새로운 피드백");
@@ -141,7 +141,7 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             final Feedback newFeedback = FeedbackFixture.createFeedbackWithContent(
                     organization, "새로운 피드백", organizationCategory);
             final Feedback savedNewFeedback = feedbackRepository.save(newFeedback);
-            // 두 번째 클러스터와 더 유사한 임베딩 (첫 번째 클러스터: 유사도 ~0.87, 두 번째 클러스터: 유사도 ~0.95)
+            // 두 번째 클러스터와 더 유사한 임베딩 (첫 번째 클러스터: 유사도 ~0.837, 두 번째 클러스터: 유사도 ~0.95)
             final double[] newEmbedding = {0.12, 0.22, 0.32, 0.42, 0.52};
             given(embeddingExtractor.extract("새로운 피드백")).willReturn(newEmbedding);
 
