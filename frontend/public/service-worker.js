@@ -20,22 +20,24 @@ try {
   });
 
   const messaging = firebase.messaging();
-
-  messaging.onBackgroundMessage(({ data }) => {
-    const title = (data && data.title) || '새 알림';
-    const options = {
-      body: (data && data.body) || '',
-      icon: (data && data.icon) || '/192x192.png',
-      data,
-      requireInteraction: true,
-    };
-
-    self.registration.showNotification(title, options);
-  });
 } catch (error) {
   console.error('Firebase messaging 초기화 실패:', error);
 }
 
+// ===== Push 이벤트 처리 =====
+self.addEventListener('push', (event) => {
+  const payload = event.data?.json();
+
+  const notificationTitle = payload.data?.title || '새 알림';
+  const notificationOptions = {
+    body: payload.data?.body || '내용 없음',
+    icon: '/192x192.png',
+    data: payload.data,
+    requireInteraction: true,
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
 // ===== Install - 모든 캐시 삭제 및 즉시 활성화 =====
 self.addEventListener('install', (event) => {
   event.waitUntil(
