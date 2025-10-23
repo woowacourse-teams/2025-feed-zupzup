@@ -91,9 +91,17 @@ jobs:
             --region ap-northeast-2
 
       - name: CodeDeploy로 배포
-        run: |
-          aws deploy create-deployment \
+        run: |          
+          DEPLOYMENT_ID=$(aws deploy create-deployment \
             --application-name feed-zupzup-prod-deploy \
             --deployment-group-name feedzupzup-prod-deploy-group \
             --s3-location bucket=${{ secrets.S3_DEPLOYMENT_BUCKET }},key=feed-zupzup/${{ secrets.S3_DEPLOYMENT_DIR }}/deploy/deployment.zip,bundleType=zip \
+            --region ap-northeast-2 \
+            --query 'deploymentId' \
+            --output text)
+
+          echo "Deployment ID: $DEPLOYMENT_ID"
+          
+          aws deploy wait deployment-successful \
+            --deployment-id $DEPLOYMENT_ID \
             --region ap-northeast-2
