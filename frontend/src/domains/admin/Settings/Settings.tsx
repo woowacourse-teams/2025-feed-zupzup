@@ -43,7 +43,7 @@ export default function Settings() {
 
   const getNotificationMessage = () => {
     if (needsPWAInstall) {
-      return '알림을 받으려면 홈 화면에 앱을 추가해주세요';
+      return '알림을 받기위해 홈 화면에 앱을 추가해주세요. 터치하면 설치 화면이 나옵니다.';
     }
     return '푸시 알림 받기 설정';
   };
