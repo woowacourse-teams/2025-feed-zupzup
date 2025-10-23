@@ -62,7 +62,7 @@ export default function AISummary({ onClose }: AISummaryProps) {
                 height={'200px'}
                 textIcon='💭'
                 title='아직 데이터를 모으는 중이에요.'
-                description='피드백을 더 작성하시면 AI 요약을 볼 수 있어요!'
+                description='피드백이 더 작성되면 AI 요약을 볼 수 있어요!'
               />
             ) : (
               data?.clusterInfos.map((category, index) => (
