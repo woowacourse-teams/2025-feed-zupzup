@@ -62,11 +62,10 @@ public class FcmPushNotifier implements PushNotifier {
     private void sendBatch(List<String> tokens, String title, String message, final UUID organizationUuid) {
         try {
             MulticastMessage multicastMessage = MulticastMessage.builder()
-                    .setNotification(com.google.firebase.messaging.Notification.builder()
-                            .setTitle(title)
-                            .setBody(message)
-                            .build())
+                    .putData("title", title)  // 타이틀을 data에 포함
+                    .putData("message", message)
                     .putData("organizationUuid", organizationUuid.toString())
+                    .addAllTokens(tokens)
                     .addAllTokens(tokens)
                     .build();
 
