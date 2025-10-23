@@ -1,8 +1,8 @@
-import { logError, ErrorType, ErrorSeverity } from '@/utils/errorLogger';
 import {
   DEFAULT_ERROR_MESSAGE,
   FETCH_ERROR_MESSAGE,
 } from '@/constants/errorMessage';
+import { ErrorSeverity, ErrorType, logError } from '@/utils/errorLogger';
 import {
   isEmptyResponse,
   isErrorWithStatus,
@@ -11,27 +11,22 @@ import {
 
 type FetchMethodType = 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT';
 
-interface ApiClientProps<RequestBody, Response> {
+interface ApiClientProps<RequestBody> {
   method: FetchMethodType;
   URI: string;
   body?: RequestBody;
-  onSuccess?: (data: Response) => void;
-  onError?: () => void;
 }
 
 export const apiClient = {
   get: <Response>(
     URI: string,
-    options?: Omit<ApiClientProps<undefined, Response>, 'method' | 'URI'>
+    options?: Omit<ApiClientProps<undefined>, 'method' | 'URI'>
   ) => baseClient<Response, undefined>({ ...options, method: 'GET', URI }),
 
   post: <Response, RequestBody>(
     URI: string,
     body: RequestBody,
-    options?: Omit<
-      ApiClientProps<RequestBody, Response>,
-      'method' | 'URI' | 'body'
-    >
+    options?: Omit<ApiClientProps<RequestBody>, 'method' | 'URI' | 'body'>
   ) =>
     baseClient<Response, RequestBody>({
       ...options,
@@ -43,10 +38,7 @@ export const apiClient = {
   put: <Response, RequestBody>(
     URI: string,
     body: RequestBody,
-    options?: Omit<
-      ApiClientProps<RequestBody, Response>,
-      'method' | 'URI' | 'body'
-    >
+    options?: Omit<ApiClientProps<RequestBody>, 'method' | 'URI' | 'body'>
   ) =>
     baseClient<Response, RequestBody>({
       ...options,
@@ -57,7 +49,7 @@ export const apiClient = {
 
   delete: <Response>(
     URI: string,
-    options?: Omit<ApiClientProps<undefined, Response>, 'method' | 'URI'>
+    options?: Omit<ApiClientProps<undefined>, 'method' | 'URI'>
   ) =>
     baseClient<Response, undefined>({
       ...options,
@@ -68,10 +60,7 @@ export const apiClient = {
   deleteWithBody: <Response, RequestBody>(
     URI: string,
     body: RequestBody,
-    options?: Omit<
-      ApiClientProps<RequestBody, Response>,
-      'method' | 'URI' | 'body'
-    >
+    options?: Omit<ApiClientProps<RequestBody>, 'method' | 'URI' | 'body'>
   ) =>
     baseClient<Response, RequestBody>({
       ...options,
@@ -83,10 +72,7 @@ export const apiClient = {
   patch: <Response, RequestBody>(
     URI: string,
     body: RequestBody,
-    options?: Omit<
-      ApiClientProps<RequestBody, Response>,
-      'method' | 'URI' | 'body'
-    >
+    options?: Omit<ApiClientProps<RequestBody>, 'method' | 'URI' | 'body'>
   ) =>
     baseClient<Response, RequestBody>({
       ...options,
@@ -100,9 +86,7 @@ async function baseClient<Response, RequestBody>({
   method,
   URI,
   body,
-  onSuccess,
-  onError,
-}: ApiClientProps<RequestBody, Response>): Promise<Response | void> {
+}: ApiClientProps<RequestBody>): Promise<Response | void> {
   const headers: Record<string, string> = {
     'Content-type': 'application/json',
   };
@@ -124,7 +108,6 @@ async function baseClient<Response, RequestBody>({
 
     if (isSuccess(response)) {
       const data = await response.json();
-      onSuccess?.(data);
       return data;
     }
 
@@ -154,8 +137,6 @@ async function baseClient<Response, RequestBody>({
 
     throw new Error(DEFAULT_ERROR_MESSAGE);
   } catch (error) {
-    onError?.();
-
     if (error instanceof ApiError) {
       throw error;
     }

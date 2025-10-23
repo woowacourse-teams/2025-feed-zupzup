@@ -25,10 +25,11 @@ try {
     const title = (notification && notification.title) || '새 알림';
     const options = {
       body: (notification && notification.body) || '',
-      icon: (notification && notification.icon) || '/logo192.png',
+      icon: (notification && notification.icon) || '/192x192.png',
       data,
       requireInteraction: true,
     };
+
     self.registration.showNotification(title, options);
   });
 } catch (error) {
@@ -69,4 +70,31 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+});
+
+// ===== PWA 알림 클릭 이벤트 처리 =====
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const organizationUuid = event.notification.data?.organizationUuid;
+  const targetPath = organizationUuid
+    ? `/admin/${organizationUuid}/dashboard`
+    : '/';
+  const targetUrl = new URL(targetPath, self.location.origin).href;
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (
+            client.url.startsWith(self.location.origin) &&
+            'focus' in client
+          ) {
+            return client.focus().then(() => client.navigate(targetUrl));
+          }
+        }
+        return clients.openWindow(targetUrl);
+      })
+  );
 });

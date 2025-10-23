@@ -69,6 +69,7 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           ))}
         </div>
       </div>
+
       <BasicButton
         icon={
           <p css={skipIcon} aria-hidden='true'>

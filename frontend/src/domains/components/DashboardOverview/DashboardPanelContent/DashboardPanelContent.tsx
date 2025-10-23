@@ -19,7 +19,7 @@ export default function DashboardPanelContent() {
       srMessage: `반영률 ${statistics?.reflectionRate}퍼센트`,
     },
     {
-      title: '총 건의 수',
+      title: '총 건의',
       content: statistics?.totalCount,
       caption: '접수 완료',
       srMessage: `총 건의 수 ${statistics?.totalCount}건`,

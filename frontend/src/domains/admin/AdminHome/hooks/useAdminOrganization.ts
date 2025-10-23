@@ -23,6 +23,7 @@ export default function useAdminOrganization({
     retry: false,
     staleTime: 5 * 60 * 1000,
     gcTime: 15 * 60 * 1000,
+    refetchOnMount: 'always',
   });
 
   return { adminOrganizations, isLoading };
