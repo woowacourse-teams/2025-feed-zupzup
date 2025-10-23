@@ -11,7 +11,7 @@ public record AdminName(
         String value
 ) {
 
-    private static final int MAX_LENGTH = 10;
+    private static final int MAX_LENGTH = 20;
     private static final Pattern ALLOWED_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣]+$"); // 영어,숫자,한글 가능
 
     public AdminName {
