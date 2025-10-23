@@ -11,14 +11,14 @@ public class AdminFixture {
         return new Admin(
                 new LoginId("admin123"),
                 new EncodedPassword("password123"),
-                new AdminName("lisab"));
+                new AdminName("lisa"));
     }
 
     public static Admin createFromLoginId(final String loginId) {
         return new Admin(
                 new LoginId(loginId),
                 new EncodedPassword("password123"),
-                new AdminName("lisab"));
+                new AdminName("lisa"));
     }
 
 }
