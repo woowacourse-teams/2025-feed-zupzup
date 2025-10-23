@@ -121,7 +121,7 @@ export default function SignUp() {
           </BasicButton>
           <div css={signUpCaptionContainer(theme)}>
             <p>
-              이미 계정이 있으신가요?
+              이미 계정이 있으신가요?&nbsp;
               <strong onClick={() => goPath('/' + ROUTES.LOGIN)}>
                 로그인하기
               </strong>
