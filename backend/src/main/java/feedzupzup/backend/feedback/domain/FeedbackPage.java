@@ -1,34 +1,38 @@
 package feedzupzup.backend.feedback.domain;
 
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
 @Getter
 public class FeedbackPage {
 
-    private final List<Feedback> feedbacks;
+    private final List<FeedbackItem> feedbackItems;
     private final boolean hasNext;
 
-    private FeedbackPage(final List<Feedback> feedbacks, final int size) {
-        this.hasNext = feedbacks.size() > size;
-        trimExtraFeedback(feedbacks);
-        this.feedbacks = feedbacks;
+    private FeedbackPage(final List<FeedbackItem> feedbackItems, final int size) {
+        this.hasNext = feedbackItems.size() > size;
+        this.feedbackItems = trimExtraFeedback(feedbackItems);
     }
 
-    public static FeedbackPage createCursorPage(final List<Feedback> feedbacks, final int size) {
-        return new FeedbackPage(feedbacks, size);
+    public static FeedbackPage createCursorPage(final List<FeedbackItem> feedbackItems, final int size) {
+        return new FeedbackPage(feedbackItems, size);
     }
 
     public Long calculateNextCursorId() {
-        if (feedbacks.isEmpty()) {
+        if (feedbackItems.isEmpty()) {
             return null;
         }
-        return feedbacks.getLast().getId();
+        return feedbackItems.getLast().feedbackId();
     }
 
-    private void trimExtraFeedback(final List<Feedback> feedbacks) {
+    private List<FeedbackItem> trimExtraFeedback(final List<FeedbackItem> feedbackItems) {
         if (hasNext) {
-            feedbacks.removeLast();
+            List<FeedbackItem> copy = new ArrayList<>(feedbackItems);
+            copy.removeLast();
+            return copy;
         }
+        return feedbackItems;
     }
 }

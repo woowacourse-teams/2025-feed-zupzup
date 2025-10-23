@@ -49,7 +49,7 @@ class AuthServiceTest extends ServiceIntegrationHelper {
             () -> assertThat(response.loginId()).isEqualTo("testId"),
             () -> assertThat(response.adminName()).isEqualTo("testName")
         );
-        
+
         // Admin이 실제로 저장되었는지 확인
         Admin savedAdmin = adminRepository.findByLoginId(new LoginId("testId")).orElseThrow();
         assertThat(savedAdmin.getLoginId().value()).isEqualTo("testId");
@@ -63,7 +63,7 @@ class AuthServiceTest extends ServiceIntegrationHelper {
         Password password = new Password("password123");
         Admin existingAdmin = new Admin(new LoginId("testId"), passwordEncoder.encode(password), new AdminName("existName"));
         adminRepository.save(existingAdmin);
-        
+
         SignUpRequest request = new SignUpRequest("testId", "password123", "testName");
 
         // When & Then
@@ -101,7 +101,7 @@ class AuthServiceTest extends ServiceIntegrationHelper {
         final Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("loginId"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
-        
+
         LoginRequest request = new LoginRequest("loginId", "password123");
 
         // When
@@ -132,7 +132,7 @@ class AuthServiceTest extends ServiceIntegrationHelper {
         Password password = new Password("correctPassword123");
         Admin admin = new Admin(new LoginId("loginId2"), passwordEncoder.encode(password), new AdminName("testName"));
         adminRepository.save(admin);
-        
+
         LoginRequest request = new LoginRequest("loginId2", "wrongPassword123");
 
         // When & Then
@@ -149,7 +149,7 @@ class AuthServiceTest extends ServiceIntegrationHelper {
         Password password = new Password("password123");
         Admin admin = new Admin(new LoginId("adminId"), passwordEncoder.encode(password), new AdminName("testName"));
         Admin savedAdmin = adminRepository.save(admin);
-        
+
         AdminSession adminSession = new AdminSession(savedAdmin.getId());
 
         // When

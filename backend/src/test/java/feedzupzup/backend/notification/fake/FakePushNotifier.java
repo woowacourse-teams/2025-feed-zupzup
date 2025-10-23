@@ -5,6 +5,7 @@ import feedzupzup.backend.notification.domain.NotificationPayload;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class FakePushNotifier implements PushNotifier {
 
@@ -13,7 +14,7 @@ public class FakePushNotifier implements PushNotifier {
     private RuntimeException exceptionToThrow;
 
     @Override
-    public void sendBatchMessage(List<NotificationPayload> payloads) {
+    public void sendBatchMessage(List<NotificationPayload> payloads, final UUID organizationUuid) {
         if (shouldThrowException) {
             throw exceptionToThrow;
         }

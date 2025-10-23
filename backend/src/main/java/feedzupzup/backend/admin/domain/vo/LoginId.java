@@ -11,7 +11,8 @@ public record LoginId(
         String value
 ) {
 
-    private static final int MAX_LENGTH = 10;
+    private static final int MIN_LENGTH = 5;
+    private static final int MAX_LENGTH = 20;
     private static final String BLANK_SPACE = " ";
     private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$"); // 영여, 숫자만 가능
 
@@ -21,7 +22,7 @@ public record LoginId(
     }
 
     private void validateLength(final String loginId) {
-        if (loginId.isEmpty() || loginId.length() > MAX_LENGTH) {
+        if (loginId.length() < MIN_LENGTH || loginId.length() > MAX_LENGTH) {
             throw new InvalidAdminIdException("loginId = " + loginId + " length = " + loginId.length());
         }
     }

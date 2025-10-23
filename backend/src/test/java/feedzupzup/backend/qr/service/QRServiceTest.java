@@ -14,7 +14,6 @@ import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.qr.domain.QR;
-import feedzupzup.backend.qr.dto.request.QRCodeUploadRequest;
 import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
 import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
@@ -112,7 +111,7 @@ class QRServiceTest extends ServiceIntegrationHelper {
             final String mockImageUrl = "https://s3.amazonaws.com/bucket/qr-image.png";
 
             when(qrCodeGenerator.generateQRCode(anyString())).thenReturn(mockQrImage);
-            when(s3UploadService.uploadFile(any(QRCodeUploadRequest.class)))
+            when(s3UploadService.uploadFile(anyString(), anyString(), anyString(), any(byte[].class)))
                     .thenReturn(mockImageUrl);
 
             // when

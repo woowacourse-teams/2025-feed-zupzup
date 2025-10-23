@@ -16,7 +16,11 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
+import feedzupzup.backend.feedback.domain.EmbeddingCluster;
+import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
@@ -28,6 +32,7 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +41,7 @@ import org.springframework.http.HttpStatus;
 
 class AdminFeedbackControllerE2ETest extends E2EHelper {
 
-    private static final String SESSION_ID = "JSESSIONID";
+    private static final String SESSION_ID = "SESSION";
 
     @Autowired
     private FeedbackRepository feedBackRepository;
@@ -55,6 +60,12 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EmbeddingClusterRepository embeddingClusterRepository;
+
+    @Autowired
+    private FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
 
     private String sessionCookie;
 
@@ -622,4 +633,134 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .then().log().all()
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
+
+    @Test
+    @DisplayName("관리자가 모든 클러스터 대표 피드백을 성공적으로 조회한다")
+    void admin_get_all_cluster_representatives_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        // 첫 번째 클러스터 생성 (피드백 3개)
+        final EmbeddingCluster cluster1 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+        cluster1.updateLabel("첫 번째 클러스터");
+        embeddingClusterRepository.save(cluster1);
+
+        // 두 번째 클러스터 생성 (피드백 2개)  
+        final EmbeddingCluster cluster2 = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+        cluster2.updateLabel("두 번째 클러스터");
+        embeddingClusterRepository.save(cluster2);
+
+        // 첫 번째 클러스터에 피드백 3개 추가
+        createFeedbackWithCluster(organization, "첫 번째 클러스터 피드백1", organizationCategory, cluster1);
+        createFeedbackWithCluster(organization, "첫 번째 클러스터 피드백2", organizationCategory, cluster1);
+        createFeedbackWithCluster(organization, "첫 번째 클러스터 피드백3", organizationCategory, cluster1);
+
+        // 두 번째 클러스터에 피드백 2개 추가
+        createFeedbackWithCluster(organization, "두 번째 클러스터 피드백1", organizationCategory, cluster2);
+        createFeedbackWithCluster(organization, "두 번째 클러스터 피드백2", organizationCategory, cluster2);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .queryParam("limit", 10)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/clusters", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.clusterInfos", hasSize(2))
+                .body("data.clusterInfos[0].totalCount", equalTo(3))
+                .body("data.clusterInfos[0].clusterId", equalTo(cluster1.getId().intValue()))
+                .body("data.clusterInfos[0].label", equalTo("첫 번째 클러스터"))
+                .body("data.clusterInfos[1].totalCount", equalTo(2))
+                .body("data.clusterInfos[1].clusterId", equalTo(cluster2.getId().intValue()))
+                .body("data.clusterInfos[1].label", equalTo("두 번째 클러스터"));
+    }
+
+    @Test
+    @DisplayName("관리자가 특정 클러스터의 모든 피드백을 성공적으로 조회한다")
+    void admin_get_cluster_feedbacks_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        // 클러스터 생성
+        final EmbeddingCluster targetCluster = embeddingClusterRepository.save(EmbeddingCluster.createEmpty());
+        targetCluster.updateLabel("테스트 클러스터");
+        embeddingClusterRepository.save(targetCluster);
+
+        // 클러스터에 피드백 3개 추가
+        createFeedbackWithCluster(organization, "첫 번째 피드백", organizationCategory, targetCluster);
+        createFeedbackWithCluster(organization, "두 번째 피드백", organizationCategory, targetCluster);
+        createFeedbackWithCluster(organization, "세 번째 피드백", organizationCategory, targetCluster);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/clusters/{clusterId}", organization.getUuid(), targetCluster.getId())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType(ContentType.JSON)
+                .body("status", equalTo(200))
+                .body("message", equalTo("OK"))
+                .body("data.feedbacks", hasSize(3))
+                .body("data.label", equalTo("테스트 클러스터"))
+                .body("data.totalCount", equalTo(3))
+                .body("data.feedbacks[0].content", equalTo("첫 번째 피드백"))
+                .body("data.feedbacks[1].content", equalTo("두 번째 피드백"))
+                .body("data.feedbacks[2].content", equalTo("세 번째 피드백"));
+    }
+
+    @Test
+    @DisplayName("관리자가 존재하지 않는 클러스터를 조회하면 404 예외를 발생시킨다.")
+    void admin_get_cluster_feedbacks_not_found() {
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/clusters/{clusterId}", organization.getUuid(), 99999L)
+                .then().log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    private void createFeedbackWithCluster(Organization organization, String content, 
+                                           OrganizationCategory category, EmbeddingCluster cluster) {
+        final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, content, category);
+        final Feedback savedFeedback = feedBackRepository.save(feedback);
+        
+        final FeedbackEmbeddingCluster feedbackCluster = FeedbackEmbeddingCluster.createNewCluster(
+                new double[]{0.1, 0.2, 0.3}, savedFeedback, cluster);
+        feedbackEmbeddingClusterRepository.save(feedbackCluster);
+    }
+
 }

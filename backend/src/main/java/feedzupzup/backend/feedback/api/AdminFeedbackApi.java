@@ -3,11 +3,13 @@ package feedzupzup.backend.feedback.api;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.presentation.annotation.AdminAuthenticationPrincipal;
 import feedzupzup.backend.auth.presentation.annotation.LoginOrganizer;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
+import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
@@ -47,7 +49,7 @@ public interface AdminFeedbackApi {
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(defaultValue = "10") final int size,
             @Parameter(description = "커서 ID") @RequestParam(required = false) final Long cursorId,
             @Parameter(description = "게시글 상태") @RequestParam(required = false) final ProcessStatus status,
-            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortBy sortBy
+            @Parameter(description = "정렬 기준", example = "LATEST, OLDEST, LIKES") @RequestParam(defaultValue = "LATEST") final FeedbackSortType sortBy
     );
 
     @Operation(summary = "피드백 삭제", description = "피드백을 삭제합니다. (관리자 전용)")
@@ -92,5 +94,34 @@ public interface AdminFeedbackApi {
     @GetMapping("/admin/feedbacks/statistics")
     SuccessResponse<FeedbackStatisticResponse> getAllFeedbackStatistics(
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
+    );
+
+    @Operation(summary = "모든 클러스터 대표 피드백 전체 조회", description = "각 클러스터의 대표 피드백을 조회합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations/{organizationUuid}/clusters")
+    SuccessResponse<ClustersResponse> getTopClusters(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            @PathVariable("organizationUuid") UUID organizationUuid,
+            @RequestParam(required = false, defaultValue = "5") final int limit
+    );
+
+    @Operation(summary = "특정 클러스터 피드백 전체 조회", description = "특정 클러스터에 속한 전체 피드백을 조회합니다. (관리자 전용)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations/{organizationUuid}/clusters/{clusterId}")
+    SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            @PathVariable("clusterId") Long clusterId
     );
 }

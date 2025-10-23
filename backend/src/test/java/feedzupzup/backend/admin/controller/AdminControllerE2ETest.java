@@ -27,7 +27,7 @@ import org.springframework.http.HttpStatus;
 
 class AdminControllerE2ETest extends E2EHelper {
 
-    private static final String SESSION_ID = "JSESSIONID";
+    private static final String SESSION_ID = "SESSION";
 
     @Autowired
     private AdminRepository adminRepository;
@@ -68,8 +68,11 @@ class AdminControllerE2ETest extends E2EHelper {
         .when()
                 .post("/admin/login")
         .then()
+                .log().all()
                 .extract()
                 .cookie(SESSION_ID);
+
+        System.out.println("Session cookie: " + sessionCookie);
 
         // when & then
         given()
@@ -77,6 +80,7 @@ class AdminControllerE2ETest extends E2EHelper {
         .when()
                 .delete("/admin")
         .then()
+                .log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 

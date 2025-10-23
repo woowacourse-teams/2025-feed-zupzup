@@ -1,14 +1,15 @@
 package feedzupzup.backend.feedback.dto.request;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
-import feedzupzup.backend.feedback.domain.vo.Content;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.vo.Content;
+import feedzupzup.backend.feedback.domain.vo.ImageUrl;
 import feedzupzup.backend.feedback.domain.vo.LikeCount;
 import feedzupzup.backend.feedback.domain.vo.PostedAt;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.domain.vo.UserName;
-import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.global.util.CurrentDateTime;
+import feedzupzup.backend.organization.domain.Organization;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.validator.constraints.Length;
 
@@ -25,12 +26,19 @@ public record CreateFeedbackRequest(
         String userName,
 
         @Schema(description = "카테고리", example = "시설")
-        String category
+        String category,
+
+        @Schema(description = "이미지 URL", example = "https://example.com/image.png")
+        String imageUrl
 ) {
 
-    public Feedback toFeedback(final Organization organization, final OrganizationCategory organizationCategory) {
+    public Feedback toFeedback(
+            final Organization organization,
+            final OrganizationCategory organizationCategory,
+            final String filteredContent
+    ) {
         return Feedback.builder()
-                .content(new Content(content))
+                .content(new Content(filteredContent))
                 .organization(organization)
                 .likeCount(new LikeCount(0))
                 .status(ProcessStatus.WAITING)
@@ -38,6 +46,7 @@ public record CreateFeedbackRequest(
                 .userName(new UserName(userName))
                 .postedAt(new PostedAt(CurrentDateTime.create()))
                 .organizationCategory(organizationCategory)
+                .imageUrl(imageUrl == null ? null : new ImageUrl(imageUrl))
                 .build();
     }
 }

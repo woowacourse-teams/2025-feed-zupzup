@@ -1,27 +1,24 @@
 package feedzupzup.backend.feedback.controller;
 
-import com.google.common.net.HttpHeaders;
+import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.application.FeedbackStatisticService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
-import feedzupzup.backend.feedback.dto.response.LikeHistoryResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.dto.response.MyFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
-import feedzupzup.backend.global.util.CookieUtilization;
+import feedzupzup.backend.guest.dto.GuestInfo;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -38,14 +35,16 @@ public class UserFeedbackController implements UserFeedbackApi {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortBy sortBy
+            final FeedbackSortType sortBy,
+            final @VisitedGuest GuestInfo guestInfo
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organizationUuid,
                 size,
                 cursorId,
                 status,
-                sortBy
+                sortBy,
+                guestInfo
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
@@ -53,10 +52,11 @@ public class UserFeedbackController implements UserFeedbackApi {
     @Override
     public SuccessResponse<CreateFeedbackResponse> create(
             final UUID organizationUuid,
-            final CreateFeedbackRequest request
+            final CreateFeedbackRequest request,
+            @SavedGuest final GuestInfo guestInfo
     ) {
         final CreateFeedbackResponse response = userFeedbackService.create(request,
-                organizationUuid);
+                organizationUuid, guestInfo);
         return SuccessResponse.success(HttpStatus.CREATED, response);
     }
 
@@ -64,19 +64,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<LikeResponse> like(
             final HttpServletResponse response,
             final Long feedbackId,
-            final UUID visitorId
+            @SavedGuest final GuestInfo guestInfo
     ) {
-        if (visitorId == null) {
-            UUID cookieId = UUID.randomUUID();
-            final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, cookieId);
-            final ResponseCookie cookie = CookieUtilization.createCookie(
-                    CookieUtilization.VISITOR_KEY,
-                    cookieId
-            );
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            return SuccessResponse.success(HttpStatus.OK, likeResponse);
-        }
-        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, visitorId);
+        final LikeResponse likeResponse = feedbackLikeService.like(feedbackId, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
@@ -84,14 +74,9 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<LikeResponse> unlike(
             final HttpServletResponse response,
             final Long feedbackId,
-            final UUID visitorId
+            @SavedGuest final GuestInfo guestInfo
     ) {
-        final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, visitorId);
-        final ResponseCookie cookie = CookieUtilization.createCookie(
-                CookieUtilization.VISITOR_KEY,
-                visitorId
-        );
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        final LikeResponse likeResponse = feedbackLikeService.unlike(feedbackId, guestInfo);
         return SuccessResponse.success(HttpStatus.OK, likeResponse);
     }
 
@@ -99,39 +84,6 @@ public class UserFeedbackController implements UserFeedbackApi {
     public SuccessResponse<StatisticResponse> getStatistic(final UUID organizationUuid) {
         final StatisticResponse response = feedbackStatisticService.calculateStatistic(
                 organizationUuid
-        );
-        return SuccessResponse.success(HttpStatus.OK, response);
-    }
-
-    @Override
-    public SuccessResponse<LikeHistoryResponse> getMyLikeHistories(
-            final HttpServletResponse httpServletResponse,
-            final UUID visitorId
-    ) {
-        if (visitorId == null) {
-            UUID cookieId = UUID.randomUUID();
-            final ResponseCookie cookie = CookieUtilization.createCookie(
-                    CookieUtilization.VISITOR_KEY,
-                    cookieId
-            );
-            httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(cookieId);
-            return SuccessResponse.success(HttpStatus.OK, response);
-        }
-        final LikeHistoryResponse response = feedbackLikeService.findLikeHistories(visitorId);
-        return SuccessResponse.success(HttpStatus.OK, response);
-    }
-
-    @Override
-    public SuccessResponse<MyFeedbackListResponse> getMyFeedbacks(
-            final UUID organizationUuid,
-            final FeedbackSortBy sortBy,
-            final List<Long> feedbackIds
-    ) {
-        final MyFeedbackListResponse response = userFeedbackService.getMyFeedbackPage(
-                organizationUuid,
-                sortBy,
-                feedbackIds
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }

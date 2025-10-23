@@ -38,6 +38,9 @@ dependencies {
     //security
     implementation 'org.springframework.security:spring-security-crypto'
 
+    //session
+    implementation 'org.springframework.session:spring-session-jdbc'
+
     //aws
     implementation 'software.amazon.awssdk:s3:2.30.16'
 
@@ -50,9 +53,16 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation "org.flywaydb:flyway-mysql"
 
+    //cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+
     //metric
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    //log
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -60,11 +70,15 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:mysql'
+    testImplementation 'org.testcontainers:localstack'
 
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
     //firebase
     implementation 'com.google.firebase:firebase-admin:9.5.0'
+
+    //profanity filter
+    implementation 'io.github.vaneproject:vane-badwordfiltering:1.0.0'
 }
 
 tasks.register('copySecret', Copy) {

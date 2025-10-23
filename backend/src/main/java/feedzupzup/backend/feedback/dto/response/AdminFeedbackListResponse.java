@@ -20,7 +20,8 @@ public record AdminFeedbackListResponse(
 ) {
 
     public static AdminFeedbackListResponse from(final FeedbackPage feedbackPage) {
-        final List<AdminFeedbackItem> adminFeedbackItems = feedbackPage.getFeedbacks().stream()
+        final List<FeedbackItem> feedbackItems = feedbackPage.getFeedbackItems();
+        final List<AdminFeedbackItem> adminFeedbackItems = feedbackItems.stream()
                 .map(AdminFeedbackItem::from)
                 .toList();
         return new AdminFeedbackListResponse(
@@ -57,22 +58,25 @@ public record AdminFeedbackListResponse(
             String category,
 
             @Schema(description = "답변 내용", example = "빠른 시일 내로 개선하겠습니다.")
-            String comment
+            String comment,
+
+            @Schema(description = "이미지 URL", example = "https://example.com/image.png")
+            String imageUrl
     ) {
 
-        private static AdminFeedbackItem from(final Feedback feedback) {
+        public static AdminFeedbackItem from(final FeedbackItem feedbackItem) {
             return new AdminFeedbackItem(
-                    feedback.getId(),
-                    feedback.getContent().getValue(),
-                    feedback.getStatus(),
-                    feedback.isSecret(),
-                    feedback.getLikeCount().getValue(),
-                    feedback.getUserName().getValue(),
-                    feedback.getPostedAt().getValue(),
-                    feedback.getOrganizationCategory().getCategory().getKoreanName(),
-                    feedback.getComment() != null ? feedback.getComment().getValue() : null
+                    feedbackItem.feedbackId(),
+                    feedbackItem.content(),
+                    feedbackItem.status(),
+                    feedbackItem.isSecret(),
+                    feedbackItem.likeCount(),
+                    feedbackItem.userName(),
+                    feedbackItem.postedAt(),
+                    feedbackItem.category(),
+                    feedbackItem.comment() == null ? null : feedbackItem.comment(),
+                    feedbackItem.imageUrl() == null ? null : feedbackItem.imageUrl()
             );
         }
-
     }
 }

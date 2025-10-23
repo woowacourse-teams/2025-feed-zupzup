@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import feedzupzup.backend.feedback.exception.FeedbackException.InvalidVectorDimensionException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ public enum ErrorCode {
     NOT_SUPPORTED(BAD_REQUEST, "G02", "지원하지 않는 요청입니다"),
     RESOURCE_EXISTS(BAD_REQUEST, "G03", "이미 존재하는 자원입니다."),
     INVALID_AUTHORIZE(UNAUTHORIZED, "G04", "접근 권한이 존재하지 않습니다."),
+    REST_CLIENT_SERVER_FAIL(INTERNAL_SERVER_ERROR, "G05", "외부 API 처리 작업을 실패하였습니다."),
+    INVALID_INPUT_VALUE(BAD_REQUEST, "G06", "유효하지 않은 입력값입니다."),
 
     //Organization Error
     CHEERING_INVALID_NUMBER(BAD_REQUEST, "O01", "응원횟수에 유효하지 않은 숫자값입니다."),
@@ -33,6 +36,11 @@ public enum ErrorCode {
     INVALID_VALUE_RANGE(INTERNAL_SERVER_ERROR, "F03", "좋아요는 음수가 될 수 없습니다."),
     LIKE_ALREADY_EXISTS(BAD_REQUEST, "F04", "좋아요는 한 번만 누를 수 있습니다."),
     INVALID_LIKE_REQUEST(BAD_REQUEST, "F05", "잘못된 요청입니다."),
+    ALREADY_CLUSTERING_FEEDBACK(BAD_REQUEST, "F06", "이미 클러스터링된 피드백입니다."),
+
+    //cluster error
+    EMPTY_CLUSTERING_CONTENT(BAD_REQUEST, "C01", "클러스터링 내용은 비어있을 수 없습니다."),
+    INVALID_VECTOR_DIMENSION(BAD_REQUEST, "C02", "벡터 차원이 일치하지 않습니다."),
 
     //Admin Domain Error
     INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),

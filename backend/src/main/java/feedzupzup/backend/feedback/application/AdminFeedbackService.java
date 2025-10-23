@@ -2,16 +2,24 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
+import feedzupzup.backend.feedback.domain.ClusterInfo;
+import feedzupzup.backend.feedback.domain.EmbeddingCluster;
+import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
+import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategy;
-import feedzupzup.backend.feedback.domain.service.FeedbackSortStrategyFactory;
-import feedzupzup.backend.feedback.domain.vo.FeedbackSortBy;
+import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
+import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
+import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
+import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
+import feedzupzup.backend.feedback.dto.response.ClustersResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -20,6 +28,8 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +42,9 @@ public class AdminFeedbackService {
     private final AdminRepository adminRepository;
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
-    private final FeedbackLikeService feedbackLikeService;
     private final OrganizationRepository organizationRepository;
+    private final EmbeddingClusterRepository embeddingClusterRepository;
+    private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
 
     @Transactional
     @BusinessActionLog
@@ -42,6 +53,7 @@ public class AdminFeedbackService {
             final Long feedbackId
     ) {
         validateAuthentication(adminId, feedbackId);
+        feedbackEmbeddingClusterRepository.deleteByFeedback_Id(feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
 
@@ -50,15 +62,15 @@ public class AdminFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortBy sortBy
+            final FeedbackSortType sortBy
     ) {
         if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
             throw new ResourceNotFoundException("해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다.");
         }
         final Pageable pageable = Pageable.ofSize(size + 1);
 
-        FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<Feedback> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
+        final FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
+        final List<FeedbackItem> feedbacks = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId,
                 pageable);
 
         final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbacks, size);
@@ -79,6 +91,7 @@ public class AdminFeedbackService {
         validateAuthentication(adminId, feedbackId);
 
         feedback.updateCommentAndStatus(request.toComment());
+
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
@@ -117,5 +130,21 @@ public class AdminFeedbackService {
     @Transactional
     public void deleteByOrganizationId(final Long organizationId) {
         feedBackRepository.deleteAllByOrganizationId(organizationId);
+    }
+
+    public ClustersResponse getTopClusters(final UUID organizationUuid, final int limit) {
+        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
+            throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
+        }
+        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  PageRequest.of(0, limit));
+        return ClustersResponse.from(clusterInfos);
+    }
+
+    public ClusterFeedbacksResponse getFeedbacksByClusterId(final Long clusterId) {
+        final EmbeddingCluster embeddingCluster = embeddingClusterRepository.findById(clusterId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 clusterid(id = " + clusterId + ")로 찾을 수 없습니다."));
+        final List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
+                embeddingCluster);
+        return ClusterFeedbacksResponse.of(feedbackEmbeddingClusters, embeddingCluster.getLabel());
     }
 }

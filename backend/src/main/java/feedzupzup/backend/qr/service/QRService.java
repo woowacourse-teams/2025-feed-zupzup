@@ -7,7 +7,6 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.qr.config.QRProperties;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.domain.SiteUrl;
-import feedzupzup.backend.qr.dto.request.QRCodeUploadRequest;
 import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
 import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
@@ -54,12 +53,11 @@ public class QRService {
 
         final byte[] qrCode = qrCodeGenerator.generateQRCode(url);
         final String imageUrl = s3UploadService.uploadFile(
-                new QRCodeUploadRequest(
-                        qrProperties.image().extension(),
-                        "organization_qr",
-                        organization.getUuid().toString(),
-                        qrCode
-                ));
+                qrProperties.image().extension(),
+                "organization_qr",
+                organization.getUuid().toString(),
+                qrCode
+        );
 
         qrRepository.save(new QR(imageUrl, organization));
     }
