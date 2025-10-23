@@ -39,8 +39,6 @@ export default function AISummary({ onClose }: AISummaryProps) {
 
     const isInSummary = location.pathname.includes('/ai/summary/');
 
-    console.log(isInSummary);
-
     goPath(`/admin/${organizationId}/ai/summary/${category.clusterId}`, {
       replace: isInSummary,
     });
