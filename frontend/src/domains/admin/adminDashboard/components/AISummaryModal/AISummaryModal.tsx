@@ -18,6 +18,7 @@ import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import useNavigation from '@/domains/hooks/useNavigation';
 import useAISummary from './useAISummary';
 import { useParams } from 'react-router-dom';
+import StatusBox from '@/domains/components/StatusBox/StatusBox';
 
 interface AISummaryProps {
   onClose: () => void;
@@ -55,18 +56,28 @@ export default function AISummary({ onClose }: AISummaryProps) {
           <div>loading...</div>
         ) : (
           <div css={categoriesContainer(theme)}>
-            {data?.clusterInfos.map((category, index) => (
-              <div
-                key={index}
-                css={categoryItem(theme)}
-                onClick={() => handleCategoryClick(category)}
-              >
-                <p css={categoryText(theme)}>
-                  {category.label} ({category.totalCount})
-                </p>
-                <p css={arrowIcon(theme)}>&gt;&gt;</p>
-              </div>
-            ))}
+            {data?.clusterInfos.length === 0 ? (
+              <StatusBox
+                width={'100%'}
+                height={'200px'}
+                textIcon='💭'
+                title='아직 데이터를 모으는 중이에요.'
+                description='피드백을 더 작성하시면 AI 요약을 볼 수 있어요!'
+              />
+            ) : (
+              data?.clusterInfos.map((category, index) => (
+                <div
+                  key={index}
+                  css={categoryItem(theme)}
+                  onClick={() => handleCategoryClick(category)}
+                >
+                  <p css={categoryText(theme)}>
+                    {category.label} ({category.totalCount})
+                  </p>
+                  <p css={arrowIcon(theme)}>&gt;&gt;</p>
+                </div>
+              ))
+            )}
           </div>
         )}
 
