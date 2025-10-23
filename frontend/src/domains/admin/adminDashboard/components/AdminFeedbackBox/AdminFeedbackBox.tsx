@@ -15,6 +15,7 @@ import {
 import { memo } from 'react';
 import FeedbackContent from '@/domains/components/FeedbackText/FeedbackContent';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import Button from '@/components/@commons/Button/Button';
 
 interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
@@ -51,19 +52,21 @@ export default memo(function AdminFeedbackBox({
         />
         <div css={iconWrap(theme)}>
           {type === 'WAITING' && (
-            <button
+            <Button
               css={checkButton(theme)}
               onClick={() => onConfirm(feedbackId)}
+              aria-label='피드백 확인'
             >
               완료
-            </button>
+            </Button>
           )}
-          <button
+          <Button
             css={deleteButton(theme)}
             onClick={() => onDelete(feedbackId)}
+            aria-label='피드백 삭제'
           >
             삭제
-          </button>
+          </Button>
         </div>
       </div>
       <div css={textWrap}>
