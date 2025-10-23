@@ -59,3 +59,4 @@ class DeveloperServiceTest extends ServiceIntegrationHelper {
                 .hasMessage("존재하지 않는 adminId 입니다.");
     }
 }
+
