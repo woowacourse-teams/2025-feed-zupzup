@@ -63,7 +63,7 @@ export default function FeedbackForm({
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoad(false);
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -133,8 +133,11 @@ export default function FeedbackForm({
             isToggled={isLocked}
             onClick={onLockToggle}
             name='lock'
+            aria-label={`비밀글 설정 토글 버튼 : ${isLocked ? '설정됨' : '설정되지 않음'}`}
           />
-          <p css={toggleButtonText(theme)}>비밀글로 작성</p>
+          <p css={toggleButtonText(theme)} aria-hidden={true}>
+            비밀글로 작성
+          </p>
         </div>
       </div>
     </div>

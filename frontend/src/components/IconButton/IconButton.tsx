@@ -6,6 +6,14 @@ interface IconButtonProps {
   onClick?: () => void;
 }
 
-export default function IconButton({ icon, onClick }: IconButtonProps) {
-  return <Button onClick={onClick}>{icon}</Button>;
+export default function IconButton({
+  icon,
+  onClick,
+  ...props
+}: IconButtonProps) {
+  return (
+    <Button onClick={onClick} {...props}>
+      {icon}
+    </Button>
+  );
 }
