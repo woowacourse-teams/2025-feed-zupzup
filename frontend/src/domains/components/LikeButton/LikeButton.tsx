@@ -11,7 +11,8 @@ import {
 
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-interface LikeButtonProps {
+interface LikeButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   like: boolean;
   feedbackId: number | undefined;
   likeCount: number;
@@ -40,7 +41,11 @@ export default function LikeButton({
   }
 
   return (
-    <Button onClick={handleLikeButton} css={likeButton}>
+    <Button
+      onClick={handleLikeButton}
+      css={likeButton}
+      aria-label={`${tempLikeCount}개의 좋아요`}
+    >
       <span css={iconWrapper(theme, isLiked ?? false)}>
         {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
       </span>
