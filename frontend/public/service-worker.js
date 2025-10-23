@@ -78,12 +78,6 @@ self.addEventListener('message', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const organizationUuid = event.notification.data?.organizationUuid;
-  const targetPath = organizationUuid
-    ? `/admin/${organizationUuid}/dashboard`
-    : '/';
-  const targetUrl = new URL(targetPath, self.location.origin).href;
-
   event.waitUntil(
     clients
       .matchAll({ type: 'window', includeUncontrolled: true })
@@ -93,10 +87,10 @@ self.addEventListener('notificationclick', (event) => {
             client.url.startsWith(self.location.origin) &&
             'focus' in client
           ) {
-            return client.focus().then(() => client.navigate(targetUrl));
+            return client.focus().then(() => client.navigate('/'));
           }
         }
-        return clients.openWindow(targetUrl);
+        return clients.openWindow('/');
       })
   );
 });
