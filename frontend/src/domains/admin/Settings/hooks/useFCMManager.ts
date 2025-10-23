@@ -14,6 +14,17 @@ export const useFCMManager = () => {
     useState<NotificationPermission>('default');
   const isSupported = NotificationService.checkIsSupported();
 
+  const isIOSBrowser = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isStandalone = window.matchMedia(
+      '(display-mode: standalone)'
+    ).matches;
+    return isIOS && !isStandalone;
+  };
+
+  const needsPWAInstall = isIOSBrowser();
+
   const [isEnabled, setIsEnabled] = useState(() => {
     const storedState = getStoredNotificationState();
     return storedState;
@@ -92,5 +103,6 @@ export const useFCMManager = () => {
     isSupported,
     isEnabled,
     updateState,
+    needsPWAInstall,
   };
 };

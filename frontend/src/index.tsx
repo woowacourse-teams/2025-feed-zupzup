@@ -1,5 +1,6 @@
 import { ErrorProvider } from '@/contexts/useErrorContext';
 import { ToastProvider } from '@/contexts/useToast';
+import { PWAPromptProvider, usePWAPrompt } from '@/contexts/usePWAPrompt';
 import { router } from '@/router';
 import { initSentry } from '@/services/sentry';
 import { registerServiceWorker } from '@/services/serviceWorker';
@@ -31,6 +32,25 @@ declare global {
   }
 }
 
+function PWAPromptWrapper() {
+  const { isShown, hidePrompt } = usePWAPrompt();
+
+  return (
+    <PWAPrompt
+      timesToShow={999}
+      delay={500}
+      isShown={isShown}
+      onClose={hidePrompt}
+      appIconPath='/512x512.png'
+      copyTitle='피드줍줍 앱 설치'
+      copySubtitle='더 빠르고 편리하게 사용하세요'
+      copyDescription='홈 화면에 추가하면 앱처럼 사용할 수 있어요. 빠른 접근과 푸시 알림을 받아보세요!'
+      copyShareStep='1) 아래 공유 버튼 선택. 안보인다면 ••• 버튼 선택'
+      copyAddToHomeScreenStep='2) 홈 화면에 추가 선택'
+    />
+  );
+}
+
 setupGlobalVersion();
 initSentry();
 registerServiceWorker();
@@ -41,24 +61,17 @@ root.render(
   <ErrorProvider>
     <QueryClientBoundary>
       <ThemeProvider theme={theme}>
-        <ToastProvider>
-          <Sentry.ErrorBoundary>
-            <RouterProvider router={router} />
-            <PWAPrompt
-              timesToShow={999}
-              delay={500}
-              appIconPath='/512x512.png'
-              copyTitle='피드줍줍 앱 설치'
-              copySubtitle='더 빠르고 편리하게 사용하세요'
-              copyDescription='홈 화면에 추가하면 앱처럼 사용할 수 있어요. 빠른 접근과 푸시 알림을 받아보세요!'
-              copyShareStep='1) 아래 공유 버튼 선택. 안보인다면 ••• 버튼 선택'
-              copyAddToHomeScreenStep='2) 홈 화면에 추가 선택'
-            />
-            {process.env.NODE_ENV === 'development' && (
-              <ReactQueryDevtools initialIsOpen={false} />
-            )}
-          </Sentry.ErrorBoundary>
-        </ToastProvider>
+        <PWAPromptProvider>
+          <ToastProvider>
+            <Sentry.ErrorBoundary>
+              <RouterProvider router={router} />
+              <PWAPromptWrapper />
+              {process.env.NODE_ENV === 'development' && (
+                <ReactQueryDevtools initialIsOpen={false} />
+              )}
+            </Sentry.ErrorBoundary>
+          </ToastProvider>
+        </PWAPromptProvider>
       </ThemeProvider>
     </QueryClientBoundary>
   </ErrorProvider>
