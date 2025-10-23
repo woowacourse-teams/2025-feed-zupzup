@@ -12,7 +12,7 @@ public record LoginId(
 ) {
 
     private static final int MIN_LENGTH = 5;
-    private static final int MAX_LENGTH = 10;
+    private static final int MAX_LENGTH = 20;
     private static final String BLANK_SPACE = " ";
     private static final Pattern ALLOWD_LOGIN_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$"); // 영여, 숫자만 가능
 
