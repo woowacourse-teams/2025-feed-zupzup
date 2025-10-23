@@ -65,15 +65,14 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           ))}
         </div>
       </div>
-      <div css={bottomButton}>
-        <BasicButton
-          icon={<p css={skipIcon}>📄</p>}
-          variant='secondary'
-          onClick={handleViewSuggestionsClick}
-        >
-          <p css={skipText(theme)}>건의 목록 보러가기</p>
-        </BasicButton>
-      </div>
+
+      <BasicButton
+        icon={<p css={skipIcon}>📄</p>}
+        variant='secondary'
+        onClick={handleViewSuggestionsClick}
+      >
+        <p css={skipText(theme)}>건의 목록 보러가기</p>
+      </BasicButton>
     </section>
   );
 }
