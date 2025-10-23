@@ -13,11 +13,11 @@ export const container = css`
     min-height: 350px;
   }
 
-  @media (min-width: 500px) {
+  @media (min-width: 499px) {
     min-height: 480px;
   }
 
-  @media (max-height: 700px) {
+  @media (max-height: 699px) {
     min-height: 40px;
   }
 
