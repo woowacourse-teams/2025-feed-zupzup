@@ -43,10 +43,9 @@ export default function DashboardPanelContent() {
   return (
     <div css={panelLayout}>
       {DASH_PANELS.map((panel, idx) => (
-        <div>
+        <div key={idx}>
           <span className='srOnly'>{panel.srMessage}</span>
           <DashboardPanel
-            key={idx}
             title={panel.title}
             content={panel.content}
             caption={panel.caption}

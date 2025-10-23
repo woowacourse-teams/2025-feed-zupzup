@@ -15,6 +15,9 @@ import {
 import { memo, useCallback, useMemo } from 'react';
 import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
 import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
+import { srFeedbackSummary } from '@/domains/user/userDashboard/utils/srFeedbackSummary';
+import { formatRelativeTime } from '@/utils/formatRelativeTime';
+import { skipTarget } from '@/domains/user/userDashboard/UserDashboard.style';
 
 interface UserFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -80,28 +83,40 @@ export default memo(function UserFeedbackList({
 
   return (
     <>
-      <div id='user-feedback-list'>
+      <div id='user-feedback-list' tabIndex={-1} css={skipTarget}>
         <FeedbackBoxList>
-          {displayFeedbacks.map((feedback: FeedbackType) => (
-            <UserFeedbackBox
-              userName={feedback.userName}
-              key={feedback.feedbackId}
-              type={feedback.status}
-              content={feedback.content}
-              postedAt={feedback.postedAt}
-              isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
-              isSecret={feedback.isSecret}
-              feedbackId={feedback.feedbackId}
-              likeCount={feedback.likeCount}
-              comment={feedback.comment}
-              isMyFeedback={myFeedbacks.some(
-                (myFeedback) => myFeedback.feedbackId === feedback.feedbackId
-              )}
-              isHighlighted={feedback.feedbackId === highlightedId}
-              category={feedback.category}
-              imgUrl={feedback.imageUrl}
-            />
-          ))}
+          {displayFeedbacks.map((feedback: FeedbackType) => {
+            const isMyFeedback = myFeedbacks.some(
+              (myFeedback) => myFeedback.feedbackId === feedback.feedbackId
+            );
+            const postedAt = formatRelativeTime(feedback.postedAt ?? '');
+            return (
+              <div key={feedback.feedbackId}>
+                <span className='srOnly'>
+                  {srFeedbackSummary({
+                    feedback,
+                    myFeedback: isMyFeedback,
+                    postedAt,
+                  })}
+                </span>
+                <UserFeedbackBox
+                  userName={feedback.userName}
+                  type={feedback.status}
+                  content={feedback.content}
+                  postedAt={postedAt}
+                  isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
+                  isSecret={feedback.isSecret}
+                  feedbackId={feedback.feedbackId}
+                  likeCount={feedback.likeCount}
+                  comment={feedback.comment}
+                  isMyFeedback={isMyFeedback}
+                  isHighlighted={feedback.feedbackId === highlightedId}
+                  category={feedback.category}
+                  imgUrl={feedback.imageUrl}
+                />
+              </div>
+            );
+          })}
         </FeedbackBoxList>
         <FeedbackStatusMessage
           loading={loading}

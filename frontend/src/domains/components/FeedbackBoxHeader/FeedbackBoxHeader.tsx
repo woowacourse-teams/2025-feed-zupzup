@@ -26,7 +26,7 @@ export default function FeedbackBoxHeader({
   const userImage = useAvatarSelector({ feedbackId });
   const theme = useAppTheme();
   return (
-    <div css={imgContainer}>
+    <div css={imgContainer} aria-hidden={true}>
       <picture>
         <source srcSet={userImage.webp} type='image/webp' />
         <img src={userImage.png} alt='user icon' css={imgLayout} />

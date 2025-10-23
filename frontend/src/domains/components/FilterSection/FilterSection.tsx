@@ -62,20 +62,21 @@ export default memo(function FilterSection({
   return (
     <div css={[filterSectionContainer, customCSS]}>
       <div css={filterTagsContainer}>
-        {filterOptions(isAdmin ?? false).map((option) => (
-          <Tag
-            key={option.value}
-            customCSS={tagStyle(theme, selectedFilter === option.value)}
-          >
-            <Button
-              type='button'
-              customCSS={tagButton(theme)}
-              onClick={() => handleFilterClick(option.value)}
-            >
-              {option.label}
-            </Button>
-          </Tag>
-        ))}
+        {filterOptions(isAdmin ?? false).map((option) => {
+          const isSelected = selectedFilter === option.value;
+          return (
+            <Tag key={option.value} customCSS={tagStyle(theme, isSelected)}>
+              <Button
+                type='button'
+                customCSS={tagButton(theme)}
+                onClick={() => handleFilterClick(option.value)}
+                aria-label={`${option.label} 필터 ${isSelected ? '선택됨' : '선택안됨'}`}
+              >
+                {option.label}
+              </Button>
+            </Tag>
+          );
+        })}
       </div>
 
       <div css={sortDropdownContainer}>
