@@ -7,13 +7,13 @@ import {
   message,
   buttonContainer,
 } from '@/components/Modal/Modal.styles';
+import { PostAdminLogoutResponse } from '@/apis/admin.api';
 
 export interface ConfirmModalProps {
-  isOpen?: boolean;
   onClose: () => void;
   title: string;
   message?: string;
-  onConfirm?: () => void;
+  onConfirm?: () => Promise<void | PostAdminLogoutResponse> | void;
   confirmText?: string;
   cancelText?: string;
   width?: number;
@@ -22,7 +22,6 @@ export interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({
-  isOpen = true,
   onClose,
   title: confirmTitle,
   message: confirmMessage,
@@ -35,13 +34,17 @@ export default function ConfirmModal({
 }: ConfirmModalProps) {
   const theme = useAppTheme();
 
-  const handleConfirm = () => {
-    onConfirm?.();
-    onClose();
+  const handleConfirm = async () => {
+    try {
+      await onConfirm?.();
+      onClose();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} width={width} height={height}>
+    <Modal onClose={onClose} width={width} height={height}>
       <div css={content}>
         <p css={title(theme)}>{confirmTitle}</p>
         {confirmMessage && <p css={message(theme)}>{confirmMessage}</p>}

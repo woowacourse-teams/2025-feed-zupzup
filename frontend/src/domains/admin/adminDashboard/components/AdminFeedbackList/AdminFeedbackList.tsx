@@ -27,7 +27,6 @@ export default memo(function AdminFeedbackList({
   openFeedbackDeleteModal,
 }: AdminFeedbackListProps) {
   const { organizationId } = useOrganizationId();
-
   const apiUrl = useMemo(
     () =>
       createFeedbacksUrl({
@@ -73,6 +72,7 @@ export default memo(function AdminFeedbackList({
             userName={feedback.userName}
             category={feedback.category}
             comment={feedback.comment}
+            imgUrl={feedback.imageUrl}
           />
         ))}
       </FeedbackBoxList>

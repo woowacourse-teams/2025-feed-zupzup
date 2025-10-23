@@ -4,7 +4,7 @@ export const categoryItemContainer = (isSelected: boolean) => css`
   display: flex;
   gap: 16px;
   width: 100%;
-  padding: 10px;
+  padding: 15px;
   background-color: ${isSelected ? 'rgba(115,86,255,0.1)' : 'white'};
   border-radius: 8px;
   cursor: pointer;

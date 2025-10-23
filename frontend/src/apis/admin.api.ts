@@ -1,5 +1,6 @@
 import { apiClient } from '@/apis/apiClient';
 import { AdminAuthData } from '@/types/adminAuth';
+import { AISummaryData, AISummaryDetailData } from '@/types/ai.types';
 import { ApiResponse } from '@/types/apiResponse';
 
 export interface PostAdminLoginParams {
@@ -13,8 +14,19 @@ export interface PostAdminSignupParams {
   adminName: string;
 }
 
-type PostAdminLogoutResponse = ApiResponse<string>;
+export interface AISummaryParams {
+  organizationId: string;
+}
+
+export interface AISummaryDetailParams {
+  organizationId: string;
+  clusterId: number;
+}
+
+export type PostAdminLogoutResponse = ApiResponse<string>;
 export type AdminAuthResponse = ApiResponse<AdminAuthData>;
+export type AISummaryResponse = ApiResponse<AISummaryData>;
+export type AISummaryDetailResponse = ApiResponse<AISummaryDetailData>;
 
 export async function postAdminLogin({
   loginId,
@@ -56,4 +68,21 @@ export async function postAdminSignup({
 export async function getAdminAuth() {
   const response = await apiClient.get<AdminAuthResponse>('/admin/me');
   return response as AdminAuthResponse;
+}
+
+export async function getAISummary({ organizationId }: AISummaryParams) {
+  const response = await apiClient.get<AISummaryResponse>(
+    `/admin/organizations/${organizationId}/clusters`
+  );
+  return response as AISummaryResponse;
+}
+
+export async function getAISummaryDetail({
+  organizationId,
+  clusterId,
+}: AISummaryDetailParams) {
+  const response = await apiClient.get<AISummaryDetailResponse>(
+    `/admin/organizations/${organizationId}/clusters/${clusterId}`
+  );
+  return response as AISummaryDetailResponse;
 }

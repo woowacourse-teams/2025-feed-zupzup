@@ -16,19 +16,19 @@ import useEditRoom from './hooks/useEditRoom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useModalContext } from '@/contexts/useModal';
 import AlertModal from '@/components/AlertModal/AlertModal';
+import { modalWidth } from '@/components/Modal/Modal.styles';
 
 interface EditRoomModalProps {
-  isOpen: boolean;
   onClose: () => void;
 }
 
-export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
+export default function EditRoomModal({ onClose }: EditRoomModalProps) {
   const theme = useAppTheme();
   const { organizationId } = useOrganizationId();
   const { groupName, categories } = useOrganizationName({
     organizationId,
   });
-  const { openModal, closeModal, isOpen: isAlertOpen } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
 
   const [organizationName, setOrganizationName] = useState('');
 
@@ -49,19 +49,18 @@ export default function EditRoomModal({ isOpen, onClose }: EditRoomModalProps) {
   });
 
   const handleRoomEditButton = async () => {
-    await editRoom();
-    onClose();
-    openModal(
-      <AlertModal
-        isOpen={isAlertOpen}
-        onClose={closeModal}
-        title='방 수정 완료'
-      />
-    );
+    try {
+      await editRoom();
+      onClose();
+      openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose} customCSS={modalWidth}>
       <section css={editRoomModalContainer}>
         <p css={editRoomModalTitle}>피드백 방 수정하기</p>
         <RoomNameInput

@@ -12,7 +12,7 @@ export default function useFeedbackSubmit() {
 
   const queryClient = useQueryClient();
 
-  const { mutate: submitFeedback } = useMutation<
+  const { mutateAsync: submitFeedback } = useMutation<
     ApiResponse<SuggestionFeedbackData> | void,
     Error,
     UserFeedbackParams

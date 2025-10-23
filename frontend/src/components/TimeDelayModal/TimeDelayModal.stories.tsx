@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useState } from 'react';
 import { css } from '@emotion/react';
 import TimeDelayModal, { TimeDelayModalProps } from './TimeDelayModal';
 
@@ -11,10 +10,6 @@ const meta: Meta<typeof TimeDelayModal> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    isOpen: {
-      control: 'boolean',
-      description: '모달의 열림/닫힘 상태',
-    },
     loadingDuration: {
       control: { type: 'number', min: 500, max: 5000, step: 500 },
       description: '로딩 상태 지속 시간 (ms)',
@@ -47,12 +42,12 @@ type Story = StoryObj<typeof meta>;
 
 // 기본 스토리를 위한 래퍼 컴포넌트
 const ModalWrapper = (args: TimeDelayModalProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <div>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          console.log('open');
+        }}
         style={{
           padding: '12px 24px',
           backgroundColor: '#007bff',
@@ -66,9 +61,8 @@ const ModalWrapper = (args: TimeDelayModalProps) => {
       </button>
       <TimeDelayModal
         {...args}
-        isOpen={isOpen}
         onClose={() => {
-          setIsOpen(false);
+          console.log('close');
         }}
       />
     </div>
@@ -115,7 +109,6 @@ export const WithCustomCSS: Story = {
 
 export const LoadingState: Story = {
   args: {
-    isOpen: true,
     onClose: () => {},
     loadingDuration: 999999999,
     loadingMessage: '로딩 상태입니다...',
@@ -125,7 +118,6 @@ export const LoadingState: Story = {
 
 export const CompleteState: Story = {
   args: {
-    isOpen: true,
     onClose: () => {},
     loadingDuration: 0,
     autoCloseDuration: 999999999,

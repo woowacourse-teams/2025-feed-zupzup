@@ -43,6 +43,7 @@ const userFeedbackWaiting = {
   isMyFeedback: true,
   comment: '감사합니당',
   category: '기타' as const,
+  imgUrl: null,
 };
 
 const userFeedbackConfirmed = {
@@ -60,6 +61,7 @@ const userFeedbackConfirmed = {
   isMyFeedback: false,
   comment: '감사합니당',
   category: '건의' as const,
+  imgUrl: null,
 };
 
 const adminFeedbackWaiting = {
@@ -78,6 +80,7 @@ const adminFeedbackWaiting = {
   isMyFeedback: false,
   comment: '감사합니당',
   category: '기타' as const,
+  imgUrl: null,
 };
 
 const adminFeedbackConfirmed = {
@@ -95,6 +98,7 @@ const adminFeedbackConfirmed = {
   isMyFeedback: false,
   comment: '감사합니당',
   category: '기타' as const,
+  imgUrl: null,
 };
 
 export const Default: Story = {

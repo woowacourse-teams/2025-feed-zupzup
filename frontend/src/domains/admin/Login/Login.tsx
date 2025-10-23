@@ -1,3 +1,4 @@
+import { SEO } from '@/components/SEO/SEO';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { ROUTES } from '@/constants';
 import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
@@ -46,35 +47,42 @@ export default function Login() {
   const { handleSubmit } = useLogin({ loginValue });
 
   return (
-    <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
-      <form css={loginForm(theme)} onSubmit={handleSubmit}>
-        <div css={fieldContainer}>
-          {loginFields.map((field: LoginField) => (
-            <FormField
-              type={field.type}
-              key={field.name}
-              id={field.name}
-              label={field.labelKey}
-              value={loginValue[field.name]}
-              onChange={handleChangeForm}
-              maxLength={field.maxLength}
-              minLength={field.minLength}
-              placeholder={field.placeholder}
-              errorMessage={errors[field.name] || ''}
-            />
-          ))}
-        </div>
-        <BasicButton>로그인</BasicButton>
-        <div css={loginCaptionContainer(theme)}>
-          {/* <p>비밀번호를 잊으셨나요?</p> */}
-          <p>
-            계정이 없으신가요?
-            <strong onClick={() => goPath('/' + ROUTES.SIGN_UP)}>
-              회원가입하기
-            </strong>
-          </p>
-        </div>
-      </form>
-    </AuthLayout>
+    <>
+      <SEO
+        title='로그인'
+        description='피드줍줍 관리자 로그인 페이지입니다'
+        keywords='로그인, 관리자, 피드줍줍, admin, login'
+      />
+      <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
+        <form css={loginForm(theme)} onSubmit={handleSubmit}>
+          <div css={fieldContainer}>
+            {loginFields.map((field: LoginField) => (
+              <FormField
+                type={field.type}
+                key={field.name}
+                id={field.name}
+                label={field.labelKey}
+                value={loginValue[field.name]}
+                onChange={handleChangeForm}
+                maxLength={field.maxLength}
+                minLength={field.minLength}
+                placeholder={field.placeholder}
+                errorMessage={errors[field.name] || ''}
+              />
+            ))}
+          </div>
+          <BasicButton>로그인</BasicButton>
+          <div css={loginCaptionContainer(theme)}>
+            {/* <p>비밀번호를 잊으셨나요?</p> */}
+            <p>
+              계정이 없으신가요? &nbsp;
+              <strong onClick={() => goPath('/' + ROUTES.SIGN_UP)}>
+                회원가입하기
+              </strong>
+            </p>
+          </div>
+        </form>
+      </AuthLayout>
+    </>
   );
 }

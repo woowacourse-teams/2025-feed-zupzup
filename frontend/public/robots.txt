@@ -1,0 +1,11 @@
+User-agent: *
+
+Allow: /$
+
+Disallow: /login
+Disallow: /signup
+Disallow: /admin/
+Disallow: /*/dashboard
+Disallow: /*/submit
+
+Sitemap: https://feedzupzup.com/sitemap.xml

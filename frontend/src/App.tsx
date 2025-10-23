@@ -1,12 +1,12 @@
+import { HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'react-router-dom';
-import { usePageTracking } from './hooks/usePageTracking';
-import { useLayoutConfig } from './hooks/useLayoutConfig';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
-import AlertModal from '@/components/AlertModal/AlertModal';
-import Header from './components/Header/Header';
-import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { appContainer, main } from './App.style';
+import BottomNavigation from './components/BottomNavigation/BottomNavigation';
+import Header from './components/Header/Header';
 import { ModalProvider } from './contexts/useModal';
+import { useLayoutConfig } from './hooks/useLayoutConfig';
+import { usePageTracking } from './hooks/usePageTracking';
+
 const gaId = process.env.GA_ID;
 
 if (gaId) {
@@ -27,7 +27,6 @@ if (gaId) {
 
 function AppContent() {
   usePageTracking();
-  const { isError, setErrorFalse, message, title } = useErrorModalContext();
   const { isShowHeader, isShowBottomNav } = useLayoutConfig();
 
   return (
@@ -38,19 +37,15 @@ function AppContent() {
           <Outlet />
         </main>
         {isShowBottomNav && <BottomNavigation />}
-        {isError && (
-          <AlertModal
-            onClose={setErrorFalse}
-            isOpen={isError}
-            title={title}
-            message={message}
-          />
-        )}
       </div>
     </ModalProvider>
   );
 }
 
 export default function App() {
-  return <AppContent />;
+  return (
+    <HelmetProvider>
+      <AppContent />
+    </HelmetProvider>
+  );
 }

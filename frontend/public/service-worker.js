@@ -1,6 +1,7 @@
 /* eslint-env browser, serviceworker */
-/* global importScripts, firebase, self */
+/* global importScripts, self */
 
+// ===== Firebase Setup =====
 try {
   importScripts(
     'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js'
@@ -24,37 +25,76 @@ try {
     const title = (notification && notification.title) || '새 알림';
     const options = {
       body: (notification && notification.body) || '',
-      icon: (notification && notification.icon) || '/logo192.png',
+      icon: (notification && notification.icon) || '/192x192.png',
       data,
       requireInteraction: true,
     };
+
     self.registration.showNotification(title, options);
   });
-
-  console.log('[ServiceWorker] Firebase FCM 초기화 완료');
 } catch (error) {
-  console.warn('[ServiceWorker] Firebase FCM 초기화 실패:', error);
+  console.error('Firebase messaging 초기화 실패:', error);
 }
 
-if (self.location.hostname === 'localhost') {
-  try {
-    importScripts('/mockServiceWorker.js');
-    console.log('[ServiceWorker] MSW 로드 완료');
-  } catch (error) {
-    console.warn('[ServiceWorker] MSW 로드 실패 (정상):', error);
-  }
-}
-
+// ===== Install - 모든 캐시 삭제 및 즉시 활성화 =====
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Installed');
-  event.waitUntil(self.skipWaiting());
+  event.waitUntil(
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+    })()
+  );
+  self.skipWaiting();
 });
 
+// ===== Activate - 모든 캐시 삭제 및 클라이언트 제어 =====
 self.addEventListener('activate', (event) => {
-  console.log('[ServiceWorker] Activated');
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map((name) => caches.delete(name)));
+      await clients.claim();
+    })()
+  );
 });
 
 self.addEventListener('fetch', (event) => {
+  if (event.request.url.includes('mockServiceWorker')) {
+    return;
+  }
+
   event.respondWith(fetch(event.request));
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+// ===== PWA 알림 클릭 이벤트 처리 =====
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const organizationUuid = event.notification.data?.organizationUuid;
+  const targetPath = organizationUuid
+    ? `/admin/${organizationUuid}/dashboard`
+    : '/';
+  const targetUrl = new URL(targetPath, self.location.origin).href;
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (
+            client.url.startsWith(self.location.origin) &&
+            'focus' in client
+          ) {
+            return client.focus().then(() => client.navigate(targetUrl));
+          }
+        }
+        return clients.openWindow(targetUrl);
+      })
+  );
 });

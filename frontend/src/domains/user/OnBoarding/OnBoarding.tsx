@@ -64,6 +64,7 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           ))}
         </div>
       </div>
+
       <BasicButton
         icon={<p css={skipIcon}>📄</p>}
         variant='secondary'
