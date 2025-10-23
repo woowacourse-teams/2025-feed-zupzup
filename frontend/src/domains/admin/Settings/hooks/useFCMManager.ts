@@ -68,10 +68,10 @@ export const useFCMManager = () => {
           Notification.permission === 'granted'
         ) {
           const notification = new Notification(
-            payload.notification?.title || '새 알림',
+            payload.data?.title || '새 알림',
             {
-              body: payload.notification?.body || '새로운 메시지가 있습니다.',
-              icon: payload.notification?.icon || '/192x192.png',
+              body: payload.data?.body || '새로운 메시지가 있습니다.',
+              icon: payload.data?.icon || '/192x192.png',
               data: payload.data,
             }
           );

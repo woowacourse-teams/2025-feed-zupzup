@@ -21,11 +21,11 @@ try {
 
   const messaging = firebase.messaging();
 
-  messaging.onBackgroundMessage(({ notification, data }) => {
-    const title = (notification && notification.title) || '새 알림';
+  messaging.onBackgroundMessage(({ data }) => {
+    const title = (data && data.title) || '새 알림';
     const options = {
-      body: (notification && notification.body) || '',
-      icon: (notification && notification.icon) || '/192x192.png',
+      body: (data && data.body) || '',
+      icon: (data && data.icon) || '/192x192.png',
       data,
       requireInteraction: true,
     };
