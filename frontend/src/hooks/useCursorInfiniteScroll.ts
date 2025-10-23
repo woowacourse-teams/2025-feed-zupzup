@@ -51,7 +51,7 @@ export default function useCursorInfiniteScroll<
     items,
     fetchMore: query.fetchNextPage,
     hasNext: query.hasNextPage,
-    loading: query.isFetchingNextPage,
+    loading: query.isFetching,
   };
 }
 

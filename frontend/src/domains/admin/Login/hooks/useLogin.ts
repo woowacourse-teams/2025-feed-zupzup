@@ -22,7 +22,7 @@ export default function useLogin({ loginValue }: UseLoginProps) {
   const { goPath } = useNavigation();
   const { showToast } = useToast();
 
-  const { mutate: adminLogin } = useMutation<
+  const { mutate: adminLogin, isPending: isLoginPending } = useMutation<
     AdminAuthResponse | void,
     ApiError,
     PostAdminLoginParams
@@ -65,5 +65,6 @@ export default function useLogin({ loginValue }: UseLoginProps) {
 
   return {
     handleSubmit,
+    isLoginPending,
   };
 }

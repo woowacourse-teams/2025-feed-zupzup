@@ -12,6 +12,7 @@ import useGetFeedback from '../../hooks/useGetFeedback';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { memo, useMemo } from 'react';
+import FeedbackBoxSkeletonList from '@/domains/components/FeedbackBoxSkeleton/FeedbackBoxSkeletonList';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -76,14 +77,16 @@ export default memo(function AdminFeedbackList({
           />
         ))}
       </FeedbackBoxList>
+      {loading && <FeedbackBoxSkeletonList count={2} />}
       <div>
-        <FeedbackStatusMessage
-          loading={loading}
-          filterType={selectedFilter as FeedbackFilterType}
-          hasNext={hasNext}
-          feedbackCount={feedbacks.length}
-        />
-
+        {!loading && (
+          <FeedbackStatusMessage
+            loading={loading}
+            filterType={selectedFilter as FeedbackFilterType}
+            hasNext={hasNext}
+            feedbackCount={feedbacks.length}
+          />
+        )}
         {hasNext && <div id='scroll-observer' style={{ minHeight: '1px' }} />}
       </div>
     </div>
