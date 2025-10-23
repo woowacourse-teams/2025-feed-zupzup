@@ -11,7 +11,8 @@ public record AdminName(
         String value
 ) {
 
-    private static final int MAX_LENGTH = 10;
+    private static final int MIN_LENGTH = 5;
+    private static final int MAX_LENGTH = 20;
     private static final Pattern ALLOWED_NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣]+$"); // 영어,숫자,한글 가능
 
     public AdminName {
@@ -20,7 +21,7 @@ public record AdminName(
     }
 
     private void validateLength(final String adminName) {
-        if(adminName.isEmpty() || adminName.length() > MAX_LENGTH)
+        if(adminName.length() < MIN_LENGTH || adminName.length() > MAX_LENGTH)
             throw new InvalidAdminNameException("adminName = " + adminName + " length = " + adminName.length());
     }
 
