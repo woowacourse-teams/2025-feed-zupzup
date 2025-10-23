@@ -12,5 +12,5 @@ export default function useAISummary({ organizationId }: UseAISummaryProps) {
     queryFn: () => getAISummary({ organizationId }),
   });
 
-  return { data, isLoading };
+  return { data: data?.data, isLoading };
 }
