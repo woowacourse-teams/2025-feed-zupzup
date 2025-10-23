@@ -7,7 +7,9 @@ import { CategoryListType } from '@/constants/categoryList';
 import ImageUploadWithPreview from '@/domains/user/home/components/ImageUploadWithPreview/ImageUploadWithPreview';
 import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useEffect, useState } from 'react';
+import useFocusOnMount from '@/hooks/useFocusOnMount';
+import { useInitialAnnounceWindow } from '@/hooks/useOneTimeAnnounce';
+import { useRef } from 'react';
 import {
   container,
   formContainer,
@@ -58,15 +60,13 @@ export default function FeedbackForm({
 }: FeedbackFormProps) {
   const theme = useAppTheme();
 
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsInitialLoad(false);
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const isInitialLoad = useInitialAnnounceWindow(3000);
+  useFocusOnMount({
+    ref: textAreaRef as React.RefObject<HTMLElement>,
+    targetId: 'feedbackText',
+  });
 
   return (
     <div css={container} className={className}>
@@ -100,6 +100,7 @@ export default function FeedbackForm({
 
         <div css={textareaContainer(theme)}>
           <TextArea
+            ref={textAreaRef}
             id='feedbackText'
             aria-labelledby='feedbackLabel'
             value={feedback}
