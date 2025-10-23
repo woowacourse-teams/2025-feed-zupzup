@@ -25,5 +25,7 @@ public interface FeedbackEmbeddingClusterRepository extends JpaRepository<Feedba
 
     boolean existsByFeedback(Feedback feedback);
 
+    boolean existsByFeedback_Id(Long feedbackId);
+
     void deleteByFeedback_Id(Long feedbackId);
 }

@@ -32,4 +32,13 @@ public class DeveloperController implements DeveloperApi {
         return SuccessResponse.success(HttpStatus.OK);
 
     }
+
+    @Override
+    public SuccessResponse<Void> batchClustering(final String secret) {
+        if (!secret.equals(secretPassword)) {
+            throw new UnauthorizedException("권한이 존재하지 않습니다.");
+        }
+        developerService.batchClustering();
+        return SuccessResponse.success(HttpStatus.OK);
+    }
 }
