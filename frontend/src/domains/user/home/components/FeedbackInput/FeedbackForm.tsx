@@ -72,9 +72,6 @@ export default function FeedbackForm({
     <div css={container} className={className}>
       <div css={formContainer}>
         <div css={userInfo(theme)}>
-          <label htmlFor='username' className='srOnly'>
-            사용자 이름
-          </label>
           <Input
             id='username'
             css={topInputBorder(theme)}
@@ -130,7 +127,6 @@ export default function FeedbackForm({
           imgUrl={imgUrl}
           onChangeFile={onChangeFile}
           onCancelFile={handleCancelFile}
-          aria-label='이미지 업로드 또는 미리보기'
         />
         <div css={toggleButtonContainer}>
           <BasicToggleButton

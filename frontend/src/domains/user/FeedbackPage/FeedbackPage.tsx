@@ -144,7 +144,10 @@ export default function FeedbackPage({
       <form css={mainContent} onSubmit={onSubmit}>
         <div>
           <div css={contentContainer}>
-            <div css={titleContainer}>
+            <div
+              css={titleContainer}
+              aria-label={`소중한 ${category}을(를) 남겨주세요`}
+            >
               <span css={combinedTitle(theme)} aria-hidden='true'>
                 <strong>소중한 {category}</strong>을(를) 남겨주세요
               </span>
