@@ -97,6 +97,7 @@ export default memo(function UserFeedbackList({
                     feedback,
                     myFeedback: isMyFeedback,
                     postedAt,
+                    isAdmin: false,
                   })}
                 </span>
                 <UserFeedbackBox

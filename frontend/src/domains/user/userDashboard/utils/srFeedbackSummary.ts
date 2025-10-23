@@ -24,10 +24,12 @@ export function srFeedbackSummary({
   feedback,
   myFeedback,
   postedAt,
+  isAdmin,
 }: {
   feedback: FeedbackType;
   myFeedback: boolean;
   postedAt: string;
+  isAdmin: boolean;
 }) {
   const opts: {
     isMine: boolean;
@@ -62,17 +64,19 @@ export function srFeedbackSummary({
   }
 
   if (opts.isMine) parts.push('내가 작성한 피드백');
-  if (!opts.isSecret && opts.comment)
-    parts.push('관리자 답변이 존재합니다.  ' + opts.comment);
 
   if (opts.userName) parts.push(`작성자 ${opts.userName}`);
 
+  if (opts.isSecret) parts.push(opts.isSecret && '비밀글입니다');
+
+  if (opts.comment && (isAdmin || !opts.isSecret))
+    parts.push('관리자 답변이 존재합니다.  ' + opts.comment);
+
   if (postedAt) parts.push(`작성일 ${postedAt}`);
 
-  if (!opts.isSecret && typeof opts.commentCount === 'number')
+  if (isAdmin || (!opts.isSecret && typeof opts.commentCount === 'number'))
     parts.push(`좋아요 ${opts.likeCount ?? 0}개`);
 
-  if (opts.isSecret) parts.push(opts.isSecret && '비밀글입니다');
   if (opts.hasImage) parts.push('이미지 포함');
 
   return parts.join(', ');

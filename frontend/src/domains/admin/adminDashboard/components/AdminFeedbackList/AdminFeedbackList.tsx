@@ -12,6 +12,9 @@ import useGetFeedback from '../../hooks/useGetFeedback';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { memo, useMemo } from 'react';
+import { skipTarget } from '@/domains/user/userDashboard/UserDashboard.style';
+import { formatRelativeTime } from '@/utils/formatRelativeTime';
+import { srFeedbackSummary } from '@/domains/user/userDashboard/utils/srFeedbackSummary';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -56,25 +59,37 @@ export default memo(function AdminFeedbackList({
   useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
-    <div>
+    <div id='admin-feedback-list' tabIndex={-1} css={skipTarget}>
       <FeedbackBoxList>
-        {feedbacks.map((feedback) => (
-          <AdminFeedbackBox
-            key={feedback.feedbackId}
-            feedbackId={feedback.feedbackId}
-            onConfirm={openFeedbackCompleteModal}
-            onDelete={openFeedbackDeleteModal}
-            type={feedback.status}
-            content={feedback.content}
-            postedAt={feedback.postedAt}
-            isSecret={feedback.isSecret}
-            likeCount={feedback.likeCount}
-            userName={feedback.userName}
-            category={feedback.category}
-            comment={feedback.comment}
-            imgUrl={feedback.imageUrl}
-          />
-        ))}
+        {feedbacks.map((feedback) => {
+          const postedAt = formatRelativeTime(feedback.postedAt ?? '');
+          return (
+            <div key={feedback.feedbackId}>
+              <span className='srOnly'>
+                {srFeedbackSummary({
+                  feedback,
+                  myFeedback: false,
+                  postedAt,
+                  isAdmin: true,
+                })}
+              </span>
+              <AdminFeedbackBox
+                feedbackId={feedback.feedbackId}
+                onConfirm={openFeedbackCompleteModal}
+                onDelete={openFeedbackDeleteModal}
+                type={feedback.status}
+                content={feedback.content}
+                postedAt={postedAt}
+                isSecret={feedback.isSecret}
+                likeCount={feedback.likeCount}
+                userName={feedback.userName}
+                category={feedback.category}
+                comment={feedback.comment}
+                imgUrl={feedback.imageUrl}
+              />
+            </div>
+          );
+        })}
       </FeedbackBoxList>
       <div>
         <FeedbackStatusMessage
