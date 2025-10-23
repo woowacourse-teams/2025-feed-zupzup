@@ -9,6 +9,7 @@ import AISummary from './domains/admin/AISummary/AISummary';
 import { isAuthenticated } from './utils/isAuthenticated';
 import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
 import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
+import Loading from '@/components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
@@ -63,7 +64,7 @@ export const router = createBrowserRouter([
     element: (
       <GlobalErrorBoundary fallback={GlobalErrorFallback}>
         <ErrorCatcher />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
           <App />
         </Suspense>
       </GlobalErrorBoundary>
