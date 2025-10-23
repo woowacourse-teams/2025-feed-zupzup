@@ -50,7 +50,7 @@ export const PWAPromptProvider: React.FC<{ children: React.ReactNode }> = ({
   const hidePrompt = () => setIsShown(false);
 
   useEffect(() => {
-    const shouldShowPrompt = () => {
+    const shouldShowPrompt = (): boolean | undefined => {
       if (!isPWAInstallable()) {
         return false;
       }
@@ -70,6 +70,8 @@ export const PWAPromptProvider: React.FC<{ children: React.ReactNode }> = ({
 
       return () => clearTimeout(timer);
     }
+
+    return undefined;
   }, []);
 
   return (
