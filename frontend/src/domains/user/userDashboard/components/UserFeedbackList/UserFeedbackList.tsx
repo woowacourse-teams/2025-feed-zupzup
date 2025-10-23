@@ -80,7 +80,7 @@ export default memo(function UserFeedbackList({
 
   return (
     <>
-      <div>
+      <div id='user-feedback-list'>
         <FeedbackBoxList>
           {displayFeedbacks.map((feedback: FeedbackType) => (
             <UserFeedbackBox

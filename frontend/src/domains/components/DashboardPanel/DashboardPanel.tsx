@@ -23,7 +23,7 @@ export default function DashboardPanel({
 }: DashboardPanelProps) {
   const theme = useAppTheme();
   return (
-    <div css={dashboard(theme)}>
+    <div css={dashboard(theme)} aria-hidden={true}>
       <div css={dotLayout}>
         <div css={dot(theme, color)} />
         <p css={panelTitle(theme)}>{title}</p>

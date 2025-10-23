@@ -40,6 +40,7 @@ export default function UserDashboard() {
         description='제출된 피드백을 확인하세요'
         keywords='피드백, 피드백확인, 피드백조회, 피드백상태, 건의사항, 피드백방'
       />
+      <a className='srOnly'>본문으로 건너뛰기</a>
       <div css={dashboardLayout}>
         <UserDashboardHeader />
         <DashboardOverview />
