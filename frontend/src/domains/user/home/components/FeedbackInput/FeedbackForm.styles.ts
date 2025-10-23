@@ -4,7 +4,6 @@ import { Theme } from '@/theme';
 export const container = css`
   position: relative;
   width: 100%;
-  height: 400px;
   margin: 0 auto;
 `;
 
