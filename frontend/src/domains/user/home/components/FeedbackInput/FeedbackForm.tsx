@@ -7,6 +7,7 @@ import { CategoryListType } from '@/constants/categoryList';
 import ImageUploadWithPreview from '@/domains/user/home/components/ImageUploadWithPreview/ImageUploadWithPreview';
 import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useEffect, useState } from 'react';
 import {
   container,
   formContainer,
@@ -57,6 +58,16 @@ export default function FeedbackForm({
 }: FeedbackFormProps) {
   const theme = useAppTheme();
 
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsInitialLoad(false);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div css={container} className={className}>
       <div css={formContainer}>
@@ -74,6 +85,8 @@ export default function FeedbackForm({
             customCSS={usernameInput(theme)}
             maxLength={10}
             minLength={1}
+            aria-live='polite'
+            aria-label={`현재 닉네임은 ${username || '익명'} 입니다`}
           />
         </div>
 
@@ -102,9 +115,13 @@ export default function FeedbackForm({
           <TextareaCounter textLength={feedback.length} />
         </div>
 
-        <p id='nicknameStatus' aria-live='polite' className='srOnly'>
-          현재 <strong>{username || '익명'}</strong> 닉네임으로 글을 작성
-          중입니다. 닉네임을 변경하거나 편집하시려면 상위 입력란을 이용하세요.
+        <p
+          id='nicknameStatus'
+          aria-live='polite'
+          className='srOnly'
+          aria-hidden={!isInitialLoad}
+        >
+          닉네임을 변경하거나 편집하시려면 상위 입력란을 이용하세요.
         </p>
       </div>
       <div css={formFooterContainer}>
