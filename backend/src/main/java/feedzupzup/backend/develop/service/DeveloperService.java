@@ -48,68 +48,27 @@ public class DeveloperService {
     public void batchClustering() {
         log.info("배치 클러스터링 작업 시작");
 
-        final int batchSize = 50;
-        final int organizationBatchSize = 20;
+        List<Feedback> allFeedbacks = feedbackRepository.findAll();
+        log.info("총 피드백 수: {}", allFeedbacks.size());
 
-        int currentPage = 0;
-        Page<Organization> organizationPage;
+        int processedCount = 0;
+        int skippedCount = 0;
 
-        do {
-            Pageable pageable = PageRequest.of(currentPage, organizationBatchSize);
-            organizationPage = organizationRepository.findAll(pageable);
-
-            log.info("조직 배치 처리 중: page {}/{}", currentPage + 1, organizationPage.getTotalPages());
-
-            for (Organization organization : organizationPage.getContent()) {
-                processOrganizationClustering(organization.getId(), batchSize);
+        for (Feedback feedback : allFeedbacks) {
+            if (feedbackEmbeddingClusterRepository.existsByFeedback_Id(feedback.getId())) {
+                skippedCount++;
+                continue;
             }
 
-            currentPage++;
-        } while (currentPage < organizationPage.getTotalPages());
-
-        log.info("배치 클러스터링 작업 완료. 총 처리된 조직 수: {}", organizationPage.getTotalElements());
-    }
-
-    private void processOrganizationClustering(final Long organizationId, final int batchSize) {
-        log.info("조직 ID {} 클러스터링 처리 시작", organizationId);
-
-        int page = 0;
-        int processedFeedbacks = 0;
-        
-        while (true) {
-            final Pageable pageable = PageRequest.of(page, batchSize);
-            final List<Feedback> feedbacks = findFeedbacksByOrganization(organizationId, pageable);
-            if (feedbacks.isEmpty()) {
-                break;
+            try {
+                FeedbackEmbeddingCluster cluster = feedbackClusteringService.cluster(feedback.getId());
+                feedbackClusteringService.createLabel(cluster.getId());
+                processedCount++;
+            } catch (Exception e) {
+                log.error("피드백 ID {} 클러스터링 실패: {}", feedback.getId(), e.getMessage());
             }
-            
-            log.info("조직 ID {} 피드백 배치 처리 중 (페이지 {}): {}개", organizationId, page, feedbacks.size());
-            
-            for (Feedback feedback : feedbacks) {
-                // 이미 클러스터링된 피드백은 건너뛰기
-                if (feedbackEmbeddingClusterRepository.existsByFeedback_Id(feedback.getId())) {
-                    log.info("이미 처리된 피드백 ID : {}", feedback.getId());
-                    continue;
-                }
-                
-                try {
-                    FeedbackEmbeddingCluster cluster = feedbackClusteringService.cluster(feedback.getId());
-                    feedbackClusteringService.createLabel(cluster.getId());
-                    processedFeedbacks++;
-                } catch (Exception e) {
-                    log.error("피드백 ID {} 클러스터링 실패: {}", feedback.getId(), e.getMessage());
-                }
-            }
-            
-            page++;
         }
 
-        log.info("조직 ID {} 클러스터링 완료. 처리된 총 피드백 수: {}", organizationId, processedFeedbacks);
-    }
-
-    private List<Feedback> findFeedbacksByOrganization(final Long organizationId, final Pageable pageable) {
-        return feedbackRepository.findByOrganization_Id(organizationId, pageable).getContent().stream()
-                .filter(feedback -> feedback.getOrganization().getId().equals(organizationId))
-                .toList();
+        log.info("배치 클러스터링 작업 완료. 처리: {}, 건너뜀: {}", processedCount, skippedCount);
     }
 }
