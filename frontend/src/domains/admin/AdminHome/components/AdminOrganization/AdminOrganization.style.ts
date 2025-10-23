@@ -12,6 +12,7 @@ export const adminOrganizationContainer = (theme: Theme) => css`
   border-radius: 16px;
   cursor: pointer;
   transition: background-color 0.3s;
+  width: 100%;
 
   &:hover {
     background-color: ${theme.colors.gray[100]};

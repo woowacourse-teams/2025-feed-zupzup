@@ -34,46 +34,60 @@ export default function AdminOrganizationList() {
 
   if (isLoading) {
     return (
-      <div css={loadingContainer}>
+      <div css={loadingContainer} role='status' aria-live='polite'>
         <div css={adminSpinner} />
         데이터를 불러오는 중입니다...
       </div>
     );
   }
 
-  return (
-    <div css={adminOrganizationList}>
-      {adminOrganizations.length === 0 ? (
-        <div css={emptyAdminOrganization}>
-          <StatusBox
-            width={'100%'}
-            height={'200px'}
-            textIcon='🏘️'
-            title=' 등록된 조직이 없습니다.'
-            description='+ 버튼을 눌러 조직을 추가해주세요'
-          />
-        </div>
-      ) : (
-        adminOrganizations.map((organizations) => (
-          <AdminOrganization
-            key={organizations.uuid}
-            organizationName={organizations.name}
-            waitingCount={organizations.waitingCount}
-            confirmedCount={organizations.confirmedCount}
-            postedAt={organizations.postedAt}
-            onClick={() => goPath(`/admin/${organizations.uuid}/dashboard`)}
-          />
-        ))
-      )}
+  const organizationCount = adminOrganizations.length;
+  const ariaLabel =
+    organizationCount === 0
+      ? '등록된 피드백 방이 없습니다.'
+      : `총 ${organizationCount}개의 피드백 방이 있습니다.`;
 
-      {!isLoading && (
-        <FloatingButton
-          icon={<PlusIcon color='white' width='24' height='24' />}
-          onClick={handleCreateAdminOrganization}
-          inset={{ bottom: '80px', left: '100%' }}
-          customCSS={addAdminOrganization(theme)}
-        />
-      )}
+  return (
+    <div role='region' aria-label={ariaLabel} tabIndex={0} className='srOnly'>
+      <div css={adminOrganizationList}>
+        {adminOrganizations.length === 0 ? (
+          <div css={emptyAdminOrganization}>
+            <StatusBox
+              width={'100%'}
+              height={'200px'}
+              textIcon='🏘️'
+              title=' 등록된 조직이 없습니다.'
+              description='+ 버튼을 눌러 조직을 추가해주세요'
+            />
+          </div>
+        ) : (
+          <ul role='list' css={adminOrganizationList}>
+            {adminOrganizations.map((organizations) => (
+              <li key={organizations.uuid}>
+                <AdminOrganization
+                  organizationName={organizations.name}
+                  waitingCount={organizations.waitingCount}
+                  confirmedCount={organizations.confirmedCount}
+                  postedAt={organizations.postedAt}
+                  onClick={() =>
+                    goPath(`/admin/${organizations.uuid}/dashboard`)
+                  }
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {!isLoading && (
+          <FloatingButton
+            icon={<PlusIcon color='white' width='24' height='24' />}
+            onClick={handleCreateAdminOrganization}
+            inset={{ bottom: '80px', left: '100%' }}
+            customCSS={addAdminOrganization(theme)}
+            aria-label='새 피드백 방 추가'
+          />
+        )}
+      </div>
     </div>
   );
 }
