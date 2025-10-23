@@ -127,6 +127,14 @@ export const toggleButtonContainer = css`
   align-items: center;
   gap: 4px;
   margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
 `;
 
 export const toggleButtonText = (theme: Theme) => css`
@@ -134,6 +142,15 @@ export const toggleButtonText = (theme: Theme) => css`
 
   margin-left: 10px;
   color: ${theme.colors.gray[600]};
+  word-break: keep-all;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  @media (max-width: 400px) {
+    margin-left: 0;
+    text-align: right;
+    white-space: normal;
+  }
 `;
 
 export const usernameInput = (theme: Theme) => css`
