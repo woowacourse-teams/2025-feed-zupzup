@@ -17,6 +17,7 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -50,18 +51,23 @@ public class DeveloperService {
         final int batchSize = 50;
         final int organizationBatchSize = 20;
 
-        final Pageable organizationPageable = PageRequest.of(0, organizationBatchSize);
-        List<Organization> organizations = organizationRepository.findAll(organizationPageable).getContent();
+        int currentPage = 0;
+        Page<Organization> organizationPage;
 
-        int processedOrganizations = 0;
+        do {
+            Pageable pageable = PageRequest.of(currentPage, organizationBatchSize);
+            organizationPage = organizationRepository.findAll(pageable);
 
-        log.info("조직 배치 처리 중: {}/{}", processedOrganizations, processedOrganizations + organizations.size());
-        for (Organization organization : organizations) {
-            processOrganizationClustering(organization.getId(), batchSize);
-        }
+            log.info("조직 배치 처리 중: page {}/{}", currentPage + 1, organizationPage.getTotalPages());
 
-        processedOrganizations += organizations.size();
-        log.info("배치 클러스터링 작업 완료. 총 처리된 조직 수: {}", processedOrganizations);
+            for (Organization organization : organizationPage.getContent()) {
+                processOrganizationClustering(organization.getId(), batchSize);
+            }
+
+            currentPage++;
+        } while (currentPage < organizationPage.getTotalPages());
+
+        log.info("배치 클러스터링 작업 완료. 총 처리된 조직 수: {}", organizationPage.getTotalElements());
     }
 
     private void processOrganizationClustering(final Long organizationId, final int batchSize) {
@@ -73,7 +79,6 @@ public class DeveloperService {
         while (true) {
             final Pageable pageable = PageRequest.of(page, batchSize);
             final List<Feedback> feedbacks = findFeedbacksByOrganization(organizationId, pageable);
-            
             if (feedbacks.isEmpty()) {
                 break;
             }
