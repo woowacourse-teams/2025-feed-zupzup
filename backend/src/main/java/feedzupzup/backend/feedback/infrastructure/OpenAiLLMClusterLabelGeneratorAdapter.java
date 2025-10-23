@@ -66,6 +66,9 @@ public class OpenAiLLMClusterLabelGeneratorAdapter implements ClusterLabelGenera
             - ❌ "로그인 풀림" → ✅ "로그인 상태가 지속적으로 유지되지 않습니다."
             - ❌ "서비스가 이상함." → ✅ "서비스 이용 과정에서 오류가 발생합니다."
             
+            **부정적인 말은 부정적으로, 긍정적인 말은 긍정적으로 표현해줘!**
+            **맥락을 해석해서, 현재 어떤 상태인지 말해줘!**
+            
             피드백 내용:
             %s
             
