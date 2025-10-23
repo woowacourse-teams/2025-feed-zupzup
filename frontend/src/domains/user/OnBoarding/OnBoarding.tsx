@@ -11,7 +11,6 @@ import {
   buttonContainer,
   title,
   skipIcon,
-  bottomButton,
 } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { Analytics, onboardingEvents } from '@/analytics';
