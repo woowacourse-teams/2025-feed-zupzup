@@ -26,7 +26,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-
       - name: Gradle 설정
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
@@ -65,24 +64,36 @@ jobs:
 
       - name: 서브모듈 최신화
         run: |
-          git submodule update --remote  
+          git submodule update --remote
 
-      - name: Docker Compose 파일 복사
+      - name: 배포 아티팩트 준비
         run: |
-          sudo cp ./backend/backend-submodule/docker/docker-compose.prod.yml /home/ubuntu/docker/docker-compose.yml
+          rm -rf deploy
+          mkdir -p deploy/scripts
+          cp ./backend/backend-submodule/deploy/appspec.yml deploy/
+          cp ./backend/backend-submodule/deploy/scripts/*.sh deploy/scripts/
+          chmod +x deploy/scripts/*.sh
+          
+          cp ./backend/backend-submodule/docker/docker-compose.prod.yml deploy/docker-compose.yml
+          
+          cat > deploy/.env << 'EOF'
+          SERVER_IMAGE_TAG=${{ secrets.DOCKER_USERNAME }}/feed-zupzup-prod:${{ github.sha }}
+          EOF
+          
+          cd deploy
+          zip -r ../deployment.zip .
+          cd ..
 
-      - name: EC2 배포
+      - name: S3에 배포 아티팩트 업로드
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
-          export SERVER_IMAGE_TAG=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
-          
-          cd /home/ubuntu/docker
-          docker-compose stop feed-zupzup-server
-          docker-compose rm -f feed-zupzup-server
-          docker-compose up -d feed-zupzup-server
-          
-          docker images ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }} --format "{{.Tag}} {{.CreatedAt}}" | \
-          sort -k2 -r | tail -n +3 | awk '{print $1}' | \
-          xargs -r -I {} docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:{} || true
-          
-          docker image prune -f
+          aws s3 cp deployment.zip \
+            s3://${{ secrets.S3_DEPLOYMENT_BUCKET }}/feed-zupzup/${{ secrets.S3_DEPLOYMENT_DIR }}/deploy/deployment.zip \
+            --region ap-northeast-2
+
+      - name: CodeDeploy로 배포
+        run: |
+          aws deploy create-deployment \
+            --application-name feed-zupzup-prod-deploy \
+            --deployment-group-name feedzupzup-prod-deploy-group \
+            --s3-location bucket=${{ secrets.S3_DEPLOYMENT_BUCKET }},key=feed-zupzup/${{ secrets.S3_DEPLOYMENT_DIR }}/deploy/deployment.zip,bundleType=zip \
+            --region ap-northeast-2
