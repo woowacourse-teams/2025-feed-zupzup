@@ -11,6 +11,7 @@ export interface ModalProps {
   height?: number | undefined;
   customCSS?: SerializedStyles | SerializedStyles[];
   disableUserClose?: boolean;
+  ariaLabelledby?: string;
 }
 
 export default function Modal({
@@ -20,6 +21,7 @@ export default function Modal({
   height,
   customCSS,
   disableUserClose = false,
+  ariaLabelledby,
 }: ModalProps) {
   const theme = useAppTheme();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -39,6 +41,7 @@ export default function Modal({
       <div
         ref={modalRef}
         role='dialog'
+        aria-labelledby={ariaLabelledby}
         aria-modal='true'
         tabIndex={-1}
         css={[modalBox(theme, width, height), customCSS]}
