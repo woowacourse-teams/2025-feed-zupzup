@@ -1,4 +1,5 @@
 import { SerializedStyles } from '@emotion/react';
+import { forwardRef } from 'react';
 
 export interface TextAreaProps extends React.ComponentProps<'textarea'> {
   value: string;
@@ -9,17 +10,21 @@ export interface TextAreaProps extends React.ComponentProps<'textarea'> {
   minLength: number;
 }
 
-export default function TextArea({
-  name,
-  value,
-  onChange,
-  placeholder,
-  customCSS,
-  maxLength,
-  minLength,
-}: TextAreaProps) {
+function TextAreaComponent(
+  {
+    name,
+    value,
+    onChange,
+    placeholder,
+    customCSS,
+    maxLength,
+    minLength,
+  }: TextAreaProps,
+  ref: React.Ref<HTMLTextAreaElement>
+) {
   return (
     <textarea
+      ref={ref}
       name={name}
       css={customCSS}
       minLength={minLength}
@@ -30,3 +35,7 @@ export default function TextArea({
     />
   );
 }
+
+const TextArea = forwardRef(TextAreaComponent);
+
+export default TextArea;
