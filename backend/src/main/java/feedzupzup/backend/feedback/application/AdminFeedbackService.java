@@ -143,11 +143,8 @@ public class AdminFeedbackService {
     public ClusterFeedbacksResponse getFeedbacksByClusterId(final Long clusterId) {
         final EmbeddingCluster embeddingCluster = embeddingClusterRepository.findById(clusterId)
                 .orElseThrow(() -> new ResourceNotFoundException("해당 clusterid(id = " + clusterId + ")로 찾을 수 없습니다."));
-        final List<FeedbackEmbeddingCluster> embeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
+        final List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
                 embeddingCluster);
-        if (embeddingClusters.isEmpty()) {
-            throw new ResourceNotFoundException("해당 클러스터 ID(clusterID = " + clusterId + ")를 가진 피드백은 존재하지 않습니다.");
-        }
-        return ClusterFeedbacksResponse.of(embeddingClusters, embeddingCluster.getLabel());
+        return ClusterFeedbacksResponse.of(feedbackEmbeddingClusters, embeddingCluster.getLabel());
     }
 }
