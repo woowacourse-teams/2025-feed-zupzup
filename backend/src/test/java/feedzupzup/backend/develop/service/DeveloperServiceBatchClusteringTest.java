@@ -17,6 +17,7 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,5 +130,33 @@ class DeveloperServiceBatchClusteringTest extends ServiceIntegrationHelper {
 
         // then
         verify(feedbackClusteringService, times(0)).cluster(anyLong());
+    }
+
+    @Test
+    @DisplayName("organizationBatchSize가 20개 이상일 때 페이지네이션으로 처리한다")
+    void batchClustering_multipleOrganizationPages() {
+        // given - 25개 조직 생성 (organizationBatchSize=20이므로 2페이지)
+        for (int orgNum = 1; orgNum <= 25; orgNum++) {
+            Organization org = OrganizationFixture.createByName("조직" + orgNum);
+            organizationRepository.save(org);
+
+            OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(org);
+            organizationCategoryRepository.save(category);
+
+            System.out.println(orgNum);
+            // 각 조직마다 3개의 피드백 생성
+            for (int feedbackNum = 1; feedbackNum <= 3; feedbackNum++) {
+                Feedback feedback = FeedbackFixture.createFeedback(org, "피드백" + feedbackNum, category);
+                feedbackRepository.save(feedback);
+            }
+            List<Feedback> byOrganization = feedbackRepository.findByOrganization(org);
+            System.out.println(org.getId() + " : " +byOrganization);
+        }
+
+        // when
+        developerService.batchClustering();
+
+        // then - 25개 조직 × 3개 피드백 = 75개 피드백이 모두 처리되어야 함
+        verify(feedbackClusteringService, times(75)).cluster(anyLong());
     }
 }
