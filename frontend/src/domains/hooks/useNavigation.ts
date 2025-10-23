@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { NavigateOptions, useNavigate } from 'react-router-dom';
 
 export default function useNavigation() {
   const navigate = useNavigate();
@@ -7,8 +7,8 @@ export default function useNavigation() {
     navigate(-1);
   };
 
-  const goPath = <T = unknown>(path: string, state?: T) => {
-    navigate(path, { state });
+  const goPath = (path: string, options?: NavigateOptions) => {
+    navigate(path, options);
   };
 
   return {
