@@ -9,6 +9,7 @@ import { aiSummaryTitle } from './AISummary.styles';
 import AdminFeedbackBox from '../adminDashboard/components/AdminFeedbackBox/AdminFeedbackBox';
 import NotFoundPage from '@/components/NotFoundPage/NotFoundPage';
 import AISummaryFloatingButton from '../adminDashboard/components/AISummaryFloatingButton/AISummaryFloatingButton';
+import StatusBox from '@/domains/components/StatusBox/StatusBox';
 
 export default function AISummary() {
   const theme = useAppTheme();
@@ -27,6 +28,18 @@ export default function AISummary() {
     organizationId,
     clusterId: Number(clusterId),
   });
+
+  if (data?.feedbacks.length === 0) {
+    return (
+      <StatusBox
+        width={'100%'}
+        height={'200px'}
+        textIcon='💭'
+        title='아직 데이터를 모으는 중이에요.'
+        description='피드백이 더 작성되면 AI 요약을 볼 수 있어요!'
+      />
+    );
+  }
 
   return (
     <FeedbackBoxList>
