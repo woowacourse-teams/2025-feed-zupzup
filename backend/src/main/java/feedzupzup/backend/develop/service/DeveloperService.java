@@ -108,7 +108,7 @@ public class DeveloperService {
     }
 
     private List<Feedback> findFeedbacksByOrganization(final Long organizationId, final Pageable pageable) {
-        return feedbackRepository.findAll(pageable).getContent().stream()
+        return feedbackRepository.findByOrganization_Id(organizationId, pageable).getContent().stream()
                 .filter(feedback -> feedback.getOrganization().getId().equals(organizationId))
                 .toList();
     }

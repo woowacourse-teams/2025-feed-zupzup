@@ -1,8 +1,10 @@
 package feedzupzup.backend.feedback.domain;
 
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
+import feedzupzup.backend.organization.domain.Organization;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -112,4 +114,7 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             @Param("organizationUuid") UUID organizationUuid,
             Pageable pageable
             );
-}
+
+    List<Feedback> findByOrganization(Organization org);
+
+    Page<Feedback> findByOrganization_Id(Long organizationId, Pageable pageable);}
