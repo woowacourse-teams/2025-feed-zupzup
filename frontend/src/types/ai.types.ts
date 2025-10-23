@@ -1,7 +1,7 @@
 import { FeedbackType } from './feedback.types';
 
 export interface AISummaryCategory {
-  clusterId: string;
+  clusterId: number;
   label: string;
   totalCount: number;
 }
