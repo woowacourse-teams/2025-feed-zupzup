@@ -62,29 +62,25 @@ export const useFCMManager = () => {
 
     try {
       const unsubscribe = onMessage(messaging, (payload: MessagePayload) => {
-        const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+        if (
+          typeof window !== 'undefined' &&
+          'Notification' in window &&
+          Notification.permission === 'granted'
+        ) {
+          const notification = new Notification(
+            payload.data?.title || '새 알림',
+            {
+              body: payload.data?.body || '새로운 메시지가 있습니다.',
+              icon: payload.data?.icon || '/192x192.png',
+              data: payload.data,
+            }
+          );
 
-        if (!isPWA) {
-          if (
-            typeof window !== 'undefined' &&
-            'Notification' in window &&
-            Notification.permission === 'granted'
-          ) {
-            const notification = new Notification(
-              payload.data?.title || '새 알림',
-              {
-                body: payload.data?.body || '새로운 메시지가 있습니다.',
-                icon: payload.data?.icon || '/192x192.png',
-                data: payload.data,
-              }
-            );
-
-            notification.onclick = () => {
-              notification.close();
-              window.focus();
-              window.location.href = '/';
-            };
-          }
+          notification.onclick = () => {
+            notification.close();
+            window.focus();
+            window.location.href = '/';
+          };
         }
       });
 
