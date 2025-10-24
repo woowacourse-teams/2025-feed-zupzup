@@ -20,6 +20,18 @@ try {
   });
 
   const messaging = firebase.messaging();
+
+  messaging.onBackgroundMessage(({ notification, data }) => {
+    const title = (data && data.title) || '새 알림';
+    const options = {
+      body: (data && data.body) || '',
+      icon: (data && data.icon) || '/192x192.png',
+      data,
+      requireInteraction: true,
+    };
+
+    self.registration.showNotification(title, options);
+  });
 } catch (error) {
   console.error('Firebase messaging 초기화 실패:', error);
 }
