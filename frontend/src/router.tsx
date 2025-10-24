@@ -1,13 +1,15 @@
 import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
-import { ROUTES } from '@/constants/routes';
+import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import { ErrorCatcher } from '@/contexts/ErrorCatcher';
 import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
 import AISummary from './domains/admin/AISummary/AISummary';
+import { isAuthenticated } from './utils/isAuthenticated';
 import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
 import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
+import Loading from '@/components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
@@ -62,7 +64,7 @@ export const router = createBrowserRouter([
     element: (
       <GlobalErrorBoundary fallback={GlobalErrorFallback}>
         <ErrorCatcher />
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
           <App />
         </Suspense>
       </GlobalErrorBoundary>
@@ -70,7 +72,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <OnBoarding />,
+        element: isAuthenticated() ? (
+          <Navigate to={ADMIN_BASE + ROUTES.ADMIN_HOME} replace />
+        ) : (
+          <OnBoarding />
+        ),
       },
       { path: ROUTES.SUBMIT, element: <Home /> },
       { path: ROUTES.DASHBOARD, element: <UserDashboard /> },

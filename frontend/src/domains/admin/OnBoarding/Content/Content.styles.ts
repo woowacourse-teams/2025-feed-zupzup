@@ -7,10 +7,26 @@ export const container = css`
   justify-content: center;
   position: relative;
   overflow: hidden;
-  min-height: 350px;
+  min-height: 50px;
 
-  @media (min-width: 500px) {
+  @media (min-height: 700px) {
+    min-height: 350px;
+  }
+
+  @media (min-width: 499px) {
     min-height: 480px;
+  }
+
+  @media (max-height: 699px) {
+    min-height: 40px;
+  }
+
+  @media (max-height: 500px) {
+    min-height: 30px;
+  }
+
+  @media (max-height: 400px) {
+    min-height: 20px;
   }
 `;
 
@@ -42,4 +58,24 @@ export const contentContainer = css`
   flex-direction: column;
   gap: 16px;
   margin-bottom: 40px;
+
+  @media (max-height: 700px) {
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-height: 500px) {
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  @media (max-height: 400px) {
+    gap: 2px;
+    margin-bottom: 5px;
+  }
+
+  @media (max-height: 350px) {
+    gap: 1px;
+    margin-bottom: 2px;
+  }
 `;

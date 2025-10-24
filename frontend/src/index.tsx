@@ -1,5 +1,7 @@
 import { ErrorProvider } from '@/contexts/useErrorContext';
 import { ToastProvider } from '@/contexts/useToast';
+import { PWAPromptProvider, usePWAPrompt } from '@/contexts/usePWAPrompt';
+import { PWA_PROMPT_CONFIG } from '@/constants/pwaPrompt';
 import { router } from '@/router';
 import { initSentry } from '@/services/sentry';
 import { registerServiceWorker } from '@/services/serviceWorker';
@@ -9,6 +11,7 @@ import * as Sentry from '@sentry/react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
+import PWAPrompt from 'react-ios-pwa-prompt';
 import './index.css';
 import './reset.css';
 import { theme } from './theme';
@@ -30,6 +33,14 @@ declare global {
   }
 }
 
+function PWAPromptWrapper() {
+  const { isShown, hidePrompt } = usePWAPrompt();
+
+  return (
+    <PWAPrompt {...PWA_PROMPT_CONFIG} isShown={isShown} onClose={hidePrompt} />
+  );
+}
+
 setupGlobalVersion();
 initSentry();
 registerServiceWorker();
@@ -40,14 +51,17 @@ root.render(
   <ErrorProvider>
     <QueryClientBoundary>
       <ThemeProvider theme={theme}>
-        <ToastProvider>
-          <Sentry.ErrorBoundary>
-            <RouterProvider router={router} />
-            {process.env.NODE_ENV === 'development' && (
-              <ReactQueryDevtools initialIsOpen={false} />
-            )}
-          </Sentry.ErrorBoundary>
-        </ToastProvider>
+        <PWAPromptProvider>
+          <ToastProvider>
+            <Sentry.ErrorBoundary>
+              <RouterProvider router={router} />
+              <PWAPromptWrapper />
+              {process.env.NODE_ENV === 'development' && (
+                <ReactQueryDevtools initialIsOpen={false} />
+              )}
+            </Sentry.ErrorBoundary>
+          </ToastProvider>
+        </PWAPromptProvider>
       </ThemeProvider>
     </QueryClientBoundary>
   </ErrorProvider>

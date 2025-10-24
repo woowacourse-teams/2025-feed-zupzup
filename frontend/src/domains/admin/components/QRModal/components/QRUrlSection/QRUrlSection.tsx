@@ -1,5 +1,6 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import CopyIcon from '@/components/icons/CopyIcon';
+import { useToast } from '@/contexts/useToast';
 import {
   copyButton,
   QRURLContainer,
@@ -15,10 +16,11 @@ type QRUrlSectionProps = {
 
 export default function QRUrlSection({ url }: QRUrlSectionProps) {
   const theme = useAppTheme();
+  const { showToast } = useToast();
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(url);
-    alert('복사되었습니다.');
+    showToast('복사되었습니다.', 'success');
   };
 
   return (
