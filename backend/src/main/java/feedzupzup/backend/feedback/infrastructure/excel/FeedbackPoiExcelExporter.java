@@ -1,26 +1,24 @@
 package feedzupzup.backend.feedback.infrastructure.excel;
 
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.CATEGORY;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.COMMENT;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.CONTENT;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.FEEDBACK_NUMBER;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.IMAGE;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.IS_SECRET;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.LIKE_COUNT;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.POSTED_AT;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.STATUS;
-import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.USER_NAME;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.CATEGORY;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.COMMENT;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.CONTENT;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.FEEDBACK_NUMBER;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.IMAGE;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.IS_SECRET;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.LIKE_COUNT;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.POSTED_AT;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.STATUS;
+import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.USER_NAME;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackExcelColumn;
 import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
 import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.s3.service.S3DownloadService;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +38,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class FeedbackExcelExporterPoi implements FeedbackExcelExporter {
+public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
 
     private final S3DownloadService s3DownloadService;
 
@@ -48,7 +46,7 @@ public class FeedbackExcelExporterPoi implements FeedbackExcelExporter {
     public void export(
             final Organization organization,
             final List<Feedback> feedbacks,
-            final HttpServletResponse response
+            final OutputStream outputStream
     ) {
         final int windowSize = 10;
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(windowSize)) {
@@ -58,7 +56,8 @@ public class FeedbackExcelExporterPoi implements FeedbackExcelExporter {
             addFeedbackHeaderRow(sheet);
             addFeedbackDataRows(sheet, workbook, feedbacks);
 
-            streamExcelResponse(response, workbook);
+            workbook.write(outputStream);
+            outputStream.flush();
         } catch (IOException e) {
             throw new PoiExcelExportException("엑셀 파일 생성 중 오류가 발생했습니다.");
         }
@@ -114,6 +113,11 @@ public class FeedbackExcelExporterPoi implements FeedbackExcelExporter {
         }
     }
 
+    /**
+     * s3에서 이미지를 다운받아 엑셀의 Cell에 삽입한다.
+     * <p>
+     * 참고 - 이미지 다운이 실패하더라도 엑셀 다운은 성공시키기 위해 예외를 던지지 않음
+     */
     private void addImageCell(
             final Sheet sheet,
             final SXSSFWorkbook workbook,
@@ -142,29 +146,5 @@ public class FeedbackExcelExporterPoi implements FeedbackExcelExporter {
             row.createCell(IMAGE.columnIndex()).setCellValue("");
             log.error("엑셀 파일 생성을 위한 이미지 다운로드 실패");
         }
-    }
-
-    private void streamExcelResponse(
-            final HttpServletResponse response,
-            final SXSSFWorkbook workbook
-    ) {
-        final String fileName = generateFileName();
-
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-        response.setHeader("Transfer-Encoding", "chunked");
-
-        try (final OutputStream outputStream = response.getOutputStream()) {
-            workbook.write(outputStream);
-            outputStream.flush();
-        } catch (IOException e) {
-            throw new PoiExcelExportException("엑셀 파일 스트리밍 중 오류가 발생했습니다.");
-        }
-    }
-
-    private String generateFileName() {
-        final LocalDateTime now = LocalDateTime.now();
-        final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-        return String.format("feedback_export_%s.xlsx", timestamp);
     }
 }

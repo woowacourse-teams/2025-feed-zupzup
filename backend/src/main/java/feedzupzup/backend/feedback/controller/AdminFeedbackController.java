@@ -11,9 +11,12 @@ import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -95,7 +98,18 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final LoginOrganizerInfo loginOrganizerInfo,
             final HttpServletResponse httpServletResponse
     ) {
-        adminFeedbackService.downloadFeedbacks(loginOrganizerInfo.organizationUuid(), httpServletResponse);
+        httpServletResponse.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        httpServletResponse.setHeader("Transfer-Encoding", "chunked");
+
+        try (final OutputStream outputStream = httpServletResponse.getOutputStream()) {
+            final String fileName = adminFeedbackService.downloadFeedbacks(
+                    loginOrganizerInfo.organizationUuid(), outputStream
+            );
+            httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        } catch (IOException e) {
+            throw new PoiExcelExportException("엑셀 파일 다운로드 중 오류가 발생했습니다.", e);
+        }
+
         return SuccessResponse.success(HttpStatus.OK);
     }
 }

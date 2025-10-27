@@ -26,7 +26,9 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -154,13 +156,21 @@ public class AdminFeedbackService {
         return ClusterFeedbacksResponse.of(feedbacks);
     }
 
-    public void downloadFeedbacks(final UUID organizationUuid, final HttpServletResponse response) {
+    public String downloadFeedbacks(final UUID organizationUuid, final OutputStream outputStream) {
         final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
 
         final List<Feedback> feedbacks = feedBackRepository.findByOrganizationId(organization.getId());
 
-        feedbackExcelExporter.export(organization, feedbacks, response);
+        feedbackExcelExporter.export(organization, feedbacks, outputStream);
+
+        return generateFileName();
+    }
+
+    private String generateFileName() {
+        final LocalDateTime now = LocalDateTime.now();
+        final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        return String.format("feedback_export_%s.xlsx", timestamp);
     }
 }
