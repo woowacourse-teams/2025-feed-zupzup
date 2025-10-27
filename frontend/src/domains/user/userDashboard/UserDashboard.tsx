@@ -57,14 +57,14 @@ export default function UserDashboard() {
         <FloatingButton
           icon={<ArrowIcon />}
           onClick={handleNavigateToOnboarding}
-          inset={{ bottom: '32px', left: '100%' }}
+          inset={{ bottom: '150px', left: '100%' }}
           customCSS={goOnboardButton(theme)}
         />
         {showButton && (
           <FloatingButton
             icon={<ArrowUpIcon />}
             onClick={scrollToTop}
-            inset={{ bottom: '32px' }}
+            inset={{ bottom: '150px' }}
             customCSS={goTopButton(theme)}
           />
         )}

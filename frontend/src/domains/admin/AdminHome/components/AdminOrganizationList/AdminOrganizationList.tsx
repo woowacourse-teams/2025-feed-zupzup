@@ -69,7 +69,7 @@ export default function AdminOrganizationList() {
         <FloatingButton
           icon={<PlusIcon color='white' width='24' height='24' />}
           onClick={handleCreateAdminOrganization}
-          inset={{ bottom: '80px', left: '100%' }}
+          inset={{ bottom: '150px', left: '100%' }}
           customCSS={addAdminOrganization(theme)}
         />
       )}

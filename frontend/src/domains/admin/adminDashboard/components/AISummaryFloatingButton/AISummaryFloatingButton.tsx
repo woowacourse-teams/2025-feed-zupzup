@@ -52,7 +52,7 @@ export default function AISummaryFloatingButton() {
     <FloatingButton
       text='AI'
       onClick={handleCategoryClick}
-      inset={{ bottom: '60px', left: '100%' }}
+      inset={{ bottom: '150px', left: '100%' }}
       customCSS={aiFloatingButton(theme)}
     />
   );
