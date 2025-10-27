@@ -62,5 +62,18 @@ export default [
       serviceworker: true,
     },
   },
+  {
+    files: ['public/channelio.js'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'script',
+      },
+    },
+    env: {
+      browser: true,
+    },
+  },
   ...storybook.configs['flat/recommended'],
 ];
