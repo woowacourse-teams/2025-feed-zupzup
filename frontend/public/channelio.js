@@ -37,27 +37,4 @@
 
 ChannelIO('boot', {
   pluginKey: 'e63d6484-428b-4745-9e39-54a8cb382f91',
-  zIndex: 9999,
 });
-
-function adjustChannelTalk() {
-  const launcher = document.querySelector('[data-ch-testid="launcher"]');
-  if (launcher) {
-    launcher.style.transform = 'scale(0.85)';
-    launcher.style.transformOrigin = 'bottom right';
-
-    let parent = launcher.parentElement;
-    while (parent) {
-      const style = window.getComputedStyle(parent);
-      if (style.position === 'fixed') {
-        parent.style.bottom = '100px';
-        parent.style.right = '20px';
-        break;
-      }
-      parent = parent.parentElement;
-    }
-  }
-}
-
-setTimeout(adjustChannelTalk, 1000);
-setTimeout(adjustChannelTalk, 2000);
