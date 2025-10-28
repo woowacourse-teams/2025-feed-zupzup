@@ -1,20 +1,17 @@
 package feedzupzup.backend.s3.exception;
 
+import feedzupzup.backend.global.exception.InfrastructureException;
 import feedzupzup.backend.global.response.ErrorCode;
 
-public class S3DownloadException extends RuntimeException {
+public class S3DownloadException extends InfrastructureException {
 
     private static final ErrorCode errorCode = ErrorCode.S3_DOWNLOAD_FAILED;
 
     public S3DownloadException(final String message) {
-        super(message);
+        super(errorCode, message);
     }
 
     public S3DownloadException() {
-        super(errorCode.getMessage());
-    }
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
+        super(errorCode, errorCode.getMessage());
     }
 }
