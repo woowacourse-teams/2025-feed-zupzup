@@ -162,7 +162,7 @@ class FeedbackPoiExcelExporterTest {
     }
 
     @Test
-    @DisplayName("이미지 다운로드 실패 시 빈 셀로 처리되고 엑셀 생성은 계속된다")
+    @DisplayName("이미지 다운로드 실패 시 '이미지 로드 실패'로 표시되고 엑셀 생성은 계속된다")
     void export_ImageDownloadFails_ContinuesWithEmptyCell() throws IOException {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();

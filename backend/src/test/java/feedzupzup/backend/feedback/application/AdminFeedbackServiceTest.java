@@ -968,5 +968,20 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(fileName).contains("feedback_export_")
             );
         }
+
+        @Test
+        @DisplayName("빈 피드백 목록을 엑셀로 다운로드한다")
+        void downloadFeedbacks_EmptyFeedbacks() {
+            // given
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // when
+            adminFeedbackService.downloadFeedbacks(organization.getUuid(), outputStream);
+
+            // then
+            assertThat(outputStream.size()).isGreaterThan(0);
+        }
     }
+
+
 }
