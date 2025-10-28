@@ -75,10 +75,7 @@ jobs:
           chmod +x deploy/scripts/*.sh
           
           cp ./backend/backend-submodule/docker/docker-compose.prod.yml deploy/docker-compose.yml
-          
-          cat > deploy/.env << 'EOF'
-          SERVER_IMAGE_TAG=${{ secrets.DOCKER_USERNAME }}/feed-zupzup-prod:${{ github.sha }}
-          EOF
+          cp ./backend/backend-submodule/alloy/config.alloy deploy/
           
           cd deploy
           zip -r ../deployment.zip .
