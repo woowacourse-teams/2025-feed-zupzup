@@ -60,6 +60,14 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.error(e.getErrorCode()));
     }
 
+    @ExceptionHandler(InfrastructureException.class)
+    public ResponseEntity<ErrorResponse> handleInfrastructureException(final InfrastructureException e) {
+        log.error(e.getMessage(), e);
+        final HttpStatus httpStatus = e.getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(
             final MethodArgumentNotValidException e) {

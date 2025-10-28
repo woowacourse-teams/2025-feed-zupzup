@@ -9,6 +9,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
+import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
@@ -48,6 +49,7 @@ public class AdminFeedbackService {
     private final OrganizationRepository organizationRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
+    private final FeedbackExcelExporter feedbackExcelExporter;
 
     @Transactional
     @BusinessActionLog
@@ -139,7 +141,7 @@ public class AdminFeedbackService {
         if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
             throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
         }
-        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  PageRequest.of(0, limit));
+        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,
                 PageRequest.of(0, limit));
         return ClustersResponse.from(clusterInfos);
     }
@@ -159,7 +161,7 @@ public class AdminFeedbackService {
 
         final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
 
-        //TODO 엑셀 파일 생성 로직 구현 필요
+        feedbackExcelExporter.export(organization, feedbacks, outputStream);
     }
 
     public String generateExportFileName() {

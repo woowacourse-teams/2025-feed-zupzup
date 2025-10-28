@@ -1,6 +1,5 @@
 package feedzupzup.backend.s3.service;
 
-import com.google.storage.v2.GetObjectRequest;
 import feedzupzup.backend.s3.config.S3Properties;
 import feedzupzup.backend.s3.exception.S3DownloadException;
 import java.io.IOException;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.S3Exception;
 
