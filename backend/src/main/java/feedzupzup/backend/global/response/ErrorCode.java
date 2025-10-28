@@ -64,7 +64,10 @@ public enum ErrorCode {
 
     //S3 Error
     S3_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "S01", "파일 업로드에 실패하였습니다."),
-    S3_PRESIGNED_FAILED(INTERNAL_SERVER_ERROR, "S02", "Presigned URL 생성에 실패하였습니다.");
+    S3_PRESIGNED_FAILED(INTERNAL_SERVER_ERROR, "S02", "Presigned URL 생성에 실패하였습니다."),
+
+    //Poi Excel Error
+    POI_EXCEL_EXPORT_FAIL(INTERNAL_SERVER_ERROR, "E01", "엑셀 파일 생성에 실패하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

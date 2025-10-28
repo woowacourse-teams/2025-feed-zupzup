@@ -12,7 +12,7 @@ public class InfrastructureException extends CustomGlobalException {
         super(errorCode, message, throwable);
     }
 
-    public static final class RestClientServerException extends InfrastructureException{
+    public static final class RestClientServerException extends InfrastructureException {
 
         private static final ErrorCode errorCode = ErrorCode.REST_CLIENT_SERVER_FAIL;
 
@@ -25,6 +25,23 @@ public class InfrastructureException extends CustomGlobalException {
         }
 
         public RestClientServerException() {
+            super(errorCode, errorCode.getMessage());
+        }
+    }
+
+    public static final class PoiExcelExportException extends InfrastructureException {
+
+        private static final ErrorCode errorCode = ErrorCode.POI_EXCEL_EXPORT_FAIL;
+
+        public PoiExcelExportException(final String message, final Throwable throwable) {
+            super(errorCode, message, throwable);
+        }
+
+        public PoiExcelExportException(final String message) {
+            super(errorCode, message);
+        }
+
+        public PoiExcelExportException() {
             super(errorCode, errorCode.getMessage());
         }
     }
