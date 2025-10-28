@@ -24,11 +24,14 @@ import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -137,6 +140,7 @@ public class AdminFeedbackService {
             throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
         }
         final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  PageRequest.of(0, limit));
+                PageRequest.of(0, limit));
         return ClustersResponse.from(clusterInfos);
     }
 
@@ -146,5 +150,21 @@ public class AdminFeedbackService {
         final List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
                 embeddingCluster);
         return ClusterFeedbacksResponse.of(feedbackEmbeddingClusters, embeddingCluster.getLabel());
+    }
+
+    public void downloadFeedbacks(final UUID organizationUuid, final OutputStream outputStream) {
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
+
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
+
+        //TODO 엑셀 파일 생성 로직 구현 필요
+    }
+
+    public String generateExportFileName() {
+        final LocalDateTime now = LocalDateTime.now();
+        final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        return String.format("feedback_export_%s.xlsx", timestamp);
     }
 }
