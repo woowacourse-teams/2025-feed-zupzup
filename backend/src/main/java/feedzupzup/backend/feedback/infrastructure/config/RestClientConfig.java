@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.infrastructure.config;
 
-import feedzupzup.backend.feedback.infrastructure.ai.OpenAIProperties;
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAIProperties;
+import feedzupzup.backend.feedback.infrastructure.embedding.VoyageAIProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -10,21 +11,36 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
-@EnableConfigurationProperties(OpenAIProperties.class)
+@EnableConfigurationProperties({VoyageAIProperties.class, OpenAIProperties.class})
 @Configuration
 @RequiredArgsConstructor
 public class RestClientConfig {
 
+    private final VoyageAIProperties voyageAIProperties;
     private final OpenAIProperties openAIProperties;
 
     @Bean
-    public RestClient openAiEmbeddingRestClient() {
+    public RestClient voyageAiEmbeddingRestClient() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(voyageAIProperties.getConnectTimeout());
+        factory.setReadTimeout(voyageAIProperties.getReadTimeout());
+
+        return RestClient.builder()
+                .baseUrl(voyageAIProperties.getEmbeddingUrl())
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + voyageAIProperties.getKey())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .requestFactory(factory)
+                .build();
+    }
+
+    @Bean
+    public RestClient openAiCompletionRestClient() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         factory.setConnectTimeout(openAIProperties.getConnectTimeout());
         factory.setReadTimeout(openAIProperties.getReadTimeout());
 
         return RestClient.builder()
-                .baseUrl(openAIProperties.getEmbeddingUrl())
+                .baseUrl(openAIProperties.getCompletionUrl())
                 .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + openAIProperties.getKey())
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .requestFactory(factory)

@@ -1,6 +1,5 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
 
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
@@ -17,7 +16,6 @@ import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
-import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
@@ -69,9 +67,6 @@ public class UserFeedbackService {
 
         writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
 
-        // 최신순 캐시 업데이트
-        publishLatestFeedbackCacheEvent(FeedbackItem.from(savedFeedback), organizationUuid);
-
         // 새로운 피드백이 생성되면 이벤트 발행
         eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
         //TODO : 위 피드백 생성 이벤트 리팩토링 필요
@@ -85,19 +80,38 @@ public class UserFeedbackService {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortType sortBy
+            final FeedbackSortType sortBy,
+            final GuestInfo guestInfo
     ) {
 
         final Pageable pageable = createPageable(size);
         FeedbackSortStrategy feedbackSortStrategy = feedbackSortStrategyFactory.find(sortBy);
-        List<FeedbackItem> feedbackItems = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
-        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(feedbackItems, size);
+        final List<FeedbackItem> feedbackItems = feedbackSortStrategy.getSortedFeedbacks(organizationUuid, status, cursorId, pageable);
+        final List<WriteHistory> writeHistoriesBy = writeHistoryRepository.findWriteHistoriesBy(guestInfo.guestUuid(),
+                organizationUuid);
+        final List<Long> myFeedbackIds = writeHistoriesBy.stream()
+                .map(WriteHistory::getFeedback)
+                .map(Feedback::getId)
+                .toList();
+
+        List<FeedbackItem> maskedFeedbackItems = feedbackItems.stream()
+                .map((FeedbackItem feedbackItem) -> withMaskedContent(feedbackItem, myFeedbackIds))
+                .toList();
+
+        final FeedbackPage feedbackPage = FeedbackPage.createCursorPage(maskedFeedbackItems, size);
 
         return UserFeedbackListResponse.of(
                 feedbackPage.getFeedbackItems(),
                 feedbackPage.isHasNext(),
                 feedbackPage.calculateNextCursorId()
         );
+    }
+
+    private FeedbackItem withMaskedContent(final FeedbackItem feedbackItem, final List<Long> myFeedbackIds) {
+        if (feedbackItem.isSecret() && !myFeedbackIds.contains(feedbackItem.feedbackId())) {
+            return feedbackItem.withMaskedContent();
+        }
+        return feedbackItem;
     }
 
     private Guest findGuestBy(final UUID guestUuid) {
@@ -112,10 +126,5 @@ public class UserFeedbackService {
 
     private Pageable createPageable(int size) {
         return Pageable.ofSize(size + 1);
-    }
-
-    private void publishLatestFeedbackCacheEvent(final FeedbackItem feedbackItem, final UUID organizationUuid) {
-        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid, LATEST);
-        eventPublisher.publishEvent(event);
     }
 }

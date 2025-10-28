@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.controller;
 
 import feedzupzup.backend.auth.presentation.annotation.SavedGuest;
+import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;
 import feedzupzup.backend.feedback.api.UserFeedbackApi;
 import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
@@ -34,14 +35,16 @@ public class UserFeedbackController implements UserFeedbackApi {
             final int size,
             final Long cursorId,
             final ProcessStatus status,
-            final FeedbackSortType sortBy
+            final FeedbackSortType sortBy,
+            final @VisitedGuest GuestInfo guestInfo
     ) {
         final UserFeedbackListResponse response = userFeedbackService.getFeedbackPage(
                 organizationUuid,
                 size,
                 cursorId,
                 status,
-                sortBy
+                sortBy,
+                guestInfo
         );
         return SuccessResponse.success(HttpStatus.OK, response);
     }

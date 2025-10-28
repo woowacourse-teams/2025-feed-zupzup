@@ -62,4 +62,7 @@ public class Admin extends BaseTimeEntity {
         this.alertsOn = alertsOn;
     }
 
+    public void changePassword(final EncodedPassword newPassword) {
+        this.password = newPassword;
+    }
 }

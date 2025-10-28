@@ -8,8 +8,8 @@ import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
-import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
+import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.global.response.SuccessResponse;
@@ -18,14 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 public class AdminFeedbackController implements AdminFeedbackApi {
 
     private final AdminFeedbackService adminFeedbackService;
@@ -78,18 +75,19 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<ClusterRepresentativeFeedbacksResponse> getRepresentativeCluster(
-            final AdminSession adminSession,
-            final UUID organizationUuid
+    public SuccessResponse<ClustersResponse> getTopClusters(
+            final LoginOrganizerInfo loginOrganizerInfo,
+            final UUID organizationUuid,
+            final int limit
     ) {
-        ClusterRepresentativeFeedbacksResponse response = adminFeedbackService.getRepresentativeCluster(
-                adminSession.adminId(), organizationUuid);
+        ClustersResponse response = adminFeedbackService.getTopClusters(organizationUuid, limit);
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 
     @Override
     public SuccessResponse<ClusterFeedbacksResponse> getFeedbacksByClusterId(
-            final UUID clusterId
+            final LoginOrganizerInfo loginOrganizerInfo,
+            final Long clusterId
     ) {
         ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(clusterId);
         return SuccessResponse.success(HttpStatus.OK, response);

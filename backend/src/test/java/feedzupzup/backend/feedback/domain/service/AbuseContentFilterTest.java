@@ -26,7 +26,7 @@ class AbuseContentFilterTest {
     }
 
     @Test
-    @DisplayName("욕설이 포함된 텍스트는 동물 소리로 치환한다")
+    @DisplayName("욕설이 포함된 텍스트는 OO로 치환한다")
     void filter_profanity_text() {
         // given
         // Note: 욕설 필터링 테스트를 위한 의도적인 욕설 포함
@@ -38,7 +38,7 @@ class AbuseContentFilterTest {
         // then
         assertAll(
                 () -> assertThat(result).isNotEqualTo(profanityText),
-                () -> assertThat(result).containsAnyOf("멍멍", "야옹", "음메")
+                () -> assertThat(result).contains("OO")
         );
     }
 
@@ -67,7 +67,7 @@ class AbuseContentFilterTest {
 
         // then
         assertAll(
-                () -> assertThat(result).containsAnyOf("멍멍", "야옹", "음메"),
+                () -> assertThat(result).contains("OO"),
                 () -> assertThat(result).contains("**"),
                 () -> assertThat(result).doesNotContain(profanity)
         );
@@ -86,7 +86,7 @@ class AbuseContentFilterTest {
         // then
         assertAll(
                 () -> assertThat(result).doesNotContain("시발"),
-                () -> assertThat(result).containsAnyOf("멍멍", "야옹", "음메")
+                () -> assertThat(result).contains("OO")
         );
     }
 

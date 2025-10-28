@@ -38,7 +38,7 @@ public class AdminAuthController implements AdminAuthApi {
     @Override
     public SuccessResponse<String> logout(final HttpServletRequest httpRequest) {
         final AdminSession adminSession = httpSessionManager.getAdminSession(httpRequest);
-        authService.logout(adminSession.adminId());
+        authService.logout(adminSession);
         httpSessionManager.removeAdminSession(httpRequest);
         return SuccessResponse.success(HttpStatus.OK, "로그아웃이 완료되었습니다.");
     }

@@ -3,6 +3,7 @@ package feedzupzup.backend.organization.dto.response;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.organization.domain.Organization;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,7 @@ public record AdminUpdateOrganizationResponse(
         String updateName,
 
         @Schema(description = "수정된 카테고리", example = "[\"건의\", \"신고\"]")
-        Set<String> updateCategories
+        List<String> updateCategories
 ) {
 
     public static AdminUpdateOrganizationResponse from(final Organization organization) {
@@ -26,11 +27,12 @@ public record AdminUpdateOrganizationResponse(
         );
     }
 
-    private static Set<String> convertCategories(
-            final Set<OrganizationCategory> organizationCategories
+    private static List<String> convertCategories(
+            final List<OrganizationCategory> organizationCategories
     ) {
         return organizationCategories.stream()
                 .map(result -> result.getCategory().getKoreanName())
-                .collect(Collectors.toSet());
+                .sorted()
+                .toList();
     }
 }

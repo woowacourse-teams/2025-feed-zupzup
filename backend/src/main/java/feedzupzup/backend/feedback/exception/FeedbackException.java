@@ -35,4 +35,22 @@ public class FeedbackException extends DomainException {
             super(errorCode, message);
         }
     }
+
+    public static class AlreadyClusteringException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.ALREADY_CLUSTERING_FEEDBACK;
+
+        public AlreadyClusteringException(final String message) {
+            super(errorCode, message);
+        }
+    }
+
+    public static class InvalidVectorDimensionException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.INVALID_VECTOR_DIMENSION;
+
+        public InvalidVectorDimensionException(final String message) {
+            super(errorCode, message);
+        }
+    }
 }

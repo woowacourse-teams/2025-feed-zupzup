@@ -1,12 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
 
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.event.FeedbackCacheEvent;
 import feedzupzup.backend.feedback.exception.FeedbackException.DuplicateLikeException;
 import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -17,7 +14,6 @@ import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
 import feedzupzup.backend.guest.dto.GuestInfo;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +25,6 @@ public class FeedbackLikeService {
     private final FeedbackRepository feedBackRepository;
     private final GuestRepository guestRepository;
     private final LikeHistoryRepository likeHistoryRepository;
-    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public LikeResponse like(final Long feedbackId, final GuestInfo guestInfo) {
@@ -42,10 +37,6 @@ public class FeedbackLikeService {
                             + "에 좋아요를 눌렀습니다.");
         }
         feedback.increaseLikeCount();
-
-        // 캐시 핸들 이벤트 발행
-        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback),
-                feedback.getOrganization().getUuid());
 
         likeHistoryRepository.save(new LikeHistory(guest, feedback));
         return LikeResponse.from(feedback);
@@ -65,9 +56,6 @@ public class FeedbackLikeService {
 
         feedback.decreaseLikeCount();
 
-        // 캐시 핸들 이벤트 발행
-        publishLikesFeedbackCacheEvent(FeedbackItem.from(feedback), feedback.getOrganization().getUuid());
-
         return LikeResponse.from(feedback);
     }
 
@@ -81,12 +69,5 @@ public class FeedbackLikeService {
         return feedBackRepository.findById(feedbackId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "feedbackId " + feedbackId + "는 존재하지 않습니다."));
-    }
-
-    private void publishLikesFeedbackCacheEvent(final FeedbackItem feedbackItem,
-            final UUID organizationUuid) {
-        final FeedbackCacheEvent event = new FeedbackCacheEvent(feedbackItem, organizationUuid,
-                LIKES);
-        eventPublisher.publishEvent(event);
     }
 }
