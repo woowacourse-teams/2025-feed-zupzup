@@ -11,17 +11,19 @@ import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterRepresentativeFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.global.response.ErrorResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -125,17 +127,35 @@ public interface AdminFeedbackApi {
             @PathVariable("clusterId") UUID clusterId
     );
 
-    @Operation(summary = "관리자용 전체 피드백 정리 파일 다운로드", description = "관리자용 피드백 정리 파일을 다운로드합니다. (관리자 전용)")
+    @Operation(
+            summary = "관리자용 전체 피드백 정리 파일 다운로드",
+            description = "관리자용 피드백 정리 파일을 다운로드합니다. (관리자 전용)"
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "다운로드 성공", useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "엑셀 파일 다운로드 성공",
+                    content = @Content(
+                            mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            schema = @Schema(type = "string", format = "binary")
+                    )
+            ),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
-            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "엑셀 파일 다운로드 중 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
     })
     @SecurityRequirement(name = "SessionAuth")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/admin/organizations/{organizationUuid}/feedbacks/download")
-    SuccessResponse<Void> downloadFeedbacks(
+    void downloadFeedbacks(
             @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
-            final HttpServletResponse httpServletResponse
+            @PathVariable("organizationUuid") final UUID organizationUuid,
+            final HttpServletResponse response
     );
 }

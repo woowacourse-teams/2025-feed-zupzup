@@ -16,14 +16,16 @@ import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class AdminFeedbackController implements AdminFeedbackApi {
 
     private final AdminFeedbackService adminFeedbackService;
@@ -94,22 +96,25 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<Void> downloadFeedbacks(
+    public void downloadFeedbacks(
             final LoginOrganizerInfo loginOrganizerInfo,
-            final HttpServletResponse httpServletResponse
+            final UUID organizationUuid,
+            final HttpServletResponse response
     ) {
-        httpServletResponse.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        httpServletResponse.setHeader("Transfer-Encoding", "chunked");
+        final String fileName = adminFeedbackService.generateExportFileName();
 
-        try (final OutputStream outputStream = httpServletResponse.getOutputStream()) {
-            final String fileName = adminFeedbackService.downloadFeedbacks(
-                    loginOrganizerInfo.organizationUuid(), outputStream
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+
+        log.info("엑셀 다운로드 시작");
+        try {
+            adminFeedbackService.downloadFeedbacks(
+                    loginOrganizerInfo.organizationUuid(),
+                    response.getOutputStream()
             );
-            httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
         } catch (IOException e) {
-            throw new PoiExcelExportException("엑셀 파일 다운로드 중 오류가 발생했습니다.", e);
+            throw new PoiExcelExportException("엑셀 파일 생성 중 오류가 발생했습니다.");
         }
-
-        return SuccessResponse.success(HttpStatus.OK);
+        log.info("엑셀 다운로드 완료");
     }
 }
