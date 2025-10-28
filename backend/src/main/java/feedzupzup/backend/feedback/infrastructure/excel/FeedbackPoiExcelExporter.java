@@ -110,7 +110,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             row.createCell(COMMENT.columnIndex())
                     .setCellValue(feedback.getComment() == null ? "" : feedback.getComment().getValue());
             row.createCell(USER_NAME.columnIndex()).setCellValue(feedback.getUserName().getValue());
-            row.createCell(POSTED_AT.columnIndex()).setCellValue(feedback.getPostedAt().getValue());
+            row.createCell(POSTED_AT.columnIndex()).setCellValue(feedback.getPostedAt().getValue().toString());
 
             rowNum++;
         }
