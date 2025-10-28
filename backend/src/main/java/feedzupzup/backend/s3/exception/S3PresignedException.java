@@ -5,7 +5,7 @@ import feedzupzup.backend.global.response.ErrorCode;
 
 public class S3PresignedException extends InfrastructureException {
 
-    private static final ErrorCode errorCode = ErrorCode.S3_UPLOAD_FAILED;
+    private static final ErrorCode errorCode = ErrorCode.S3_PRESIGNED_FAILED;
 
     public S3PresignedException(final String message) {
         super(errorCode, message);

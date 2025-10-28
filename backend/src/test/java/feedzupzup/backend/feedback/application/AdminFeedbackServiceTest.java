@@ -982,6 +982,4 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             assertThat(outputStream.size()).isGreaterThan(0);
         }
     }
-
-
 }
