@@ -32,6 +32,7 @@ import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Component;
 
@@ -51,7 +52,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
         final int windowSize = 10;
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(windowSize)) {
             final String sheetName = organization.getName().getValue();
-            final Sheet sheet = workbook.createSheet(sheetName);
+            final SXSSFSheet sheet = workbook.createSheet(sheetName);
 
             addFeedbackHeaderRow(sheet);
             addFeedbackDataRows(sheet, workbook, feedbacks);
@@ -80,7 +81,9 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             final Cell cell = headerRow.createCell(column.columnIndex());
             cell.setCellValue(column.headerName());
             cell.setCellStyle(headerStyle);
-            sheet.autoSizeColumn(column.columnIndex());
+
+            int columnWidth = 4000;
+            sheet.setColumnWidth(column.columnIndex(), columnWidth);
         }
     }
 
@@ -105,7 +108,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             row.createCell(IS_SECRET.columnIndex()).setCellValue(feedback.isSecret() ? "Y" : "N");
             row.createCell(STATUS.columnIndex()).setCellValue(feedback.getStatus().name());
             row.createCell(COMMENT.columnIndex())
-                    .setCellValue(feedback.getComment().getValue() == null ? "" : feedback.getComment().getValue());
+                    .setCellValue(feedback.getComment() == null ? "" : feedback.getComment().getValue());
             row.createCell(USER_NAME.columnIndex()).setCellValue(feedback.getUserName().getValue());
             row.createCell(POSTED_AT.columnIndex()).setCellValue(feedback.getPostedAt().getValue());
 
@@ -116,7 +119,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
     /**
      * s3에서 이미지를 다운받아 엑셀의 Cell에 삽입한다.
      * <p>
-     * 참고 - 이미지 다운이 실패하더라도 엑셀 다운은 성공시키기 위해 예외를 던지지 않음
+     * 참고 - 이미지 다운이 실패하더라도 엑셀 다운로드는 성공시키기 위해 예외를 던지지 않음
      */
     private void addImageCell(
             final Sheet sheet,
@@ -143,8 +146,8 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             final Picture picture = sheet.createDrawingPatriarch().createPicture(anchor, pictureIndex);
             picture.resize(1, 1);
         } catch (Exception e) {
-            row.createCell(IMAGE.columnIndex()).setCellValue("");
-            log.error("엑셀 파일 생성을 위한 이미지 다운로드 실패");
+            row.createCell(IMAGE.columnIndex()).setCellValue("이미지 로드 실패");
+            log.error("엑셀 파일 생성을 위한 이미지 다운로드 실패", e);
         }
     }
 }

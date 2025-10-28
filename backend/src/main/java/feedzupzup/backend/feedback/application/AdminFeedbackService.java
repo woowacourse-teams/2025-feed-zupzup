@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class AdminFeedbackService {
 
     private final AdminRepository adminRepository;
@@ -142,7 +144,8 @@ public class AdminFeedbackService {
         feedBackRepository.deleteAllByOrganizationId(organizationId);
     }
 
-    public ClusterRepresentativeFeedbacksResponse getRepresentativeCluster(final Long adminId, final UUID organizationUuid) {
+    public ClusterRepresentativeFeedbacksResponse getRepresentativeCluster(final Long adminId,
+            final UUID organizationUuid) {
         List<ClusterRepresentativeFeedback> clusterRepresentativeFeedbacks = feedBackRepository.findAllRepresentativeFeedbackPerCluster(
                 organizationUuid);
         return ClusterRepresentativeFeedbacksResponse.from(clusterRepresentativeFeedbacks);
@@ -156,7 +159,7 @@ public class AdminFeedbackService {
         return ClusterFeedbacksResponse.of(feedbacks);
     }
 
-    public String downloadFeedbacks(final UUID organizationUuid, final OutputStream outputStream) {
+    public void downloadFeedbacks(final UUID organizationUuid, final OutputStream outputStream) {
         final Organization organization = organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
@@ -164,11 +167,9 @@ public class AdminFeedbackService {
         final List<Feedback> feedbacks = feedBackRepository.findByOrganizationId(organization.getId());
 
         feedbackExcelExporter.export(organization, feedbacks, outputStream);
-
-        return generateFileName();
     }
 
-    private String generateFileName() {
+    public String generateExportFileName() {
         final LocalDateTime now = LocalDateTime.now();
         final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return String.format("feedback_export_%s.xlsx", timestamp);

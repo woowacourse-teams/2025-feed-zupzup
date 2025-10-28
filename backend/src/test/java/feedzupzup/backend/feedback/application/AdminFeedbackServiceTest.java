@@ -35,7 +35,15 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -878,6 +886,83 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks())
                             .extracting(FeedbackItem::content)
                             .containsExactlyInAnyOrder("첫 번째 피드백", "두 번째 피드백", "세 번째 피드백")
+            );
+        }
+    }
+
+    @Nested
+    @DisplayName("피드백 엑셀 다운로드 테스트")
+    class DownloadFeedbacksTest {
+
+        @Test
+        @DisplayName("단체의 피드백을 엑셀 파일로 다운로드한다")
+        void downloadFeedbacks_Success() throws Exception {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
+                    organizationCategory);
+            feedBackRepository.save(feedback1);
+            feedBackRepository.save(feedback2);
+
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // when
+            adminFeedbackService.downloadFeedbacks(organization.getUuid(), outputStream);
+
+            // then
+            assertThat(outputStream.size()).isGreaterThan(0);
+
+            // 엑셀 파일 내용 검증
+            try (final Workbook workbook = new XSSFWorkbook(
+                    new ByteArrayInputStream(outputStream.toByteArray()))) {
+                final Sheet sheet = workbook.getSheetAt(0);
+
+                // 시트 이름 검증
+                assertThat(sheet.getSheetName()).isEqualTo(organization.getName().getValue());
+
+                // 헤더 행 존재 확인
+                assertThat(sheet.getRow(0)).isNotNull();
+
+                // 데이터 행 2개 존재 확인 (헤더 제외)
+                assertThat(sheet.getPhysicalNumberOfRows()).isEqualTo(3); // 헤더 1 + 데이터 2
+            }
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 단체로 다운로드하면 예외가 발생한다")
+        void downloadFeedbacks_OrganizationNotFound() {
+            // given
+            final UUID nonExistentUuid = UUID.randomUUID();
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.downloadFeedbacks(nonExistentUuid, outputStream))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("해당 ID(id = " + nonExistentUuid + ")인 단체를 찾을 수 없습니다");
+        }
+
+        @Test
+        @DisplayName("파일명에 타임스탬프가 포함되어 있다")
+        void downloadFeedbacks_FileNameContainsTimestamp() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            // when
+            final String fileName = adminFeedbackService.generateExportFileName();
+
+            // then
+            assertAll(
+                    () -> assertThat(fileName).matches("feedback_export_\\d{8}_\\d{6}\\.xlsx"),
+                    () -> assertThat(fileName).contains("feedback_export_")
             );
         }
     }
