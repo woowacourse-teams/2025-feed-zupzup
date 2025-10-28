@@ -11,7 +11,8 @@ public enum FeedbackExcelColumn {
     STATUS(6, "처리 상태"),
     COMMENT(7, "관리자 답변"),
     USER_NAME(8, "작성자 닉네임"),
-    POSTED_AT(9, "작성 일시");
+    POSTED_AT(9, "작성 일시"),
+    ;
 
     private final int columnIndex;
     private final String headerName;

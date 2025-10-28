@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -102,11 +103,13 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     ) {
         final String fileName = adminFeedbackService.generateExportFileName();
 
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+        final ContentDisposition contentDisposition = ContentDisposition.attachment()
+                .filename(fileName, java.nio.charset.StandardCharsets.UTF_8)
+                .build();
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
 
         try {
-            adminFeedbackService.downloadFeedbacks(organizationUuid, response.getOutputStream());
+            adminFeedbackService.downloadFeedbacks(loginOrganizerInfo.organizationUuid(), response.getOutputStream());
         } catch (IOException e) {
             throw new FeedbackDownloadException(
                     String.format("피드백 파일 다운로드 중 오류가 발생했습니다. organizationUuid=%s", organizationUuid));
