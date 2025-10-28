@@ -16,6 +16,7 @@ import feedzupzup.backend.feedback.domain.FeedbackExcelColumn;
 import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
 import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.s3.service.S3DownloadService;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
