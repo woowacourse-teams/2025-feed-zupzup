@@ -135,10 +135,7 @@ public interface AdminFeedbackApi {
             @ApiResponse(
                     responseCode = "200",
                     description = "엑셀 파일 다운로드 성공",
-                    content = @Content(
-                            mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            schema = @Schema(type = "string", format = "binary")
-                    )
+                    content = @Content(mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             ),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
@@ -156,6 +153,6 @@ public interface AdminFeedbackApi {
     void downloadFeedbacks(
             @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
             @PathVariable("organizationUuid") final UUID organizationUuid,
-            final HttpServletResponse response
+            @Parameter(hidden = true) final HttpServletResponse response
     );
 }

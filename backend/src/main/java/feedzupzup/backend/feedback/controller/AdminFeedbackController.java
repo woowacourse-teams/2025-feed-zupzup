@@ -106,15 +106,10 @@ public class AdminFeedbackController implements AdminFeedbackApi {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
 
-        log.info("엑셀 다운로드 시작");
         try {
-            adminFeedbackService.downloadFeedbacks(
-                    loginOrganizerInfo.organizationUuid(),
-                    response.getOutputStream()
-            );
+            adminFeedbackService.downloadFeedbacks(organizationUuid, response.getOutputStream());
         } catch (IOException e) {
             throw new PoiExcelExportException("엑셀 파일 생성 중 오류가 발생했습니다.");
         }
-        log.info("엑셀 다운로드 완료");
     }
 }
