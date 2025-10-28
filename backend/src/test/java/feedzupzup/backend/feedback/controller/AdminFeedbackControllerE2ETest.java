@@ -2,6 +2,7 @@ package feedzupzup.backend.feedback.controller;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -17,6 +18,7 @@ import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.E2EHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackExcelColumn;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
@@ -28,7 +30,12 @@ import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import io.restassured.http.ContentType;
+import java.io.ByteArrayInputStream;
 import java.util.UUID;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -701,7 +708,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
 
         // 다른 클러스터의 피드백 1개 (결과에 포함되지 않아야 함)
         final Feedback otherClusterFeedback = FeedbackFixture.createFeedbackWithCluster(
-                organization, "다른 클러스터 피드백", organizationCategory, 
+                organization, "다른 클러스터 피드백", organizationCategory,
                 UUID.randomUUID());
 
         feedBackRepository.save(feedback1);
@@ -725,7 +732,7 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[1].content", equalTo("두 번째 피드백"))
                 .body("data.feedbacks[2].content", equalTo("세 번째 피드백"));
     }
-
+    
     @Test
     @DisplayName("관리자가 존재하지 않는 클러스터를 조회하면 404 예외를 발생시킨다.")
     void admin_get_feedbacks_by_cluster_empty() {
@@ -743,5 +750,132 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .contentType(ContentType.JSON)
                 .body("status", equalTo(404))
                 .body("message", equalTo("요청한 자원을 찾을 수 없습니다"));
+    }
+
+    @Test
+    @DisplayName("관리자가 피드백 엑셀 파일을 성공적으로 다운로드한다")
+    void admin_download_feedbacks_excel_success() throws Exception {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+
+        final Feedback feedback1 = FeedbackFixture.createFeedbackWithContent(
+                organization, "첫 번째 피드백", organizationCategory);
+        final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent(
+                organization, "두 번째 피드백", organizationCategory);
+
+        feedBackRepository.save(feedback1);
+        feedBackRepository.save(feedback2);
+
+        // when
+        final byte[] excelBytes = given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/feedbacks/download", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                .extract()
+                .asByteArray();
+
+        // then
+        assertThat(excelBytes).isNotEmpty();
+        assertThat(excelBytes.length).isGreaterThan(0);
+
+        // 엑셀 파일 내용 검증
+        try (final Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(excelBytes))) {
+            final Sheet sheet = workbook.getSheetAt(0);
+
+            // 시트 이름 검증
+            assertThat(sheet.getSheetName()).isEqualTo(organization.getName().getValue());
+
+            // 헤더 행 검증
+            final Row headerRow = sheet.getRow(0);
+            assertThat(headerRow).isNotNull();
+            assertThat(headerRow.getCell(FeedbackExcelColumn.FEEDBACK_NUMBER.columnIndex()).getStringCellValue())
+                    .isEqualTo(FeedbackExcelColumn.FEEDBACK_NUMBER.headerName());
+            assertThat(headerRow.getCell(FeedbackExcelColumn.CONTENT.columnIndex()).getStringCellValue())
+                    .isEqualTo(FeedbackExcelColumn.CONTENT.headerName());
+            assertThat(headerRow.getCell(FeedbackExcelColumn.CATEGORY.columnIndex()).getStringCellValue())
+                    .isEqualTo(FeedbackExcelColumn.CATEGORY.headerName());
+
+            // 데이터 행 검증 (2개의 피드백)
+            assertThat(sheet.getPhysicalNumberOfRows()).isEqualTo(3); // 헤더 + 2개 데이터
+
+            final Row dataRow1 = sheet.getRow(1);
+            assertThat(dataRow1.getCell(FeedbackExcelColumn.FEEDBACK_NUMBER.columnIndex()).getNumericCellValue())
+                    .isEqualTo(1);
+            assertThat(dataRow1.getCell(FeedbackExcelColumn.CONTENT.columnIndex()).getStringCellValue())
+                    .isEqualTo("첫 번째 피드백");
+
+            final Row dataRow2 = sheet.getRow(2);
+            assertThat(dataRow2.getCell(FeedbackExcelColumn.FEEDBACK_NUMBER.columnIndex()).getNumericCellValue())
+                    .isEqualTo(2);
+            assertThat(dataRow2.getCell(FeedbackExcelColumn.CONTENT.columnIndex()).getStringCellValue())
+                    .isEqualTo("두 번째 피드백");
+        }
+    }
+
+    @Test
+    @DisplayName("관리자가 피드백이 없는 조직의 엑셀 파일을 다운로드하면 헤더만 있는 파일이 생성된다")
+    void admin_download_feedbacks_excel_empty() throws Exception {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        // when
+        final byte[] excelBytes = given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/feedbacks/download", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                .extract()
+                .asByteArray();
+
+        // then
+        assertThat(excelBytes).isNotEmpty();
+
+        // 엑셀 파일 내용 검증
+        try (final Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(excelBytes))) {
+            final Sheet sheet = workbook.getSheetAt(0);
+
+            // 헤더만 있는지 검증
+            assertThat(sheet.getPhysicalNumberOfRows()).isEqualTo(1);
+
+            final Row headerRow = sheet.getRow(0);
+            assertThat(headerRow).isNotNull();
+            assertThat(headerRow.getCell(FeedbackExcelColumn.FEEDBACK_NUMBER.columnIndex()).getStringCellValue())
+                    .isEqualTo(FeedbackExcelColumn.FEEDBACK_NUMBER.headerName());
+        }
+    }
+
+    @Test
+    @DisplayName("인증되지 않은 사용자가 엑셀 다운로드를 시도하면 401 에러가 발생한다")
+    void admin_download_feedbacks_excel_unauthorized() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+
+        // when & then
+        given()
+                .log().all()
+                .when()
+                .get("/admin/organizations/{organizationUuid}/feedbacks/download", organization.getUuid())
+                .then().log().all()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 }
