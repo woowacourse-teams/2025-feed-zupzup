@@ -6,6 +6,7 @@ import feedzupzup.backend.auth.presentation.interceptor.OrganizerInterceptor;
 import feedzupzup.backend.auth.presentation.resolver.OrganizerArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.AdminSessionArgumentResolver;
 import feedzupzup.backend.auth.presentation.resolver.GuestArgumentResolver;
+import feedzupzup.backend.global.trace.GlobalTraceIdInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -24,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     private final OrganizerArgumentResolver organizerArgumentResolver;
     private final AdminCheckInterceptor adminCheckInterceptor;
     private final GuestInterceptor guestInterceptor;
+    private final GlobalTraceIdInterceptor globalTraceIdInterceptor;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -43,5 +45,8 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(organizerInterceptor)
                 .addPathPatterns("/admin/organizations/**");
+
+        registry.addInterceptor(globalTraceIdInterceptor)
+                .addPathPatterns("/**");
     }
 }
