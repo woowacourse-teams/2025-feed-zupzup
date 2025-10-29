@@ -1,5 +1,7 @@
 package feedzupzup.backend.global.log;
 
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+
 import io.opentelemetry.api.trace.Span;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -76,12 +78,21 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
     private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
         final RequestLogMessage requestLog = RequestLogMessage.createInstance(cacheRequest);
-        log.info(requestLog.toString());
+        log.info("HTTP Request",
+                keyValue("httpMethod", requestLog.httpMethod()),
+                keyValue("requestUri", requestLog.requestUri()),
+                keyValue("requestParam", requestLog.requestParam()),
+                keyValue("clientIp", requestLog.clientIp()),
+                keyValue("requestBody", requestLog.requestBody())
+        );
     }
 
     private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
         final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
-        log.info(responseLog.toString());
+        log.info("HTTP Response",
+                keyValue("httpStatus", responseLog.httpStatus()),
+                keyValue("responseBody", responseLog.responseBody())
+        );
     }
 
     private boolean isExcluded(String requestURI) {
