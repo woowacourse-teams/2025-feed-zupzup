@@ -56,10 +56,11 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         cacheResponse.copyBodyToResponse();
         MDC.remove("trace_id");
         MDC.remove("span_id");
+        MDC.remove("global_trace_id");
     }
 
     private void createTraceId() {
-        String traceId = Span.current().getSpanContext().getTraceId();
+        final String traceId = Span.current().getSpanContext().getTraceId();
         if (!traceId.isEmpty()) {
             MDC.put("trace_id", traceId);
         } else {
@@ -68,7 +69,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     }
 
     private void createSpanId() {
-        String spanId = Span.current().getSpanContext().getSpanId();
+        final String spanId = Span.current().getSpanContext().getSpanId();
         if (!spanId.isEmpty()) {
             MDC.put("span_id", spanId);
         } else {

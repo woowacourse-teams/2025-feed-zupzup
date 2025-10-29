@@ -30,16 +30,6 @@ public class GlobalTraceIdInterceptor implements HandlerInterceptor {
         return true;
     }
 
-    @Override
-    public void afterCompletion(
-            final HttpServletRequest request,
-            final HttpServletResponse response,
-            final Object handler,
-            final Exception ex
-    ) {
-        MDC.remove(GLOBAL_TRACE_ID_KEY);
-    }
-
     private String generateGlobalTraceId(final HttpServletRequest request) {
         final Long adminId = (Long) request.getAttribute(ADMIN_ID.getValue());
         if (adminId != null) {
