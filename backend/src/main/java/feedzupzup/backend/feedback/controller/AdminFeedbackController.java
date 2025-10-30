@@ -16,7 +16,6 @@ import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ContentDisposition;
@@ -106,7 +105,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         final ContentDisposition contentDisposition = ContentDisposition.attachment()
-                .filename(fileName, StandardCharsets.UTF_8)
+                .filename(fileName)
                 .build();
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
 
