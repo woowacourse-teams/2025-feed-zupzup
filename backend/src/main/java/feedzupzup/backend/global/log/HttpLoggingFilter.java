@@ -3,6 +3,7 @@ package feedzupzup.backend.global.log;
 import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 import feedzupzup.backend.admin.dto.AdminSession;
+import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
 import feedzupzup.backend.global.util.CookieUtilization;
 import io.opentelemetry.api.trace.Span;
@@ -115,10 +116,14 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     }
 
     private String generateGlobalTraceId(final HttpServletRequest request) {
-        final AdminSession adminSession = httpSessionManager.getAdminSession(request);
-        final Long adminId = adminSession.adminId();
-        if (adminId != null) {
-            return String.format("%s-%d", ADMIN_PREFIX, adminId);
+        try {
+            final AdminSession adminSession = httpSessionManager.getAdminSession(request);
+            final Long adminId = adminSession.adminId();
+            if (adminId != null) {
+                return String.format("%s-%d", ADMIN_PREFIX, adminId);
+            }
+        } catch (UnauthorizedException ignored) {
+
         }
 
         final Optional<UUID> guestId = cookieUtilization.getGuestIdFromCookie(request);
