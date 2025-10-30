@@ -53,4 +53,13 @@ public class FeedbackException extends DomainException {
             super(errorCode, message);
         }
     }
+
+    public static class FeedbackDownloadException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.FEEDBACK_DOWNLOAD_ERROR;
+
+        public FeedbackDownloadException(final String message) {
+            super(errorCode, message);
+        }
+    }
 }

@@ -9,6 +9,7 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
+import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
@@ -24,11 +25,14 @@ import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
+import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,7 @@ public class AdminFeedbackService {
     private final OrganizationRepository organizationRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
+    private final FeedbackExcelExporter feedbackExcelExporter;
 
     @Transactional
     @BusinessActionLog
@@ -136,7 +141,8 @@ public class AdminFeedbackService {
         if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
             throw new ResourceNotFoundException("해당 organizationUuid(uuid = " + organizationUuid + ")로 찾을 수 없습니다.");
         }
-        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,  PageRequest.of(0, limit));
+        final List<ClusterInfo> clusterInfos = feedBackRepository.findTopClusters(organizationUuid,
+                PageRequest.of(0, limit));
         return ClustersResponse.from(clusterInfos);
     }
 
@@ -146,5 +152,21 @@ public class AdminFeedbackService {
         final List<FeedbackEmbeddingCluster> feedbackEmbeddingClusters = feedbackEmbeddingClusterRepository.findAllByEmbeddingCluster(
                 embeddingCluster);
         return ClusterFeedbacksResponse.of(feedbackEmbeddingClusters, embeddingCluster.getLabel());
+    }
+
+    public void downloadFeedbacks(final UUID organizationUuid, final OutputStream outputStream) {
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
+
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
+
+        feedbackExcelExporter.export(organization, feedbacks, outputStream);
+    }
+
+    public String generateExportFileName() {
+        final LocalDateTime now = LocalDateTime.now();
+        final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        return String.format("feedback_export_%s.xlsx", timestamp);
     }
 }

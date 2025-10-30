@@ -38,7 +38,12 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.UUID;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -822,7 +827,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             createFeedbackWithCluster(organization, "세 번째 피드백", organizationCategory, targetCluster);
 
             // when
-            final ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(embeddingCluster.getId());
+            final ClusterFeedbacksResponse response = adminFeedbackService.getFeedbacksByClusterId(
+                    embeddingCluster.getId());
 
             // then
             assertAll(
@@ -854,7 +860,8 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             embeddingClusterRepository.save(cluster);
 
             // 특정 내용의 피드백 생성
-            final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, "상세 테스트 피드백", organizationCategory);
+            final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, "상세 테스트 피드백",
+                    organizationCategory);
             final Feedback savedFeedback = feedBackRepository.save(feedback);
 
             final FeedbackEmbeddingCluster feedbackCluster = FeedbackEmbeddingCluster.createNewCluster(
@@ -876,13 +883,103 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     }
 
     private void createFeedbackWithCluster(Organization organization, String content,
-                                          OrganizationCategory category, EmbeddingCluster cluster) {
+            OrganizationCategory category, EmbeddingCluster cluster) {
         final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, content, category);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
-        
+
         final FeedbackEmbeddingCluster feedbackCluster = FeedbackEmbeddingCluster.createNewCluster(
                 new double[]{0.1, 0.2, 0.3}, savedFeedback, cluster);
 
         feedbackEmbeddingClusterRepository.save(feedbackCluster);
+    }
+
+    @Nested
+    @DisplayName("피드백 엑셀 다운로드 테스트")
+    class DownloadFeedbacksTest {
+
+        @Test
+        @DisplayName("단체의 피드백을 엑셀 파일로 다운로드한다")
+        void downloadFeedbacks_Success() throws Exception {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
+                    organization, SUGGESTION);
+            organizationCategoryRepository.save(organizationCategory);
+
+            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
+                    organizationCategory);
+            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
+                    organizationCategory);
+            feedBackRepository.save(feedback1);
+            feedBackRepository.save(feedback2);
+
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // when
+            adminFeedbackService.downloadFeedbacks(organization.getUuid(), outputStream);
+
+            // then
+            assertThat(outputStream.size()).isGreaterThan(0);
+
+            // 엑셀 파일 내용 검증
+            try (final Workbook workbook = new XSSFWorkbook(
+                    new ByteArrayInputStream(outputStream.toByteArray()))) {
+                final Sheet sheet = workbook.getSheetAt(0);
+
+                // 시트 이름 검증
+                assertThat(sheet.getSheetName()).isEqualTo(organization.getName().getValue());
+
+                // 헤더 행 존재 확인
+                assertThat(sheet.getRow(0)).isNotNull();
+
+                // 데이터 행 2개 존재 확인 (헤더 제외)
+                assertThat(sheet.getPhysicalNumberOfRows()).isEqualTo(3); // 헤더 1 + 데이터 2
+            }
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 단체로 다운로드하면 예외가 발생한다")
+        void downloadFeedbacks_OrganizationNotFound() {
+            // given
+            final UUID nonExistentUuid = UUID.randomUUID();
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.downloadFeedbacks(nonExistentUuid, outputStream))
+                    .isInstanceOf(ResourceNotFoundException.class)
+                    .hasMessageContaining("해당 ID(id = " + nonExistentUuid + ")인 단체를 찾을 수 없습니다");
+        }
+
+        @Test
+        @DisplayName("파일명에 타임스탬프가 포함되어 있다")
+        void downloadFeedbacks_FileNameContainsTimestamp() {
+            // given
+            final Organization organization = OrganizationFixture.createAllBlackBox();
+            organizationRepository.save(organization);
+
+            // when
+            final String fileName = adminFeedbackService.generateExportFileName();
+
+            // then
+            assertAll(
+                    () -> assertThat(fileName).matches("feedback_export_\\d{8}_\\d{6}\\.xlsx"),
+                    () -> assertThat(fileName).contains("feedback_export_")
+            );
+        }
+
+        @Test
+        @DisplayName("빈 피드백 목록을 엑셀로 다운로드한다")
+        void downloadFeedbacks_EmptyFeedbacks() {
+            // given
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // when
+            adminFeedbackService.downloadFeedbacks(organization.getUuid(), outputStream);
+
+            // then
+            assertThat(outputStream.size()).isGreaterThan(0);
+        }
     }
 }

@@ -1,20 +1,17 @@
 package feedzupzup.backend.s3.exception;
 
+import feedzupzup.backend.global.exception.InfrastructureException;
 import feedzupzup.backend.global.response.ErrorCode;
 
-public class S3UploadException extends RuntimeException {
+public class S3UploadException extends InfrastructureException {
 
     private static final ErrorCode errorCode = ErrorCode.S3_UPLOAD_FAILED;
 
     public S3UploadException(final String message) {
-        super(message);
+        super(errorCode, message);
     }
 
     public S3UploadException() {
-        super(errorCode.getMessage());
-    }
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
+        super(errorCode, errorCode.getMessage());
     }
 }
