@@ -5,6 +5,7 @@ import feedzupzup.backend.auth.application.ActiveSessionStore;
 import feedzupzup.backend.auth.exception.AuthException.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,14 @@ public class HttpSessionManager {
 
         activeSessionStore.addActiveSession(adminId);
         return new AdminSession(adminId);
+    }
+
+    public Optional<AdminSession> getAdminSessionIfPresent(final HttpServletRequest request) {
+        try {
+            return Optional.of(getAdminSession(request));
+        } catch (UnauthorizedException e) {
+            return Optional.empty();
+        }
     }
 
     public void createAdminSession(final HttpServletRequest request, final Long adminId) {
