@@ -1,5 +1,7 @@
 package feedzupzup.backend.global.log;
 
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.ADMIN_ID;
+import static feedzupzup.backend.auth.presentation.constants.RequestAttribute.GUEST_ID;
 import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 import io.opentelemetry.api.trace.Span;
@@ -27,6 +29,10 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
             "/swagger-ui/**",
             "/api-docs"
     );
+    private static final String GLOBAL_TRACE_ID_KEY = "global_trace_id";
+    private static final String ADMIN_PREFIX = "admin";
+    private static final String GUEST_PREFIX = "guest";
+    private static final String ANONYMOUS_PREFIX = "anon";
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
 
@@ -48,6 +54,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
         createTraceId();
         createSpanId();
+        createGlobalTraceId(cacheRequest);
 
         writeRequestLog(cacheRequest);
         filterChain.doFilter(cacheRequest, cacheResponse);
@@ -57,6 +64,25 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         MDC.remove("trace_id");
         MDC.remove("span_id");
         MDC.remove("global_trace_id");
+    }
+
+    private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
+        final RequestLogMessage requestLog = RequestLogMessage.createInstance(cacheRequest);
+        log.info("HTTP Request",
+                keyValue("httpMethod", requestLog.httpMethod()),
+                keyValue("requestUri", requestLog.requestUri()),
+                keyValue("requestParam", requestLog.requestParam()),
+                keyValue("clientIp", requestLog.clientIp()),
+                keyValue("requestBody", requestLog.requestBody())
+        );
+    }
+
+    private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
+        final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
+        log.info("HTTP Response",
+                keyValue("httpStatus", responseLog.httpStatus()),
+                keyValue("responseBody", responseLog.responseBody())
+        );
     }
 
     private void createTraceId() {
@@ -77,23 +103,23 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         }
     }
 
-    private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
-        final RequestLogMessage requestLog = RequestLogMessage.createInstance(cacheRequest);
-        log.info("HTTP Request",
-                keyValue("httpMethod", requestLog.httpMethod()),
-                keyValue("requestUri", requestLog.requestUri()),
-                keyValue("requestParam", requestLog.requestParam()),
-                keyValue("clientIp", requestLog.clientIp()),
-                keyValue("requestBody", requestLog.requestBody())
-        );
+    private void createGlobalTraceId(final HttpServletRequest request) {
+        final String globalTraceId = generateGlobalTraceId(request);
+        MDC.put(GLOBAL_TRACE_ID_KEY, globalTraceId);
     }
 
-    private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
-        final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
-        log.info("HTTP Response",
-                keyValue("httpStatus", responseLog.httpStatus()),
-                keyValue("responseBody", responseLog.responseBody())
-        );
+    private String generateGlobalTraceId(final HttpServletRequest request) {
+        final Long adminId = (Long) request.getAttribute(ADMIN_ID.getValue());
+        if (adminId != null) {
+            return String.format("%s-%d", ADMIN_PREFIX, adminId);
+        }
+
+        final UUID guestId = (UUID) request.getAttribute(GUEST_ID.getValue());
+        if (guestId != null) {
+            return String.format("%s-%s", GUEST_PREFIX, guestId);
+        }
+
+        return String.format("%s-%s", ANONYMOUS_PREFIX, UUID.randomUUID());
     }
 
     private boolean isExcluded(String requestURI) {
