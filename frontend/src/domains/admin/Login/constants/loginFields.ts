@@ -15,7 +15,7 @@ export const loginFields: LoginField[] = [
     type: 'text',
     labelKey: '아이디',
     placeholder: '아이디를 입력해주세요',
-    maxLength: 10,
+    maxLength: 20,
     minLength: 5,
   },
   {

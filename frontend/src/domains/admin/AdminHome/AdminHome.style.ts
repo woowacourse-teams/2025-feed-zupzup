@@ -27,7 +27,6 @@ export const homeLayout = css`
 
 export const adminOrganizationListContainer = (theme: Theme) => css`
   width: 100%;
-  height: calc(100vh - 500px);
   min-height: calc(100% - ${PAGE_PADDING_PX}px);
   margin-top: 160px;
   background-color: ${theme.colors.white[100]};

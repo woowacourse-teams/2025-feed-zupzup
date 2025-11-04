@@ -24,6 +24,7 @@ export default function useGlobalError({
   };
 
   const handleLogin = () => {
+    queryClient.resetQueries();
     resetLocalStorage('auth');
     NotificationService.removeToken();
     goPath('/login');

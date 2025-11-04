@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import AISummaryModal from './AISummaryModal';
-import { AISummaryCategory } from '@/types/ai.types';
 
 const meta: Meta<typeof AISummaryModal> = {
   title: 'Admin/AISummaryModal',
@@ -13,10 +12,6 @@ const meta: Meta<typeof AISummaryModal> = {
     onClose: {
       action: 'onClose',
       description: '모달 닫기 콜백',
-    },
-    onCategorySelect: {
-      action: 'onCategorySelect',
-      description: '카테고리 선택 콜백',
     },
   },
   decorators: [
@@ -35,8 +30,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     onClose: () => console.log('Modal closed'),
-    onCategorySelect: (category: AISummaryCategory) => {
-      console.log(category);
-    },
   },
 };

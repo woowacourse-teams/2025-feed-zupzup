@@ -44,7 +44,7 @@ export default function Login() {
     validators: LOGIN_VALIDATORS,
   });
 
-  const { handleSubmit } = useLogin({ loginValue });
+  const { handleSubmit, isLoginPending } = useLogin({ loginValue });
 
   return (
     <>
@@ -71,11 +71,13 @@ export default function Login() {
               />
             ))}
           </div>
-          <BasicButton>로그인</BasicButton>
+          <BasicButton disabled={isLoginPending}>
+            {isLoginPending ? '로그인 중...' : '로그인'}
+          </BasicButton>
           <div css={loginCaptionContainer(theme)}>
             {/* <p>비밀번호를 잊으셨나요?</p> */}
             <p>
-              계정이 없으신가요?
+              계정이 없으신가요? &nbsp;
               <strong onClick={() => goPath('/' + ROUTES.SIGN_UP)}>
                 회원가입하기
               </strong>

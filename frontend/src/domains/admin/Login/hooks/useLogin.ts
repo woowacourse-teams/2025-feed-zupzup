@@ -5,7 +5,7 @@ import {
 } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
+import { useToast } from '@/contexts/useToast';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { NotificationService } from '@/services/notificationService';
 import { setLocalStorage } from '@/utils/localStorage';
@@ -20,9 +20,9 @@ interface UseLoginProps {
 
 export default function useLogin({ loginValue }: UseLoginProps) {
   const { goPath } = useNavigation();
-  const { showErrorModal } = useErrorModalContext();
+  const { showToast } = useToast();
 
-  const { mutate: adminLogin } = useMutation<
+  const { mutate: adminLogin, isPending: isLoginPending } = useMutation<
     AdminAuthResponse | void,
     ApiError,
     PostAdminLoginParams
@@ -44,13 +44,15 @@ export default function useLogin({ loginValue }: UseLoginProps) {
 
       goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
     },
-    onError: (error: ApiError) => {
-      showErrorModal(error as ApiError, '로그인 요청 실패');
-    },
   });
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (loginValue.id === '' || loginValue.password === '') {
+      showToast('아이디와 비밀번호를 모두 입력해주세요.');
+      return;
+    }
 
     setLocalStorage('auth', null);
     NotificationService.removeToken();
@@ -63,5 +65,6 @@ export default function useLogin({ loginValue }: UseLoginProps) {
 
   return {
     handleSubmit,
+    isLoginPending,
   };
 }

@@ -15,6 +15,7 @@ import {
 import { memo, useCallback, useMemo } from 'react';
 import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
 import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
+import FeedbackBoxSkeletonList from '@/domains/components/FeedbackBoxSkeleton/FeedbackBoxSkeletonList';
 
 interface UserFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -103,6 +104,7 @@ export default memo(function UserFeedbackList({
             />
           ))}
         </FeedbackBoxList>
+        {loading && <FeedbackBoxSkeletonList count={2} />}
         <FeedbackStatusMessage
           loading={loading}
           filterType={selectedFilter as FeedbackFilterType}
