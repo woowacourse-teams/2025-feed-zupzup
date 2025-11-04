@@ -52,7 +52,7 @@ export default function AdminDashboard() {
           <FloatingButton
             icon={<ArrowUpIcon />}
             onClick={scrollToTop}
-            inset={{ bottom: '150px' }}
+            inset={{ bottom: '60px' }}
             customCSS={goTopButton(theme)}
           />
         )}

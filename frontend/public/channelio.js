@@ -37,4 +37,5 @@
 
 ChannelIO('boot', {
   pluginKey: 'e63d6484-428b-4745-9e39-54a8cb382f91',
+  hideChannelButtonOnBoot: true,
 });
