@@ -142,6 +142,9 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             final ClientAnchor anchor = workbook.getCreationHelper().createClientAnchor();
             anchor.setCol1(IMAGE.columnIndex());
             anchor.setRow1(rowNum);
+            anchor.setCol2(IMAGE.columnIndex() + 1);
+            anchor.setRow2(rowNum + 1);
+            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
 
             final Picture picture = sheet.createDrawingPatriarch().createPicture(anchor, pictureIndex);
             picture.resize(1, 1);
