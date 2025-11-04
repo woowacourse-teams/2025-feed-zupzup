@@ -1,3 +1,4 @@
+import { getOrganizationFeedbacksFile } from '@/apis/adminFeedback.api';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
@@ -9,6 +10,7 @@ import { useModalContext } from '@/contexts/useModal';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
@@ -17,6 +19,7 @@ interface MoreMenuProps {
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { openModal, closeModal } = useModalContext();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
+  const { organizationId } = useOrganizationId();
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal onClose={closeModal} />);
@@ -45,6 +48,29 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     closeMoreMenu();
   };
 
+  const downloadOrganizationFeedbacksFile = async () => {
+    try {
+      const response = await getOrganizationFeedbacksFile({
+        organizationUuid: organizationId,
+      });
+
+      if (!response) {
+        throw new Error('No response received from the server.');
+      }
+
+      const url = window.URL.createObjectURL(response);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'feedbacks.xlsx';
+      a.click();
+
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('피드백 파일 다운로드 중 오류 발생:', error);
+    }
+  };
+
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
@@ -60,7 +86,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     {
       icon: <FileDownloadIcon />,
       menu: '피드백 추출',
-      onClick: handleDeleteClick,
+      onClick: downloadOrganizationFeedbacksFile,
     },
   ];
 

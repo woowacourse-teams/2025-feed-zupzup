@@ -13,3 +13,7 @@ export const isSuccess = (response: Response) => {
 export const isErrorWithStatus = (response: Response) => {
   return response.status in FETCH_ERROR_MESSAGE;
 };
+
+export const isBlobResponse = (responseType: string) => {
+  return responseType === 'blob';
+};
