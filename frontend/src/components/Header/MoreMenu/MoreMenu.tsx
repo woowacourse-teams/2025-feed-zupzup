@@ -1,6 +1,7 @@
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
+import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
 import TrashCanIcon from '@/components/icons/TrashCanIcon';
@@ -54,6 +55,11 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     {
       icon: <TrashCanIcon color='#222222' />,
       menu: '방 삭제',
+      onClick: handleDeleteClick,
+    },
+    {
+      icon: <FileDownloadIcon />,
+      menu: '피드백 추출',
       onClick: handleDeleteClick,
     },
   ];
