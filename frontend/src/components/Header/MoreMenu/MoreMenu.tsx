@@ -1,5 +1,5 @@
-import { getOrganizationFeedbacksFile } from '@/apis/adminFeedback.api';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
@@ -7,6 +7,7 @@ import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
 import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { useModalContext } from '@/contexts/useModal';
+import { useToast } from '@/contexts/useToast';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
@@ -20,6 +21,8 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { openModal, closeModal } = useModalContext();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
   const { organizationId } = useOrganizationId();
+  const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
+  const { showToast } = useToast();
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal onClose={closeModal} />);
@@ -48,27 +51,15 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     closeMoreMenu();
   };
 
-  const downloadOrganizationFeedbacksFile = async () => {
-    try {
-      const response = await getOrganizationFeedbacksFile({
-        organizationUuid: organizationId,
-      });
+  const downloadFeedbacksFile = async () => {
+    showToast(
+      '피드백 데이터를 추출 중입니다. 잠시만 기다려주세요.',
+      'origin',
+      2000
+    );
 
-      if (!response) {
-        throw new Error('No response received from the server.');
-      }
-
-      const url = window.URL.createObjectURL(response);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'feedbacks.xlsx';
-      a.click();
-
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('피드백 파일 다운로드 중 오류 발생:', error);
-    }
+    closeMoreMenu();
+    await refetch();
   };
 
   const moreMenuList = [
@@ -86,7 +77,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     {
       icon: <FileDownloadIcon />,
       menu: '피드백 추출',
-      onClick: downloadOrganizationFeedbacksFile,
+      onClick: downloadFeedbacksFile,
     },
   ];
 
@@ -98,6 +89,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
           icon={item.icon}
           menu={item.menu}
           onClick={item.onClick}
+          disabled={isFetching && item.menu === '피드백 추출'}
         />
       ))}
     </div>

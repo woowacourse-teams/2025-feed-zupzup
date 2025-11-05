@@ -1,15 +1,17 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
 
-export const moreMenuItemContainer = (theme: Theme) => css`
+export const moreMenuItemContainer = (theme: Theme, disabled: boolean) => css`
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 10px;
-  cursor: pointer;
+  cursor: ${disabled ? 'not-allowed' : 'pointer'};
+  opacity: ${disabled ? 0.5 : 1};
+  pointer-events: ${disabled ? 'none' : 'auto'};
 
   &:hover {
-    background-color: ${theme.colors.gray[100]};
+    background-color: ${!disabled && theme.colors.gray[100]};
   }
 `;
 
