@@ -52,20 +52,80 @@
 
 
 ## 👥 멤버
-## front-end
+## frontend
 
-| 닉네임 | 깃허브 | 이메일 |
-| --- | --- | --- |
-| 우디(박연기) | https://github.com/yeongipark | [yeongi0111@naver.com](mailto:yeongi0111@naver.com) |
-| 분주(황현정) | https://github.com/bunju20 | [ghkd4009@gmail.com](mailto:ghkd4009@gmail.com) |
-| 캉골(김문경) | https://github.com/mun-kyeong | [horse6953@naver.com](mailto:horse6953@naver.com) |
+<center>
+<table  width="100%">
+  <tr>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/122340316?v=4"  width="100px;"  alt=""/>
+    </td>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/85238126?v=4"  width="100px;"  alt=""/>
+    </td>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/96461334?v=4"  width="100px;"  alt=""/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+        <a href="https://github.com/yeongipark">
+            <div>우디(박연기)</div>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/bunju20">
+            <div>분주(황현정)</div>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/mun-kyeong">
+            <div>캉골(김문경)</div>
+        </a>
+    </td>
+  </tr>
+</table>
+</center>
 
-## back-end
+## backend
 
-| 닉네임 | 깃허브 | 이메일 |
-| --- | --- | --- |
-| 웨이드(고선제) | https://github.com/KoSeonJe | [a01039261344@gmail.com](mailto:a01039261344@gmail.com) |
-| 폰트(김영재) | https://github.com/yeong0jae | [sees77770@gmail.com](mailto:sees77770@gmail.com) |
-| 윌슨(박형균) | https://github.com/phk1128 | [qhk1198@gmail.com](mailto:qhk1198@gmail.com) |
-| 젠슨(이성우) | https://github.com/CodingMasterLSW | [spqjekdl1004@naver.com](mailto:spqjekdl1004@naver.com) |
-
+<center>
+<table  width="100%">
+  <tr>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/127813439?v=4"  width="100px;"  alt=""/>
+    </td>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/83624600?v=4"  width="100px;"  alt=""/>
+    </td>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/122284322?v=4"  width="100px;"  alt=""/>
+    </td>
+    <td  align="center">
+      <img  src="https://avatars.githubusercontent.com/u/108395670?v=4"  width="100px;"  alt=""/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+        <a href="https://github.com/KoSeonJe">
+            <div>웨이드(고선제)</div>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/yeong0jae">
+            <div>폰트(김영재)</div>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/phk1128">
+            <div>윌슨(박형균)</div>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/CodingMasterLSW">
+            <div>젠슨(이성우)</div>
+        </a>
+    </td>
+  </tr>
+</table>
+</center>
