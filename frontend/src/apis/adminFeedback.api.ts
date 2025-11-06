@@ -36,3 +36,18 @@ export async function getFeedbackStatistics(): Promise<GetFeedbackStatisticsResp
 
   return response as GetFeedbackStatisticsResponse;
 }
+
+interface GetOrganizationFeedbacksFileParams {
+  organizationUuid: string;
+}
+export async function getOrganizationFeedbacksFile({
+  organizationUuid,
+}: GetOrganizationFeedbacksFileParams) {
+  return await apiClient.get<Blob>(
+    `/admin/organizations/${organizationUuid}/feedbacks/download`,
+    {
+      responseType: 'blob',
+      timeout: 20000,
+    }
+  );
+}
