@@ -6,6 +6,7 @@ import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatistic;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.dto.response.OrganizationStatisticResponse;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,11 @@ public class OrganizationStatisticService {
                 organization.getId());
 
         return OrganizationStatisticResponse.of(organizationStatistic.getFeedbackAmount());
+    }
+
+    @Transactional
+    public void deleteAllByOrganizationIds(final List<Long> organizationIds) {
+        organizationStatisticRepository.deleteAllByOrganizationIdIn(organizationIds);
     }
 
     private Organization findOrganizationBy(final UUID organizationUuid) {

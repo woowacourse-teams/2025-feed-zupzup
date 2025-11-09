@@ -41,6 +41,7 @@ public class AdminOrganizationService {
     private final ApplicationEventPublisher eventPublisher;
     private final AdminFeedbackService adminFeedbackService;
     private final QRService qrService;
+    private final OrganizationStatisticService organizationStatisticService;
 
     @Transactional
     public AdminCreateOrganizationResponse createOrganization(
@@ -111,6 +112,7 @@ public class AdminOrganizationService {
         organizationCategoryService.deleteAllByOrganizationIds(organizationIds);
         adminFeedbackService.deleteAllByOrganizationIds(organizationIds);
         qrService.deleteAllByOrganizationIds(organizationIds);
+        organizationStatisticService.deleteAllByOrganizationIds(organizationIds);
         organizationRepository.deleteAllById(organizationIds);
     }
 
@@ -127,6 +129,7 @@ public class AdminOrganizationService {
         adminFeedbackService.deleteByOrganizationId(organizationId);
         organizationCategoryService.deleteByOrganizationId(organizationId);
         qrService.deleteByOrganizationId(organizationId);
+        organizationStatisticRepository.deleteByOrganizationId(organizationId);
         organizationRepository.delete(organization);
     }
 }
