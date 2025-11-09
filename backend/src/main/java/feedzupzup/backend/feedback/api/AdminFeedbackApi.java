@@ -87,19 +87,6 @@ public interface AdminFeedbackApi {
             @RequestBody @Valid final UpdateFeedbackCommentRequest request
     );
 
-    @Operation(summary = "피드백 전체 처리 현황 조회", description = "피드백의 전체 처리 현황을 조회합니다. (관리자 전용)")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
-            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden")
-    })
-    @SecurityRequirement(name = "SessionAuth")
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/admin/feedbacks/statistics")
-    SuccessResponse<FeedbackStatisticResponse> getAllFeedbackStatistics(
-            @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
-    );
-
     @Operation(summary = "모든 클러스터 대표 피드백 전체 조회", description = "각 클러스터의 대표 피드백을 조회합니다. (관리자 전용)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),

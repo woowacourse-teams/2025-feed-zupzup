@@ -21,7 +21,6 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
@@ -115,16 +114,6 @@ public class AdminFeedbackService {
         if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
             throw new ForbiddenException("admin" + adminId + "는 해당 요청에 대한 권한이 없습니다.");
         }
-    }
-
-    public FeedbackStatisticResponse calculateFeedbackStatistics(final Long adminId) {
-        final FeedbackAmount feedbackAmount = feedBackRepository.findFeedbackStatisticsByAdminId(adminId);
-
-        final long totalCount = feedbackAmount.totalCount();
-        final long confirmedCount = feedbackAmount.confirmedCount();
-        final int reflectionRate = feedbackAmount.calculateReflectionRate();
-
-        return new FeedbackStatisticResponse(confirmedCount, totalCount, reflectionRate);
     }
 
     @Transactional

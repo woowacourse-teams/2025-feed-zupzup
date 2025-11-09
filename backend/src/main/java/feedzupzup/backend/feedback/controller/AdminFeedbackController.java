@@ -68,15 +68,6 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public SuccessResponse<FeedbackStatisticResponse> getAllFeedbackStatistics(
-            final AdminSession adminSession
-    ) {
-        final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(
-                adminSession.adminId());
-        return SuccessResponse.success(HttpStatus.OK, response);
-    }
-
-    @Override
     public SuccessResponse<ClustersResponse> getTopClusters(
             final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid,
