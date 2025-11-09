@@ -12,7 +12,9 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
-import feedzupzup.backend.feedback.dto.response.StatisticResponse;
+import feedzupzup.backend.organization.application.OrganizationStatisticService;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.dto.response.OrganizationStatisticResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -24,7 +26,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
+public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackRepository feedBackRepository;
@@ -33,7 +35,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
-    private FeedbackStatisticService feedbackStatisticService;
+    private OrganizationStatisticService organizationStatisticService;
 
     @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
@@ -62,7 +64,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         feedBackRepository.save(confirmedFeedback2);
 
         // when
-        final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+        final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
                 organization.getUuid());
 
         // then
@@ -81,7 +83,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
         final UUID organizationUuid = UUID.randomUUID(); // 존재하지 않는 장소 ID
 
         // when & then
-        assertThatThrownBy(() -> feedbackStatisticService.calculateStatistic(organizationUuid))
+        assertThatThrownBy(() -> organizationStatisticService.calculateStatistic(organizationUuid))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -112,7 +114,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback2);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+            final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
                     otherOrganization.getUuid());
 
             // then
@@ -153,7 +155,7 @@ public class FeedbackStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback5);
 
             // when
-            final StatisticResponse response = feedbackStatisticService.calculateStatistic(
+            final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
                     savedOrganization.getUuid());
 
             // then

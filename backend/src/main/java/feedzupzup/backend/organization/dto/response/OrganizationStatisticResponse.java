@@ -1,10 +1,11 @@
-package feedzupzup.backend.feedback.dto.response;
+package feedzupzup.backend.organization.dto.response;
 
 import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "피드백 통계 응답")
-public record StatisticResponse(
+@Schema(description = "조직 통계 응답")
+public record OrganizationStatisticResponse(
+
         @Schema(description = "반영률", example = "20")
         int reflectionRate,
 
@@ -17,12 +18,12 @@ public record StatisticResponse(
         @Schema(description = "총 피드백 수", example = "5")
         long totalCount
 ) {
-    public static StatisticResponse of(final FeedbackAmount feedbackAmount, int reflectionRate) {
-        return new StatisticResponse(
-                reflectionRate,
-                feedbackAmount.confirmedCount(),
-                feedbackAmount.waitingCount(),
-                feedbackAmount.totalCount()
+    public static OrganizationStatisticResponse of(final FeedbackAmount feedbackAmount) {
+        return new OrganizationStatisticResponse(
+                feedbackAmount.calculateReflectionRate(),
+                feedbackAmount.getFeedbackConfirmedCount(),
+                feedbackAmount.getFeedbackWaitingCount(),
+                feedbackAmount.getFeedbackTotalCount()
         );
     }
 }

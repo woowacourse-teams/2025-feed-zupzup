@@ -8,6 +8,8 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
@@ -33,6 +35,7 @@ public class AdminOrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final OrganizerRepository organizerRepository;
+    private final OrganizationStatisticRepository organizationStatisticRepository;
     private final AdminRepository adminRepository;
     private final OrganizationCategoryService organizationCategoryService;
     private final ApplicationEventPublisher eventPublisher;
@@ -58,6 +61,9 @@ public class AdminOrganizationService {
                 OrganizerRole.OWNER
         );
         organizerRepository.save(organizer);
+        final OrganizationStatistic organizationStatistic = new OrganizationStatistic(
+                savedOrganization);
+        organizationStatisticRepository.save(organizationStatistic);
 
         eventPublisher.publishEvent(new OrganizationCreatedEvent(savedOrganization.getUuid()));
 

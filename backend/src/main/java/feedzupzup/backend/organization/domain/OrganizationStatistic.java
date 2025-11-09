@@ -1,7 +1,9 @@
-package feedzupzup.backend.statistic.domain;
+package feedzupzup.backend.organization.domain;
 
+import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.global.BaseTimeEntity;
-import feedzupzup.backend.organization.domain.Organization;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -24,20 +26,22 @@ public class OrganizationStatistic extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private Organization organization;
 
-    private long feedbackTotalCount;
+    @Embedded
+    private FeedbackAmount feedbackAmount;
 
-    private long feedbackConfirmedCount;
-
-    private long feedbackWaitingCount;
+    public OrganizationStatistic(
+            final Organization organization
+    ) {
+        this.organization = organization;
+        this.feedbackAmount = new FeedbackAmount(0, 0, 0);
+    }
 
     public void increaseConfirmedCount() {
-        this.feedbackTotalCount ++;
-        this.feedbackConfirmedCount ++;
+        feedbackAmount.increaseConfirmedCount();
     }
 
     public void increaseWaitingCount() {
-        this.feedbackTotalCount ++;
-        this.feedbackWaitingCount ++;
+        feedbackAmount.increaseWaitingCount();
     }
 
 }
