@@ -42,4 +42,14 @@ public class FeedbackAmount {
         this.feedbackWaitingCount++;
     }
 
+    public void decreaseWaitingCount() {
+        this.feedbackTotalCount--;
+        this.feedbackWaitingCount--;
+    }
+
+    public void decreaseConfirmedCount() {
+        this.feedbackTotalCount--;
+        this.feedbackWaitingCount--;
+    }
+
 }

@@ -34,6 +34,8 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
@@ -65,6 +67,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
+    private OrganizationStatisticRepository organizationStatisticRepository;
+
+    @Autowired
     private AdminRepository adminRepository;
 
     @Autowired
@@ -87,6 +92,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         adminRepository.save(admin);
         organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
         organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
         organizerRepository.save(organizer);
         organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(

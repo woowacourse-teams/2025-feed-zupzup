@@ -6,7 +6,6 @@ import feedzupzup.backend.feedback.domain.ClusterInfo;
 import feedzupzup.backend.feedback.domain.EmbeddingCluster;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
@@ -26,6 +25,8 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +47,7 @@ public class AdminFeedbackService {
     private final FeedbackRepository feedBackRepository;
     private final FeedbackSortStrategyFactory feedbackSortStrategyFactory;
     private final OrganizationRepository organizationRepository;
+    private final OrganizationStatisticRepository organizationStatisticRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
     private final FeedbackExcelExporter feedbackExcelExporter;
@@ -57,6 +59,15 @@ public class AdminFeedbackService {
             final Long feedbackId
     ) {
         validateAuthentication(adminId, feedbackId);
+        final Feedback feedback = getFeedback(feedbackId);
+        final OrganizationStatistic organizationStatistic = organizationStatisticRepository.findByOrganizationId(
+                feedback.getOrganization().getId());
+
+        if (feedback.getStatus() == ProcessStatus.CONFIRMED) {
+            organizationStatistic.decreaseConfirmedCount();
+        }
+        organizationStatistic.decreaseWaitingCount();
+
         feedbackEmbeddingClusterRepository.deleteByFeedback_Id(feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
@@ -88,21 +99,17 @@ public class AdminFeedbackService {
             final UpdateFeedbackCommentRequest request,
             final Long feedbackId
     ) {
-        hasAccessToFeedback(adminId, feedbackId);
-
-        final Feedback feedback = getFeedback(feedbackId);
-
         validateAuthentication(adminId, feedbackId);
-
+        final Feedback feedback = getFeedback(feedbackId);
         feedback.updateCommentAndStatus(request.toComment());
 
-        return UpdateFeedbackCommentResponse.from(feedback);
-    }
+        final OrganizationStatistic organizationStatistic = organizationStatisticRepository.findByOrganizationId(
+                feedback.getOrganization().getId());
 
-    private void hasAccessToFeedback(final Long adminId, final Long feedbackId) {
-        if (!adminRepository.existsFeedbackId(adminId, feedbackId)) {
-            throw new ForbiddenException("admin" + adminId + "는 해당 요청에 대한 권한이 없습니다.");
-        }
+        organizationStatistic.increaseConfirmedCount();
+        organizationStatistic.decreaseWaitingCount();
+
+        return UpdateFeedbackCommentResponse.from(feedback);
     }
 
     private Feedback getFeedback(final Long feedbackId) {
