@@ -49,7 +49,7 @@ public class FeedbackAmount {
 
     public void decreaseConfirmedCount() {
         this.feedbackTotalCount--;
-        this.feedbackWaitingCount--;
+        this.feedbackConfirmedCount--;
     }
 
 }

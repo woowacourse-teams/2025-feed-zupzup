@@ -63,13 +63,20 @@ public class AdminFeedbackService {
         final OrganizationStatistic organizationStatistic = organizationStatisticRepository.findByOrganizationId(
                 feedback.getOrganization().getId());
 
-        if (feedback.getStatus() == ProcessStatus.CONFIRMED) {
-            organizationStatistic.decreaseConfirmedCount();
-        }
-        organizationStatistic.decreaseWaitingCount();
-
+        handleOrganizationStatistic(feedback, organizationStatistic);
         feedbackEmbeddingClusterRepository.deleteByFeedback_Id(feedbackId);
         feedBackRepository.deleteById(feedbackId);
+    }
+
+    private static void handleOrganizationStatistic(
+            final Feedback feedback,
+            final OrganizationStatistic organizationStatistic
+    ) {
+        if (feedback.getStatus() == ProcessStatus.CONFIRMED) {
+            organizationStatistic.decreaseConfirmedCount();
+            return;
+        }
+        organizationStatistic.decreaseWaitingCount();
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
