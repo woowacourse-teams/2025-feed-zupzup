@@ -26,7 +26,6 @@ import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
 import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import feedzupzup.backend.organization.domain.OrganizationStatistic;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import java.util.List;
 import java.util.UUID;
@@ -61,7 +60,6 @@ public class UserFeedbackService {
     ) {
         final Guest guest = findGuestBy(guestInfo.guestUuid());
         final Organization organization = findOrganizationBy(organizationUuid);
-        final OrganizationStatistic organizationStatistic = findOrganizationStatisticBy(organization);
 
         final Category category = Category.findCategoryBy(request.category());
         final OrganizationCategory organizationCategory = organization.findOrganizationCategoryBy(
@@ -71,7 +69,8 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedbackRepository.save(newFeedback);
         writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
 
-        organizationStatistic.increaseWaitingCount();
+        organizationStatisticRepository.increaseWaitingAndTotalCountByOrganizationId(
+                savedFeedback.getOrganizationIdValue());
 
         // 새로운 피드백이 생성되면 이벤트 발행
         eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
@@ -128,10 +127,6 @@ public class UserFeedbackService {
     private Organization findOrganizationBy(final UUID organizationUuid) {
         return organizationRepository.findByUuid(organizationUuid)
                 .orElseThrow(() -> new ResourceNotFoundException("장소를 찾을 수 없습니다."));
-    }
-
-    private OrganizationStatistic findOrganizationStatisticBy(final Organization organization) {
-        return organizationStatisticRepository.findByOrganizationId(organization.getId());
     }
 
     private Pageable createPageable(int size) {

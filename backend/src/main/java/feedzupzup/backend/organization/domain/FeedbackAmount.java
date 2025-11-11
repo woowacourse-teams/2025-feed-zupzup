@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.organization.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -31,25 +31,4 @@ public class FeedbackAmount {
         final double value = (double) feedbackConfirmedCount / feedbackTotalCount * 100.0;
         return (int) Math.round(value);
     }
-
-    public void increaseConfirmedCount() {
-        this.feedbackTotalCount++;
-        this.feedbackConfirmedCount++;
-    }
-
-    public void increaseWaitingCount() {
-        this.feedbackTotalCount++;
-        this.feedbackWaitingCount++;
-    }
-
-    public void decreaseWaitingCount() {
-        this.feedbackTotalCount--;
-        this.feedbackWaitingCount--;
-    }
-
-    public void decreaseConfirmedCount() {
-        this.feedbackTotalCount--;
-        this.feedbackConfirmedCount--;
-    }
-
 }

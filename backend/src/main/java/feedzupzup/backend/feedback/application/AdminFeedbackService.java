@@ -25,7 +25,6 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import feedzupzup.backend.organization.domain.OrganizationStatistic;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -60,23 +59,17 @@ public class AdminFeedbackService {
     ) {
         validateAuthentication(adminId, feedbackId);
         final Feedback feedback = getFeedback(feedbackId);
-        final OrganizationStatistic organizationStatistic = organizationStatisticRepository.findByOrganizationId(
-                feedback.getOrganization().getId());
-
-        handleOrganizationStatistic(feedback, organizationStatistic);
+        handleOrganizationStatistic(feedback);
         feedbackEmbeddingClusterRepository.deleteByFeedback_Id(feedbackId);
         feedBackRepository.deleteById(feedbackId);
     }
 
-    private static void handleOrganizationStatistic(
-            final Feedback feedback,
-            final OrganizationStatistic organizationStatistic
-    ) {
+    private void handleOrganizationStatistic(final Feedback feedback) {
         if (feedback.getStatus() == ProcessStatus.CONFIRMED) {
-            organizationStatistic.decreaseConfirmedCount();
+            organizationStatisticRepository.decreaseConfirmedAndTotalCountByOrganizationId(feedback.getOrganizationIdValue());
             return;
         }
-        organizationStatistic.decreaseWaitingCount();
+        organizationStatisticRepository.decreaseWaitingAndTotalCountByOrganizationId(feedback.getOrganizationIdValue());
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
@@ -110,12 +103,7 @@ public class AdminFeedbackService {
         final Feedback feedback = getFeedback(feedbackId);
         feedback.updateCommentAndStatus(request.toComment());
 
-        final OrganizationStatistic organizationStatistic = organizationStatisticRepository.findByOrganizationId(
-                feedback.getOrganization().getId());
-
-        organizationStatistic.increaseConfirmedCount();
-        organizationStatistic.decreaseWaitingCount();
-
+        organizationStatisticRepository.decreaseWaitingAndIncreaseConfirmedCountByOrganizationId(feedback.getOrganizationIdValue());
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 

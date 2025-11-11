@@ -1,6 +1,8 @@
 package feedzupzup.backend.feedback.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import feedzupzup.backend.organization.domain.FeedbackAmount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

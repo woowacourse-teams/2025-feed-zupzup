@@ -1,6 +1,5 @@
 package feedzupzup.backend.organization.domain;
 
-import feedzupzup.backend.feedback.domain.FeedbackAmount;
 import feedzupzup.backend.global.BaseTimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -43,21 +42,5 @@ public class OrganizationStatistic extends BaseTimeEntity {
     ) {
         this.organization = organization;
         this.feedbackAmount = new FeedbackAmount(0, 0, 0);
-    }
-
-    public void increaseConfirmedCount() {
-        feedbackAmount.increaseConfirmedCount();
-    }
-
-    public void increaseWaitingCount() {
-        feedbackAmount.increaseWaitingCount();
-    }
-
-    public void decreaseConfirmedCount() {
-        feedbackAmount.decreaseConfirmedCount();
-    }
-
-    public void decreaseWaitingCount() {
-        feedbackAmount.decreaseWaitingCount();
     }
 }

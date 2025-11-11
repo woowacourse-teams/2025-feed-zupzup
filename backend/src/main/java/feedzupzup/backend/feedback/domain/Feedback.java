@@ -98,10 +98,6 @@ public class Feedback extends BaseTimeEntity {
         this.imageUrl = imageUrl;
     }
 
-    public void updateStatus(final ProcessStatus status) {
-        this.status = status;
-    }
-
     public void increaseLikeCount() {
         this.likeCount = this.likeCount.increase();
     }
@@ -121,5 +117,9 @@ public class Feedback extends BaseTimeEntity {
 
     public int getLikeCountValue() {
         return this.likeCount.getValue();
+    }
+
+    public Long getOrganizationIdValue() {
+        return organization.getId();
     }
 }

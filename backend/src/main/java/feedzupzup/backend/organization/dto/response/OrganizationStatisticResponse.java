@@ -1,6 +1,6 @@
 package feedzupzup.backend.organization.dto.response;
 
-import feedzupzup.backend.feedback.domain.FeedbackAmount;
+import feedzupzup.backend.organization.domain.FeedbackAmount;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "조직 통계 응답")
