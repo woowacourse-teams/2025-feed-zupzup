@@ -9,7 +9,15 @@ import org.springframework.data.repository.query.Param;
 public interface OrganizationStatisticRepository extends
         JpaRepository<OrganizationStatistic, Long> {
 
-    OrganizationStatistic findByOrganizationId(Long organizationId);
+    @Query("""
+            SELECT new feedzupzup.backend.organization.domain.FeedbackAmount(
+                  s.feedbackAmount.feedbackTotalCount,
+                  s.feedbackAmount.feedbackConfirmedCount,
+                  s.feedbackAmount.feedbackWaitingCount)
+            FROM OrganizationStatistic s
+            WHERE s.organization.id = :organizationId
+            """)
+    FeedbackAmount findFeedbackAmountByOrganizationId(@Param("organizationId") Long organizationId);
 
     void deleteByOrganizationId(Long organizationId);
 

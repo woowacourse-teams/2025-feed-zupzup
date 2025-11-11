@@ -1,9 +1,9 @@
 package feedzupzup.backend.organization.application;
 
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.organization.domain.FeedbackAmount;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import feedzupzup.backend.organization.domain.OrganizationStatistic;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.dto.response.OrganizationStatisticResponse;
 import java.util.List;
@@ -22,11 +22,8 @@ public class OrganizationStatisticService {
 
     public OrganizationStatisticResponse calculateStatistic(final UUID organizationUuid) {
         final Organization organization = findOrganizationBy(organizationUuid);
-
-        final OrganizationStatistic organizationStatistic = organizationStatisticRepository.findByOrganizationId(
-                organization.getId());
-
-        return OrganizationStatisticResponse.of(organizationStatistic.getFeedbackAmount());
+        final FeedbackAmount feedbackAmount = organizationStatisticRepository.findFeedbackAmountByOrganizationId(organization.getId());
+        return OrganizationStatisticResponse.of(feedbackAmount);
     }
 
     @Transactional
