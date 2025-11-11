@@ -9,19 +9,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE organization_statistic SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
-@SQLRestriction("deleted_at IS NULL")
 public class OrganizationStatistic extends BaseTimeEntity {
 
     @Id
@@ -33,9 +28,6 @@ public class OrganizationStatistic extends BaseTimeEntity {
 
     @Embedded
     private FeedbackAmount feedbackAmount;
-
-    @Column(name = "deleted_at")
-    protected LocalDateTime deletedAt;
 
     public OrganizationStatistic(
             final @NonNull Organization organization
