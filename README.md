@@ -48,7 +48,10 @@
 ## 📌 Infra Design 
 
 ### BackEnd CI / CD
-<img width="1438" height="713" alt="image" src="https://github.com/user-attachments/assets/0c52c415-036e-4d93-aa04-ee3efebef8b8" />
+![피드줍줍 CICD](https://github.com/user-attachments/assets/bbc70b75-ba90-428b-a97a-d8a982bb9175)
+
+### BackEnd Architecture
+![피드줍줍 인프라](https://github.com/user-attachments/assets/c94d848c-4872-4c97-8401-e08a7f2ed42d)
 
 
 ## 👥 멤버
