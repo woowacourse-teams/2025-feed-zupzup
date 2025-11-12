@@ -33,7 +33,7 @@ export function useFeedbackPolling({ statistics }: FeedbackPollingProps) {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [statistics]);
+  }, [statistics, refetchCurrentStatistics]);
 
   useEffect(() => {
     if (feedbackDiff > 0) {
@@ -44,4 +44,6 @@ export function useFeedbackPolling({ statistics }: FeedbackPollingProps) {
       );
     }
   }, [feedbackDiff]);
+
+  return { feedbackDiff, setFeedbackDiff };
 }
