@@ -1,14 +1,20 @@
 import DashboardPanel from '@/domains/components/DashboardPanel/DashboardPanel';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
+import { useFeedbackPolling } from '@/domains/hooks/useFeedbackPolling';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
+import { useAppTheme } from '@/hooks/useAppTheme';
 import { panelLayout } from './DashboardPanelContent.style';
 
 export default function DashboardPanelContent() {
   const { organizationId } = useOrganizationId();
   const theme = useAppTheme();
+
   const { statistics } = useUserOrganizationsStatistics({
     organizationId,
+  });
+
+  useFeedbackPolling({
+    statistics,
   });
 
   const DASH_PANELS = [

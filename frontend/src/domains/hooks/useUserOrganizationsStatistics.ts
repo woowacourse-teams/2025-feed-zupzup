@@ -19,16 +19,18 @@ const EMPTY: StatisticsProps = {
 
 interface UseUserOrganizationsStatisticsProps {
   organizationId: string;
+  queryKey?: string[];
 }
 
 export default function useUserOrganizationsStatistics({
   organizationId,
+  queryKey,
 }: UseUserOrganizationsStatisticsProps) {
-  const { data = EMPTY } = useQuery({
-    queryKey: QUERY_KEYS.organizationStatistics(organizationId),
+  const { data = EMPTY, refetch } = useQuery({
+    queryKey: queryKey ?? QUERY_KEYS.organizationStatistics(organizationId),
     queryFn: () => getOrganizationStatistics({ organizationId }),
     select: (res: GetOrganizationStatistics) => res.data,
   });
 
-  return { statistics: data };
+  return { statistics: data, refetch };
 }
