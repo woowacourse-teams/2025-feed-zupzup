@@ -77,8 +77,12 @@ export default function Login() {
               />
             ))}
           </div>
-          <BasicButton type='submit' disabled={isLoginPending} aria-busy={isLoginPending}>
-           {isLoginPending ? '로그인 중...' : '로그인'}
+          <BasicButton
+            type='submit'
+            disabled={isLoginPending}
+            aria-busy={isLoginPending}
+          >
+            {isLoginPending ? '로그인 중...' : '로그인'}
           </BasicButton>
           <div css={loginCaptionContainer(theme)}>
             {/* <p>비밀번호를 잊으셨나요?</p> */}
