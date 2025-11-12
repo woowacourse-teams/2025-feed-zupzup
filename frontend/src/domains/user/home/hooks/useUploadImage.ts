@@ -3,6 +3,7 @@ import {
   postPresignedUrl,
   PostPresignedUrlParams,
 } from '@/apis/s3.api';
+import { resizeImage } from '@/domains/utils/resizeImage';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
@@ -16,14 +17,22 @@ export default function useUploadImage() {
     e
   ) => {
     try {
-      const file = e.target.files?.[0] ?? null;
-      const extension = file?.name.split('.').pop();
-      if (!file || !extension) return;
+      if (!e.target.files || e.target.files.length === 0) return;
 
-      setFile(file);
+      const file = e.target.files?.[0] ?? null;
+      const contentType = file?.name.split('.').pop();
+
+      const { newFile, newContentType } = await resizeImage({
+        file,
+        contentType,
+      });
+
+      if (!newFile || !newContentType) return;
+
+      setFile(newFile);
 
       await fetchPresignedUrl({
-        extension: extension as ImageExtension,
+        extension: newContentType as ImageExtension,
         objectDir: 'feedback_media',
       });
     } catch (e) {
