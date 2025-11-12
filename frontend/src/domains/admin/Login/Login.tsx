@@ -44,7 +44,7 @@ export default function Login() {
     validators: LOGIN_VALIDATORS,
   });
 
-  const { handleSubmit, isLoading } = useLogin({ loginValue });
+  const { handleSubmit, isLoginPending } = useLogin({ loginValue });
 
   return (
     <>
@@ -59,7 +59,7 @@ export default function Login() {
           onSubmit={handleSubmit}
           noValidate
           aria-label='로그인 폼'
-          aria-busy={isLoading}
+          aria-busy={isLoginPending}
         >
           <div css={fieldContainer}>
             {loginFields.map((field: LoginField) => (
@@ -77,8 +77,8 @@ export default function Login() {
               />
             ))}
           </div>
-          <BasicButton type='submit' disabled={isLoading} aria-busy={isLoading}>
-            로그인
+          <BasicButton type='submit' disabled={isLoginPending} aria-busy={isLoginPending}>
+           {isLoginPending ? '로그인 중...' : '로그인'}
           </BasicButton>
           <div css={loginCaptionContainer(theme)}>
             {/* <p>비밀번호를 잊으셨나요?</p> */}

@@ -63,18 +63,18 @@ export default memo(function FilterSection({
     <div css={[filterSectionContainer, customCSS]}>
       <div css={filterTagsContainer}>
         {filterOptions(isAdmin ?? false).map((option) => (
-          <Tag
-            key={option.value}
-            customCSS={tagStyle(theme, selectedFilter === option.value)}
+          <Button
+            type='button'
+            customCSS={tagButton(theme)}
+            onClick={() => handleFilterClick(option.value)}
           >
-            <Button
-              type='button'
-              customCSS={tagButton(theme)}
-              onClick={() => handleFilterClick(option.value)}
+            <Tag
+              key={option.value}
+              customCSS={tagStyle(theme, selectedFilter === option.value)}
             >
               {option.label}
-            </Button>
-          </Tag>
+            </Tag>
+          </Button>
         ))}
       </div>
 

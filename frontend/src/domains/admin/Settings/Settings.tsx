@@ -3,6 +3,7 @@ import { useState } from 'react';
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 import BellOutlineIcon from '@/components/icons/BellOutlineIcon';
 import OutOutlineIcon from '@/components/icons/OutOutlineIcon';
+import SendIcon from '@/components/icons/SendIcon';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
@@ -10,15 +11,31 @@ import { useLogout } from './hooks/useLogout';
 import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage';
 import { settingsContainer } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
+import { usePWAPrompt } from '@/contexts/usePWAPrompt';
+
+declare global {
+  interface Window {
+    ChannelIO?: {
+      (...args: unknown[]): void;
+      showMessenger?: () => void;
+    };
+  }
+}
 
 type ModalState = { type: 'logout' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
-  const { isToggleEnabled, updateNotificationSetting, isLoading, fcmStatus } =
-    useNotificationSettingsPage();
+  const {
+    isToggleEnabled,
+    updateNotificationSetting,
+    isLoading,
+    fcmStatus,
+    needsPWAInstall,
+  } = useNotificationSettingsPage();
   const { adminAuth, isLoading: isAdminAuthLoading } = useAdminAuth();
   const { handleLogout } = useLogout();
+  const { showPrompt } = usePWAPrompt();
 
   const closeModal = () => {
     setModalState({ type: null });
@@ -26,6 +43,25 @@ export default function Settings() {
 
   const handleToggleClick = () => {
     updateNotificationSetting(!isToggleEnabled);
+  };
+
+  const handleCustomerServiceClick = () => {
+    if (window.ChannelIO) {
+      window.ChannelIO('showMessenger');
+    }
+  };
+
+  const handleNotificationSettingClick = () => {
+    if (needsPWAInstall) {
+      showPrompt();
+    }
+  };
+
+  const getNotificationMessage = () => {
+    if (needsPWAInstall) {
+      return '알림을 받기위해 홈 화면에 앱을 추가해주세요. 터치하면 설치 화면이 나옵니다.';
+    }
+    return '푸시 알림 받기 설정';
   };
 
   return (
@@ -45,15 +81,25 @@ export default function Settings() {
         <SettingListBox
           icon={<BellOutlineIcon />}
           title='알림 설정'
-          description='푸시 알림 받기 설정'
+          description={getNotificationMessage()}
+          {...(needsPWAInstall && { onClick: handleNotificationSettingClick })}
           rightElement={
-            <BasicToggleButton
-              isToggled={isToggleEnabled}
-              onClick={handleToggleClick}
-              name='notification-toggle'
-              disabled={isLoading || !fcmStatus.isSupported}
-            />
+            needsPWAInstall ? undefined : (
+              <BasicToggleButton
+                isToggled={isToggleEnabled}
+                onClick={handleToggleClick}
+                name='notification-toggle'
+                disabled={isLoading || !fcmStatus.isSupported}
+              />
+            )
           }
+        />
+
+        <SettingListBox
+          icon={<SendIcon />}
+          title='고객센터'
+          description='문의사항을 채널톡으로 전달하세요'
+          onClick={handleCustomerServiceClick}
         />
 
         <SettingListBox

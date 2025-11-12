@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 
 interface UseGetAIDetailProps {
   organizationId: string;
-  clusterId: string;
+  clusterId: number;
 }
 
 export default function useAIDetail({
@@ -14,7 +14,8 @@ export default function useAIDetail({
   const { data, isLoading } = useQuery({
     queryKey: QUERY_KEYS.aiSummaryDetail(organizationId, clusterId),
     queryFn: () => getAISummaryDetail({ organizationId, clusterId }),
+    retry: false,
   });
 
-  return { data, isLoading };
+  return { data: data?.data, isLoading };
 }

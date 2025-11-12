@@ -9,6 +9,8 @@ import { QRText } from '@/domains/admin/components/QRModal/QRModal.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useQRImageDownload } from './hooks/useQRImageDownload';
 import { urlDownload } from '@/domains/utils/urlDownload';
+import { useState, useEffect } from 'react';
+import { QRImageSkeleton } from '@/domains/admin/components/QRModal/components/QRModalSkeleton/QRModalSkeleton';
 
 type QRImageSectionProps = {
   url: string;
@@ -17,10 +19,19 @@ type QRImageSectionProps = {
 export default function QRImageSection({ url }: QRImageSectionProps) {
   const theme = useAppTheme();
   const { downloadUrl } = useQRImageDownload();
+  const [isImageLoading, setIsImageLoading] = useState(true);
+
+  useEffect(() => {
+    setIsImageLoading(true);
+  }, [url]);
 
   const handleDownload = async () => {
     if (!downloadUrl) return;
     urlDownload({ downloadUrl, fileName: 'qr-code.png' });
+  };
+
+  const handleImageLoad = () => {
+    setIsImageLoading(false);
   };
 
   return (
@@ -28,7 +39,13 @@ export default function QRImageSection({ url }: QRImageSectionProps) {
       <p css={QRTitle(theme)}>QR 코드 & URL 공유</p>
 
       <div css={QRImageContainer}>
-        <img src={url} alt='피드백 페이지로 이동하는 QR 코드' />
+        {isImageLoading && <QRImageSkeleton />}
+        <img
+          src={url}
+          alt='피드백 페이지로 이동하는 QR 코드'
+          onLoad={handleImageLoad}
+          style={{ display: isImageLoading ? 'none' : 'block' }}
+        />
       </div>
 
       <p css={QRText(theme)}>

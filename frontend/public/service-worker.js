@@ -22,10 +22,10 @@ try {
   const messaging = firebase.messaging();
 
   messaging.onBackgroundMessage(({ notification, data }) => {
-    const title = (notification && notification.title) || '새 알림';
+    const title = (data && data.title) || '새 알림';
     const options = {
-      body: (notification && notification.body) || '',
-      icon: (notification && notification.icon) || '/logo192.png',
+      body: (data && data.body) || '',
+      icon: (data && data.icon) || '/192x192.png',
       data,
       requireInteraction: true,
     };
@@ -69,4 +69,25 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+});
+
+// ===== PWA 알림 클릭 이벤트 처리 =====
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        for (const client of clientList) {
+          if (
+            client.url.startsWith(self.location.origin) &&
+            'focus' in client
+          ) {
+            return client.focus().then(() => client.navigate('/'));
+          }
+        }
+        return clients.openWindow('/');
+      })
+  );
 });

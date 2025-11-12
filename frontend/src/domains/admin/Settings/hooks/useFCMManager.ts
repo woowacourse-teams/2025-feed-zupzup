@@ -14,6 +14,17 @@ export const useFCMManager = () => {
     useState<NotificationPermission>('default');
   const isSupported = NotificationService.checkIsSupported();
 
+  const isIOSBrowser = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+    const isStandalone = window.matchMedia(
+      '(display-mode: standalone)'
+    ).matches;
+    return isIOS && !isStandalone;
+  };
+
+  const needsPWAInstall = isIOSBrowser();
+
   const [isEnabled, setIsEnabled] = useState(() => {
     const storedState = getStoredNotificationState();
     return storedState;
@@ -56,11 +67,20 @@ export const useFCMManager = () => {
           'Notification' in window &&
           Notification.permission === 'granted'
         ) {
-          new Notification(payload.notification?.title || '새 알림', {
-            body: payload.notification?.body || '새로운 메시지가 있습니다.',
-            icon: payload.notification?.icon || '/logo192.png',
-            data: payload.data,
-          });
+          const notification = new Notification(
+            payload.data?.title || '새 알림',
+            {
+              body: payload.data?.body || '새로운 메시지가 있습니다.',
+              icon: payload.data?.icon || '/192x192.png',
+              data: payload.data,
+            }
+          );
+
+          notification.onclick = () => {
+            notification.close();
+            window.focus();
+            window.location.href = '/';
+          };
         }
       });
 
@@ -92,5 +112,6 @@ export const useFCMManager = () => {
     isSupported,
     isEnabled,
     updateState,
+    needsPWAInstall,
   };
 };

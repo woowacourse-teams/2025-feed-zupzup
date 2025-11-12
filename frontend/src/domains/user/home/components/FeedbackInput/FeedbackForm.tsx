@@ -89,7 +89,11 @@ export default function FeedbackForm({
             maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
             minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
           />
-          <TextareaCounter textLength={feedback.length} />
+          <TextareaCounter
+            textLength={feedback.length}
+            right='16px'
+            bottom='8px'
+          />
         </div>
       </div>
       <div css={formFooterContainer}>

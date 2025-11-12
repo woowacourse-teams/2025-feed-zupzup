@@ -1,10 +1,9 @@
 import { Theme } from '@/theme';
 import { css } from '@emotion/react';
 
-export const textareaCounter = (theme: Theme) => css`
+export const textareaCounter = (theme: Theme, inset: string) => css`
   position: absolute;
-  right: 16px;
-  bottom: 8px;
+  inset: ${inset};
   color: ${theme.colors.gray[500]};
   ${theme.typography.pretendard.captionSmall}
 
