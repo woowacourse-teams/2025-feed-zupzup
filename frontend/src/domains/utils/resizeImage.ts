@@ -7,7 +7,6 @@ export async function resizeImage({
   file: File;
   contentType: string | undefined;
 }) {
-  // return { newFile: file, newContentType: contentType ?? 'png' };
   const outputType = 'webp';
 
   const options = {
