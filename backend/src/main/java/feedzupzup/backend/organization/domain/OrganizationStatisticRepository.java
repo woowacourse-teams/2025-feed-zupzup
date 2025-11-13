@@ -26,16 +26,16 @@ public interface OrganizationStatisticRepository extends
     @Modifying
     @Query("""
             UPDATE OrganizationStatistic s SET
-            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :totalAmount,
-            s.feedbackAmount.feedbackConfirmedCount = s.feedbackAmount.feedbackConfirmedCount + :confirmedAmount,
-            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :waitingAmount
+            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :totalCount,
+            s.feedbackAmount.feedbackConfirmedCount = s.feedbackAmount.feedbackConfirmedCount + :confirmedCount,
+            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :waitingCount
             WHERE s.organization.id = :organizationId
             """)
-    void updateFeedbackAmount(
+    void updateOrganizationStatisticCounts(
             @Param("organizationId") Long organizationId,
-            long totalAmount,
-            long confirmedAmount,
-            long waitingAmount
+            long totalCount,
+            long confirmedCount,
+            long waitingCount
     );
 
 }

@@ -28,7 +28,6 @@ import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
-import feedzupzup.backend.organization.domain.StatusTransition;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -69,7 +68,7 @@ public class AdminFeedbackService {
 
     private void handleOrganizationStatistic(final Feedback feedback) {
         if (feedback.getStatus() == ProcessStatus.CONFIRMED) {
-            organizationStatisticRepository.updateFeedbackAmount(
+            organizationStatisticRepository.updateOrganizationStatisticCounts(
                     feedback.getOrganizationIdValue(),
                     DELETED_CONFIRMED.getTotalAmount(),
                     DELETED_CONFIRMED.getConfirmedAmount(),
@@ -77,7 +76,7 @@ public class AdminFeedbackService {
             );
             return;
         }
-        organizationStatisticRepository.updateFeedbackAmount(
+        organizationStatisticRepository.updateOrganizationStatisticCounts(
                 feedback.getOrganizationIdValue(),
                 DELETED_WAITING.getTotalAmount(),
                 DELETED_WAITING.getConfirmedAmount(),
@@ -116,7 +115,7 @@ public class AdminFeedbackService {
         final Feedback feedback = getFeedback(feedbackId);
         feedback.updateCommentAndStatus(request.toComment());
 
-        organizationStatisticRepository.updateFeedbackAmount(
+        organizationStatisticRepository.updateOrganizationStatisticCounts(
                 feedback.getOrganizationIdValue(),
                 WAITING_TO_CONFIRMED.getTotalAmount(),
                 WAITING_TO_CONFIRMED.getConfirmedAmount(),

@@ -29,7 +29,6 @@ import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
-import feedzupzup.backend.organization.domain.StatusTransition;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +71,7 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedbackRepository.save(newFeedback);
         writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
 
-        organizationStatisticRepository.updateFeedbackAmount(
+        organizationStatisticRepository.updateOrganizationStatisticCounts(
                 savedFeedback.getOrganizationIdValue(),
                 CREATED_WAITING.getTotalAmount(),
                 CREATED_WAITING.getConfirmedAmount(),
