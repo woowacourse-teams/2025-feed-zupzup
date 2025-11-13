@@ -38,7 +38,7 @@ public class UserOrganizationController implements UserOrganizationApi {
 
     @Override
     public SuccessResponse<OrganizationStatisticResponse> getStatistic(final UUID organizationUuid) {
-        final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
+        final OrganizationStatisticResponse response = organizationStatisticService.getStatistic(
                 organizationUuid
         );
         return SuccessResponse.success(HttpStatus.OK, response);

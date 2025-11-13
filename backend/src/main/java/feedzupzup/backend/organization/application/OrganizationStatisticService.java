@@ -20,7 +20,7 @@ public class OrganizationStatisticService {
     private final OrganizationRepository organizationRepository;
     private final OrganizationStatisticRepository organizationStatisticRepository;
 
-    public OrganizationStatisticResponse calculateStatistic(final UUID organizationUuid) {
+    public OrganizationStatisticResponse getStatistic(final UUID organizationUuid) {
         final Organization organization = findOrganizationBy(organizationUuid);
         final FeedbackAmount feedbackAmount = organizationStatisticRepository.findFeedbackAmountByOrganizationId(organization.getId());
         return OrganizationStatisticResponse.of(feedbackAmount);

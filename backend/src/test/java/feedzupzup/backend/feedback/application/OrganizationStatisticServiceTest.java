@@ -104,7 +104,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
 
     @Test
     @DisplayName("피드백 상태에 따른 통계를 계산한다.")
-    void calculateStatistic_success() {
+    void getStatistic_success() {
         // given
 
         // 피드백 저장
@@ -122,7 +122,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
 
 
         // when
-        final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
+        final OrganizationStatisticResponse response = organizationStatisticService.getStatistic(
                 organization.getUuid());
 
         // then
@@ -136,12 +136,12 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
 
     @Test
     @DisplayName("통계 메서드 호출 중 존재하지 않는 place가 주어진다면, 예외가 발생해야 한다.")
-    void calculateStatistic_withNoFeedbacks() {
+    void getStatistic_withNoFeedbacks() {
         // given
         final UUID organizationUuid = UUID.randomUUID(); // 존재하지 않는 장소 ID
 
         // when & then
-        assertThatThrownBy(() -> organizationStatisticService.calculateStatistic(organizationUuid))
+        assertThatThrownBy(() -> organizationStatisticService.getStatistic(organizationUuid))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -173,7 +173,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
             feedBackRepository.save(feedback2);
 
             // when
-            final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
+            final OrganizationStatisticResponse response = organizationStatisticService.getStatistic(
                     otherOrganization.getUuid());
 
             // then
@@ -204,7 +204,7 @@ public class OrganizationStatisticServiceTest extends ServiceIntegrationHelper {
             adminFeedbackService.updateFeedbackComment(admin.getId(), new UpdateFeedbackCommentRequest(""), createFeedbackResponse3.feedbackId());
 
             // when
-            final OrganizationStatisticResponse response = organizationStatisticService.calculateStatistic(
+            final OrganizationStatisticResponse response = organizationStatisticService.getStatistic(
                     organization.getUuid());
 
             // then
