@@ -28,7 +28,7 @@ public interface OrganizationStatisticRepository extends
             UPDATE OrganizationStatistic s SET
             s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :totalCount,
             s.feedbackAmount.feedbackConfirmedCount = s.feedbackAmount.feedbackConfirmedCount + :confirmedCount,
-            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :waitingCount
+            s.feedbackAmount.feedbackWaitingCount = s.feedbackAmount.feedbackWaitingCount + :waitingCount
             WHERE s.organization.id = :organizationId
             """)
     void updateOrganizationStatisticCounts(
