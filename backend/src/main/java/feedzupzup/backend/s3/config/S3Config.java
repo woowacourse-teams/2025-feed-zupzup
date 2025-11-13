@@ -20,8 +20,15 @@ public class S3Config {
 
     @Bean
     public S3Client s3Client(final S3Properties s3Properties) {
+//        SdkHttpClient httpClient = ApacheHttpClient.builder()
+//                .maxConnections(5)
+//                .connectionTimeToLive(Duration.ofMinutes(5))
+//                .useIdleConnectionReaper(true)
+//                .build();
+
         return S3Client.builder()
                 .region(Region.of(s3Properties.region()))
+//                .httpClient(httpClient)
                 .build();
     }
 }

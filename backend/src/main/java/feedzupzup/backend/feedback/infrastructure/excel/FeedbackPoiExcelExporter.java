@@ -1,16 +1,5 @@
 package feedzupzup.backend.feedback.infrastructure.excel;
 
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.CATEGORY;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.COMMENT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.CONTENT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.FEEDBACK_NUMBER;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.IMAGE;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.IS_SECRET;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.LIKE_COUNT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.POSTED_AT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.STATUS;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.USER_NAME;
-
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackExcelColumn;
 import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
@@ -20,15 +9,20 @@ import feedzupzup.backend.s3.service.S3DownloadService;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -36,10 +30,14 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Component;
 
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
+
+    private static final int QUEUE_CAPACITY = 20;
+    private static final int DOWNLOAD_THREADS = 10;
 
     private final S3DownloadService s3DownloadService;
 
@@ -49,22 +47,31 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             final List<Feedback> feedbacks,
             final OutputStream outputStream
     ) {
+        log.info("피드백 엑셀 다운로드 시작: 조직={}, 피드백 개수={}", organization.getName().getValue(), feedbacks.size());
+
         final int windowSize = 10;
+        final ExecutorService executor = Executors.newFixedThreadPool(DOWNLOAD_THREADS);
+
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(windowSize)) {
             final String sheetName = organization.getName().getValue();
             final SXSSFSheet sheet = workbook.createSheet(sheetName);
 
-            addFeedbackHeaderRow(sheet);
-            addFeedbackDataRows(sheet, workbook, feedbacks);
+            addHeaderRow(sheet);
+            addDataRows(sheet, workbook, feedbacks, executor);
 
             workbook.write(outputStream);
             outputStream.flush();
+
+            log.info("피드백 엑셀 다운로드 완료: {}개", feedbacks.size());
         } catch (IOException e) {
+            log.error("엑셀 파일 생성 중 오류 발생", e);
             throw new PoiExcelExportException("엑셀 파일 생성 중 오류가 발생했습니다.");
+        } finally {
+            shutdownExecutor(executor);
         }
     }
 
-    private void addFeedbackHeaderRow(final Sheet sheet) {
+    private void addHeaderRow(final Sheet sheet) {
         final Workbook workbook = sheet.getWorkbook();
 
         final CellStyle headerStyle = workbook.createCellStyle();
@@ -87,70 +94,53 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
         }
     }
 
-    private void addFeedbackDataRows(
+    private void addDataRows(
             final Sheet sheet,
             final SXSSFWorkbook workbook,
-            final List<Feedback> feedbacks
+            final List<Feedback> feedbacks,
+            final ExecutorService executor
     ) {
-        int rowNum = 1;
-        int feedbackNum = 1;
-        for (final Feedback feedback : feedbacks) {
-            final Row row = sheet.createRow(rowNum);
+        final BlockingQueue<FeedbackWithImage> queue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
 
-            row.createCell(FEEDBACK_NUMBER.columnIndex()).setCellValue(feedbackNum++);
-            row.createCell(CONTENT.columnIndex()).setCellValue(feedback.getContent().getValue());
-            row.createCell(CATEGORY.columnIndex())
-                    .setCellValue(feedback.getOrganizationCategory().getCategory().getKoreanName());
+        // Producer: 백그라운드에서 비동기 다운로드
+        final FeedbackImageProducer producer = new FeedbackImageProducer(
+                s3DownloadService, queue, executor
+        );
+        final CompletableFuture<Void> producerTask = producer.startAsyncDownload(feedbacks);
 
-            addImageCell(sheet, workbook, row, feedback, rowNum);
+        // Consumer: 메인 스레드에서 엑셀에 추가
+        final FeedbackImageConsumer consumer = new FeedbackImageConsumer(
+                sheet, queue, workbook
+        );
+        consumer.consumeAndAddToExcel(feedbacks.size());
 
-            row.createCell(LIKE_COUNT.columnIndex()).setCellValue(feedback.getLikeCountValue());
-            row.createCell(IS_SECRET.columnIndex()).setCellValue(feedback.isSecret() ? "Y" : "N");
-            row.createCell(STATUS.columnIndex()).setCellValue(feedback.getStatus().name());
-            row.createCell(COMMENT.columnIndex())
-                    .setCellValue(feedback.getComment() == null ? "" : feedback.getComment().getValue());
-            row.createCell(USER_NAME.columnIndex()).setCellValue(feedback.getUserName().getValue());
-            row.createCell(POSTED_AT.columnIndex()).setCellValue(feedback.getPostedAt().getValue().toString());
-
-            rowNum++;
+        // 다운로드 완료 대기
+        try {
+            producerTask.join();
+        } catch (CompletionException e) {
+            log.error("이미지 다운로드 작업 중 오류 발생", e);
+            throw new PoiExcelExportException("이미지 다운로드 중 오류가 발생했습니다.");
         }
     }
 
     /**
-     * s3에서 이미지를 다운받아 엑셀의 Cell에 삽입한다.
-     * <p>
-     * 참고 - 이미지 다운이 실패하더라도 엑셀 다운로드는 성공시키기 위해 예외를 던지지 않음
+     * ExecutorService 안전하게 종료
      */
-    private void addImageCell(
-            final Sheet sheet,
-            final SXSSFWorkbook workbook,
-            final Row row,
-            final Feedback feedback,
-            final int rowNum
-    ) {
-        if (feedback.getImageUrl() == null) {
-            row.createCell(IMAGE.columnIndex()).setCellValue("");
-            return;
-        }
-
+    private void shutdownExecutor(final ExecutorService executor) {
         try {
-            final String imageUrl = feedback.getImageUrl().getValue();
-            final byte[] imageData = s3DownloadService.downloadFile(imageUrl);
+            executor.shutdown();
+            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                log.warn("Executor가 30초 내에 종료되지 않아 강제 종료 시도");
+                executor.shutdownNow();
 
-            final int pictureIndex = workbook.addPicture(imageData, Workbook.PICTURE_TYPE_JPEG);
-
-            final ClientAnchor anchor = workbook.getCreationHelper().createClientAnchor();
-            anchor.setCol1(IMAGE.columnIndex());
-            anchor.setRow1(rowNum);
-            anchor.setCol2(IMAGE.columnIndex() + 1);
-            anchor.setRow2(rowNum + 1);
-            anchor.setAnchorType(ClientAnchor.AnchorType.MOVE_AND_RESIZE);
-
-            final Picture picture = sheet.createDrawingPatriarch().createPicture(anchor, pictureIndex);
-            picture.resize(1, 1);
-        } catch (Exception e) {
-            row.createCell(IMAGE.columnIndex()).setCellValue("이미지 로드 실패");
-            log.error("엑셀 파일 생성을 위한 이미지 다운로드 실패", e);
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    log.error("Executor 강제 종료 실패");
+                }
+            }
+        } catch (InterruptedException e) {
+            log.error("Executor 종료 중 인터럽트 발생", e);
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 }
