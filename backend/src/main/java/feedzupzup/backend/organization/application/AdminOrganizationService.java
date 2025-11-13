@@ -8,6 +8,8 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.AdminOrganizationInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
@@ -33,11 +35,13 @@ public class AdminOrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final OrganizerRepository organizerRepository;
+    private final OrganizationStatisticRepository organizationStatisticRepository;
     private final AdminRepository adminRepository;
     private final OrganizationCategoryService organizationCategoryService;
     private final ApplicationEventPublisher eventPublisher;
     private final AdminFeedbackService adminFeedbackService;
     private final QRService qrService;
+    private final OrganizationStatisticService organizationStatisticService;
 
     @Transactional
     public AdminCreateOrganizationResponse createOrganization(
@@ -58,6 +62,9 @@ public class AdminOrganizationService {
                 OrganizerRole.OWNER
         );
         organizerRepository.save(organizer);
+        final OrganizationStatistic organizationStatistic = new OrganizationStatistic(
+                savedOrganization);
+        organizationStatisticRepository.save(organizationStatistic);
 
         eventPublisher.publishEvent(new OrganizationCreatedEvent(savedOrganization.getUuid()));
 
@@ -105,6 +112,7 @@ public class AdminOrganizationService {
         organizationCategoryService.deleteAllByOrganizationIds(organizationIds);
         adminFeedbackService.deleteAllByOrganizationIds(organizationIds);
         qrService.deleteAllByOrganizationIds(organizationIds);
+        organizationStatisticService.deleteAllByOrganizationIds(organizationIds);
         organizationRepository.deleteAllById(organizationIds);
     }
 
@@ -121,6 +129,7 @@ public class AdminOrganizationService {
         adminFeedbackService.deleteByOrganizationId(organizationId);
         organizationCategoryService.deleteByOrganizationId(organizationId);
         qrService.deleteByOrganizationId(organizationId);
+        organizationStatisticRepository.deleteByOrganizationId(organizationId);
         organizationRepository.delete(organization);
     }
 }

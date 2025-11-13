@@ -34,6 +34,8 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
@@ -65,6 +67,9 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
+    private OrganizationStatisticRepository organizationStatisticRepository;
+
+    @Autowired
     private AdminRepository adminRepository;
 
     @Autowired
@@ -87,6 +92,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         adminRepository.save(admin);
         organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
         organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
         organizerRepository.save(organizer);
         organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
@@ -503,186 +509,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks().get(1).likeCount()).isEqualTo(5),
                     () -> assertThat(response.feedbacks().get(2).feedbackId()).isEqualTo(saved3.getId()),
                     () -> assertThat(response.feedbacks().get(2).likeCount()).isEqualTo(3)
-            );
-        }
-    }
-
-    @Nested
-    @DisplayName("피드백 통계 계산 테스트")
-    class CalculateFeedbackStatisticsTest {
-
-        @Test
-        @DisplayName("관리자가 관리하는 모든 조직의 피드백 통계를 성공적으로 계산한다")
-        void calculateFeedbackStatistics_success() {
-            // given
-            final Organization organization1 = OrganizationFixture.createAllBlackBox();
-            final Organization organization2 = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization1);
-            organizationRepository.save(organization2);
-
-            // 관리자를 두 조직에 등록
-            final Organizer organizer1 = new Organizer(organization1, admin, OrganizerRole.OWNER);
-            final Organizer organizer2 = new Organizer(organization2, admin, OrganizerRole.OWNER);
-            organizerRepository.save(organizer1);
-            organizerRepository.save(organizer2);
-
-            final OrganizationCategory orgCategory1 = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization1, SUGGESTION);
-            final OrganizationCategory orgCategory2 = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization2, SUGGESTION);
-            organizationCategoryRepository.save(orgCategory1);
-            organizationCategoryRepository.save(orgCategory2);
-
-            // organization1에 피드백 3개 (완료 2개, 대기 1개)
-            final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithStatus(organization1,
-                    ProcessStatus.CONFIRMED, orgCategory1);
-            final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithStatus(organization1,
-                    ProcessStatus.CONFIRMED, orgCategory1);
-            final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithStatus(organization1,
-                    ProcessStatus.WAITING, orgCategory1);
-
-            // organization2에 피드백 2개 (완료 1개, 대기 1개)
-            final Feedback confirmedFeedback3 = FeedbackFixture.createFeedbackWithStatus(organization2,
-                    ProcessStatus.CONFIRMED, orgCategory2);
-            final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithStatus(organization2,
-                    ProcessStatus.WAITING, orgCategory2);
-
-            feedBackRepository.save(confirmedFeedback1);
-            feedBackRepository.save(confirmedFeedback2);
-            feedBackRepository.save(waitingFeedback1);
-            feedBackRepository.save(confirmedFeedback3);
-            feedBackRepository.save(waitingFeedback2);
-
-            // when
-            final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(admin.getId());
-
-            // then - 총 5개 피드백 중 3개 완료 (60%)
-            assertAll(
-                    () -> assertThat(response.totalCount()).isEqualTo(5),
-                    () -> assertThat(response.confirmedCount()).isEqualTo(3),
-                    () -> assertThat(response.reflectionRate()).isEqualTo(60)
-            );
-        }
-
-        @Test
-        @DisplayName("피드백이 없는 경우 모든 값이 0으로 반환된다")
-        void calculateFeedbackStatistics_no_feedbacks() {
-            // given
-
-            // when
-            final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(admin.getId());
-
-            // then
-            assertAll(
-                    () -> assertThat(response.totalCount()).isEqualTo(0),
-                    () -> assertThat(response.confirmedCount()).isEqualTo(0),
-                    () -> assertThat(response.reflectionRate()).isEqualTo(0)
-            );
-        }
-
-        @Test
-        @DisplayName("삭제된 피드백은 통계에 포함되지 않는다")
-        void calculateFeedbackStatistics_excludes_deleted_feedbacks() {
-            // given
-
-            // 일반 피드백 2개 (완료 1개, 대기 1개)
-            final Feedback confirmedFeedback = FeedbackFixture.createFeedbackWithStatus(organization,
-                    ProcessStatus.CONFIRMED, organizationCategory);
-            final Feedback waitingFeedback = FeedbackFixture.createFeedbackWithStatus(organization,
-                    ProcessStatus.WAITING, organizationCategory);
-
-            feedBackRepository.save(confirmedFeedback);
-            feedBackRepository.save(waitingFeedback);
-
-            // 피드백 1개 삭제
-            feedBackRepository.deleteById(waitingFeedback.getId());
-
-            // when
-            final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(admin.getId());
-
-            // then - 삭제된 피드백은 제외되어 총 1개 (완료 1개, 100%)
-            assertAll(
-                    () -> assertThat(response.totalCount()).isEqualTo(1),
-                    () -> assertThat(response.confirmedCount()).isEqualTo(1),
-                    () -> assertThat(response.reflectionRate()).isEqualTo(100)
-            );
-        }
-
-        @Test
-        @DisplayName("다른 관리자의 조직 피드백은 통계에 포함되지 않는다")
-        void calculateFeedbackStatistics_excludes_other_admin_feedbacks() {
-            // given
-            final Admin otherAdmin = AdminFixture.createFromLoginId("otheradmin");
-            adminRepository.save(otherAdmin);
-
-            final Organization myOrganization = OrganizationFixture.createAllBlackBox();
-            final Organization otherOrganization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(myOrganization);
-            organizationRepository.save(otherOrganization);
-
-            // 현재 관리자가 관리하는 조직
-            final Organizer myOrganizer = new Organizer(myOrganization, admin, OrganizerRole.OWNER);
-            // 다른 관리자가 관리하는 조직
-            final Organizer otherOrganizer = new Organizer(otherOrganization, otherAdmin, OrganizerRole.OWNER);
-            organizerRepository.save(myOrganizer);
-            organizerRepository.save(otherOrganizer);
-
-            final OrganizationCategory myOrgCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    myOrganization, SUGGESTION);
-            final OrganizationCategory otherOrgCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    otherOrganization, SUGGESTION);
-            organizationCategoryRepository.save(myOrgCategory);
-            organizationCategoryRepository.save(otherOrgCategory);
-
-            // 내 조직에 피드백 1개
-            final Feedback myFeedback = FeedbackFixture.createFeedbackWithStatus(
-                    myOrganization, ProcessStatus.CONFIRMED, myOrgCategory);
-            // 다른 관리자 조직에 피드백 2개
-            final Feedback otherFeedback1 = FeedbackFixture.createFeedbackWithStatus(
-                    otherOrganization, ProcessStatus.CONFIRMED, otherOrgCategory);
-            final Feedback otherFeedback2 = FeedbackFixture.createFeedbackWithStatus(
-                    otherOrganization, ProcessStatus.WAITING, otherOrgCategory);
-
-            feedBackRepository.save(myFeedback);
-            feedBackRepository.save(otherFeedback1);
-            feedBackRepository.save(otherFeedback2);
-
-            // when
-            final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(admin.getId());
-
-            // then - 내 조직의 피드백만 포함 (총 1개, 완료 1개, 100%)
-            assertAll(
-                    () -> assertThat(response.totalCount()).isEqualTo(1),
-                    () -> assertThat(response.confirmedCount()).isEqualTo(1),
-                    () -> assertThat(response.reflectionRate()).isEqualTo(100)
-            );
-        }
-
-        @Test
-        @DisplayName("반영률이 올바르게 반올림된다")
-        void calculateFeedbackStatistics_reflection_rate_rounding() {
-            // given
-
-            // 총 3개 피드백 중 1개 완료 (33.33...% → 33%)
-            final Feedback confirmedFeedback = FeedbackFixture.createFeedbackWithStatus(
-                    organization, ProcessStatus.CONFIRMED, organizationCategory);
-            final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithStatus(
-                    organization, ProcessStatus.WAITING, organizationCategory);
-            final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithStatus(
-                    organization, ProcessStatus.WAITING, organizationCategory);
-
-            feedBackRepository.save(confirmedFeedback);
-            feedBackRepository.save(waitingFeedback1);
-            feedBackRepository.save(waitingFeedback2);
-
-            // when
-            final FeedbackStatisticResponse response = adminFeedbackService.calculateFeedbackStatistics(admin.getId());
-
-            // then - 1/3 = 33.33...% → 33%로 반올림
-            assertAll(
-                    () -> assertThat(response.totalCount()).isEqualTo(3),
-                    () -> assertThat(response.confirmedCount()).isEqualTo(1),
-                    () -> assertThat(response.reflectionRate()).isEqualTo(33)
             );
         }
     }

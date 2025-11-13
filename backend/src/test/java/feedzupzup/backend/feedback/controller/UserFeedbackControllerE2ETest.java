@@ -20,6 +20,8 @@ import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.feedback.fixture.FeedbackRequestFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import java.util.UUID;
@@ -38,6 +40,9 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
+    private OrganizationStatisticRepository organizationStatisticRepository;
+
+    @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
 
     Organization organization;
@@ -47,6 +52,7 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
     void init() {
         organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
 
         organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
@@ -284,75 +290,6 @@ class UserFeedbackControllerE2ETest extends E2EHelper {
                 .body("data.feedbacks[0].content", equalTo("새 피드백"))
                 .body("data.feedbacks[0].isSecret", equalTo(false))
                 .body("data.feedbacks[0].category", equalTo("건의"));
-        ;
-    }
-
-    @Test
-    @DisplayName("사용자가 특정 장소의 통계를 성공적으로 조회한다")
-    void user_get_statistic_success() {
-        // given
-        // 확인된 피드백 2개
-        final Feedback confirmedFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                organizationCategory);
-        confirmedFeedback1.updateStatus(CONFIRMED);
-        confirmedFeedback1.increaseLikeCount();
-        confirmedFeedback1.increaseLikeCount();
-        confirmedFeedback1.increaseLikeCount();
-        confirmedFeedback1.increaseLikeCount();
-        confirmedFeedback1.increaseLikeCount();
-
-        final Feedback confirmedFeedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                organizationCategory);
-        confirmedFeedback2.updateStatus(CONFIRMED);
-        confirmedFeedback1.increaseLikeCount();
-        confirmedFeedback1.increaseLikeCount();
-        confirmedFeedback1.increaseLikeCount();
-
-        // 대기 중인 피드백 3개
-        final Feedback waitingFeedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                organizationCategory);
-        waitingFeedback1.updateStatus(WAITING);
-
-        final Feedback waitingFeedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                organizationCategory);
-        waitingFeedback2.updateStatus(WAITING);
-
-        final Feedback waitingFeedback3 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                organizationCategory);
-        waitingFeedback3.updateStatus(WAITING);
-
-        // 다른 장소의 피드백 (통계에 포함되지 않음)
-        final Organization otherOrganization = OrganizationFixture.createAllBlackBox();
-        organizationRepository.save(otherOrganization);
-        final OrganizationCategory otherOrganizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                otherOrganization, SUGGESTION);
-        organizationCategoryRepository.save(otherOrganizationCategory);
-        final Feedback otherPlaceFeedback = FeedbackFixture.createFeedbackWithOrganization(otherOrganization,
-                otherOrganizationCategory);
-
-        // 피드백 저장
-        feedbackRepository.save(confirmedFeedback1);
-        feedbackRepository.save(confirmedFeedback2);
-        feedbackRepository.save(waitingFeedback1);
-        feedbackRepository.save(waitingFeedback2);
-        feedbackRepository.save(waitingFeedback3);
-        feedbackRepository.save(otherPlaceFeedback);
-
-        // when & then
-        given()
-                .log().all()
-                .queryParam("period", "WEEK") // 7일 기간으로 통계 요청
-                .when()
-                .get("/organizations/{organizationUuid}/statistic", organization.getUuid())
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .contentType(ContentType.JSON)
-                .body("status", equalTo(200))
-                .body("message", equalTo("OK"))
-                .body("data.reflectionRate", equalTo(40))
-                .body("data.confirmedCount", equalTo(2))
-                .body("data.waitingCount", equalTo(3))
-                .body("data.totalCount", equalTo(5));
     }
 
     @Test

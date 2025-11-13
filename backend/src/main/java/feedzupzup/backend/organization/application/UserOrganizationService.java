@@ -2,7 +2,6 @@ package feedzupzup.backend.organization.application;
 
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
-import feedzupzup.backend.organization.domain.OrganizationCategories;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;

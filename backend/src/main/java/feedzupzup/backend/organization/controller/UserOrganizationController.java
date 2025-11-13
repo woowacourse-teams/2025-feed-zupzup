@@ -2,9 +2,11 @@ package feedzupzup.backend.organization.controller;
 
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.api.UserOrganizationApi;
+import feedzupzup.backend.organization.application.OrganizationStatisticService;
 import feedzupzup.backend.organization.application.UserOrganizationService;
 import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;
+import feedzupzup.backend.organization.dto.response.OrganizationStatisticResponse;
 import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class UserOrganizationController implements UserOrganizationApi {
 
     private final UserOrganizationService userOrganizationService;
+    private final OrganizationStatisticService organizationStatisticService;
 
     @Override
     public SuccessResponse<UserOrganizationResponse> getOrganizationByUuid(final UUID organizationUuid) {
@@ -30,6 +33,14 @@ public class UserOrganizationController implements UserOrganizationApi {
             final CheeringRequest request
     ) {
         CheeringResponse response = userOrganizationService.cheer(request, organizationUuid);
+        return SuccessResponse.success(HttpStatus.OK, response);
+    }
+
+    @Override
+    public SuccessResponse<OrganizationStatisticResponse> getStatistic(final UUID organizationUuid) {
+        final OrganizationStatisticResponse response = organizationStatisticService.getStatistic(
+                organizationUuid
+        );
         return SuccessResponse.success(HttpStatus.OK, response);
     }
 }

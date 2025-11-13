@@ -67,30 +67,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             Pageable pageable
     );
 
-    @Query("""
-            SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
-              COUNT(f),
-              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END), 0L),
-              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING THEN 1L ELSE 0L END), 0L)
-            )
-            FROM Feedback f
-            WHERE f.organization.id = :organizationId
-            AND f.deletedAt IS NULL
-            """)
-    FeedbackAmount countFeedbackByOrganizationIdAndProcessStatus(final Long organizationId);
-
-    @Query("""
-            SELECT new feedzupzup.backend.feedback.domain.FeedbackAmount(
-              COALESCE(SUM(1), 0L),
-              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED THEN 1L ELSE 0L END), 0L),
-              COALESCE(SUM(CASE WHEN f.status = feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING THEN 1L ELSE 0L END), 0L)
-            )
-            FROM Organizer org
-            INNER JOIN Feedback f ON f.organization.id = org.organization.id
-            WHERE org.admin.id = :adminId AND f.deletedAt IS NULL
-            """)
-    FeedbackAmount findFeedbackStatisticsByAdminId(Long adminId);
-
     void deleteAllByOrganizationIdIn(List<Long> organizationIds);
 
     void deleteAllByOrganizationId(Long organizationId);
