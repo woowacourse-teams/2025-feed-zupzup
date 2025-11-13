@@ -26,39 +26,16 @@ public interface OrganizationStatisticRepository extends
     @Modifying
     @Query("""
             UPDATE OrganizationStatistic s SET
-            s.feedbackAmount.feedbackConfirmedCount = s.feedbackAmount.feedbackConfirmedCount -1,
-            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount - 1
+            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :totalAmount,
+            s.feedbackAmount.feedbackConfirmedCount = s.feedbackAmount.feedbackConfirmedCount + :confirmedAmount,
+            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + :waitingAmount
             WHERE s.organization.id = :organizationId
             """)
-    void decreaseConfirmedAndTotalCountByOrganizationId(
-            @Param("organizationId") Long organizationId);
-
-    @Modifying
-    @Query("""
-            UPDATE OrganizationStatistic s SET
-            s.feedbackAmount.feedbackWaitingCount = s.feedbackAmount.feedbackWaitingCount -1,
-            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount - 1
-            WHERE s.organization.id = :organizationId
-            """)
-    void decreaseWaitingAndTotalCountByOrganizationId(@Param("organizationId") Long organizationId);
-
-    @Modifying
-    @Query("""
-            UPDATE OrganizationStatistic s SET
-            s.feedbackAmount.feedbackWaitingCount = s.feedbackAmount.feedbackWaitingCount -1,
-            s.feedbackAmount.feedbackConfirmedCount = s.feedbackAmount.feedbackConfirmedCount + 1
-            WHERE s.organization.id = :organizationId
-            """)
-    void decreaseWaitingAndIncreaseConfirmedCountByOrganizationId(
-            @Param("organizationId") Long organizationId);
-
-    @Modifying
-    @Query("""
-            UPDATE OrganizationStatistic s SET
-            s.feedbackAmount.feedbackWaitingCount = s.feedbackAmount.feedbackWaitingCount +1,
-            s.feedbackAmount.feedbackTotalCount = s.feedbackAmount.feedbackTotalCount + 1
-            WHERE s.organization.id = :organizationId
-            """)
-    void increaseWaitingAndTotalCountByOrganizationId(@Param("organizationId") Long organizationId);
+    void updateFeedbackAmount(
+            @Param("organizationId") Long organizationId,
+            long totalAmount,
+            long confirmedAmount,
+            long waitingAmount
+    );
 
 }

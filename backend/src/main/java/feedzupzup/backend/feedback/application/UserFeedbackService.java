@@ -1,6 +1,8 @@
 package feedzupzup.backend.feedback.application;
 
 
+import static feedzupzup.backend.organization.domain.StatusTransition.*;
+
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -27,6 +29,7 @@ import feedzupzup.backend.guest.dto.GuestInfo;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
+import feedzupzup.backend.organization.domain.StatusTransition;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -69,8 +72,12 @@ public class UserFeedbackService {
         final Feedback savedFeedback = feedbackRepository.save(newFeedback);
         writeHistoryRepository.save(new WriteHistory(guest, savedFeedback));
 
-        organizationStatisticRepository.increaseWaitingAndTotalCountByOrganizationId(
-                savedFeedback.getOrganizationIdValue());
+        organizationStatisticRepository.updateFeedbackAmount(
+                savedFeedback.getOrganizationIdValue(),
+                CREATED_WAITING.getTotalAmount(),
+                CREATED_WAITING.getConfirmedAmount(),
+                CREATED_WAITING.getWaitingAmount()
+        );
 
         // 새로운 피드백이 생성되면 이벤트 발행
         eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));

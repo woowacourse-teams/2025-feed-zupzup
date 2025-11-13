@@ -1,5 +1,7 @@
 package feedzupzup.backend.feedback.application;
 
+import static feedzupzup.backend.organization.domain.StatusTransition.*;
+
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.ClusterInfo;
@@ -26,6 +28,7 @@ import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
+import feedzupzup.backend.organization.domain.StatusTransition;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -66,10 +69,20 @@ public class AdminFeedbackService {
 
     private void handleOrganizationStatistic(final Feedback feedback) {
         if (feedback.getStatus() == ProcessStatus.CONFIRMED) {
-            organizationStatisticRepository.decreaseConfirmedAndTotalCountByOrganizationId(feedback.getOrganizationIdValue());
+            organizationStatisticRepository.updateFeedbackAmount(
+                    feedback.getOrganizationIdValue(),
+                    DELETED_CONFIRMED.getTotalAmount(),
+                    DELETED_CONFIRMED.getConfirmedAmount(),
+                    DELETED_CONFIRMED.getWaitingAmount()
+            );
             return;
         }
-        organizationStatisticRepository.decreaseWaitingAndTotalCountByOrganizationId(feedback.getOrganizationIdValue());
+        organizationStatisticRepository.updateFeedbackAmount(
+                feedback.getOrganizationIdValue(),
+                DELETED_WAITING.getTotalAmount(),
+                DELETED_WAITING.getConfirmedAmount(),
+                DELETED_WAITING.getWaitingAmount()
+        );
     }
 
     public AdminFeedbackListResponse getFeedbackPage(
@@ -103,7 +116,12 @@ public class AdminFeedbackService {
         final Feedback feedback = getFeedback(feedbackId);
         feedback.updateCommentAndStatus(request.toComment());
 
-        organizationStatisticRepository.decreaseWaitingAndIncreaseConfirmedCountByOrganizationId(feedback.getOrganizationIdValue());
+        organizationStatisticRepository.updateFeedbackAmount(
+                feedback.getOrganizationIdValue(),
+                WAITING_TO_CONFIRMED.getTotalAmount(),
+                WAITING_TO_CONFIRMED.getConfirmedAmount(),
+                WAITING_TO_CONFIRMED.getWaitingAmount()
+        );
         return UpdateFeedbackCommentResponse.from(feedback);
     }
 
