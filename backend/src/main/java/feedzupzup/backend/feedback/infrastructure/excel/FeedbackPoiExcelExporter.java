@@ -82,7 +82,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             cell.setCellValue(column.headerName());
             cell.setCellStyle(headerStyle);
 
-            final int columnWidth = 4000;
+            final int columnWidth = column.columnWidth();
             sheet.setColumnWidth(column.columnIndex(), columnWidth);
         }
     }

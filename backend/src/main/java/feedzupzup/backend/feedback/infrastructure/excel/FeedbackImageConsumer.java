@@ -36,7 +36,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 @Slf4j
 public class FeedbackImageConsumer {
 
-    private static final int IMAGE_COLUMN_WIDTH = 10000;
     private static final short DEFAULT_ROW_HEIGHT = 300;
 
     private final Sheet sheet;
@@ -112,7 +111,7 @@ public class FeedbackImageConsumer {
         }
 
         try {
-            sheet.setColumnWidth(IMAGE.columnIndex(), IMAGE_COLUMN_WIDTH);
+            sheet.setColumnWidth(IMAGE.columnIndex(), IMAGE.columnWidth());
             adjustRowHeightByImageRatio(row, imageResult.imageData());
             insertImageToPicture(imageResult.imageData(), rowNum);
         } catch (IOException e) {
@@ -140,7 +139,7 @@ public class FeedbackImageConsumer {
         final int imageHeight = bufferedImage.getHeight();
 
         final double aspectRatio = (double) imageHeight / imageWidth;
-        final int pixelWidth = (IMAGE_COLUMN_WIDTH / 256) * 7;
+        final int pixelWidth = (IMAGE.columnWidth() / 256) * 7;
         final short rowHeight = (short) (pixelWidth * aspectRatio * 20);
 
         row.setHeight(rowHeight);
