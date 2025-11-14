@@ -18,7 +18,7 @@ public enum FeedbackExcelColumn {
     private final String headerName;
     private final int columnWidth;
 
-    FeedbackExcelColumn(int columnIndex, String headerName, int columnWidth) {
+    FeedbackExcelColumn(final int columnIndex, final String headerName, final int columnWidth) {
         this.columnIndex = columnIndex;
         this.headerName = headerName;
         this.columnWidth = columnWidth;

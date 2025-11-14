@@ -140,7 +140,8 @@ public class FeedbackRowWriter {
 
         final double aspectRatio = (double) imageHeight / imageWidth;
         final int pixelWidth = (IMAGE.columnWidth() / 256) * 7;
-        final short rowHeight = (short) (pixelWidth * aspectRatio * 20);
+        final double height = pixelWidth * aspectRatio * 20;
+        final short rowHeight = (short) Math.min(Short.MAX_VALUE, height);
 
         row.setHeight(rowHeight);
     }

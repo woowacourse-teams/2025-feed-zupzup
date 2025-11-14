@@ -105,7 +105,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
             produceJob.join();
         } catch (CompletionException e) {
             log.error("이미지 다운로드 작업 중 오류 발생", e);
-            throw new PoiExcelExportException("이미지 다운로드 중 오류가 발생했습니다.");
+            throw new PoiExcelExportException("이미지 다운로드 중 오류가 발생했습니다.", e);
         }
     }
 

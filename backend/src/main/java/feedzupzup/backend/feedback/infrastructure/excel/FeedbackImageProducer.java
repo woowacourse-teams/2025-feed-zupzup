@@ -20,13 +20,15 @@ public class FeedbackImageProducer {
 
     public CompletableFuture<Void> produceImages(final List<Feedback> feedbacks) {
         return CompletableFuture.runAsync(() -> {
-            final List<CompletableFuture<Void>> downloadJobs = feedbacks.stream()
-                    .map(this::downloadJob)
-                    .toList();
+            try {
+                final List<CompletableFuture<Void>> downloadJobs = feedbacks.stream()
+                        .map(this::downloadJob)
+                        .toList();
 
-            CompletableFuture.allOf(downloadJobs.toArray(CompletableFuture[]::new)).join();
-
-            notifyFinished();
+                CompletableFuture.allOf(downloadJobs.toArray(CompletableFuture[]::new)).join();
+            } finally {
+                notifyFinished();
+            }
         }, executor);
     }
 
