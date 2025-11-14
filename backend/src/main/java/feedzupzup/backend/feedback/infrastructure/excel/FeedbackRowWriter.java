@@ -34,7 +34,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 @RequiredArgsConstructor
 @Slf4j
-public class FeedbackImageConsumer {
+public class FeedbackRowWriter {
 
     private static final short DEFAULT_ROW_HEIGHT = 300;
 
