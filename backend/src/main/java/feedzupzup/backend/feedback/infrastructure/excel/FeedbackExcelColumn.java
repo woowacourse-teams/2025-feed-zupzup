@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.domain;
+package feedzupzup.backend.feedback.infrastructure.excel;
 
 public enum FeedbackExcelColumn {
 
