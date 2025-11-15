@@ -31,6 +31,9 @@ interface FeedbackPageProps {
   movePrevStep: () => void;
 }
 
+const UPLOAD_LOADING_DURATION = 800;
+const UPLOAD_SUCCESS_DURATION = 1000;
+
 export default function FeedbackPage({
   movePrevStep,
   category,
@@ -103,8 +106,8 @@ export default function FeedbackPage({
       openModal(
         <TimeDelayModal
           onClose={() => handleModalClose()}
-          loadingDuration={10000}
-          autoCloseDuration={10000}
+          loadingDuration={UPLOAD_LOADING_DURATION}
+          autoCloseDuration={UPLOAD_SUCCESS_DURATION}
         />
       );
 

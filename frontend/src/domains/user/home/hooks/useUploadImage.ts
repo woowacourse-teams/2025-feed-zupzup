@@ -4,7 +4,7 @@ import {
   PostPresignedUrlParams,
 } from '@/apis/s3.api';
 import { useToast } from '@/contexts/useToast';
-import { resizeImage } from '@/domains/utils/resizeImage';
+import useImageCompression from '@/domains/user/home/hooks/useImageCompression';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
@@ -14,22 +14,16 @@ export default function useUploadImage() {
   const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
   const [contentType, setContentType] = useState<string | null>(null);
   const { showToast } = useToast();
+  const { compressImage } = useImageCompression();
 
   const onChangeFile: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
     try {
-      if (!e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-      const file = e.target.files?.[0] ?? null;
-      const contentType = file?.name.split('.').pop();
-
-      const { newFile, newContentType } = await resizeImage({
-        file,
-        contentType,
-      });
-
-      if (!newFile || !newContentType) return;
+      const { newFile, newContentType } = await compressImage(file);
 
       setFile(newFile);
 
