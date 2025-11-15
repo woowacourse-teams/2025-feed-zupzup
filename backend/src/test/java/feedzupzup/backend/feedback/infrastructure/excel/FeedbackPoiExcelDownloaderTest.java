@@ -13,12 +13,18 @@ import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColu
 import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.USER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -46,6 +52,9 @@ class FeedbackPoiExcelDownloaderTest {
     @Mock
     private S3DownloadService s3DownloadService;
 
+    @Mock
+    private FeedbackDownloadJobStore feedbackDownloadJobStore;
+
     @InjectMocks
     private FeedbackPoiExcelDownloader feedbackPoiExcelDownloader;
 
@@ -64,7 +73,7 @@ class FeedbackPoiExcelDownloaderTest {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // when
-        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream);
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream, null);
 
         // then
         assertThat(outputStream.size()).isGreaterThan(0);
@@ -128,7 +137,7 @@ class FeedbackPoiExcelDownloaderTest {
         };
 
         // when & then
-        assertThatThrownBy(() -> feedbackPoiExcelDownloader.download(organization, feedbacks, closedOutputStream))
+        assertThatThrownBy(() -> feedbackPoiExcelDownloader.download(organization, feedbacks, closedOutputStream, null))
                 .isInstanceOf(PoiExcelExportException.class)
                 .hasMessageContaining("엑셀 파일 생성 중 오류가 발생했습니다");
     }
@@ -149,7 +158,7 @@ class FeedbackPoiExcelDownloaderTest {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // when
-        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream);
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream, null);
 
         // then
         try (final Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -178,7 +187,7 @@ class FeedbackPoiExcelDownloaderTest {
         given(s3DownloadService.downloadFile(anyString())).willThrow(new RuntimeException("S3 다운로드 실패"));
 
         // when
-        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream);
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream, null);
 
         // then - 엑셀은 정상적으로 생성되어야 함
         assertThat(outputStream.size()).isGreaterThan(0);
@@ -190,5 +199,80 @@ class FeedbackPoiExcelDownloaderTest {
             // 이미지 셀이 빈 문자열로 처리되었는지 확인
             assertThat(dataRow.getCell(IMAGE.columnIndex()).getStringCellValue()).isEqualTo("이미지 로드 실패");
         }
+    }
+
+    @Test
+    @DisplayName("jobId가 있을 때 10개마다 진행률이 업데이트된다")
+    void download_WithJobId_UpdatesProgressEvery10Rows() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+
+        // 25개의 피드백 생성 (10개, 20개, 25개 시점에 업데이트 예상)
+        final List<Feedback> feedbacks = new java.util.ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            feedbacks.add(FeedbackFixture.createFeedbackWithOrganization(organization, category));
+        }
+
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final String jobId = "test-job-id";
+
+        // when
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream, jobId);
+
+        // then
+        // 10개, 20개, 25개(완료) 시점에 총 3번 호출되어야 함
+        verify(feedbackDownloadJobStore, times(3)).updateProgress(eq(jobId), anyInt(), eq(25));
+        verify(feedbackDownloadJobStore).updateProgress(jobId, 10, 25);
+        verify(feedbackDownloadJobStore).updateProgress(jobId, 20, 25);
+        verify(feedbackDownloadJobStore).updateProgress(jobId, 25, 25);
+    }
+
+    @Test
+    @DisplayName("jobId가 null일 때는 진행률이 업데이트되지 않는다")
+    void download_WithNullJobId_DoesNotUpdateProgress() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+
+        final List<Feedback> feedbacks = new java.util.ArrayList<>();
+        for (int i = 0; i < 25; i++) {
+            feedbacks.add(FeedbackFixture.createFeedbackWithOrganization(organization, category));
+        }
+
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // when
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream, null);
+
+        // then
+        verify(feedbackDownloadJobStore, never()).updateProgress(anyString(), anyInt(), anyInt());
+    }
+
+    @Test
+    @DisplayName("10개 미만의 피드백은 완료 시점에만 진행률이 업데이트된다")
+    void download_LessThan10Feedbacks_UpdatesProgressOnlyAtCompletion() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
+                organization, SUGGESTION);
+
+        final List<Feedback> feedbacks = List.of(
+                FeedbackFixture.createFeedbackWithOrganization(organization, category),
+                FeedbackFixture.createFeedbackWithOrganization(organization, category),
+                FeedbackFixture.createFeedbackWithOrganization(organization, category)
+        );
+
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final String jobId = "test-job-id";
+
+        // when
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream, jobId);
+
+        // then
+        // 3개 완료 시점에만 1번 호출
+        verify(feedbackDownloadJobStore, times(1)).updateProgress(jobId, 3, 3);
     }
 }

@@ -608,14 +608,145 @@ class AdminFeedbackControllerE2ETest extends E2EHelper {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    private void createFeedbackWithCluster(Organization organization, String content, 
+    private void createFeedbackWithCluster(Organization organization, String content,
                                            OrganizationCategory category, EmbeddingCluster cluster) {
         final Feedback feedback = FeedbackFixture.createFeedbackWithContent(organization, content, category);
         final Feedback savedFeedback = feedBackRepository.save(feedback);
-        
+
         final FeedbackEmbeddingCluster feedbackCluster = FeedbackEmbeddingCluster.createNewCluster(
                 new double[]{0.1, 0.2, 0.3}, savedFeedback, cluster);
         feedbackEmbeddingClusterRepository.save(feedbackCluster);
+    }
+
+    @Test
+    @DisplayName("비동기 다운로드 작업 생성 API 호출 성공")
+    void create_download_job_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .post("/admin/organizations/{organizationUuid}/download-jobs", organization.getUuid())
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .body("data.jobId", org.hamcrest.Matchers.notNullValue())
+                .body("status", equalTo(202));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 단체로 다운로드 작업 생성 시 403 에러 (권한 없음)")
+    void create_download_job_organization_not_found() {
+        // given
+        final UUID nonExistentUuid = UUID.randomUUID();
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .post("/admin/organizations/{organizationUuid}/download-jobs", nonExistentUuid)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    @DisplayName("다운로드 작업 상태 조회 API 호출 성공")
+    void get_download_job_status_success() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        // 작업 생성
+        final String jobId = given()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .post("/admin/organizations/{organizationUuid}/download-jobs", organization.getUuid())
+                .then()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .extract()
+                .path("data.jobId");
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/download-jobs/{jobId}/status",
+                        organization.getUuid(), jobId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("data.jobStatus", org.hamcrest.Matchers.notNullValue())
+                .body("data.progress", org.hamcrest.Matchers.greaterThanOrEqualTo(0))
+                .body("status", equalTo(200));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 작업 ID로 상태 조회 시 404 에러")
+    void get_download_job_status_not_found() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        final String nonExistentJobId = UUID.randomUUID().toString();
+
+        // when & then
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/download-jobs/{jobId}/status",
+                        organization.getUuid(), nonExistentJobId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("완료되지 않은 작업의 다운로드 요청 시 400 에러")
+    void download_file_not_completed() {
+        // given
+        final Organization organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
+        final Organizer organizer = new Organizer(organization, admin, OrganizerRole.OWNER);
+        organizerRepository.save(organizer);
+
+        // 작업 생성
+        final String jobId = given()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .post("/admin/organizations/{organizationUuid}/download-jobs", organization.getUuid())
+                .then()
+                .statusCode(HttpStatus.ACCEPTED.value())
+                .extract()
+                .path("data.jobId");
+
+        // when & then - 파일 생성 완료 전에 다운로드 요청
+        given()
+                .log().all()
+                .cookie(SESSION_ID, sessionCookie)
+                .when()
+                .get("/admin/organizations/{organizationUuid}/download-jobs/{jobId}",
+                        organization.getUuid(), jobId)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value()); // DownloadJobNotCompletedException으로 400 반환
     }
 
 }
