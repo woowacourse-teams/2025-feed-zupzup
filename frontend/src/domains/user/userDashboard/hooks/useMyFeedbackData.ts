@@ -18,7 +18,7 @@ export function useMyFeedbackData() {
     FeedbackType[]
   >({
     queryKey: QUERY_KEYS.myFeedbacks(organizationId),
-    // select: (res) => res.data.feedbacks,
+    select: (res) => res.data.feedbacks,
     queryFn: () =>
       getMyFeedbacks({
         organizationId,
