@@ -62,4 +62,22 @@ public class FeedbackException extends DomainException {
             super(errorCode, message);
         }
     }
+
+    public static class DownloadJobNotCompletedException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.DOWNLOAD_JOB_NOT_COMPLETED;
+
+        public DownloadJobNotCompletedException(final String message) {
+            super(errorCode, message);
+        }
+    }
+
+    public static class DownloadUrlNotGeneratedException extends FeedbackException {
+
+        private static final ErrorCode errorCode = ErrorCode.DOWNLOAD_URL_NOT_GENERATED;
+
+        public DownloadUrlNotGeneratedException(final String message) {
+            super(errorCode, message);
+        }
+    }
 }

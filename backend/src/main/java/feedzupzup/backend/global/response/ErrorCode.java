@@ -37,6 +37,8 @@ public enum ErrorCode {
     INVALID_LIKE_REQUEST(BAD_REQUEST, "F05", "잘못된 요청입니다."),
     ALREADY_CLUSTERING_FEEDBACK(BAD_REQUEST, "F06", "이미 클러스터링된 피드백입니다."),
     FEEDBACK_DOWNLOAD_ERROR(INTERNAL_SERVER_ERROR, "F07", "피드백 파일 다운로드 중 오류가 발생했습니다."),
+    DOWNLOAD_JOB_NOT_COMPLETED(BAD_REQUEST, "F08", "파일 생성이 완료되지 않았습니다."),
+    DOWNLOAD_URL_NOT_GENERATED(INTERNAL_SERVER_ERROR, "F09", "다운로드 URL이 생성되지 않았습니다."),
 
     //cluster error
     EMPTY_CLUSTERING_CONTENT(BAD_REQUEST, "C01", "클러스터링 내용은 비어있을 수 없습니다."),
