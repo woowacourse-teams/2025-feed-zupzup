@@ -28,7 +28,6 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse.AdminFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
@@ -786,7 +785,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             organizationRepository.save(organization);
 
             // when
-            final String fileName = adminFeedbackService.generateExportFileName();
+            final String fileName = adminFeedbackService.generateDownloadFileName();
 
             // then
             assertAll(

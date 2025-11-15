@@ -41,17 +41,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class FeedbackPoiExcelExporterTest {
+class FeedbackPoiExcelDownloaderTest {
 
     @Mock
     private S3DownloadService s3DownloadService;
 
     @InjectMocks
-    private FeedbackPoiExcelExporter feedbackPoiExcelExporter;
+    private FeedbackPoiExcelDownloader feedbackPoiExcelDownloader;
 
     @Test
     @DisplayName("엑셀 파일이 정상적으로 생성된다")
-    void export_Success() throws IOException {
+    void download_Success() throws IOException {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
@@ -64,7 +64,7 @@ class FeedbackPoiExcelExporterTest {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // when
-        feedbackPoiExcelExporter.export(organization, feedbacks, outputStream);
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream);
 
         // then
         assertThat(outputStream.size()).isGreaterThan(0);
@@ -112,7 +112,7 @@ class FeedbackPoiExcelExporterTest {
 
     @Test
     @DisplayName("OutputStream이 닫혀있으면 예외가 발생한다")
-    void export_ClosedOutputStream_ThrowsException() {
+    void download_ClosedOutputStream_ThrowsException() {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
@@ -128,14 +128,14 @@ class FeedbackPoiExcelExporterTest {
         };
 
         // when & then
-        assertThatThrownBy(() -> feedbackPoiExcelExporter.export(organization, feedbacks, closedOutputStream))
+        assertThatThrownBy(() -> feedbackPoiExcelDownloader.download(organization, feedbacks, closedOutputStream))
                 .isInstanceOf(PoiExcelExportException.class)
                 .hasMessageContaining("엑셀 파일 생성 중 오류가 발생했습니다");
     }
 
     @Test
     @DisplayName("엑셀의 피드백 열 번호가 순차적으로 증가한다")
-    void export_FeedbackNumberIncrementsSequentially() throws IOException {
+    void download_FeedbackNumberIncrementsSequentially() throws IOException {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
@@ -149,7 +149,7 @@ class FeedbackPoiExcelExporterTest {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         // when
-        feedbackPoiExcelExporter.export(organization, feedbacks, outputStream);
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream);
 
         // then
         try (final Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(outputStream.toByteArray()))) {
@@ -163,7 +163,7 @@ class FeedbackPoiExcelExporterTest {
 
     @Test
     @DisplayName("이미지 다운로드 실패 시 '이미지 로드 실패'로 표시되고 엑셀 생성은 계속된다")
-    void export_ImageDownloadFails_ContinuesWithEmptyCell() throws IOException {
+    void download_ImageDownloadFails_ContinuesWithEmptyCell() throws IOException {
         // given
         final Organization organization = OrganizationFixture.createAllBlackBox();
         final OrganizationCategory category = OrganizationCategoryFixture.createOrganizationCategory(
@@ -178,7 +178,7 @@ class FeedbackPoiExcelExporterTest {
         given(s3DownloadService.downloadFile(anyString())).willThrow(new RuntimeException("S3 다운로드 실패"));
 
         // when
-        feedbackPoiExcelExporter.export(organization, feedbacks, outputStream);
+        feedbackPoiExcelDownloader.download(organization, feedbacks, outputStream);
 
         // then - 엑셀은 정상적으로 생성되어야 함
         assertThat(outputStream.size()).isGreaterThan(0);

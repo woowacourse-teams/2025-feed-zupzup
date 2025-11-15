@@ -1,6 +1,8 @@
 package feedzupzup.backend.feedback.application;
 
-import static feedzupzup.backend.organization.domain.StatusTransition.*;
+import static feedzupzup.backend.organization.domain.StatusTransition.DELETED_CONFIRMED;
+import static feedzupzup.backend.organization.domain.StatusTransition.DELETED_WAITING;
+import static feedzupzup.backend.organization.domain.StatusTransition.WAITING_TO_CONFIRMED;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
@@ -169,10 +171,10 @@ public class AdminFeedbackService {
 
         final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
 
-        feedbackExcelExporter.export(organization, feedbacks, outputStream);
+        feedbackExcelExporter.download(organization, feedbacks, outputStream);
     }
 
-    public String generateExportFileName() {
+    public String generateDownloadFileName() {
         final LocalDateTime now = LocalDateTime.now();
         final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return String.format("feedback_export_%s.xlsx", timestamp);

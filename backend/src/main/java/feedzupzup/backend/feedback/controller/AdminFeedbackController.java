@@ -9,7 +9,6 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.feedback.exception.FeedbackException.FeedbackDownloadException;
 import feedzupzup.backend.global.response.SuccessResponse;
@@ -92,7 +91,7 @@ public class AdminFeedbackController implements AdminFeedbackApi {
             final UUID organizationUuid,
             final HttpServletResponse response
     ) {
-        final String fileName = adminFeedbackService.generateExportFileName();
+        final String fileName = adminFeedbackService.generateDownloadFileName();
 
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         final ContentDisposition contentDisposition = ContentDisposition.attachment()

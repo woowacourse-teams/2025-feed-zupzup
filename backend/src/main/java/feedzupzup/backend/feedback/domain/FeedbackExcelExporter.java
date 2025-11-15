@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface FeedbackExcelExporter {
 
-    void export(final Organization organization, final List<Feedback> feedbacks, final OutputStream outputStream);
+    void download(final Organization organization, final List<Feedback> feedbacks, final OutputStream outputStream);
 }

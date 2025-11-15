@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
+public class FeedbackPoiExcelDownloader implements FeedbackExcelExporter {
 
     private static final int QUEUE_CAPACITY = 15;
     private static final int PRODUCER_THREAD = 1;
@@ -39,7 +39,7 @@ public class FeedbackPoiExcelExporter implements FeedbackExcelExporter {
     private final S3DownloadService s3DownloadService;
 
     @Override
-    public void export(
+    public void download(
             final Organization organization,
             final List<Feedback> feedbacks,
             final OutputStream outputStream
