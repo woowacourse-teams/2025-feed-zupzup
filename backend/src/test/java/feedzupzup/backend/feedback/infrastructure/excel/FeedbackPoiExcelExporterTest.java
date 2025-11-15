@@ -1,16 +1,16 @@
 package feedzupzup.backend.feedback.infrastructure.excel;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.CATEGORY;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.COMMENT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.CONTENT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.FEEDBACK_NUMBER;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.IMAGE;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.IS_SECRET;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.LIKE_COUNT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.POSTED_AT;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.STATUS;
-import static feedzupzup.backend.feedback.domain.FeedbackExcelColumn.USER_NAME;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.CATEGORY;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.COMMENT;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.CONTENT;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.FEEDBACK_NUMBER;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.IMAGE;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.IS_SECRET;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.LIKE_COUNT;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.POSTED_AT;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.STATUS;
+import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.USER_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
