@@ -1,5 +1,6 @@
 import { SEO } from '@/components/SEO/SEO';
 import BasicButton from '@/components/BasicButton/BasicButton';
+import Button from '@/components/@commons/Button/Button';
 import { ROUTES } from '@/constants';
 import AuthLayout from '@/domains/admin/components/AuthLayout/AuthLayout';
 import FormField from '@/domains/admin/components/FormField/FormField';
@@ -127,20 +128,13 @@ export default function SignUp() {
           <div css={signUpCaptionContainer(theme)}>
             <p>
               <span aria-hidden='true'>이미 계정이 있으신가요? </span>
-              <strong
+              <Button
+                type='button'
                 onClick={() => goPath('/' + ROUTES.LOGIN)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    goPath('/' + ROUTES.LOGIN);
-                  }
-                }}
-                role='button'
-                tabIndex={0}
                 aria-label='이미 계정이 있으신가요? 로그인하기'
               >
                 로그인하기
-              </strong>
+              </Button>
             </p>
           </div>
         </form>

@@ -34,8 +34,12 @@ export const signUpCaptionContainer = (theme: Theme) => css`
   color: ${theme.colors.gray[500]};
   ${theme.typography.pretendard.caption};
 
-  strong {
+  button {
     color: ${theme.colors.purple[100]};
+    background: transparent;
+    border: none;
+    padding: 0;
     cursor: pointer;
+    ${theme.typography.pretendard.caption};
   }
 `;
