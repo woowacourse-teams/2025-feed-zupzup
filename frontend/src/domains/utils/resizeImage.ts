@@ -1,5 +1,7 @@
 import imageCompression from 'browser-image-compression';
 
+const MAX_WIDTH_OR_HEIGHT = 700;
+
 export async function resizeImage({
   file,
   contentType,
@@ -11,7 +13,7 @@ export async function resizeImage({
 
   const options = {
     maxSizeMB: 1,
-    maxWidthOrHeight: 700,
+    maxWidthOrHeight: MAX_WIDTH_OR_HEIGHT,
     fileType: outputType,
     initialQuality: 0.8,
     useWebWorker: true,
