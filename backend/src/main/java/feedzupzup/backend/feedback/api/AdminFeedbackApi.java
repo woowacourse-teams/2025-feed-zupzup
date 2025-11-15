@@ -9,6 +9,8 @@ import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackDownloadJobResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackDownloadJobStatusResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
 import feedzupzup.backend.global.response.ErrorResponse;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -117,30 +120,78 @@ public interface AdminFeedbackApi {
     );
 
     @Operation(
-            summary = "관리자용 전체 피드백 정리 파일 다운로드",
-            description = "관리자용 피드백 정리 파일을 다운로드합니다. (관리자 전용)"
+            summary = "파일 생성 작업 시작 요청",
+            description = "피드백 다운로드 파일 생성 작업을 시작합니다. (관리자 전용)"
     )
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "엑셀 파일 다운로드 성공",
-                    content = @Content(mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            ),
+            @ApiResponse(responseCode = "202", description = "작업 생성 성공", useReturnTypeSchema = true),
             @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
             @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @PostMapping("/admin/organizations/{organizationUuid}/download-jobs")
+    SuccessResponse<FeedbackDownloadJobResponse> createDownloadJob(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid
+    );
+
+    @Operation(
+            summary = "파일 생성 상태(진행도) 조회",
+            description = "피드백 다운로드 파일 생성 작업의 진행 상태를 조회합니다. (Polling API)"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound"),
             @ApiResponse(
                     responseCode = "500",
-                    description = "엑셀 파일 다운로드 중 오류 발생",
+                    description = "작업 실패",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)
-                    ))
+                    )
+            )
     })
     @SecurityRequirement(name = "SessionAuth")
-    @GetMapping("/admin/organizations/{organizationUuid}/feedbacks/download")
-    void downloadFeedbacks(
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/admin/organizations/{organizationUuid}/download-jobs/{jobId}/status")
+    SuccessResponse<FeedbackDownloadJobStatusResponse> getDownloadJobStatus(
             @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
-            @PathVariable("organizationUuid") final UUID organizationUuid,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
+            @Parameter(description = "작업 ID", example = "550e8400-e29b-41d4-a716-446655440000") @PathVariable("jobId") final String jobId
+    );
+
+    @Operation(
+            summary = "파일 다운로드 요청",
+            description = "생성된 피드백 파일의 다운로드 URL로 리다이렉션합니다. (관리자 전용)"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "302",
+                    description = "S3 Presigned URL로 리다이렉션",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(responseCode = "401", ref = "#/components/responses/Unauthorized"),
+            @ApiResponse(responseCode = "403", ref = "#/components/responses/Forbidden"),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "파일 생성이 완료되지 않음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )
+            )
+    })
+    @SecurityRequirement(name = "SessionAuth")
+    @GetMapping("/admin/organizations/{organizationUuid}/download-jobs/{jobId}")
+    void downloadFile(
+            @Parameter(hidden = true) @LoginOrganizer final LoginOrganizerInfo loginOrganizerInfo,
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid,
+            @Parameter(description = "작업 ID", example = "550e8400-e29b-41d4-a716-446655440000") @PathVariable("jobId") final String jobId,
             @Parameter(hidden = true) final HttpServletResponse response
     );
 }
