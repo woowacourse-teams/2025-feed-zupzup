@@ -12,6 +12,7 @@ import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColu
 import static feedzupzup.backend.feedback.infrastructure.excel.FeedbackExcelColumn.USER_NAME;
 
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
 import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -41,6 +42,8 @@ public class FeedbackRowWriter {
     private final Sheet sheet;
     private final BlockingQueue<FeedbackWithImage> queue;
     private final SXSSFWorkbook workbook;
+    private final FeedbackDownloadJobStore jobStore;
+    private final String jobId;
 
     void consumeToExcel(final int totalCount) {
         int rowNum = 1;
@@ -64,11 +67,18 @@ public class FeedbackRowWriter {
 
                 if (processedCount % 10 == 0 || processedCount == totalCount) {
                     log.info("엑셀 작성 진행: {}/{}", processedCount, totalCount);
+                    updateProgress(processedCount, totalCount);
                 }
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PoiExcelExportException("엑셀 파일 생성이 중단되었습니다.");
+        }
+    }
+
+    private void updateProgress(final int processedCount, final int totalCount) {
+        if (jobStore != null && jobId != null) {
+            jobStore.updateProgress(jobId, processedCount, totalCount);
         }
     }
 

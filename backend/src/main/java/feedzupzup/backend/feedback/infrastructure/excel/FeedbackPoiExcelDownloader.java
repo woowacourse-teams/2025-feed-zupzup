@@ -1,7 +1,8 @@
 package feedzupzup.backend.feedback.infrastructure.excel;
 
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
+import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
+import feedzupzup.backend.feedback.domain.FeedbackExcelDownloader;
 import feedzupzup.backend.global.exception.InfrastructureException.PoiExcelExportException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.s3.service.S3DownloadService;
@@ -30,19 +31,21 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class FeedbackPoiExcelDownloader implements FeedbackExcelExporter {
+public class FeedbackPoiExcelDownloader implements FeedbackExcelDownloader {
 
     private static final int QUEUE_CAPACITY = 15;
     private static final int PRODUCER_THREAD = 1;
     private static final int DOWNLOAD_THREADS = 10;
 
     private final S3DownloadService s3DownloadService;
+    private final FeedbackDownloadJobStore feedbackDownloadJobStore;
 
     @Override
     public void download(
             final Organization organization,
             final List<Feedback> feedbacks,
-            final OutputStream outputStream
+            final OutputStream outputStream,
+            final String jobId
     ) {
         log.info("피드백 엑셀 다운로드 시작: 조직={}, 피드백 개수={}", organization.getName().getValue(), feedbacks.size());
 
@@ -54,7 +57,7 @@ public class FeedbackPoiExcelDownloader implements FeedbackExcelExporter {
             final Sheet sheet = workbook.createSheet(sheetName);
 
             createHeaderRow(sheet);
-            createDataRows(sheet, workbook, feedbacks, executor);
+            createDataRows(sheet, workbook, feedbacks, executor, jobId);
 
             workbook.write(outputStream);
             outputStream.flush();
@@ -91,14 +94,16 @@ public class FeedbackPoiExcelDownloader implements FeedbackExcelExporter {
             final Sheet sheet,
             final SXSSFWorkbook workbook,
             final List<Feedback> feedbacks,
-            final ExecutorService executor
+            final ExecutorService executor,
+            final String jobId
     ) {
         final BlockingQueue<FeedbackWithImage> queue = new ArrayBlockingQueue<>(QUEUE_CAPACITY);
 
         final FeedbackImageProducer producer = new FeedbackImageProducer(s3DownloadService, queue, executor);
         final CompletableFuture<Void> produceJob = producer.produceImages(feedbacks);
 
-        final FeedbackRowWriter consumer = new FeedbackRowWriter(sheet, queue, workbook);
+        final FeedbackRowWriter consumer = new FeedbackRowWriter(sheet, queue, workbook, feedbackDownloadJobStore,
+                jobId);
         consumer.consumeToExcel(feedbacks.size());
 
         try {
