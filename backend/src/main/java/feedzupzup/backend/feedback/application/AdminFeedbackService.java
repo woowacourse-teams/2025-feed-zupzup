@@ -10,13 +10,16 @@ import feedzupzup.backend.feedback.domain.ClusterInfo;
 import feedzupzup.backend.feedback.domain.EmbeddingCluster;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
+import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
-import feedzupzup.backend.feedback.domain.FeedbackExcelExporter;
+import feedzupzup.backend.feedback.domain.FeedbackExcelDownloader;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategyFactory;
+import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
+import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob.DownloadStatus;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
@@ -25,22 +28,29 @@ import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCompletedException;
+import feedzupzup.backend.feedback.exception.FeedbackException.DownloadUrlNotGeneratedException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
-import java.io.OutputStream;
+import feedzupzup.backend.s3.service.S3PresignedDownloadService;
+import feedzupzup.backend.s3.service.S3UploadService;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -53,7 +63,10 @@ public class AdminFeedbackService {
     private final OrganizationStatisticRepository organizationStatisticRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
-    private final FeedbackExcelExporter feedbackExcelExporter;
+    private final FeedbackExcelDownloader feedbackExcelDownloader;
+    private final S3UploadService s3UploadService;
+    private final S3PresignedDownloadService s3PresignedDownloadService;
+    private final FeedbackDownloadJobStore feedbackDownloadJobStore;
 
     @Transactional
     @BusinessActionLog
@@ -164,19 +177,78 @@ public class AdminFeedbackService {
         return ClusterFeedbacksResponse.of(feedbackEmbeddingClusters, embeddingCluster.getLabel());
     }
 
-    public void downloadFeedbacks(final UUID organizationUuid, final OutputStream outputStream) {
-        final Organization organization = organizationRepository.findByUuid(organizationUuid)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
+    public String createDownloadJob(final UUID organizationUuid) {
+        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
+            throw new ResourceNotFoundException("해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다.");
+        }
 
-        final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
+        final FeedbackDownloadJob job = FeedbackDownloadJob.create(organizationUuid.toString());
+        feedbackDownloadJobStore.save(job);
 
-        feedbackExcelExporter.download(organization, feedbacks, outputStream);
+        generateAndUploadExcelFileAsync(job.getJobId(), organizationUuid);
+
+        return job.getJobId();
     }
 
-    public String generateDownloadFileName() {
+    public FeedbackDownloadJob getDownloadJobStatus(final String jobId) {
+        final FeedbackDownloadJob job = feedbackDownloadJobStore.getById(jobId);
+        if (job == null) {
+            throw new ResourceNotFoundException("해당 ID(id = " + jobId + ")인 작업을 찾을 수 없습니다.");
+        }
+        return job;
+    }
+
+    public String getDownloadUrl(final String jobId) {
+        final FeedbackDownloadJob job = feedbackDownloadJobStore.getById(jobId);
+        if (job == null) {
+            throw new ResourceNotFoundException("해당 ID(id = " + jobId + ")인 작업을 찾을 수 없습니다.");
+        }
+
+        if (job.getStatus() != DownloadStatus.COMPLETED) {
+            throw new DownloadJobNotCompletedException("파일 생성이 완료되지 않았습니다. 현재 상태: " + job.getStatus());
+        }
+
+        if (job.getDownloadUrl() == null) {
+            throw new DownloadUrlNotGeneratedException("다운로드 URL이 생성되지 않았습니다.");
+        }
+
+        final String filename = generateDownloadFileName();
+        return s3PresignedDownloadService.generateDownloadUrlFromImageUrl(job.getDownloadUrl(), filename);
+    }
+
+    private String generateDownloadFileName() {
         final LocalDateTime now = LocalDateTime.now();
         final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return String.format("feedback_export_%s.xlsx", timestamp);
+    }
+
+    @Async
+    public void generateAndUploadExcelFileAsync(final String jobId, final UUID organizationUuid) {
+        final FeedbackDownloadJob job = feedbackDownloadJobStore.getById(jobId);
+        if (job == null) {
+            log.error("작업을 찾을 수 없습니다. jobId={}", jobId);
+            return;
+        }
+
+        try {
+            final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
+
+            final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
+
+            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            feedbackExcelDownloader.download(organization, feedbacks, byteArrayOutputStream, jobId);
+            final byte[] excelData = byteArrayOutputStream.toByteArray();
+
+            final String s3Url = s3UploadService.uploadFile("xlsx", "feedbacks", jobId, excelData);
+
+            // 작업 완료 처리
+            job.completeWithUrl(s3Url);
+
+        } catch (Exception e) {
+            log.error("피드백 엑셀 파일 생성 중 오류 발생. jobId={}", jobId, e);
+            job.fail("파일 생성 중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 }
