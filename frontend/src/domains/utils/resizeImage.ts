@@ -7,7 +7,7 @@ export async function resizeImage({
   contentType,
 }: {
   file: File;
-  contentType: string | undefined;
+  contentType: string;
 }) {
   const outputType = 'webp';
 
@@ -23,7 +23,7 @@ export async function resizeImage({
     const compressed: File = await imageCompression(file, options);
     return { newFile: compressed, newContentType: outputType };
   } catch (error) {
-    console.error('Image compression error:', error);
-    return { newFile: file, newContentType: contentType ?? 'png' };
+    console.error('이미지 압축 실패. 원본 파일을 반환합니다.', error);
+    return { newFile: file, newContentType: contentType };
   }
 }
