@@ -22,7 +22,7 @@ export default function RefreshButton({
   return (
     <div css={refreshButtonLayout}>
       <IconButton
-        customCSS={(buttonBackgroundStyle(theme), glowButtonStyle)}
+        customCSS={[buttonBackgroundStyle(theme), glowButtonStyle]}
         icon={<RefreshIcon />}
         aria-label='새로고침'
         onClick={handleRefresh}
