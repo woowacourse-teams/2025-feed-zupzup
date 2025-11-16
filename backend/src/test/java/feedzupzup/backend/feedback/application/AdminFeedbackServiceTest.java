@@ -30,6 +30,7 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse.AdminF
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCompletedException;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -40,12 +41,7 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -781,7 +777,7 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
 
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(jobId))
-                    .isInstanceOf(IllegalStateException.class)
+                    .isInstanceOf(DownloadJobNotCompletedException.class)
                     .hasMessageContaining("파일 생성이 완료되지 않았습니다");
         }
 

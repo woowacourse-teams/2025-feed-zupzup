@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FeedbackDownloadJob {
 
-    enum DownloadStatus {
+    public enum DownloadStatus {
         PENDING,
         PROCESSING,
         COMPLETED,
@@ -29,7 +29,7 @@ public class FeedbackDownloadJob {
     public static FeedbackDownloadJob create(final String organizationUuid) {
         final String jobId = UUID.randomUUID().toString();
         final LocalDateTime now = LocalDateTime.now();
-        
+
         return new FeedbackDownloadJob(
                 jobId,
                 organizationUuid,
