@@ -4,6 +4,7 @@ import {
 } from '@/constants/errorMessage';
 import { ErrorSeverity, ErrorType, logError } from '@/utils/errorLogger';
 import {
+  isBlobResponse,
   isEmptyResponse,
   isErrorWithStatus,
   isSuccess,
@@ -15,6 +16,8 @@ interface ApiClientProps<RequestBody> {
   method: FetchMethodType;
   URI: string;
   body?: RequestBody;
+  responseType?: XMLHttpRequestResponseType;
+  timeout?: number;
 }
 
 export const apiClient = {
@@ -86,6 +89,8 @@ async function baseClient<Response, RequestBody>({
   method,
   URI,
   body,
+  responseType,
+  timeout = 5000,
 }: ApiClientProps<RequestBody>): Promise<Response | void> {
   const headers: Record<string, string> = {
     'Content-type': 'application/json',
@@ -96,15 +101,23 @@ async function baseClient<Response, RequestBody>({
   const fullURL = `${baseURL}${URI}`;
 
   try {
-    const response = await fetchWithTimeout(fullURL, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : null,
-      credentials: 'include',
-      mode: 'cors',
-    });
+    const response = await fetchWithTimeout(
+      fullURL,
+      {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : null,
+        credentials: 'include',
+        mode: 'cors',
+      },
+      timeout
+    );
 
     if (isEmptyResponse(response)) return;
+
+    if (isBlobResponse(responseType || 'json')) {
+      return (await response.blob()) as Response;
+    }
 
     if (isSuccess(response)) {
       const data = await response.json();

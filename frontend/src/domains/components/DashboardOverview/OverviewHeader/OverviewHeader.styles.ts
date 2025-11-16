@@ -22,6 +22,7 @@ export const cheerButtonLayout = css`
   justify-content: flex-end;
   width: 100%;
   height: 40px;
+  gap: 8px;
 `;
 
 export const titleText = (theme: Theme) => css`

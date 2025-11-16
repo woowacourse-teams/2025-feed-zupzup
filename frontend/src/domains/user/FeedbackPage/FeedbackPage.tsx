@@ -4,6 +4,7 @@ import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import SendIcon from '@/components/icons/SendIcon';
 import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
 import { CategoryListType } from '@/constants/categoryList';
+import { useModalContext } from '@/contexts/useModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import {
@@ -24,12 +25,14 @@ import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useCallback } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
-import { useModalContext } from '@/contexts/useModal';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
   movePrevStep: () => void;
 }
+
+const UPLOAD_LOADING_DURATION = 800;
+const UPLOAD_SUCCESS_DURATION = 1000;
 
 export default function FeedbackPage({
   movePrevStep,
@@ -103,8 +106,8 @@ export default function FeedbackPage({
       openModal(
         <TimeDelayModal
           onClose={() => handleModalClose()}
-          loadingDuration={800}
-          autoCloseDuration={1000}
+          loadingDuration={UPLOAD_LOADING_DURATION}
+          autoCloseDuration={UPLOAD_SUCCESS_DURATION}
         />
       );
 
@@ -112,7 +115,7 @@ export default function FeedbackPage({
         await uploadS3PreSignUrl({
           presignedUrl,
           file,
-          contentType: contentType ?? 'image/png',
+          contentType: contentType || 'image/png',
         });
       }
 

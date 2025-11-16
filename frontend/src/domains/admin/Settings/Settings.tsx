@@ -3,6 +3,7 @@ import { useState } from 'react';
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 import BellOutlineIcon from '@/components/icons/BellOutlineIcon';
 import OutOutlineIcon from '@/components/icons/OutOutlineIcon';
+import SendIcon from '@/components/icons/SendIcon';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
@@ -11,6 +12,15 @@ import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage
 import { settingsContainer } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 import { usePWAPrompt } from '@/contexts/usePWAPrompt';
+
+declare global {
+  interface Window {
+    ChannelIO?: {
+      (...args: unknown[]): void;
+      showMessenger?: () => void;
+    };
+  }
+}
 
 type ModalState = { type: 'logout' } | { type: null };
 
@@ -33,6 +43,12 @@ export default function Settings() {
 
   const handleToggleClick = () => {
     updateNotificationSetting(!isToggleEnabled);
+  };
+
+  const handleCustomerServiceClick = () => {
+    if (window.ChannelIO) {
+      window.ChannelIO('showMessenger');
+    }
   };
 
   const handleNotificationSettingClick = () => {
@@ -77,6 +93,13 @@ export default function Settings() {
               />
             )
           }
+        />
+
+        <SettingListBox
+          icon={<SendIcon />}
+          title='고객센터'
+          description='문의사항을 채널톡으로 전달하세요'
+          onClick={handleCustomerServiceClick}
         />
 
         <SettingListBox
