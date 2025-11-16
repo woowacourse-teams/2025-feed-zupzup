@@ -19,6 +19,8 @@ const GA_MEASUREMENT_ID = process.env.GA_ID || 'G-';
 export const usePageTracking = () => {
   const location = useLocation();
   useEffect(() => {
+    if (typeof window.gtag !== 'function') return;
+
     window.gtag('config', GA_MEASUREMENT_ID, {
       page_path: location.pathname + location.search,
       page_title: document.title,
