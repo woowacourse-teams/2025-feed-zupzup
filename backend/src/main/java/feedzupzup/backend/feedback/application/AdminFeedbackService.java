@@ -13,7 +13,6 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
-import feedzupzup.backend.feedback.domain.FeedbackExcelDownloader;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.service.sort.FeedbackSortStrategy;
@@ -32,12 +31,9 @@ import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCom
 import feedzupzup.backend.feedback.exception.FeedbackException.DownloadUrlNotGeneratedException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
-import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.s3.service.S3PresignedDownloadService;
-import feedzupzup.backend.s3.service.S3UploadService;
-import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -46,7 +42,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,10 +58,9 @@ public class AdminFeedbackService {
     private final OrganizationStatisticRepository organizationStatisticRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
-    private final FeedbackExcelDownloader feedbackExcelDownloader;
-    private final S3UploadService s3UploadService;
     private final S3PresignedDownloadService s3PresignedDownloadService;
     private final FeedbackDownloadJobStore feedbackDownloadJobStore;
+    private final FeedbackFileDownloadService feedbackFileDownloadService;
 
     @Transactional
     @BusinessActionLog
@@ -185,7 +179,7 @@ public class AdminFeedbackService {
         final FeedbackDownloadJob job = FeedbackDownloadJob.create(organizationUuid.toString());
         feedbackDownloadJobStore.save(job);
 
-        generateAndUploadExcelFileAsync(job.getJobId(), organizationUuid);
+        feedbackFileDownloadService.createAndUploadFileAsync(job.getJobId(), organizationUuid);
 
         return job.getJobId();
     }
@@ -220,34 +214,5 @@ public class AdminFeedbackService {
         final LocalDateTime now = LocalDateTime.now();
         final String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
         return String.format("feedback_export_%s.xlsx", timestamp);
-    }
-
-    @Async
-    public void generateAndUploadExcelFileAsync(final String jobId, final UUID organizationUuid) {
-        final FeedbackDownloadJob job = feedbackDownloadJobStore.getById(jobId);
-        if (job == null) {
-            log.error("작업을 찾을 수 없습니다. jobId={}", jobId);
-            return;
-        }
-
-        try {
-            final Organization organization = organizationRepository.findByUuid(organizationUuid)
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
-
-            final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
-
-            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            feedbackExcelDownloader.download(organization, feedbacks, byteArrayOutputStream, jobId);
-            final byte[] excelData = byteArrayOutputStream.toByteArray();
-
-            final String s3Url = s3UploadService.uploadFile("xlsx", "feedback_file", jobId, excelData);
-
-            job.completeWithUrl(s3Url);
-
-        } catch (Exception e) {
-            log.error("피드백 엑셀 파일 생성 중 오류 발생. jobId={}", jobId, e);
-            job.fail("파일 생성 중 오류가 발생했습니다: " + e.getMessage());
-        }
     }
 }
