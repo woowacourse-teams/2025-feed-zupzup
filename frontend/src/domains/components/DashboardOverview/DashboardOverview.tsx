@@ -1,39 +1,28 @@
-import OverviewHeader from './OverviewHeader/OverviewHeader';
-import DashboardPanelContent from './DashboardPanelContent/DashboardPanelContent';
-import { memo } from 'react';
-import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useFeedbackPolling } from '@/domains/hooks/useFeedbackPolling';
-import { QUERY_KEYS } from '@/constants/queryKeys';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import useUserOrganizationsStatistics from '@/domains/hooks/useUserOrganizationsStatistics';
+import { getDashboardRefreshKeys } from '@/domains/utils/getDashboardRefreshKeys';
 import { useQueryClient } from '@tanstack/react-query';
+import { memo, useCallback } from 'react';
+import DashboardPanelContent from './DashboardPanelContent/DashboardPanelContent';
+import OverviewHeader from './OverviewHeader/OverviewHeader';
 
 export default memo(function DashboardOverview() {
   const { organizationId } = useOrganizationId();
+  const queryClient = useQueryClient();
   const { statistics } = useUserOrganizationsStatistics({
     organizationId,
   });
-  const queryClient = useQueryClient();
 
-  const { feedbackDiff, setFeedbackDiff } = useFeedbackPolling({
+  const { feedbackDiff } = useFeedbackPolling({
     statistics,
   });
 
-  const refreshStatistics = () => {
-    return [
-      QUERY_KEYS.organizationStatistics(organizationId),
-      QUERY_KEYS.organizationPollingStatistics(organizationId),
-      QUERY_KEYS.infiniteFeedbacks,
-      ['aiSummaryDetail', organizationId],
-    ];
-  };
-
-  const handleRefresh = () => {
-    setFeedbackDiff(0);
-    const keys = refreshStatistics();
-    keys.forEach((key) => {
+  const handleRefresh = useCallback(() => {
+    getDashboardRefreshKeys({ organizationId }).forEach((key) => {
       queryClient.invalidateQueries({ queryKey: key });
     });
-  };
+  }, [organizationId]);
 
   return (
     <>
