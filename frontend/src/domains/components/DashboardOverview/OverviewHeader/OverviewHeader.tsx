@@ -11,8 +11,17 @@ import {
 } from './OverviewHeader.styles';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import CheerButton from '../../CheerButton/CheerButton';
+import RefreshButton from '@/domains/components/RefreshButton/RefreshButton';
 
-export default function OverviewHeader() {
+interface OverviewHeaderProps {
+  feedbackDiff: number;
+  handleRefresh: () => void;
+}
+
+export default function OverviewHeader({
+  feedbackDiff,
+  handleRefresh,
+}: OverviewHeaderProps) {
   const theme = useAppTheme();
   const { organizationId } = useOrganizationId();
   const { groupName, totalCheeringCount } = useOrganizationName({
@@ -23,6 +32,8 @@ export default function OverviewHeader() {
     organizationId,
   });
 
+  const hasNewFeedback = feedbackDiff > 0;
+
   return (
     <div css={headerContainer}>
       <div css={headerText}>
@@ -31,6 +42,12 @@ export default function OverviewHeader() {
       </div>
       <div css={headerCheerButton}>
         <div css={cheerButtonLayout}>
+          {hasNewFeedback && (
+            <RefreshButton
+              handleRefresh={handleRefresh}
+              feedbackDiff={feedbackDiff}
+            />
+          )}
           <CheerButton
             disabled={isDisabled}
             totalCheeringCount={totalCheeringCount}
