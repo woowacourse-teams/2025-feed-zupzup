@@ -27,9 +27,11 @@ public class FeedbackDownloadJob {
     private LocalDateTime updatedAt;
 
     public static FeedbackDownloadJob create(final String organizationUuid) {
+        final String jobId = UUID.randomUUID().toString();
         final LocalDateTime now = LocalDateTime.now();
+        
         return new FeedbackDownloadJob(
-                UUID.randomUUID().toString(),
+                jobId,
                 organizationUuid,
                 DownloadStatus.PENDING,
                 0,

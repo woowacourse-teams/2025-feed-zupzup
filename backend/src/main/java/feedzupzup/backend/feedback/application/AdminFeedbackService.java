@@ -241,9 +241,8 @@ public class AdminFeedbackService {
             feedbackExcelDownloader.download(organization, feedbacks, byteArrayOutputStream, jobId);
             final byte[] excelData = byteArrayOutputStream.toByteArray();
 
-            final String s3Url = s3UploadService.uploadFile("xlsx", "feedbacks", jobId, excelData);
+            final String s3Url = s3UploadService.uploadFile("xlsx", "feedback_file", jobId, excelData);
 
-            // 작업 완료 처리
             job.completeWithUrl(s3Url);
 
         } catch (Exception e) {
