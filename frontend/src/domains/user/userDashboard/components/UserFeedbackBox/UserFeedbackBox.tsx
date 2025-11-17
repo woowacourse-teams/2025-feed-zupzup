@@ -59,12 +59,12 @@ export default memo(function UserFeedbackBox({
       <div css={isSecret ? secretText(theme) : undefined}>
         {isSecret ? (
           isMyFeedback ? (
-            <FeedbackContent type={type} text={content} imgUrl={imgUrl} />
+            <FeedbackContent text={content} imgUrl={imgUrl} />
           ) : (
             <p>비밀글입니다.</p>
           )
         ) : (
-          <FeedbackContent type={type} text={content} imgUrl={imgUrl} />
+          <FeedbackContent text={content} imgUrl={imgUrl} />
         )}
         {isSecret && <LockIcon />}
       </div>
