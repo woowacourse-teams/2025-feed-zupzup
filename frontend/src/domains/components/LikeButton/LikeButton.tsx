@@ -24,6 +24,7 @@ export default function LikeButton({
   feedbackId,
   likeCount,
   isAdmin,
+  ...rest
 }: LikeButtonProps) {
   const theme = useAppTheme();
   const { handleLikeButton, isLiked, tempLikeCount } = useLikeButtonManager({
@@ -49,6 +50,7 @@ export default function LikeButton({
       onClick={handleLikeButton}
       css={likeButton}
       aria-label={`${tempLikeCount}개의 좋아요`}
+      {...rest}
     >
       <span css={iconWrapper(theme, isLiked ?? false)}>
         {isLiked ? <FillHeartIcon /> : <EmptyHeartIcon />}
