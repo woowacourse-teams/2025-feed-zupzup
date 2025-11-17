@@ -34,9 +34,13 @@ export default function LikeButton({
 
   if (isAdmin) {
     return (
-      <span css={adminLikeText(theme)} aria-hidden={true}>
-        <strong css={likeCountText(theme)}>{tempLikeCount}</strong>개의 좋아요
-      </span>
+      <>
+        <span className='srOnly'>{`${tempLikeCount}개의 좋아요`}</span>
+        <span css={adminLikeText(theme)} aria-hidden='true'>
+          <strong css={likeCountText(theme)}>{tempLikeCount}</strong>
+          개의 좋아요
+        </span>
+      </>
     );
   }
 

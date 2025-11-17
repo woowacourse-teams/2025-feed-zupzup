@@ -56,7 +56,7 @@ export default memo(function UserFeedbackBox({
         feedbackId={feedbackId}
         category={category}
       />
-      <div css={isSecret ? secretText(theme) : undefined} aria-hidden={true}>
+      <div css={isSecret ? secretText(theme) : undefined}>
         {isSecret ? (
           isMyFeedback ? (
             <FeedbackContent type={type} text={content} imgUrl={imgUrl} />

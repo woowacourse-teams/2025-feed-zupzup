@@ -26,8 +26,8 @@ export default function DashboardPanel({
   const theme = useAppTheme();
   return (
     <>
-      <span className='srOnly'>{srMessage}</span>
-      <div css={dashboard(theme)} aria-hidden={true}>
+      {srMessage && <span className='srOnly'>{srMessage}</span>}
+      <div css={dashboard(theme)} aria-hidden={!!srMessage}>
         <div css={dotLayout}>
           <div css={dot(theme, color)} />
           <p css={panelTitle(theme)}>{title}</p>

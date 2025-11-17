@@ -34,16 +34,14 @@ export default function FeedbackBoxFooter({
 
   return (
     <div css={container}>
-      <div css={calendar(theme)} aria-hidden={true}>
+      <div css={calendar(theme)}>
         <ClockIcon />
-        <p css={day(theme)}>{postedAt}</p>
+        <time css={day(theme)}>{postedAt}</time>
       </div>
 
       <div css={content(theme)}>
         {type === 'CONFIRMED' && (
-          <Tag customCSS={confirmedText(theme)} aria-hidden={true}>
-            ✅ 완료
-          </Tag>
+          <Tag customCSS={confirmedText(theme)}>✅ 완료</Tag>
         )}
         {!isSecret && (
           <LikeButton

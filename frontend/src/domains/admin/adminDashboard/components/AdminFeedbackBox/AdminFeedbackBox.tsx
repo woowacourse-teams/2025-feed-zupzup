@@ -66,7 +66,7 @@ export default memo(function AdminFeedbackBox({
           </button>
         </div>
       </div>
-      <div css={textWrap} aria-hidden={true}>
+      <div css={textWrap}>
         <FeedbackContent type={type} text={content} imgUrl={imgUrl} />
         {isSecret && (
           <p>
