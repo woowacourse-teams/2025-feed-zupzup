@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export function useInitialAnnounceWindow(delay = 3000) {
+export function useOneTimeAnnounce(delay = 3000) {
   const [isInitial, setIsInitial] = useState(true);
 
   useEffect(() => {

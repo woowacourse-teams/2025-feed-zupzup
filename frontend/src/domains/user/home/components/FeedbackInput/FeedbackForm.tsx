@@ -8,7 +8,7 @@ import ImageUploadWithPreview from '@/domains/user/home/components/ImageUploadWi
 import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import useFocusOnMount from '@/hooks/useFocusOnMount';
-import { useInitialAnnounceWindow } from '@/hooks/useOneTimeAnnounce';
+import { useOneTimeAnnounce } from '@/hooks/useOneTimeAnnounce';
 import { useRef } from 'react';
 import {
   container,
@@ -62,7 +62,7 @@ export default function FeedbackForm({
 
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
-  const isInitialLoad = useInitialAnnounceWindow(3000);
+  const isInitialLoad = useOneTimeAnnounce(3000);
   useFocusOnMount({
     ref: textAreaRef as React.RefObject<HTMLElement>,
     targetId: 'feedbackText',
