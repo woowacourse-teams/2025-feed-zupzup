@@ -1,4 +1,5 @@
 import {
+  adminAnswer,
   container,
   title,
 } from '@/domains/components/FeedbackAnswer/FeedbackAnswer.styles';
@@ -13,7 +14,7 @@ export default function FeedbackAnswer({ answer }: FeedbackAnswerProps) {
   return (
     <div css={container(theme)}>
       <p css={title(theme)}>관리자 답변</p>
-      <p>{answer}</p>
+      <p css={adminAnswer}>{answer}</p>
     </div>
   );
 }
