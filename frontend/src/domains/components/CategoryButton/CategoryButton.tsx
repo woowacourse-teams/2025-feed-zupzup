@@ -20,11 +20,11 @@ export default function CategoryButton({
   const theme = useAppTheme();
 
   return (
-    <Button customCSS={container(theme)} onClick={onClick} aria-label={text}>
-      <p css={iconCSS} aria-hidden='true'>
+    <Button customCSS={container(theme)} onClick={onClick}>
+      <span css={iconCSS} aria-hidden='true'>
         {icon}
-      </p>
-      <p aria-hidden='true'>{text}</p>
+      </span>
+      <span>{text}</span>
     </Button>
   );
 }
