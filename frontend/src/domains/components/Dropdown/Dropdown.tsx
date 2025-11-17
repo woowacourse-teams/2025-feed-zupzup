@@ -92,11 +92,7 @@ export default function Dropdown({
   }, [isOpen]);
 
   return (
-    <div
-      css={dropdownContainer(width, height)}
-      data-category-selector
-      aria-hidden={disabled}
-    >
+    <div css={dropdownContainer(width, height)} data-category-selector>
       <input type='hidden' name={name} id={id} value={value || ''} />
       <Button
         type='button'
