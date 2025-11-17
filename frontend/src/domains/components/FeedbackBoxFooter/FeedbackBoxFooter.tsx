@@ -36,7 +36,9 @@ export default function FeedbackBoxFooter({
     <div css={container}>
       <div css={calendar(theme)}>
         <ClockIcon />
-        <time css={day(theme)}>{postedAt}</time>
+        <time css={day(theme)} dateTime={postedAt}>
+          {postedAt}
+        </time>
       </div>
 
       <div css={content(theme)}>
