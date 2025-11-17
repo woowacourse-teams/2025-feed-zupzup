@@ -198,7 +198,7 @@ export default function FeedbackPage({
             }
             aria-label={`피드백 제출 ${canSubmit ? '' : '불가'}`}
           >
-            피드백 제출
+            {category} 제출
           </BasicButton>
 
           <BasicButton
