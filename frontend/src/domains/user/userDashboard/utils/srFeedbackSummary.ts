@@ -67,15 +67,14 @@ export function srFeedbackSummary({
 
   if (opts.userName) parts.push(`작성자 ${opts.userName}`);
 
-  if (opts.isSecret) parts.push(opts.isSecret && '비밀글입니다');
+  if (opts.isSecret) parts.push('비밀글입니다');
 
   if (opts.comment && (isAdmin || !opts.isSecret))
     parts.push('관리자 답변이 존재합니다.  ' + opts.comment);
 
   if (postedAt) parts.push(`작성일 ${postedAt}`);
 
-  if (isAdmin || (!opts.isSecret && typeof opts.commentCount === 'number'))
-    parts.push(`좋아요 ${opts.likeCount ?? 0}개`);
+  if (isAdmin || !opts.isSecret) parts.push(`좋아요 ${opts.likeCount ?? 0}개`);
 
   if (opts.hasImage) parts.push('이미지 포함');
 

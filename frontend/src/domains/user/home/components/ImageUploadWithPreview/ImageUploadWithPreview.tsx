@@ -9,7 +9,7 @@ import {
   uploadLabel,
 } from '@/domains/user/home/components/ImageUploadWithPreview/ImageUploadWithPreview.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 interface ImageUploadWithPreview {
   file: File | null;
@@ -25,13 +25,8 @@ export default function ImageUploadWithPreview({
   onCancelFile,
 }: ImageUploadWithPreview) {
   const theme = useAppTheme();
-  const [announcedFileName, setAnnouncedFileName] = useState('');
 
   const fileName = useMemo(() => file?.name ?? '선택된 파일 없음', [file]);
-
-  useEffect(() => {
-    setAnnouncedFileName(fileName);
-  }, [fileName]);
 
   return (
     <div css={container}>
@@ -74,7 +69,7 @@ export default function ImageUploadWithPreview({
             role='status'
             aria-atomic='true'
           >
-            <span className='srOnly'>선택된 파일: {announcedFileName}</span>
+            <span className='srOnly'>선택된 파일: {fileName}</span>
           </p>
         )}
       </div>
