@@ -122,7 +122,7 @@ export default function SignUp() {
               );
             })}
           </div>
-          <BasicButton disabled={isLoading} aria-busy={isLoading}>
+          <BasicButton type='submit' disabled={isLoading} aria-busy={isLoading}>
             계정 만들기
           </BasicButton>
           <div css={signUpCaptionContainer(theme)}>
