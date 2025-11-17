@@ -45,12 +45,12 @@ export default function DashboardPanelContent({
     <div css={panelLayout}>
       {DASH_PANELS.map((panel) => (
         <div key={panel.title}>
-          <span className='srOnly'>{panel.srMessage}</span>
           <DashboardPanel
             title={panel.title}
             content={panel.content}
             caption={panel.caption}
             color={panel.color}
+            srMessage={panel.srMessage}
           />
         </div>
       ))}
