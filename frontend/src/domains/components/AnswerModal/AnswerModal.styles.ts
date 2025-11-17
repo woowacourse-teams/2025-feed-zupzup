@@ -45,6 +45,11 @@ export const contentTextarea = (theme: Theme) => css`
   border-radius: 10px;
   resize: none;
 
+  line-height: 24px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-wrap: break-word;
+
   &::placeholder {
     color: ${theme.colors.gray[600]};
   }
