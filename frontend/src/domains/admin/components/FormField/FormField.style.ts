@@ -34,10 +34,11 @@ export const inputFormField = (theme: Theme, isValid: boolean) => css`
   }
 `;
 
-export const errorMessageStyle = (theme: Theme) => css`
+export const errorMessageStyle = (theme: Theme, hasError: boolean) => css`
   height: 14px;
   margin-top: 4px;
   color: ${theme.colors.red[100]};
+  visibility: ${hasError ? 'visible' : 'hidden'};
 
   ${theme.typography.pretendard.captionSmall};
 `;

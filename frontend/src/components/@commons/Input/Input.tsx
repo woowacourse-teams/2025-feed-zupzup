@@ -1,15 +1,14 @@
 import { SerializedStyles } from '@emotion/react';
 
-export interface InputProps extends React.ComponentProps<'input'> {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus?: () => void;
-  placeholder: string;
-  customCSS: SerializedStyles;
-  maxLength: number;
-  minLength: number;
+export interface InputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'css'> {
+  customCSS?: SerializedStyles;
 }
 
-export default function Input({ customCSS, ...rest }: InputProps) {
-  return <input css={customCSS} {...rest} />;
+export default function Input({
+  customCSS,
+  type = 'text',
+  ...props
+}: InputProps) {
+  return <input type={type} css={customCSS} {...props} />;
 }

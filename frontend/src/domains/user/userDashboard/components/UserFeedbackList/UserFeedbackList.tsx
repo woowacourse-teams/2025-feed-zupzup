@@ -1,9 +1,12 @@
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
+import FeedbackBoxSkeletonList from '@/domains/components/FeedbackBoxSkeleton/FeedbackBoxSkeletonList';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
 import useMyLikedFeedback from '@/domains/user/userDashboard/hooks/useMyLikedFeedback';
+import { skipTarget } from '@/domains/user/userDashboard/UserDashboard.style';
+import { srFeedbackSummary } from '@/domains/user/userDashboard/utils/srFeedbackSummary';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import {
@@ -12,12 +15,10 @@ import {
   FeedbackType,
   SortType,
 } from '@/types/feedback.types';
+import { formatRelativeTime } from '@/utils/formatRelativeTime';
 import { memo, useCallback, useMemo } from 'react';
 import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
 import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
-import { srFeedbackSummary } from '@/domains/user/userDashboard/utils/srFeedbackSummary';
-import { formatRelativeTime } from '@/utils/formatRelativeTime';
-import { skipTarget } from '@/domains/user/userDashboard/UserDashboard.style';
 
 interface UserFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -119,6 +120,7 @@ export default memo(function UserFeedbackList({
             );
           })}
         </FeedbackBoxList>
+        {loading && <FeedbackBoxSkeletonList count={2} />}
         <FeedbackStatusMessage
           loading={loading}
           filterType={selectedFilter as FeedbackFilterType}

@@ -1,6 +1,7 @@
 export const QUERY_KEYS = {
   organizationStatistics: (id: string) => ['organizationStatistics', id],
   infiniteFeedbacks: ['infinity', 'feedbacks'],
+  organizationPollingStatistics: (id: string) => ['feedbackPolling', id],
   notificationSettings: () => ['notificationSettings'] as const,
   qrImageDownload: ['qrImageDownload'],
   qrCode: (id: string) => ['qrCode', id],

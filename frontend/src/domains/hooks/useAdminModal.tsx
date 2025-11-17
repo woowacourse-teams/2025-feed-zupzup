@@ -27,7 +27,7 @@ export const useAdminModal = ({ organizationId }: UseAdminModalProps) => {
       queryKey: QUERY_KEYS.adminOrganizations(adminName),
     });
     queryClient.invalidateQueries({
-      queryKey: ['aiSummaryDetail', organizationId],
+      queryKey: QUERY_KEYS.aiSummary(organizationId),
     });
   }, [queryClient, organizationId, adminName]);
 

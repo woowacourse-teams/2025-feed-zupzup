@@ -2,6 +2,7 @@ import BasicButton from '@/components/BasicButton/BasicButton';
 import Modal from '@/components/Modal/Modal';
 import QRImageSection from '@/domains/admin/components/QRModal/components/QRImageSection/QRImageSection';
 import QRUrlSection from '@/domains/admin/components/QRModal/components/QRUrlSection/QRUrlSection';
+import QRModalSkeleton from '@/domains/admin/components/QRModal/components/QRModalSkeleton/QRModalSkeleton';
 import { useQRCode } from './hooks/useQRCode';
 import { modalWidth } from '@/components/Modal/Modal.styles';
 
@@ -14,8 +15,8 @@ export default function QRModal({ onClose }: QRModalProps) {
 
   if (isLoading) {
     return (
-      <Modal onClose={onClose}>
-        <div>로딩 중...</div>
+      <Modal onClose={onClose} customCSS={modalWidth}>
+        <QRModalSkeleton />
       </Modal>
     );
   }

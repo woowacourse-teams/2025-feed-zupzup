@@ -44,7 +44,7 @@ export default function Login() {
     validators: LOGIN_VALIDATORS,
   });
 
-  const { handleSubmit } = useLogin({ loginValue });
+  const { handleSubmit, isLoginPending } = useLogin({ loginValue });
 
   return (
     <>
@@ -54,7 +54,13 @@ export default function Login() {
         keywords='로그인, 관리자, 피드줍줍, admin, login'
       />
       <AuthLayout title='로그인' caption='계정에 로그인 하세요'>
-        <form css={loginForm(theme)} onSubmit={handleSubmit}>
+        <form
+          css={loginForm(theme)}
+          onSubmit={handleSubmit}
+          noValidate
+          aria-label='로그인 폼'
+          aria-busy={isLoginPending}
+        >
           <div css={fieldContainer}>
             {loginFields.map((field: LoginField) => (
               <FormField
@@ -71,14 +77,33 @@ export default function Login() {
               />
             ))}
           </div>
-          <BasicButton>로그인</BasicButton>
+          <BasicButton
+            type='submit'
+            disabled={isLoginPending}
+            aria-busy={isLoginPending}
+          >
+            {isLoginPending ? '로그인 중...' : '로그인'}
+          </BasicButton>
           <div css={loginCaptionContainer(theme)}>
             {/* <p>비밀번호를 잊으셨나요?</p> */}
             <p>
-              계정이 없으신가요? &nbsp;
-              <strong onClick={() => goPath('/' + ROUTES.SIGN_UP)}>
+              <span aria-hidden='true'>계정이 없으신가요? </span>
+              <button
+                type='button'
+                onClick={() => goPath('/' + ROUTES.SIGN_UP)}
+                aria-label='계정이 없으신가요? 회원가입하기'
+                css={{
+                  background: 'none',
+                  border: 'none',
+                  padding: 0,
+                  font: 'inherit',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  fontWeight: 700,
+                }}
+              >
                 회원가입하기
-              </strong>
+              </button>
             </p>
           </div>
         </form>

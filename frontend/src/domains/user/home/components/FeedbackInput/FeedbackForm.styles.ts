@@ -10,7 +10,7 @@ export const container = css`
 export const formContainer = css`
   position: relative;
   width: 100%;
-  height: 317px;
+  height: 410px;
 `;
 
 export const userInfo = (theme: Theme) => css`

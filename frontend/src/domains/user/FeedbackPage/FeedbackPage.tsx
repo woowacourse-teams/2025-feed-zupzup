@@ -32,6 +32,9 @@ interface FeedbackPageProps {
   movePrevStep: () => void;
 }
 
+const UPLOAD_LOADING_DURATION = 800;
+const UPLOAD_SUCCESS_DURATION = 1000;
+
 export default function FeedbackPage({
   movePrevStep,
   category,
@@ -104,8 +107,8 @@ export default function FeedbackPage({
       openModal(
         <TimeDelayModal
           onClose={() => handleModalClose()}
-          loadingDuration={800}
-          autoCloseDuration={1000}
+          loadingDuration={UPLOAD_LOADING_DURATION}
+          autoCloseDuration={UPLOAD_SUCCESS_DURATION}
         />
       );
 
@@ -113,7 +116,7 @@ export default function FeedbackPage({
         await uploadS3PreSignUrl({
           presignedUrl,
           file,
-          contentType: contentType ?? 'image/png',
+          contentType: contentType || 'image/png',
         });
       }
 

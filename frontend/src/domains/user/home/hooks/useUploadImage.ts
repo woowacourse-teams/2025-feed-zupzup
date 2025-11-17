@@ -3,6 +3,8 @@ import {
   postPresignedUrl,
   PostPresignedUrlParams,
 } from '@/apis/s3.api';
+import { useToast } from '@/contexts/useToast';
+import useImageCompression from '@/domains/user/home/hooks/useImageCompression';
 import { useMutation } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
@@ -11,23 +13,27 @@ export default function useUploadImage() {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
   const [contentType, setContentType] = useState<string | null>(null);
+  const { showToast } = useToast();
+  const { compressImage } = useImageCompression();
 
   const onChangeFile: React.ChangeEventHandler<HTMLInputElement> = async (
     e
   ) => {
     try {
-      const file = e.target.files?.[0] ?? null;
-      const extension = file?.name.split('.').pop();
-      if (!file || !extension) return;
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-      setFile(file);
+      const { newFile, newContentType } = await compressImage(file);
+
+      setFile(newFile);
 
       await fetchPresignedUrl({
-        extension: extension as ImageExtension,
+        extension: newContentType as ImageExtension,
         objectDir: 'feedback_media',
       });
     } catch (e) {
-      console.error(e);
+      if (e instanceof Error)
+        showToast(e.message || '이미지 업로드에 실패했습니다.');
       return;
     }
   };

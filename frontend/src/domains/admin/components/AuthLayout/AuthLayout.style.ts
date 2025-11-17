@@ -28,6 +28,10 @@ export const titleContainer = (theme: Theme) => css`
 
 export const authTitle = (theme: Theme) => css`
   ${theme.typography.pretendard.bodyBold};
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const authDescription = (theme: Theme) => css`
