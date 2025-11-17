@@ -6,7 +6,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import feedzupzup.backend.feedback.exception.FeedbackException.InvalidVectorDimensionException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +36,7 @@ public enum ErrorCode {
     LIKE_ALREADY_EXISTS(BAD_REQUEST, "F04", "좋아요는 한 번만 누를 수 있습니다."),
     INVALID_LIKE_REQUEST(BAD_REQUEST, "F05", "잘못된 요청입니다."),
     ALREADY_CLUSTERING_FEEDBACK(BAD_REQUEST, "F06", "이미 클러스터링된 피드백입니다."),
+    FEEDBACK_DOWNLOAD_ERROR(INTERNAL_SERVER_ERROR, "F07", "피드백 파일 다운로드 중 오류가 발생했습니다."),
 
     //cluster error
     EMPTY_CLUSTERING_CONTENT(BAD_REQUEST, "C01", "클러스터링 내용은 비어있을 수 없습니다."),
@@ -64,7 +64,11 @@ public enum ErrorCode {
 
     //S3 Error
     S3_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, "S01", "파일 업로드에 실패하였습니다."),
-    S3_PRESIGNED_FAILED(INTERNAL_SERVER_ERROR, "S02", "Presigned URL 생성에 실패하였습니다.");
+    S3_PRESIGNED_FAILED(INTERNAL_SERVER_ERROR, "S02", "Presigned URL 생성에 실패하였습니다."),
+    S3_DOWNLOAD_FAILED(INTERNAL_SERVER_ERROR, "S03", "파일 다운로드에 실패하였습니다."),
+
+    //Poi Excel Error
+    POI_EXCEL_EXPORT_FAIL(INTERNAL_SERVER_ERROR, "E01", "엑셀 파일 생성에 실패하였습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

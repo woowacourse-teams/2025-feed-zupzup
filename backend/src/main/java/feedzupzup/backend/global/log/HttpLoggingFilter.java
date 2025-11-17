@@ -1,5 +1,10 @@
 package feedzupzup.backend.global.log;
 
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+
+import feedzupzup.backend.admin.dto.AdminSession;
+import feedzupzup.backend.auth.presentation.session.HttpSessionManager;
+import feedzupzup.backend.global.util.CookieUtilization;
 import io.opentelemetry.api.trace.Span;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,7 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -18,6 +25,7 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class HttpLoggingFilter extends OncePerRequestFilter {
 
     private static final List<String> EXCLUDE_URI = List.of(
@@ -25,8 +33,14 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
             "/swagger-ui/**",
             "/api-docs"
     );
+    private static final String GLOBAL_TRACE_ID_KEY = "global_trace_id";
+    private static final String ADMIN_PREFIX = "admin";
+    private static final String GUEST_PREFIX = "guest";
+    private static final String ANONYMOUS_PREFIX = "anon";
 
     private final AntPathMatcher antPathMatcher = new AntPathMatcher();
+    private final CookieUtilization cookieUtilization;
+    private final HttpSessionManager httpSessionManager;
 
     @Override
     protected void doFilterInternal(
@@ -46,6 +60,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
 
         createTraceId();
         createSpanId();
+        createGlobalTraceId(cacheRequest);
 
         writeRequestLog(cacheRequest);
         filterChain.doFilter(cacheRequest, cacheResponse);
@@ -54,10 +69,30 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         cacheResponse.copyBodyToResponse();
         MDC.remove("trace_id");
         MDC.remove("span_id");
+        MDC.remove("global_trace_id");
+    }
+
+    private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
+        final RequestLogMessage requestLog = RequestLogMessage.createInstance(cacheRequest);
+        log.info("HTTP Request",
+                keyValue("httpMethod", requestLog.httpMethod()),
+                keyValue("requestUri", requestLog.requestUri()),
+                keyValue("requestParam", requestLog.requestParam()),
+                keyValue("clientIp", requestLog.clientIp()),
+                keyValue("requestBody", requestLog.requestBody())
+        );
+    }
+
+    private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
+        final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
+        log.info("HTTP Response",
+                keyValue("httpStatus", responseLog.httpStatus()),
+                keyValue("responseBody", responseLog.responseBody())
+        );
     }
 
     private void createTraceId() {
-        String traceId = Span.current().getSpanContext().getTraceId();
+        final String traceId = Span.current().getSpanContext().getTraceId();
         if (!traceId.isEmpty()) {
             MDC.put("trace_id", traceId);
         } else {
@@ -66,7 +101,7 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     }
 
     private void createSpanId() {
-        String spanId = Span.current().getSpanContext().getSpanId();
+        final String spanId = Span.current().getSpanContext().getSpanId();
         if (!spanId.isEmpty()) {
             MDC.put("span_id", spanId);
         } else {
@@ -74,14 +109,24 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         }
     }
 
-    private void writeRequestLog(final ContentCachingRequestWrapper cacheRequest) {
-        final RequestLogMessage requestLog = RequestLogMessage.createInstance(cacheRequest);
-        log.info(requestLog.toString());
+    private void createGlobalTraceId(final HttpServletRequest request) {
+        final String globalTraceId = generateGlobalTraceId(request);
+        MDC.put(GLOBAL_TRACE_ID_KEY, globalTraceId);
     }
 
-    private void writeResponseLog(final ContentCachingResponseWrapper cacheResponse) {
-        final ResponseLogMessage responseLog = ResponseLogMessage.createInstance(cacheResponse);
-        log.info(responseLog.toString());
+    private String generateGlobalTraceId(final HttpServletRequest request) {
+        final Optional<Long> adminId = httpSessionManager.getAdminSessionIfPresent(request)
+                .map(AdminSession::adminId);
+        if (adminId.isPresent()) {
+            return String.format("%s-%d", ADMIN_PREFIX, adminId.get());
+        }
+
+        final Optional<UUID> guestId = cookieUtilization.getGuestIdFromCookie(request);
+        if (guestId.isPresent()) {
+            return String.format("%s-%s", GUEST_PREFIX, guestId.get());
+        }
+
+        return String.format("%s-%s", ANONYMOUS_PREFIX, UUID.randomUUID());
     }
 
     private boolean isExcluded(String requestURI) {

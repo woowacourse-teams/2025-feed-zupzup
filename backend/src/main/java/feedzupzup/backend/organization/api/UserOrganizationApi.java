@@ -3,6 +3,7 @@ package feedzupzup.backend.organization.api;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.dto.response.CheeringResponse;
+import feedzupzup.backend.organization.dto.response.OrganizationStatisticResponse;
 import feedzupzup.backend.organization.dto.response.UserOrganizationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,5 +45,16 @@ public interface UserOrganizationApi {
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final UUID organizationUuid,
             @RequestBody final CheeringRequest request
+    );
+
+    @Operation(summary = "조직 통계 계산", description = "조직 통계를 계산합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/organizations/{organizationUuid}/statistic")
+    SuccessResponse<OrganizationStatisticResponse> getStatistic(
+            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid
     );
 }

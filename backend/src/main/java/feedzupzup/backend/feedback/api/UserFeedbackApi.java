@@ -7,7 +7,6 @@ import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.LikeResponse;
-import feedzupzup.backend.feedback.dto.response.StatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.guest.dto.GuestInfo;
@@ -87,16 +86,5 @@ public interface UserFeedbackApi {
             final HttpServletResponse response,
             @Parameter(description = "피드백 ID", example = "1") @PathVariable("feedbackId") final Long feedbackId,
             @Parameter(hidden = true) @SavedGuest GuestInfo guestInfo
-    );
-
-    @Operation(summary = "피드백 통계 계산", description = "피드백의 통계를 계산합니다.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회 성공", useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "404", ref = "#/components/responses/NotFound")
-    })
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/organizations/{organizationUuid}/statistic")
-    SuccessResponse<StatisticResponse> getStatistic(
-            @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000") @PathVariable("organizationUuid") final UUID organizationUuid
     );
 }

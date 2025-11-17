@@ -1,6 +1,6 @@
 <configuration>
   <property name="CONSOLE_LOG_PATTERN"
-    value="[%d{yyyy-MM-dd HH:mm:ss,Asia/Seoul}] %magenta([local]) %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) %yellow([trace_id=%X{trace_id}] [span_id=%X{span_id}]) - %msg%n"/>
+    value="[%d{yyyy-MM-dd HH:mm:ss,Asia/Seoul}] %magenta([local]) %green([%thread]) %highlight(%-5level) %boldWhite([%C.%M:%yellow(%L)]) %yellow([trace_id=%X{trace_id}] [span_id=%X{span_id}] [global_trace_id=%X{global_trace_id}]) - %msg%n"/>
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>

@@ -19,6 +19,8 @@ import feedzupzup.backend.global.util.CookieUtilization;
 import feedzupzup.backend.guest.domain.guest.GuestRepository;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.domain.OrganizationStatistic;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import java.util.UUID;
@@ -37,6 +39,9 @@ public class GuestControllerE2ETest extends E2EHelper {
     private OrganizationRepository organizationRepository;
 
     @Autowired
+    private OrganizationStatisticRepository organizationStatisticRepository;
+
+    @Autowired
     private OrganizationCategoryRepository organizationCategoryRepository;
 
     @Autowired
@@ -52,6 +57,8 @@ public class GuestControllerE2ETest extends E2EHelper {
     void init() {
         organization = OrganizationFixture.createAllBlackBox();
         organizationRepository.save(organization);
+
+        organizationStatisticRepository.save(new OrganizationStatistic(organization));
 
         organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
                 organization, SUGGESTION);
