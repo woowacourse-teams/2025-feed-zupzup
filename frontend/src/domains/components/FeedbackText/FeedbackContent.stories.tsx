@@ -13,11 +13,6 @@ const meta: Meta<typeof FeedbackText> = {
       control: 'text',
       description: '피드백 텍스트',
     },
-    type: {
-      control: 'select',
-      options: ['WAITING', 'CONFIRMED'],
-      description: '상태에 따라 텍스트 스타일이 달라집니다.',
-    },
   },
 };
 
@@ -27,13 +22,5 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     text: '피드백 예시입니다.',
-    type: 'WAITING',
-  },
-};
-
-export const Complete: Story = {
-  args: {
-    text: '완료된 피드백입니다.',
-    type: 'CONFIRMED',
   },
 };

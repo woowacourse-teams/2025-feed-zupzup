@@ -1,7 +1,7 @@
 import Button from '@/components/@commons/Button/Button';
 
+import SmallTriangleIcon from '@/components/icons/SmallTriangleIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { useState } from 'react';
 import {
   feedbackImage,
@@ -9,38 +9,39 @@ import {
   feedbackText,
   feedbackTextContainer,
 } from './FeedbackContent.styles';
-import SmallTriangleIcon from '@/components/icons/SmallTriangleIcon';
 
 export interface FeedbackContentProps {
   text: string;
-  type: FeedbackStatusType;
   imgUrl: string | null;
 }
 
 export default function FeedbackContent({
   text,
-  type,
   imgUrl,
 }: FeedbackContentProps) {
   const theme = useAppTheme();
 
-  const [showImg, setShowImg] = useState(false);
-  const [isLeaving, setIsLeaving] = useState(false);
-  const handleShowImg = () => {
-    if (showImg) {
-      setShowImg(false);
+  const [imageStatus, setImageStatus] = useState<'idle' | 'loading' | 'loaded'>(
+    'idle'
+  );
+  const showImg = imageStatus === 'loaded';
+  const isLeaving = imageStatus === 'loading';
 
-      setIsLeaving(true);
+  const handleShowImg = () => {
+    if (imageStatus === 'loaded') {
+      setImageStatus('loading');
+
       setTimeout(() => {
-        setIsLeaving(false);
+        setImageStatus('idle');
       }, 350);
     } else {
-      setShowImg(true);
+      setImageStatus('loaded');
     }
   };
+
   return (
     <div css={feedbackTextContainer}>
-      <p css={feedbackText(theme, type)}>{text}</p>
+      <p css={feedbackText(theme)}>{text}</p>
 
       {imgUrl && (
         <Button
