@@ -22,14 +22,15 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse.AdminFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
+import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCompletedException;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
@@ -40,12 +41,7 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.UUID;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -720,92 +716,80 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
     }
 
     @Nested
-    @DisplayName("피드백 엑셀 다운로드 테스트")
-    class DownloadFeedbacksTest {
+    @DisplayName("비동기 다운로드 작업 테스트")
+    class AsyncDownloadJobTest {
 
         @Test
-        @DisplayName("단체의 피드백을 엑셀 파일로 다운로드한다")
-        void downloadFeedbacks_Success() throws Exception {
-            // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
-
-            final OrganizationCategory organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(
-                    organization, SUGGESTION);
-            organizationCategoryRepository.save(organizationCategory);
-
-            final Feedback feedback1 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
-            final Feedback feedback2 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
-            feedBackRepository.save(feedback1);
-            feedBackRepository.save(feedback2);
-
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
+        @DisplayName("다운로드 작업을 성공적으로 생성한다")
+        void createDownloadJob_success() {
             // when
-            adminFeedbackService.downloadFeedbacks(organization.getUuid(), outputStream);
+            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
 
             // then
-            assertThat(outputStream.size()).isGreaterThan(0);
-
-            // 엑셀 파일 내용 검증
-            try (final Workbook workbook = new XSSFWorkbook(
-                    new ByteArrayInputStream(outputStream.toByteArray()))) {
-                final Sheet sheet = workbook.getSheetAt(0);
-
-                // 시트 이름 검증
-                assertThat(sheet.getSheetName()).isEqualTo(organization.getName().getValue());
-
-                // 헤더 행 존재 확인
-                assertThat(sheet.getRow(0)).isNotNull();
-
-                // 데이터 행 2개 존재 확인 (헤더 제외)
-                assertThat(sheet.getPhysicalNumberOfRows()).isEqualTo(3); // 헤더 1 + 데이터 2
-            }
+            assertThat(jobId).isNotNull();
+            assertThat(UUID.fromString(jobId)).isNotNull(); // UUID 형식 검증
         }
 
         @Test
-        @DisplayName("존재하지 않는 단체로 다운로드하면 예외가 발생한다")
-        void downloadFeedbacks_OrganizationNotFound() {
+        @DisplayName("존재하지 않는 단체로 작업 생성 시 예외가 발생한다")
+        void createDownloadJob_notFoundOrganization() {
             // given
             final UUID nonExistentUuid = UUID.randomUUID();
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
             // when & then
-            assertThatThrownBy(() -> adminFeedbackService.downloadFeedbacks(nonExistentUuid, outputStream))
-                    .isInstanceOf(ResourceNotFoundException.class)
-                    .hasMessageContaining("해당 ID(id = " + nonExistentUuid + ")인 단체를 찾을 수 없습니다");
+            assertThatThrownBy(() -> adminFeedbackService.createDownloadJob(nonExistentUuid))
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
 
         @Test
-        @DisplayName("파일명에 타임스탬프가 포함되어 있다")
-        void downloadFeedbacks_FileNameContainsTimestamp() {
+        @DisplayName("작업 상태를 성공적으로 조회한다")
+        void getDownloadJobStatus_success() {
             // given
-            final Organization organization = OrganizationFixture.createAllBlackBox();
-            organizationRepository.save(organization);
+            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
 
             // when
-            final String fileName = adminFeedbackService.generateExportFileName();
+            final FeedbackDownloadJob job = adminFeedbackService.getDownloadJobStatus(jobId);
 
             // then
             assertAll(
-                    () -> assertThat(fileName).matches("feedback_export_\\d{8}_\\d{6}\\.xlsx"),
-                    () -> assertThat(fileName).contains("feedback_export_")
+                    () -> assertThat(job.getJobId()).isEqualTo(jobId),
+                    () -> assertThat(job.getStatus()).isNotNull(),
+                    () -> assertThat(job.getProgress()).isGreaterThanOrEqualTo(0)
             );
         }
 
         @Test
-        @DisplayName("빈 피드백 목록을 엑셀로 다운로드한다")
-        void downloadFeedbacks_EmptyFeedbacks() {
+        @DisplayName("존재하지 않는 작업 ID로 조회 시 예외가 발생한다")
+        void getDownloadJobStatus_notFound() {
             // given
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            final String nonExistentJobId = UUID.randomUUID().toString();
 
-            // when
-            adminFeedbackService.downloadFeedbacks(organization.getUuid(), outputStream);
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.getDownloadJobStatus(nonExistentJobId))
+                    .isInstanceOf(ResourceNotFoundException.class);
+        }
 
-            // then
-            assertThat(outputStream.size()).isGreaterThan(0);
+        @Test
+        @DisplayName("완료되지 않은 작업의 다운로드 URL 요청 시 예외가 발생한다")
+        void getDownloadUrl_notCompleted() {
+            // given
+            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
+
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(jobId))
+                    .isInstanceOf(DownloadJobNotCompletedException.class)
+                    .hasMessageContaining("파일 생성이 완료되지 않았습니다");
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 작업의 다운로드 URL 요청 시 예외가 발생한다")
+        void getDownloadUrl_notFound() {
+            // given
+            final String nonExistentJobId = UUID.randomUUID().toString();
+
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(nonExistentJobId))
+                    .isInstanceOf(ResourceNotFoundException.class);
         }
     }
 }

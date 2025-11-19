@@ -6,19 +6,18 @@ import feedzupzup.backend.feedback.application.AdminFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
+import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
-import feedzupzup.backend.feedback.dto.response.FeedbackStatisticResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackDownloadJobResponse;
+import feedzupzup.backend.feedback.dto.response.FeedbackDownloadJobStatusResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.exception.FeedbackException.FeedbackDownloadException;
 import feedzupzup.backend.global.response.SuccessResponse;
 import feedzupzup.backend.organizer.dto.LoginOrganizerInfo;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -87,25 +86,34 @@ public class AdminFeedbackController implements AdminFeedbackApi {
     }
 
     @Override
-    public void downloadFeedbacks(
+    public SuccessResponse<FeedbackDownloadJobResponse> createDownloadJob(
+            final LoginOrganizerInfo loginOrganizerInfo,
+            final UUID organizationUuid
+    ) {
+        final String jobId = adminFeedbackService.createDownloadJob(organizationUuid);
+        return SuccessResponse.success(HttpStatus.ACCEPTED, new FeedbackDownloadJobResponse(jobId));
+    }
+
+    @Override
+    public SuccessResponse<FeedbackDownloadJobStatusResponse> getDownloadJobStatus(
             final LoginOrganizerInfo loginOrganizerInfo,
             final UUID organizationUuid,
+            final String jobId
+    ) {
+        final FeedbackDownloadJob job = adminFeedbackService.getDownloadJobStatus(jobId);
+        return SuccessResponse.success(HttpStatus.OK, FeedbackDownloadJobStatusResponse.from(job));
+    }
+
+    @Override
+    public void downloadFile(
+            final LoginOrganizerInfo loginOrganizerInfo,
+            final UUID organizationUuid,
+            final String jobId,
             final HttpServletResponse response
     ) {
-        final String fileName = adminFeedbackService.generateExportFileName();
+        final String downloadUrl = adminFeedbackService.getDownloadUrl(jobId);
 
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        final ContentDisposition contentDisposition = ContentDisposition.attachment()
-                .filename(fileName)
-                .build();
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, contentDisposition.toString());
-
-        try {
-            adminFeedbackService.downloadFeedbacks(loginOrganizerInfo.organizationUuid(), response.getOutputStream());
-        } catch (IOException e) {
-            throw new FeedbackDownloadException(
-                    String.format("피드백 파일 다운로드 중 오류가 발생했습니다. organizationUuid=%s",
-                            loginOrganizerInfo.organizationUuid()));
-        }
+        response.setStatus(HttpServletResponse.SC_FOUND);
+        response.setHeader(HttpHeaders.LOCATION, downloadUrl);
     }
 }
