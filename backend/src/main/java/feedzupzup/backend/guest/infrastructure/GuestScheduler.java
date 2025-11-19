@@ -33,7 +33,6 @@ public class GuestScheduler {
         final int deletedCount = guestService.removeUnActiveGuest();
         if (deletedCount == 0) {
             log.info("비활성 유저가 존재하지 않아 스케줄러 작동 패스");
-            log.info("비활성 유저 삭제 스케줄러 작동 완료");
             return;
         }
         log.info("비활성 유저 {}명 삭제 완료", deletedCount);
