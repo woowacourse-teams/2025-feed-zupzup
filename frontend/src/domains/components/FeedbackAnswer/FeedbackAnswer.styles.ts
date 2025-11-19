@@ -18,10 +18,3 @@ export const title = (theme: Theme) => css`
   font-weight: bold;
   color: ${theme.colors.green[200]};
 `;
-
-export const adminAnswer = css`
-  line-height: 24px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow-wrap: break-word;
-`;

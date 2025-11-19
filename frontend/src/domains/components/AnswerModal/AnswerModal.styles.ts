@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { Theme } from '@/theme';
+import { multilineTextWrap } from '@/domains/styles/text.style';
 
 export const container = css`
   display: flex;
@@ -45,10 +46,7 @@ export const contentTextarea = (theme: Theme) => css`
   border-radius: 10px;
   resize: none;
 
-  line-height: 24px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow-wrap: break-word;
+  ${multilineTextWrap}
 
   &::placeholder {
     color: ${theme.colors.gray[600]};

@@ -1,13 +1,11 @@
+import { multilineTextWrap } from '@/domains/styles/text.style';
 import { Theme } from '@/theme';
 import { css, keyframes } from '@emotion/react';
 
 export const feedbackText = (theme: Theme) => css`
   ${theme.typography.pretendard.caption}
 
-  line-height: 24px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow-wrap: break-word;
+  ${multilineTextWrap}
 `;
 
 export const feedbackTextContainer = css`
