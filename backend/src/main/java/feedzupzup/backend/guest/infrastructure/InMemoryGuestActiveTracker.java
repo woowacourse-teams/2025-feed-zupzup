@@ -29,4 +29,9 @@ public class InMemoryGuestActiveTracker implements GuestActiveTracker {
     public void removeAll(Set<UUID> processedGuests) {
         todayActiveGuests.removeAll(processedGuests);
     }
+
+    @Override
+    public void clear() {
+        todayActiveGuests.clear();
+    }
 }
