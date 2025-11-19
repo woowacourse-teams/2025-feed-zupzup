@@ -16,6 +16,7 @@ public class RetryExecutor {
                 boolean isSuccess = action.get();
                 if (isSuccess) {
                     log.info(taskName + " 작업 성공");
+                    return;
                 }
             } catch (Exception e) {
                 log.warn("[{}] 에러 발생으로 인한 재시도 (시도: {}/{}) - {}", taskName, i, maxRetries,
