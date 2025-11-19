@@ -9,5 +9,5 @@ public interface GuestActiveTracker {
 
     Set<UUID> getTodayActiveGuests();
 
-    void clear();
+    void removeAll(Set<UUID> guests);
 }

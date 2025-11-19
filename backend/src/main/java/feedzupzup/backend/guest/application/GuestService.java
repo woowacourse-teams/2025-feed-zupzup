@@ -79,7 +79,7 @@ public class GuestService {
                         CurrentDateTime.create()
                 );
                 log.info("금일 접속 사용자 수 : " + updateGuestsCount);
-                guestActiveTracker.clear();
+                guestActiveTracker.removeAll(activeGuests);
                 return true;
             } finally {
                 lockRepository.releaseLock(GUEST_STATUS_UPDATE_KEY);
