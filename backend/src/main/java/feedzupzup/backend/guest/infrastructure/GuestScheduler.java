@@ -1,21 +1,11 @@
 package feedzupzup.backend.guest.infrastructure;
 
 import feedzupzup.backend.global.domain.RetryExecutor;
-import feedzupzup.backend.global.util.CurrentDateTime;
 import feedzupzup.backend.guest.application.GuestService;
-import feedzupzup.backend.guest.domain.guest.GuestActiveTracker;
-import feedzupzup.backend.guest.domain.guest.GuestRepository;
-import feedzupzup.backend.guest.domain.like.LikeHistoryRepository;
-import feedzupzup.backend.guest.domain.write.WriteHistoryRepository;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -23,45 +13,31 @@ import org.springframework.transaction.annotation.Transactional;
 public class GuestScheduler {
 
     private final GuestService guestService;
-    private final GuestActiveTracker guestActiveTracker;
-    private final GuestRepository guestRepository;
-    private final WriteHistoryRepository writeHistoryRepository;
-    private final LikeHistoryRepository likeHistoryRepository;
 
     @Scheduled(cron = "0 0 1 * * *")
     public void updateDailyActiveGuestConnectedTime() {
         log.info("Active 유저 업데이트 스케줄러 작동 시작");
-        final Set<UUID> activeGuests = guestActiveTracker.getTodayActiveGuests();
-        if (activeGuests.isEmpty()) {
-            log.info("Active 유저가 존재하지 않아 금일 스케줄러 작동 패스");
-            return;
-        }
-
-        String lockKey = "user_last_connected_lock";
         int maxRetries = 3;
         RetryExecutor.execute(
-                () -> guestService.processUpdateWithLock(lockKey, activeGuests),
+                guestService::processUpdateWithLock,
                 maxRetries,
                 1000,
                 "Active 유저 업데이트"
         );
+        log.info("Active 유저 업데이트 스케줄러 작동 완료");
     }
 
     @Scheduled(cron = "0 5 1 * * *")
-    @Transactional
     public void removeUnActiveGuest() {
         log.info("비활성 유저 삭제 스케줄러 작동 시작");
-        final LocalDateTime targetDateTime = CurrentDateTime.create().minusMonths(3);
-        final List<Long> unActivateGuests = guestRepository.findAllByConnectedTimeBefore(targetDateTime);
-
-        if (unActivateGuests.isEmpty()) {
+        final int deletedCount = guestService.removeUnActiveGuest();
+        if (deletedCount == 0) {
             log.info("비활성 유저가 존재하지 않아 스케줄러 작동 패스");
+            log.info("비활성 유저 삭제 스케줄러 작동 완료");
             return;
         }
+        log.info("비활성 유저 {}명 삭제 완료", deletedCount);
+        log.info("비활성 유저 삭제 스케줄러 작동 완료");
 
-        writeHistoryRepository.deleteByGuestIdIn(unActivateGuests);
-        likeHistoryRepository.deleteByGuestIdIn(unActivateGuests);
-        guestRepository.deleteAllById(unActivateGuests);
-        log.info("비활성 유저 {}명 삭제 완료 - IDs: {}", unActivateGuests.size(), unActivateGuests);
     }
 }
