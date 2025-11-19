@@ -32,30 +32,46 @@ export default function ImageUploadWithPreview({
     <div css={container}>
       <div css={controlRow}>
         {!imgUrl ? (
-          <label css={uploadLabel(theme)}>
-            <input
-              type='file'
-              accept={'image/*'}
-              onChange={onChangeFile}
-              aria-label='이미지 업로드'
-              css={fileInput}
-            />
-            이미지 업로드
-          </label>
+          <>
+            <label
+              css={uploadLabel(theme)}
+              aria-label={'이미지 업로드, 선택된 파일 없음'}
+            >
+              <input
+                type='file'
+                accept={'image/*'}
+                onChange={onChangeFile}
+                css={fileInput}
+              />
+              <span aria-hidden='true'>이미지 업로드</span>
+            </label>
+          </>
         ) : (
           <BasicButton
             onClick={onCancelFile}
             height='32px'
             width='110px'
             padding='0px'
+            aria-label={`업로드한 ${fileName} 제거`}
           >
             이미지 제거
           </BasicButton>
         )}
 
-        <p css={fileInfo(theme)} aria-live='polite'>
+        <p css={fileInfo(theme)} aria-hidden={true}>
           {fileName}
         </p>
+
+        {imgUrl && (
+          <p
+            className='srOnly'
+            aria-live='assertive'
+            role='status'
+            aria-atomic='true'
+          >
+            <span className='srOnly'>선택된 파일: {fileName}</span>
+          </p>
+        )}
       </div>
 
       {imgUrl && (

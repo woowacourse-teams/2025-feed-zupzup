@@ -1,6 +1,8 @@
 import ClockIcon from '@/components/icons/ClockIcon';
+import Tag from '@/components/Tag/Tag';
 import LikeButton from '@/domains/components/LikeButton/LikeButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import {
   calendar,
   confirmedText,
@@ -8,9 +10,6 @@ import {
   content,
   day,
 } from './FeedbackBoxFooter.styles';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import Tag from '@/components/Tag/Tag';
-import { formatRelativeTime } from '@/utils/formatRelativeTime';
 
 interface FeedbackBoxFooterProps {
   likeCount: number;
@@ -37,12 +36,16 @@ export default function FeedbackBoxFooter({
     <div css={container}>
       <div css={calendar(theme)}>
         <ClockIcon />
-        <p css={day(theme)}>{formatRelativeTime(postedAt ?? '')}</p>
+        <time css={day(theme)} dateTime={postedAt}>
+          {postedAt}
+        </time>
       </div>
 
       <div css={content(theme)}>
         {type === 'CONFIRMED' && (
-          <Tag customCSS={confirmedText(theme)}> ✅ 완료</Tag>
+          <Tag customCSS={confirmedText(theme)}>
+            <span aria-hidden={true}>✅</span> 완료
+          </Tag>
         )}
         {!isSecret && (
           <LikeButton

@@ -28,7 +28,9 @@ export default function StatusBox({
 
   return (
     <div css={[container(theme, width, height), customCSS]}>
-      <div css={textIconContainer(theme)}>{textIcon}</div>
+      <div css={textIconContainer(theme)} aria-hidden={true}>
+        {textIcon}
+      </div>
       <div css={titleContainer(theme)}>{title}</div>
       <div css={descriptionContainer(theme)}>{description}</div>
     </div>

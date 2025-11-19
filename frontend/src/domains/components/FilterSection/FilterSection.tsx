@@ -67,6 +67,7 @@ export default memo(function FilterSection({
             type='button'
             customCSS={tagButton(theme)}
             onClick={() => handleFilterClick(option.value)}
+            aria-label={`${option.label} 필터 ${selectedFilter === option.value ? '선택됨' : '선택안됨'}`}
           >
             <Tag
               key={option.value}
