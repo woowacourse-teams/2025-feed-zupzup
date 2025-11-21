@@ -19,4 +19,8 @@ export const QUERY_KEYS = {
     ['aiSummaryDetail', organizationId, clusterId] as const,
   myLikeFeedbackIds: (organizationId: string) =>
     ['myLikeFeedbackIds', organizationId] as const,
+  feedbackDownloadStatus: (jobId: string, organizationId: string) =>
+    ['feedbackDownloadStatus', jobId, organizationId] as const,
+  organizationFeedbacksFile: (jobId: string, organizationId: string) =>
+    ['organizationFeedbacksFile', jobId, organizationId] as const,
 };

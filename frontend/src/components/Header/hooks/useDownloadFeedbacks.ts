@@ -1,39 +1,52 @@
-import { getOrganizationFeedbacksFile } from '@/apis/adminFeedback.api';
-import useOrganizationName from '@/domains/hooks/useOrganizationName';
-import { useQuery } from '@tanstack/react-query';
+import useDownloadFeedbacksFile from '@/components/Header/hooks/useDownloadFeedbacksFile';
+import usePollingFeedbackDownloadStatus from '@/components/Header/hooks/usePollingFeedbackDownloadStatus';
+import { useToast } from '@/contexts/useToast';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import usePreventWindowClose from '@/domains/hooks/usePreventWindowClose';
+import { useEffect, useState } from 'react';
 
-export const useDownloadFeedbacks = (organizationId: string) => {
-  const { groupName } = useOrganizationName({
+export default function useDownloadFeedbacks() {
+  const { organizationId } = useOrganizationId();
+  const [jobId, setJobId] = useState<string>('');
+  const { showToast } = useToast();
+
+  const { data: feedbackDownloadStatus } = usePollingFeedbackDownloadStatus({
+    jobId,
     organizationId,
   });
 
-  return useQuery({
-    queryKey: ['organizationFeedbacksFile', organizationId],
-    queryFn: async () => {
-      const response = await getOrganizationFeedbacksFile({
-        organizationUuid: organizationId,
-      });
+  const { refetch: fileDownload } = useDownloadFeedbacksFile({
+    organizationId,
+    jobId,
+    downloadEnabled: feedbackDownloadStatus?.jobStatus === 'COMPLETED',
+  });
 
-      if (!response) {
-        throw new Error('피드백 파일을 다운로드하는 데 실패했습니다.');
+  usePreventWindowClose({
+    isDownloading: feedbackDownloadStatus?.jobStatus === 'PROCESSING',
+  });
+
+  useEffect(() => {
+    const handleDownload = async () => {
+      if (feedbackDownloadStatus?.jobStatus === 'FAILED') {
+        showToast(
+          '피드백 데이터 다운로드에 실패했습니다. 잠시후 다시 시도해주세요',
+          'error',
+          3000
+        );
       }
 
-      const now = new Date();
-      const formattedDate = now.toISOString().split('T')[0];
-      const safeOrgName = groupName.replace(/[\\/:*?"<>|]/g, '_');
-      const filename = `${safeOrgName}_feedbacks_${formattedDate}.xlsx`;
+      if (feedbackDownloadStatus?.jobStatus === 'COMPLETED') {
+        console.log('download start');
+        await fileDownload();
+        showToast('피드백 데이터가 다운로드되었습니다.', 'success', 3000);
+      }
+    };
 
-      const url = window.URL.createObjectURL(response);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
+    handleDownload();
+  }, [showToast, feedbackDownloadStatus, fileDownload]);
 
-      window.URL.revokeObjectURL(url);
-      return true;
-    },
-    enabled: false,
-  });
-};
-
-export default useDownloadFeedbacks;
+  return {
+    feedbackDownloadStatus,
+    setJobId,
+  };
+}

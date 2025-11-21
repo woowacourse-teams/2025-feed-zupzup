@@ -37,14 +37,61 @@ export async function getFeedbackStatistics(): Promise<GetFeedbackStatisticsResp
   return response as GetFeedbackStatisticsResponse;
 }
 
-interface GetOrganizationFeedbacksFileParams {
+interface PostOrganizationsFileDownloadParams {
   organizationUuid: string;
 }
-export async function getOrganizationFeedbacksFile({
+
+type JobIdType = {
+  jobId: string;
+};
+
+type PostOrgFileDownloadResponse = ApiResponse<JobIdType>;
+
+export async function postOrgFileDownload({
   organizationUuid,
-}: GetOrganizationFeedbacksFileParams) {
+}: PostOrganizationsFileDownloadParams): Promise<PostOrgFileDownloadResponse> {
+  const response = await apiClient.post(
+    `/admin/organizations/${organizationUuid}/download-jobs`,
+    {}
+  );
+  return response as PostOrgFileDownloadResponse;
+}
+
+interface GetOrgFileDownloadParams {
+  organizationUuid: string;
+  jobId: string;
+}
+
+export type FileDownloadStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'COMPLETED'
+  | 'FAILED';
+
+export type FileDownloadType = {
+  jobStatus: FileDownloadStatus;
+  progress: number;
+};
+
+export type GetOrgFileDownloadStatusResponse = ApiResponse<FileDownloadType>;
+
+export async function getOrgFileDownloadStatus({
+  organizationUuid,
+  jobId,
+}: GetOrgFileDownloadParams): Promise<GetOrgFileDownloadStatusResponse> {
+  const response = await apiClient.get(
+    `/admin/organizations/${organizationUuid}/download-jobs/${jobId}/status `
+  );
+
+  return response as GetOrgFileDownloadStatusResponse;
+}
+
+export async function getOrgFileDownload({
+  organizationUuid,
+  jobId,
+}: GetOrgFileDownloadParams) {
   return await apiClient.get<Blob>(
-    `/admin/organizations/${organizationUuid}/feedbacks/download`,
+    `/admin/organizations/${organizationUuid}/download-jobs/${jobId}`,
     {
       responseType: 'blob',
       timeout: 20000,

@@ -3,7 +3,7 @@ import {
   moreMenuItemContainer,
   moreMenuItemIcon,
   moreMenuItemText,
-} from '@/components/Header/MoreMenuItem/MoreMenuItem.styles';
+} from '@/components/Header/styles/MoreMenuItem.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface MoreMenuItemProps extends React.ComponentProps<'button'> {
@@ -16,7 +16,7 @@ export default function MoreMenuItem({
   icon,
   menu,
   onClick,
-  disabled = true,
+  disabled = false,
 }: MoreMenuItemProps) {
   const theme = useAppTheme();
 

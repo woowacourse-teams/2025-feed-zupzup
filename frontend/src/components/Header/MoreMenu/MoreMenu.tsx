@@ -1,7 +1,9 @@
+import { FileDownloadType } from '@/apis/adminFeedback.api';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
-import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
+import useStartDownloadFeedbacks from '@/components/Header/hooks/useStartDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
+import ProgressMenuItem from '@/components/Header/ProgressMenuItem/ProgressMenuItem';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
@@ -15,14 +17,24 @@ import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
+  feedbackDownloadStatus?: FileDownloadType | undefined;
+  setJobId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
+export default function MoreMenu({
+  closeMoreMenu,
+  setJobId,
+  feedbackDownloadStatus,
+}: MoreMenuProps) {
   const { openModal, closeModal } = useModalContext();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
-  const { organizationId } = useOrganizationId();
-  const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
   const { showToast } = useToast();
+  const { organizationId } = useOrganizationId();
+
+  const { mutateAsync: startDownloadFeedbacks } = useStartDownloadFeedbacks({
+    organizationId,
+    setJobId,
+  });
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal onClose={closeModal} />);
@@ -58,8 +70,19 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       2000
     );
 
-    closeMoreMenu();
-    await refetch();
+    try {
+      const { data } = await startDownloadFeedbacks();
+      setJobId(data.jobId);
+    } catch {
+      showToast(
+        '피드백 데이터 추출에 실패했습니다. 다시 시도해주세요.',
+        'error',
+        3000
+      );
+      return;
+    } finally {
+      closeMoreMenu();
+    }
   };
 
   const moreMenuList = [
@@ -74,6 +97,9 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       menu: '방 삭제',
       onClick: handleDeleteClick,
     },
+  ];
+
+  const downloadMoreMenuList = [
     {
       icon: <FileDownloadIcon />,
       menu: '피드백 추출',
@@ -89,7 +115,17 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
           icon={item.icon}
           menu={item.menu}
           onClick={item.onClick}
-          disabled={isFetching && item.menu === '피드백 추출'}
+        />
+      ))}
+
+      {downloadMoreMenuList.map((item, index) => (
+        <ProgressMenuItem
+          key={index}
+          icon={item.icon}
+          menu={item.menu}
+          onClick={item.onClick}
+          progress={feedbackDownloadStatus?.progress || 0}
+          disabled={feedbackDownloadStatus?.jobStatus === 'PROCESSING'}
         />
       ))}
     </div>
