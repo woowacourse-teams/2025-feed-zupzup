@@ -20,7 +20,6 @@ export interface ConfirmModalProps {
   width?: number;
   height?: number;
   disabled?: boolean;
-  confirmDisabled?: boolean;
   children?: React.ReactNode;
 }
 
@@ -34,7 +33,6 @@ export default function ConfirmModal({
   width = 300,
   height,
   disabled = false,
-  confirmDisabled = false,
   children,
 }: ConfirmModalProps) {
   const theme = useAppTheme();
@@ -69,7 +67,7 @@ export default function ConfirmModal({
           width='calc(50% - 12px)'
           onClick={handleConfirm}
           height='30px'
-          disabled={disabled || confirmDisabled}
+          disabled={disabled}
         >
           {confirmText}
         </BasicButton>

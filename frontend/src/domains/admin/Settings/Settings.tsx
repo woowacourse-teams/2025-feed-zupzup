@@ -147,7 +147,7 @@ export default function Settings() {
             onConfirm={handleWithdraw}
             onClose={closeModal}
             confirmText='탈퇴하기'
-            confirmDisabled={!isWithdrawChecked}
+            disabled={!isWithdrawChecked}
           >
             <div css={withdrawModalContent}>
               <p css={withdrawWarningText(theme)}>
