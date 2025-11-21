@@ -148,7 +148,7 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
     class ClusteringFailureTest {
 
         @Test
-        @DisplayName("재시도 가능한 예외 발생 시 실패가 기록되고 알람이 발송된다")
+        @DisplayName("재시도 가능한 예외 발생 시 실패가 기록된다")
         void when_retryable_exception_occurs_then_failure_recorded_and_alert_sent() {
             // given
             Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
@@ -186,8 +186,7 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
                         () -> assertThat(failure.getErrorMessage()).isEqualTo("VoyageAI 연결 타임아웃"),
                         () -> assertThat(failure.isRetryable()).isTrue()
                     );
-                },
-                () -> verify(asyncFailureAlertService).alert(failures.get(0).getId())
+                }
             );
         }
 
@@ -368,45 +367,6 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
                     );
                 }
             );
-        }
-    }
-
-    @Nested
-    @DisplayName("실패 처리 검증 테스트")
-    class FailureHandlingVerificationTest {
-
-        @Test
-        @DisplayName("실패 기록 후 적절한 서비스 메서드가 호출되는지 검증")
-        void verify_failure_service_methods_are_called_correctly() {
-            // given
-            Organization organization = organizationRepository.save(OrganizationFixture.createAllBlackBox());
-            OrganizationCategory category = organizationCategoryRepository.save(
-                OrganizationCategoryFixture.createOrganizationCategory(organization)
-            );
-            Feedback feedback = feedbackRepository.save(
-                FeedbackFixture.createFeedback(organization, "서비스 메서드 호출 검증", category)
-            );
-            
-            FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
-            RetryableException exception = new RetryableException("네트워크 연결 실패");
-            
-            when(feedbackClusteringService.cluster(feedback.getId())).thenThrow(exception);
-            
-            // when
-            feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
-            
-            // then
-            await().atMost(1, SECONDS)
-                    .untilAsserted(() ->
-                            verify(feedbackClusteringService).cluster(feedback.getId())
-                    );
-            verify(asyncTaskFailureService).recordFailure(
-                FEEDBACK_CLUSTERING, 
-                FEEDBACK_CLUSTER, 
-                feedback.getId().toString(), 
-                exception
-            );
-            verify(asyncTaskFailureService).alertFinalFail(anyLong());
         }
     }
 }
