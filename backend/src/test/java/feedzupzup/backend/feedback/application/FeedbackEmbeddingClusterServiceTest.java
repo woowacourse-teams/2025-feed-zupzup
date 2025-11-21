@@ -99,16 +99,16 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             given(embeddingExtractor.extract("새로운 피드백")).willReturn(newEmbedding);
             
             // 기존 피드백 클러스터링 수행
-            FeedbackEmbeddingCluster existingCluster = feedbackClusteringService.cluster(savedExistingFeedback.getId());
-            final Long existingClusterId = existingCluster.getEmbeddingCluster().getId();
-
+            Long existingClusterId = feedbackClusteringService.cluster(savedExistingFeedback.getId());
             // when
-            FeedbackEmbeddingCluster result = feedbackClusteringService.cluster(savedNewFeedback.getId());
+            Long resultId = feedbackClusteringService.cluster(savedNewFeedback.getId());
 
             // then
+            FeedbackEmbeddingCluster result = feedbackEmbeddingClusterRepository.findById(resultId).get();
+            FeedbackEmbeddingCluster existingClusterEntity = feedbackEmbeddingClusterRepository.findById(existingClusterId).get();
             assertAll(
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getEmbeddingCluster().getId()).isEqualTo(existingClusterId),
+                    () -> assertThat(result.getEmbeddingCluster().getId()).isEqualTo(existingClusterEntity.getEmbeddingCluster().getId()),
                     () -> assertThat(result.getSimilarityScore()).isGreaterThan(0.83)
             );
             verify(embeddingExtractor).extract("기존 피드백");
@@ -125,7 +125,8 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
                     organization, "첫 번째 클러스터", organizationCategory);
             final Feedback savedFeedback1 = feedbackRepository.save(feedback1);
             given(embeddingExtractor.extract("첫 번째 클러스터")).willReturn(embedding1);
-            FeedbackEmbeddingCluster cluster1 = feedbackClusteringService.cluster(savedFeedback1.getId());
+            Long cluster1Id = feedbackClusteringService.cluster(savedFeedback1.getId());
+            FeedbackEmbeddingCluster cluster1 = feedbackEmbeddingClusterRepository.findById(cluster1Id).get();
             final Long clusterId1 = cluster1.getEmbeddingCluster().getId();
             
             // 두 번째 피드백 생성 및 클러스터링 (다른 클러스터)
@@ -134,7 +135,8 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
                     organization, "두 번째 클러스터", organizationCategory);
             final Feedback savedFeedback2 = feedbackRepository.save(feedback2);
             given(embeddingExtractor.extract("두 번째 클러스터")).willReturn(embedding2);
-            FeedbackEmbeddingCluster cluster2 = feedbackClusteringService.cluster(savedFeedback2.getId());
+            Long cluster2Id = feedbackClusteringService.cluster(savedFeedback2.getId());
+            FeedbackEmbeddingCluster cluster2 = feedbackEmbeddingClusterRepository.findById(cluster2Id).get();
             final Long clusterId2 = cluster2.getEmbeddingCluster().getId();
 
             // 새로운 피드백 생성
@@ -146,9 +148,10 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             given(embeddingExtractor.extract("새로운 피드백")).willReturn(newEmbedding);
 
             // when
-            FeedbackEmbeddingCluster result = feedbackClusteringService.cluster(savedNewFeedback.getId());
+            Long resultId = feedbackClusteringService.cluster(savedNewFeedback.getId());
 
             // then - 더 유사한 두 번째 클러스터에 할당되어야 함
+            FeedbackEmbeddingCluster result = feedbackEmbeddingClusterRepository.findById(resultId).get();
             assertThat(result.getEmbeddingCluster().getId()).isEqualTo(clusterId2);
             verify(embeddingExtractor).extract("첫 번째 클러스터");
             verify(embeddingExtractor).extract("두 번째 클러스터");
@@ -169,8 +172,9 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             given(embeddingExtractor.extract("기존 피드백")).willReturn(existingEmbedding);
             
             // 기존 피드백 클러스터링 수행
-            FeedbackEmbeddingCluster existingCluster = feedbackClusteringService.cluster(savedExistingFeedback.getId());
-            final Long existingClusterId = existingCluster.getEmbeddingCluster().getId();
+            Long existingClusterId = feedbackClusteringService.cluster(savedExistingFeedback.getId());
+            FeedbackEmbeddingCluster existingCluster = feedbackEmbeddingClusterRepository.findById(existingClusterId).get();
+            final Long existingClusterEntityId = existingCluster.getEmbeddingCluster().getId();
 
             // 새로운 피드백 생성  
             final Feedback newFeedback = FeedbackFixture.createFeedbackWithContent(
@@ -181,12 +185,13 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             given(embeddingExtractor.extract("새로운 피드백")).willReturn(newEmbedding);
 
             // when
-            FeedbackEmbeddingCluster result = feedbackClusteringService.cluster(savedNewFeedback.getId());
+            Long resultId = feedbackClusteringService.cluster(savedNewFeedback.getId());
 
             // then
+            FeedbackEmbeddingCluster result = feedbackEmbeddingClusterRepository.findById(resultId).get();
             assertAll(
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getEmbeddingCluster().getId()).isNotEqualTo(existingClusterId),
+                    () -> assertThat(result.getEmbeddingCluster().getId()).isNotEqualTo(existingClusterEntityId),
                     () -> assertThat(result.getSimilarityScore()).isEqualTo(1.0) // 새 클러스터는 유사도 1.0
             );
         }
@@ -205,8 +210,9 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
                     otherOrganization, "다른 조직 피드백", otherOrgCategory);
             final Feedback savedOtherOrgFeedback = feedbackRepository.save(otherOrgFeedback);
             given(embeddingExtractor.extract("다른 조직 피드백")).willReturn(otherOrgEmbedding);
-            FeedbackEmbeddingCluster otherOrgCluster = feedbackClusteringService.cluster(savedOtherOrgFeedback.getId());
-            final Long otherOrgClusterId = otherOrgCluster.getEmbeddingCluster().getId();
+            Long otherOrgClusterId = feedbackClusteringService.cluster(savedOtherOrgFeedback.getId());
+            FeedbackEmbeddingCluster otherOrgCluster = feedbackEmbeddingClusterRepository.findById(otherOrgClusterId).get();
+            final Long otherOrgClusterEntityId = otherOrgCluster.getEmbeddingCluster().getId();
 
             // 내 조직의 새 피드백
             final Feedback myFeedback = FeedbackFixture.createFeedbackWithContent(
@@ -218,12 +224,13 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             given(embeddingExtractor.extract("내 조직 피드백")).willReturn(myEmbedding);
 
             // when
-            FeedbackEmbeddingCluster result = feedbackClusteringService.cluster(savedMyFeedback.getId());
+            Long resultId = feedbackClusteringService.cluster(savedMyFeedback.getId());
 
             // then
+            FeedbackEmbeddingCluster result = feedbackEmbeddingClusterRepository.findById(resultId).get();
             assertAll(
                     () -> assertThat(result).isNotNull(),
-                    () -> assertThat(result.getEmbeddingCluster().getId()).isNotEqualTo(otherOrgClusterId),
+                    () -> assertThat(result.getEmbeddingCluster().getId()).isNotEqualTo(otherOrgClusterEntityId),
                     () -> assertThat(result.getSimilarityScore()).isEqualTo(1.0) // 새 클러스터 생성
             );
         }
@@ -246,7 +253,8 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             given(embeddingExtractor.extract("테스트 피드백")).willReturn(embedding);
             given(clusterLabelGenerator.generate(anyList())).willReturn("생성된 라벨");
 
-            FeedbackEmbeddingCluster cluster = feedbackClusteringService.cluster(savedFeedback.getId());
+            Long clusterId = feedbackClusteringService.cluster(savedFeedback.getId());
+            FeedbackEmbeddingCluster cluster = feedbackEmbeddingClusterRepository.findById(clusterId).get();
 
             // when
             feedbackClusteringService.createLabel(cluster.getId());
@@ -269,7 +277,8 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
                 final Feedback feedback = FeedbackFixture.createFeedbackWithContent(
                         organization, "피드백 " + i, organizationCategory);
                 final Feedback savedFeedback = feedbackRepository.save(feedback);
-                FeedbackEmbeddingCluster cluster = feedbackClusteringService.cluster(savedFeedback.getId());
+                Long clusterId = feedbackClusteringService.cluster(savedFeedback.getId());
+                FeedbackEmbeddingCluster cluster = feedbackEmbeddingClusterRepository.findById(clusterId).get();
                 if (i == 1) {
                     firstCluster = cluster;
                 }
@@ -293,13 +302,14 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
             final double[] embedding = {0.1, 0.2, 0.3, 0.4, 0.5};
             given(embeddingExtractor.extract(any(String.class))).willReturn(embedding);
 
-            FeedbackEmbeddingCluster firstCluster = feedbackClusteringService.cluster(savedFeedback1.getId());
+            Long firstClusterId = feedbackClusteringService.cluster(savedFeedback1.getId());
+            FeedbackEmbeddingCluster firstCluster = feedbackEmbeddingClusterRepository.findById(firstClusterId).get();
             firstCluster.getEmbeddingCluster().updateLabel("기존 라벨");
 
             final Feedback feedback2 = FeedbackFixture.createFeedbackWithContent(
                     organization, "피드백 2", organizationCategory);
             final Feedback savedFeedback2 = feedbackRepository.save(feedback2);
-            feedbackClusteringService.cluster(savedFeedback2.getId());
+            Long secondClusterId = feedbackClusteringService.cluster(savedFeedback2.getId());
 
             // when
             feedbackClusteringService.createLabel(firstCluster.getId());
