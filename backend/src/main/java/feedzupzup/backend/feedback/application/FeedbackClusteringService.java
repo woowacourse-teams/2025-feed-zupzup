@@ -34,7 +34,7 @@ public class FeedbackClusteringService {
 
     // TODO : embedding 트랜잭션애 포함되어 커넥션 잡아먹음. 추후 수정 필요
     @Transactional
-    public FeedbackEmbeddingCluster cluster(final Long createdFeedbackId) {
+    public Long cluster(final Long createdFeedbackId) {
         final Feedback createdFeedback = getFeedback(createdFeedbackId);
         if (feedbackEmbeddingClusterRepository.existsByFeedback(createdFeedback)) {
             throw new AlreadyClusteringException("이미 클러스터링 된 피드백입니다. (feedabckId = " + createdFeedbackId + ")");
@@ -48,10 +48,10 @@ public class FeedbackClusteringService {
             embeddingClusterRepository.save(empty);
             final FeedbackEmbeddingCluster newCluster = FeedbackEmbeddingCluster.createNewCluster(createdFeedbackEmbedding,
                     createdFeedback, empty);
-            return feedbackEmbeddingClusterRepository.save(newCluster);
+            return feedbackEmbeddingClusterRepository.save(newCluster).getId();
         }
 
-        return feedbackEmbeddingClusterRepository.save(assignedCluster.get());
+        return feedbackEmbeddingClusterRepository.save(assignedCluster.get()).getId();
     }
 
     private Optional<FeedbackEmbeddingCluster> assignCluster(final Feedback createdFeedback, final double[] createdFeedbackEmbedding) {
