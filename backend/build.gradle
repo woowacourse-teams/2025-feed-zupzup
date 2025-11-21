@@ -82,6 +82,10 @@ dependencies {
 
     //profanity filter
     implementation 'io.github.vaneproject:vane-badwordfiltering:1.0.0'
+
+    //retry and rate limiting
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework:spring-aspects'
 }
 
 tasks.register('copySecret', Copy) {

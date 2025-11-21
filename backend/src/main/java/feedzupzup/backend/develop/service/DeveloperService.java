@@ -61,8 +61,8 @@ public class DeveloperService {
             }
 
             try {
-                FeedbackEmbeddingCluster cluster = feedbackClusteringService.cluster(feedback.getId());
-                feedbackClusteringService.createLabel(cluster.getId());
+                Long clusterId = feedbackClusteringService.cluster(feedback.getId());
+                feedbackClusteringService.createLabel(clusterId);
                 processedCount++;
             } catch (Exception e) {
                 log.error("피드백 ID {} 클러스터링 실패: {}", feedback.getId(), e.getMessage());

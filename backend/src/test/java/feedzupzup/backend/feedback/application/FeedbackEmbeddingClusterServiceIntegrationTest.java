@@ -72,8 +72,10 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
             final Feedback savedSecondFeedback = feedbackRepository.save(secondFeedback);
 
             // when
-            FeedbackEmbeddingCluster firstCluster = feedbackClusteringService.cluster(savedFirstFeedback.getId());
-            FeedbackEmbeddingCluster secondCluster = feedbackClusteringService.cluster(savedSecondFeedback.getId());
+            Long firstClusterId = feedbackClusteringService.cluster(savedFirstFeedback.getId());
+            FeedbackEmbeddingCluster firstCluster = feedbackEmbeddingClusterRepository.findById(firstClusterId).get();
+            Long secondClusterId = feedbackClusteringService.cluster(savedSecondFeedback.getId());
+            FeedbackEmbeddingCluster secondCluster = feedbackEmbeddingClusterRepository.findById(secondClusterId).get();
 
             // then
             assertAll(
@@ -100,8 +102,10 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
             final Feedback savedServiceFeedback = feedbackRepository.save(serviceFeedback);
 
             // when
-            FeedbackEmbeddingCluster foodCluster = feedbackClusteringService.cluster(savedFoodFeedback.getId());
-            FeedbackEmbeddingCluster serviceCluster = feedbackClusteringService.cluster(savedServiceFeedback.getId());
+            Long foodClusterId = feedbackClusteringService.cluster(savedFoodFeedback.getId());
+            FeedbackEmbeddingCluster foodCluster = feedbackEmbeddingClusterRepository.findById(foodClusterId).get();
+            Long serviceClusterId = feedbackClusteringService.cluster(savedServiceFeedback.getId());
+            FeedbackEmbeddingCluster serviceCluster = feedbackEmbeddingClusterRepository.findById(serviceClusterId).get();
 
             // then
             assertAll(
@@ -145,9 +149,12 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
             final Feedback savedComplexITFeedback = feedbackRepository.save(complexITFeedback);
 
             // when
-            FeedbackEmbeddingCluster restaurantCluster1 = feedbackClusteringService.cluster(savedComplexRestaurantFeedback.getId());
-            FeedbackEmbeddingCluster restaurantCluster2 = feedbackClusteringService.cluster(savedSimilarRestaurantFeedback.getId());
-            FeedbackEmbeddingCluster itCluster = feedbackClusteringService.cluster(savedComplexITFeedback.getId());
+            Long restaurantCluster1Id = feedbackClusteringService.cluster(savedComplexRestaurantFeedback.getId());
+            FeedbackEmbeddingCluster restaurantCluster1 = feedbackEmbeddingClusterRepository.findById(restaurantCluster1Id).get();
+            Long restaurantCluster2Id = feedbackClusteringService.cluster(savedSimilarRestaurantFeedback.getId());
+            FeedbackEmbeddingCluster restaurantCluster2 = feedbackEmbeddingClusterRepository.findById(restaurantCluster2Id).get();
+            Long itClusterId = feedbackClusteringService.cluster(savedComplexITFeedback.getId());
+            FeedbackEmbeddingCluster itCluster = feedbackEmbeddingClusterRepository.findById(itClusterId).get();
 
             // then
             assertAll(
@@ -183,16 +190,17 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
             final Feedback firstFeedback = FeedbackFixture.createFeedbackWithContent(
                     organization, positiveFoodReviews[0], organizationCategory);
             final Feedback savedFirstFeedback = feedbackRepository.save(firstFeedback);
-            FeedbackEmbeddingCluster firstCluster = feedbackClusteringService.cluster(savedFirstFeedback.getId());
+            Long firstClusterId = feedbackClusteringService.cluster(savedFirstFeedback.getId());
+            FeedbackEmbeddingCluster firstCluster = feedbackEmbeddingClusterRepository.findById(firstClusterId).get();
 
-            final Long firstClusterId = firstCluster.getEmbeddingCluster().getId();
+            final Long firstClusterEntityId = firstCluster.getEmbeddingCluster().getId();
 
             // when
             for (int i = 1; i < positiveFoodReviews.length; i++) {
                 final Feedback feedback = FeedbackFixture.createFeedbackWithContent(
                         organization, positiveFoodReviews[i], organizationCategory);
                 final Feedback savedFeedback = feedbackRepository.save(feedback);
-                feedbackClusteringService.cluster(savedFeedback.getId());
+                Long clusterId = feedbackClusteringService.cluster(savedFeedback.getId());
             }
 
             //then
@@ -236,9 +244,12 @@ class FeedbackEmbeddingClusterServiceIntegrationTest extends ServiceIntegrationH
             final Feedback savedNeutralEducationFeedback = feedbackRepository.save(neutralEducationFeedback);
 
             // when
-            FeedbackEmbeddingCluster positiveFoodCluster = feedbackClusteringService.cluster(savedPositiveFoodFeedback.getId());
-            FeedbackEmbeddingCluster negativeFoodCluster = feedbackClusteringService.cluster(savedNegativeFoodFeedback.getId());
-            FeedbackEmbeddingCluster educationCluster = feedbackClusteringService.cluster(savedNeutralEducationFeedback.getId());
+            Long positiveFoodClusterId = feedbackClusteringService.cluster(savedPositiveFoodFeedback.getId());
+            FeedbackEmbeddingCluster positiveFoodCluster = feedbackEmbeddingClusterRepository.findById(positiveFoodClusterId).get();
+            Long negativeFoodClusterId = feedbackClusteringService.cluster(savedNegativeFoodFeedback.getId());
+            FeedbackEmbeddingCluster negativeFoodCluster = feedbackEmbeddingClusterRepository.findById(negativeFoodClusterId).get();
+            Long educationClusterId = feedbackClusteringService.cluster(savedNeutralEducationFeedback.getId());
+            FeedbackEmbeddingCluster educationCluster = feedbackEmbeddingClusterRepository.findById(educationClusterId).get();
 
             // then
             assertAll(
