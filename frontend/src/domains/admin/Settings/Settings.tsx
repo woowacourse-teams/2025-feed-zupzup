@@ -9,6 +9,7 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
 import { useLogout } from './hooks/useLogout';
+import { useWithdraw } from './hooks/useWithdraw';
 import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage';
 import {
   settingsContainer,
@@ -17,6 +18,7 @@ import {
   withdrawDeletedItemsList,
   withdrawAgreementLabel,
   withdrawCheckbox,
+  withdrawSettingListBox,
 } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 import { usePWAPrompt } from '@/contexts/usePWAPrompt';
@@ -46,6 +48,7 @@ export default function Settings() {
   } = useNotificationSettingsPage();
   const { adminAuth, isLoading: isAdminAuthLoading } = useAdminAuth();
   const { handleLogout } = useLogout();
+  const { handleWithdraw } = useWithdraw();
   const { showPrompt } = usePWAPrompt();
 
   const closeModal = () => {
@@ -74,11 +77,6 @@ export default function Settings() {
       return '알림을 받기위해 홈 화면에 앱을 추가해주세요. 터치하면 설치 화면이 나옵니다.';
     }
     return '푸시 알림 받기 설정';
-  };
-
-  const handleWithdraw = () => {
-    // TODO: 회원탈퇴 API 연결
-    console.log('회원탈퇴');
   };
 
   return (
@@ -122,16 +120,17 @@ export default function Settings() {
         <SettingListBox
           icon={<OutOutlineIcon />}
           title='로그아웃'
-          variant='danger'
           onClick={() => setModalState({ type: 'logout' })}
         />
 
-        <SettingListBox
-          icon={<TrashCanIcon />}
-          title='회원탈퇴'
-          variant='danger'
-          onClick={() => setModalState({ type: 'withdraw' })}
-        />
+        <div css={withdrawSettingListBox}>
+          <SettingListBox
+            icon={<TrashCanIcon />}
+            title='회원탈퇴'
+            variant='danger'
+            onClick={() => setModalState({ type: 'withdraw' })}
+          />
+        </div>
 
         {modalState.type === 'logout' && (
           <ConfirmModal

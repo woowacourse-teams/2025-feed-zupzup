@@ -47,3 +47,7 @@ export const withdrawCheckbox = css`
   margin-top: 2px;
   cursor: pointer;
 `;
+
+export const withdrawSettingListBox = css`
+  margin-top: 30px;
+`;
