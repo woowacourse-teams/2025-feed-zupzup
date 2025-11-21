@@ -4,14 +4,23 @@ import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton'
 import BellOutlineIcon from '@/components/icons/BellOutlineIcon';
 import OutOutlineIcon from '@/components/icons/OutOutlineIcon';
 import SendIcon from '@/components/icons/SendIcon';
+import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
 import { useLogout } from './hooks/useLogout';
 import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage';
-import { settingsContainer } from './Settings.style';
+import {
+  settingsContainer,
+  withdrawModalContent,
+  withdrawWarningText,
+  withdrawDeletedItemsList,
+  withdrawAgreementLabel,
+  withdrawCheckbox,
+} from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 import { usePWAPrompt } from '@/contexts/usePWAPrompt';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 declare global {
   interface Window {
@@ -22,10 +31,12 @@ declare global {
   }
 }
 
-type ModalState = { type: 'logout' } | { type: null };
+type ModalState = { type: 'logout' } | { type: 'withdraw' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
+  const [isWithdrawChecked, setIsWithdrawChecked] = useState(false);
+  const theme = useAppTheme();
   const {
     isToggleEnabled,
     updateNotificationSetting,
@@ -39,6 +50,7 @@ export default function Settings() {
 
   const closeModal = () => {
     setModalState({ type: null });
+    setIsWithdrawChecked(false);
   };
 
   const handleToggleClick = () => {
@@ -62,6 +74,11 @@ export default function Settings() {
       return '알림을 받기위해 홈 화면에 앱을 추가해주세요. 터치하면 설치 화면이 나옵니다.';
     }
     return '푸시 알림 받기 설정';
+  };
+
+  const handleWithdraw = () => {
+    // TODO: 회원탈퇴 API 연결
+    console.log('회원탈퇴');
   };
 
   return (
@@ -109,6 +126,13 @@ export default function Settings() {
           onClick={() => setModalState({ type: 'logout' })}
         />
 
+        <SettingListBox
+          icon={<TrashCanIcon />}
+          title='회원탈퇴'
+          variant='danger'
+          onClick={() => setModalState({ type: 'withdraw' })}
+        />
+
         {modalState.type === 'logout' && (
           <ConfirmModal
             title='로그아웃'
@@ -116,6 +140,35 @@ export default function Settings() {
             onConfirm={handleLogout}
             onClose={closeModal}
           />
+        )}
+
+        {modalState.type === 'withdraw' && (
+          <ConfirmModal
+            title='회원탈퇴'
+            onConfirm={handleWithdraw}
+            onClose={closeModal}
+            confirmText='탈퇴하기'
+            confirmDisabled={!isWithdrawChecked}
+          >
+            <div css={withdrawModalContent}>
+              <p css={withdrawWarningText(theme)}>
+                탈퇴 시 정보가 삭제되며 복구 불가합니다.
+              </p>
+              <ul css={withdrawDeletedItemsList(theme)}>
+                <li>관리자 계정 및 로그인 정보</li>
+                <li>서비스 내 모든 정보</li>
+              </ul>
+              <label css={withdrawAgreementLabel(theme)}>
+                <input
+                  type='checkbox'
+                  checked={isWithdrawChecked}
+                  onChange={(e) => setIsWithdrawChecked(e.target.checked)}
+                  css={withdrawCheckbox}
+                />
+                <span>위 내용을 모두 확인했고, 탈퇴하는 것에 동의합니다.</span>
+              </label>
+            </div>
+          </ConfirmModal>
         )}
       </div>
     </>
