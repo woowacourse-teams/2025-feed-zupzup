@@ -28,6 +28,7 @@ public class AsyncTaskFailure extends BaseTimeEntity {
     @Column(name = "task_type", nullable = false, length = 50)
     private TaskType taskType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "target_type", nullable = false, length = 20)
     private TargetType targetType;
 

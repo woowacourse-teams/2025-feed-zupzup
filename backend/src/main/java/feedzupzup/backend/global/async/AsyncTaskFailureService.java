@@ -82,7 +82,11 @@ public class AsyncTaskFailureService {
                 asyncTaskFailureRepository.delete(failure);
                 log.info("클러스터 라벨 생성 재시도 성공: 클러스터ID={}", clusterId);
             }
-            default -> log.warn("알 수 없는 작업 타입: {}", taskType);
+            default -> {
+                log.warn("알 수 없는 작업 타입: {}", taskType);
+                failure.finalFailed();
+                throw new IllegalStateException("비동기 작업 종류를 taskType : " + taskType + " 처리할 수 없습니다.");
+            }
         }
     }
 

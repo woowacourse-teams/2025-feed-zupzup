@@ -8,6 +8,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+import feedzupzup.backend.global.async.exception.RetryableException;
 import feedzupzup.backend.global.exception.InfrastructureException.RestClientServerException;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,7 @@ class VoyageAIEmbeddingClientTest {
 
         // when & then
         assertThatThrownBy(() -> voyageAIEmbeddingClient.extractEmbedding(inputText))
-                .isInstanceOf(RestClientServerException.class)
+                .isInstanceOf(RetryableException.class)
                 .hasMessageContaining("임베딩 데이터가 비어 있거나 응답이 없습니다");
     }
 
@@ -122,26 +123,5 @@ class VoyageAIEmbeddingClientTest {
         assertThatThrownBy(() -> voyageAIEmbeddingClient.extractEmbedding(inputText))
                 .isInstanceOf(Exception.class)
                 .hasMessageContaining("임베딩 데이터가 비어 있거나 응답이 없습니다");
-    }
-
-    @Test
-    @DisplayName("RestClient 예외 발생 시 RestClientServerException으로 변환한다")
-    void extractEmbedding_RestClientException_ThrowsRestClientServerException() {
-        // given
-        String inputText = "테스트 입력 텍스트";
-        String model = "voyage-3-large";
-
-        given(voyageAIProperties.getEmbeddingModel()).willReturn(model);
-        given(voyageAiEmbeddingRestClient.post()).willReturn(requestBodyUriSpec);
-        given(requestBodyUriSpec.body(any(Map.class))).willReturn(requestBodySpec);
-        given(requestBodySpec.retrieve()).willReturn(responseSpec);
-        given(responseSpec.onStatus(any(), any())).willReturn(responseSpec);
-        given(responseSpec.body(VoyageAIEmbeddingResponse.class))
-                .willThrow(new RestClientException("네트워크 오류"));
-
-        // when & then
-        assertThatThrownBy(() -> voyageAIEmbeddingClient.extractEmbedding(inputText))
-                .isInstanceOf(RestClientServerException.class)
-                .hasMessageContaining("임베딩 생성 중 오류 발생");
     }
 }

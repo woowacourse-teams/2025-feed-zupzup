@@ -58,7 +58,7 @@ public class VoyageAIEmbeddingClient {
                 .map(VoyageAIEmbeddingResponse::getData)
                 .filter(data -> !data.isEmpty())
                 .map(data -> data.getFirst().getEmbedding())
-                .orElseThrow(() -> new NonRetryableException("임베딩 데이터가 비어 있거나 응답이 없습니다"));
+                .orElseThrow(() -> new RetryableException("임베딩 데이터가 비어 있거나 응답이 없습니다"));
     }
 
     private String summarizeInput(String text) {

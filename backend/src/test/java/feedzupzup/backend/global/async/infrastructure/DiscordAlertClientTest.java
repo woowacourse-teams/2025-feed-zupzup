@@ -14,10 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 
-@TestPropertySource(properties = {
-        "app.discord.webhook.enabled=true",
-        "app.discord.webhook.url=https://discord.com/api/webhooks/1393461237223919646/J-qWfcqrnNUxlu_lIJwr5Q9ARDZdxpUurW6Fs0yCmyX0plYMXrTlRPDXnBzdtPzo031E"
-})
 @Disabled
 class DiscordAlertClientTest extends ServiceIntegrationHelper {
 

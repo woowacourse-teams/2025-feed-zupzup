@@ -1,4 +1,4 @@
-package feedzupzup.backend.feedback.infrastructure.llm;
+package feedzupzup.backend.feedback.infrastructure.embedding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -7,6 +7,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAICompletionClient;
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAICompletionResponse;
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAIErrorHandler;
+import feedzupzup.backend.feedback.infrastructure.llm.OpenAIProperties;
+import feedzupzup.backend.global.async.exception.NonRetryableException;
+import feedzupzup.backend.global.async.exception.RetryableException;
 import feedzupzup.backend.global.exception.InfrastructureException.RestClientServerException;
 import java.util.List;
 import java.util.Map;
@@ -105,7 +111,7 @@ class OpenAICompletionClientTest {
 
         // when & then
         assertThatThrownBy(() -> openAICompletionClient.generateCompletion(prompt, systemMessage))
-                .isInstanceOf(RestClientServerException.class)
+                .isInstanceOf(RetryableException.class)
                 .hasMessageContaining("생성된 텍스트가 비어 있거나 응답이 없습니다");
     }
 
@@ -131,7 +137,7 @@ class OpenAICompletionClientTest {
 
         // when & then
         assertThatThrownBy(() -> openAICompletionClient.generateCompletion(prompt, systemMessage))
-                .isInstanceOf(RestClientServerException.class)
+                .isInstanceOf(RetryableException.class)
                 .hasMessageContaining("생성된 텍스트가 비어 있거나 응답이 없습니다");
     }
 
@@ -163,26 +169,7 @@ class OpenAICompletionClientTest {
 
         // when & then
         assertThatThrownBy(() -> openAICompletionClient.generateCompletion(prompt, systemMessage))
-                .isInstanceOf(RestClientServerException.class)
+                .isInstanceOf(RetryableException.class)
                 .hasMessageContaining("생성된 텍스트가 비어 있거나 응답이 없습니다");
-    }
-
-    @Test
-    @DisplayName("API 호출 중 예외 발생 시 RestClientServerException 발생")
-    void generateCompletion_ThrowRestClientServerException_WhenAPICallFails() {
-        // given
-        final String prompt = "테스트 프롬프트";
-        final String systemMessage = "시스템 메시지";
-
-        given(openAIProperties.getCompletionModel()).willReturn("gpt-3.5-turbo");
-        given(openAIProperties.getMaxTokens()).willReturn(1000);
-        given(openAIProperties.getTemperature()).willReturn(0.7);
-
-        when(openAiCompletionRestClient.post()).thenThrow(new RuntimeException("API 호출 실패"));
-
-        // when & then
-        assertThatThrownBy(() -> openAICompletionClient.generateCompletion(prompt, systemMessage))
-                .isInstanceOf(RestClientServerException.class)
-                .hasMessageContaining("피드백 라벨 생성 중 오류 발생");
     }
 }

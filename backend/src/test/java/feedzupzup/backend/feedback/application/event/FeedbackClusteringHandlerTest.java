@@ -2,7 +2,9 @@ package feedzupzup.backend.feedback.application.event;
 
 import static feedzupzup.backend.global.async.TargetType.*;
 import static feedzupzup.backend.global.async.TaskType.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.*;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -30,8 +32,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.List;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -87,6 +87,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
                 () -> verify(feedbackClusteringService).createLabel(999L),
@@ -116,6 +120,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             List<AsyncTaskFailure> failures = asyncTaskFailureRepository.findAll();
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
@@ -160,6 +168,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             List<AsyncTaskFailure> failures = asyncTaskFailureRepository.findAll();
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
@@ -200,6 +212,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             List<AsyncTaskFailure> failures = asyncTaskFailureRepository.findAll();
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
@@ -240,6 +256,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             List<AsyncTaskFailure> failures = asyncTaskFailureRepository.findAll();
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
@@ -284,6 +304,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             List<AsyncTaskFailure> failures = asyncTaskFailureRepository.findAll();
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
@@ -324,6 +348,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             List<AsyncTaskFailure> failures = asyncTaskFailureRepository.findAll();
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(feedback.getId()),
@@ -368,6 +396,10 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
             // then
+            await().atMost(1, SECONDS)
+                    .untilAsserted(() ->
+                            verify(feedbackClusteringService).cluster(feedback.getId())
+                    );
             verify(asyncTaskFailureService).recordFailure(
                 FEEDBACK_CLUSTERING, 
                 FEEDBACK_CLUSTER, 

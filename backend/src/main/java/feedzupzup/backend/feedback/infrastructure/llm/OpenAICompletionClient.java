@@ -63,6 +63,6 @@ public class OpenAICompletionClient {
                 .filter(choices -> !choices.isEmpty())
                 .map(choices -> choices.getFirst().getMessage().getContent())
                 .filter(content -> !content.trim().isEmpty())
-                .orElseThrow(() -> new NonRetryableException("생성된 텍스트가 비어 있거나 응답이 없습니다"));
+                .orElseThrow(() -> new RetryableException("생성된 텍스트가 비어 있거나 응답이 없습니다"));
     }
 }
