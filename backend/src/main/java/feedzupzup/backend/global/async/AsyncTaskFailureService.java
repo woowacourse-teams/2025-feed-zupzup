@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AsyncTaskFailureService {
 
     private final AsyncTaskFailureRepository asyncTaskFailureRepository;
-    private final FeedbackClusteringService feedbackClusteringService;
     private final AsyncFailureAlertService asyncFailureAlertService;
+    private final FeedbackClusteringService feedbackClusteringService;
 
     @Transactional
     public Long recordFailure(
