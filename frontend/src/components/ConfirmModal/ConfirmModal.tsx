@@ -1,3 +1,4 @@
+import React from 'react';
 import Modal from '@/components/Modal/Modal';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -19,6 +20,7 @@ export interface ConfirmModalProps {
   width?: number;
   height?: number;
   disabled?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function ConfirmModal({
@@ -31,6 +33,7 @@ export default function ConfirmModal({
   width = 300,
   height,
   disabled = false,
+  children,
 }: ConfirmModalProps) {
   const theme = useAppTheme();
 
@@ -48,6 +51,7 @@ export default function ConfirmModal({
       <div css={content}>
         <p css={title(theme)}>{confirmTitle}</p>
         {confirmMessage && <p css={message(theme)}>{confirmMessage}</p>}
+        {children}
       </div>
       <div css={buttonContainer}>
         <BasicButton

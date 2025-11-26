@@ -86,3 +86,7 @@ export async function getAISummaryDetail({
   );
   return response as AISummaryDetailResponse;
 }
+
+export async function deleteAdmin(): Promise<void> {
+  await apiClient.delete('/admin');
+}
