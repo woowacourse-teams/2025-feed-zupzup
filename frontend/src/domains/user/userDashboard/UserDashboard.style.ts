@@ -45,5 +45,8 @@ export const myFeedbackStyle = (theme: Theme, isMyFeedback: boolean) => css`
 `;
 
 export const skipTarget = css`
-  scroll-margin-top: 100px;
+  height: 100vh;
+  /* scroll-margin-top: 100px; */
+  overflow: auto;
+  position: relative;
 `;

@@ -35,7 +35,7 @@ export default function UserDashboard() {
   };
 
   return (
-    <>
+    <div>
       <SEO
         title='피드백 방'
         description='제출된 피드백을 확인하세요'
@@ -73,6 +73,6 @@ export default function UserDashboard() {
           />
         )}
       </div>
-    </>
+    </div>
   );
 }
