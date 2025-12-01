@@ -1,8 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
-import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
