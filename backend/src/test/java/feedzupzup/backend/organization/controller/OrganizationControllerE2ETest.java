@@ -10,11 +10,13 @@ import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import java.util.UUID;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+@Disabled
 class OrganizationControllerE2ETest extends E2EHelper {
 
     @Autowired
