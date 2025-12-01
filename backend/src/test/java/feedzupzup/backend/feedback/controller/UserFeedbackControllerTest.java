@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,13 +14,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feedzupzup.backend.auth.presentation.resolver.GuestArgumentResolver;
+import feedzupzup.backend.feedback.application.FeedbackLikeService;
 import feedzupzup.backend.feedback.application.UserFeedbackService;
 import feedzupzup.backend.feedback.domain.vo.FeedbackSortType;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.CreateFeedbackRequest;
 import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
+import feedzupzup.backend.feedback.dto.response.LikeResponse;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
+import feedzupzup.backend.feedback.exception.FeedbackException.InvalidLikeException;
 import feedzupzup.backend.global.exception.GlobalExceptionHandler;
 import feedzupzup.backend.guest.dto.GuestInfo;
 import java.time.LocalDateTime;
@@ -46,6 +50,9 @@ class UserFeedbackControllerTest {
 
     @Mock
     private UserFeedbackService userFeedbackService;
+
+    @Mock
+    private FeedbackLikeService feedbackLikeService;
 
     @InjectMocks
     private UserFeedbackController userFeedbackController;
@@ -414,6 +421,63 @@ class UserFeedbackControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.feedbacks[0].imageUrl").isEmpty()); // null 확인
+    }
+
+    @Test
+    @DisplayName("피드백에 좋아요를 성공적으로 추가한다")
+    void like_feedback_success() throws Exception {
+        // given
+        Long feedbackId = 1L;
+        UUID guestUuid = UUID.randomUUID();
+        LikeResponse response = new LikeResponse(6); // 6개로 증가했다고 가정
+
+        // Service Mocking
+        given(feedbackLikeService.like(eq(feedbackId), any())) // GuestInfo는 any()
+                .willReturn(response);
+
+        // when & then
+        mockMvc.perform(patch("/feedbacks/{feedbackId}/like", feedbackId)
+                        .requestAttr(GUEST_ID.getValue(), guestUuid))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.afterLikeCount").value(6));
+    }
+
+    @Test
+    @DisplayName("이미 좋아요가 있는 피드백에 좋아요를 취소한다")
+    void unlike_feedback_success() throws Exception {
+        // given
+        Long feedbackId = 1L;
+        UUID guestUuid = UUID.randomUUID();
+        LikeResponse response = new LikeResponse(5); // 6개 -> 5개로 감소
+
+        given(feedbackLikeService.unlike(eq(feedbackId), any()))
+                .willReturn(response);
+
+        // when & then
+        mockMvc.perform(patch("/feedbacks/{feedbackId}/unlike", feedbackId)
+                        .requestAttr(GUEST_ID.getValue(), guestUuid))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.afterLikeCount").value(5));
+    }
+
+    @Test
+    @DisplayName("좋아요 기록이 없는 유저가 취소 요청 시 400 에러를 반환한다")
+    void unlike_fail_not_liked() throws Exception {
+        // given
+        Long feedbackId = 1L;
+        UUID guestUuid = UUID.randomUUID();
+
+        // 예외 Mocking (실제 프로젝트의 예외 클래스로 변경 필요)
+        given(feedbackLikeService.unlike(eq(feedbackId), any()))
+                .willThrow(new InvalidLikeException("좋아요 기록이 없습니다."));
+
+        // when & then
+        mockMvc.perform(patch("/feedbacks/{feedbackId}/unlike", feedbackId)
+                        .requestAttr(GUEST_ID.getValue(), guestUuid))
+                .andDo(print())
+                .andExpect(status().isBadRequest()); // 400 Bad Request
     }
 
 
