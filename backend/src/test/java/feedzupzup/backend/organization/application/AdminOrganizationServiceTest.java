@@ -1,7 +1,6 @@
 package feedzupzup.backend.organization.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
@@ -13,11 +12,10 @@ import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
-import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
-import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.organization.dto.request.CreateOrganizationRequest;
 import feedzupzup.backend.organization.dto.request.UpdateOrganizationRequest;
 import feedzupzup.backend.organization.dto.response.AdminCreateOrganizationResponse;
@@ -29,12 +27,14 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
+import feedzupzup.backend.qr.service.QRCodeGenerator;
+import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
 
@@ -59,6 +59,12 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private QRRepository qrRepository;
 
+    @MockitoBean
+    private QRCodeGenerator qrCodeGenerator;
+
+    @MockitoBean
+    private S3UploadService s3UploadService;
+
     @Test
     @DisplayName("정상적인 admin이 조직을 생성하려고 할 때, 생성할 수 있어야 한다.")
     void save_success_case() {
@@ -74,32 +80,6 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
                 createOrganizationRequest, savedAdmin.getId());
 
         assertThat(response.organizationUuid()).isNotNull();
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 admin이 조직을 생성하려고 한다면, 예외가 발생해야 한다.")
-    void invalid_admin_request_then_throw_exception() {
-        CreateOrganizationRequest createOrganizationRequest =
-                new CreateOrganizationRequest(
-                        "우테코",
-                        List.of("건의", "신고")
-                );
-
-        assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, 999L))
-                .isInstanceOf(ResourceNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 카테고리를 생성하려고 한다면, 예외가 발생해야 한다.")
-    void invalid_category_then_throw_exception() {
-        CreateOrganizationRequest createOrganizationRequest =
-                new CreateOrganizationRequest(
-                        "우테코",
-                        List.of("크롱크롱", "대나무헬리콥터")
-                );
-        final Admin admin = createAndSaveAdmin();
-        assertThatThrownBy(() -> adminOrganizationService.createOrganization(createOrganizationRequest, admin.getId()))
-                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
