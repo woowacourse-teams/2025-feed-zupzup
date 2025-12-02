@@ -14,7 +14,6 @@ import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.domain.ClusterLabelGenerator;
-import feedzupzup.backend.feedback.domain.EmbeddingCluster;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.EmbeddingExtractor;
 import feedzupzup.backend.feedback.domain.Feedback;
@@ -32,7 +31,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
@@ -74,7 +72,6 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
     @Nested
     @DisplayName("피드백 클러스터링 테스트 - Mock")
     @Transactional
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     class ClusterWithMockTest {
 
         @Test
@@ -239,7 +236,6 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
     @Nested
     @DisplayName("클러스터 라벨 생성 테스트")
     @Transactional
-    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
     class CreateLabelTest {
 
         @Test
