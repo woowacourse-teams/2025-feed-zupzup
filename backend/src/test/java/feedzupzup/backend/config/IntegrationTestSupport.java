@@ -50,38 +50,32 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 )
 public abstract class IntegrationTestSupport {
 
-    @Autowired
-    private DataInitializer dataInitializer;
-
-    // QR & S3 Beans (외부 서비스)
     @MockitoBean
     protected QRCodeGenerator qrCodeGenerator;
 
-    // S3 서비스는 LocalStack 통합 테스트에서 실제 동작이 필요하므로 SpyBean 사용
-    @MockitoSpyBean
-    protected S3UploadService s3UploadService;
+    @MockitoBean
+    protected AsyncFailureAlertService asyncFailureAlertService;
 
-    @MockitoSpyBean
-    protected S3PresignedDownloadService s3PresignedDownloadService;
-
-    // AI Mock Beans (외부 API)
     @MockitoBean
     protected EmbeddingExtractor embeddingExtractor;
 
     @MockitoBean
     protected ClusterLabelGenerator clusterLabelGenerator;
 
-    // SpyBean: 기본적으로 실제 메서드 실행, when() 사용 시 Mock 동작
     @MockitoSpyBean
     protected FeedbackClusteringService feedbackClusteringService;
 
-    // Async Mock Beans
-    @MockitoBean
-    protected AsyncFailureAlertService asyncFailureAlertService;
+    @MockitoSpyBean
+    protected S3UploadService s3UploadService;
 
-    // AsyncTaskFailureService - FailureRetrySchedulerTest에서 SpyBean으로 사용
+    @MockitoSpyBean
+    protected S3PresignedDownloadService s3PresignedDownloadService;
+
     @MockitoSpyBean
     protected AsyncTaskFailureService asyncTaskFailureService;
+
+    @Autowired
+    private DataInitializer dataInitializer;
 
     @BeforeEach
     void setUp() {
