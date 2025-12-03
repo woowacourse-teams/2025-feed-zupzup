@@ -1,6 +1,7 @@
 package feedzupzup.backend.develop.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import feedzupzup.backend.admin.domain.Admin;
@@ -58,5 +59,11 @@ class DeveloperServiceTest extends ServiceIntegrationHelper {
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("존재하지 않는 adminId 입니다.");
     }
-}
 
+    @Test
+    @DisplayName("배치 클러스터링을 실행한다")
+    void batchClustering() {
+        // when & then
+        assertThatCode(() -> developerService.batchClustering()).doesNotThrowAnyException();
+    }
+}
