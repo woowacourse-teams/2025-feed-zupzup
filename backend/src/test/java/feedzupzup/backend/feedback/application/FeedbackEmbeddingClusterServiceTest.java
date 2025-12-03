@@ -13,9 +13,7 @@ import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.domain.ClusterLabelGenerator;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
-import feedzupzup.backend.feedback.domain.EmbeddingExtractor;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
@@ -30,7 +28,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
@@ -52,12 +49,6 @@ class FeedbackEmbeddingClusterServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
-
-    @MockitoBean
-    private EmbeddingExtractor embeddingExtractor;
-
-    @MockitoBean
-    private ClusterLabelGenerator clusterLabelGenerator;
 
     private Organization organization;
     private OrganizationCategory organizationCategory;

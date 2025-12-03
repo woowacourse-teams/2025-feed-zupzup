@@ -27,14 +27,11 @@ import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
 import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
-import feedzupzup.backend.qr.service.QRCodeGenerator;
-import feedzupzup.backend.s3.service.S3UploadService;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
 
@@ -58,12 +55,6 @@ class AdminOrganizationServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private QRRepository qrRepository;
-
-    @MockitoBean
-    private QRCodeGenerator qrCodeGenerator;
-
-    @MockitoBean
-    private S3UploadService s3UploadService;
 
     @Test
     @DisplayName("정상적인 admin이 조직을 생성하려고 할 때, 생성할 수 있어야 한다.")

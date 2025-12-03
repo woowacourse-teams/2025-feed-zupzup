@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doReturn;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.organization.domain.Organization;
@@ -14,12 +14,9 @@ import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.dto.response.QRDownloadUrlResponse;
 import feedzupzup.backend.qr.dto.response.QRResponse;
 import feedzupzup.backend.qr.repository.QRRepository;
-import feedzupzup.backend.s3.service.S3PresignedDownloadService;
-import feedzupzup.backend.s3.service.S3UploadService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 class QRServiceTest extends ServiceIntegrationHelper {
 
@@ -31,15 +28,6 @@ class QRServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private OrganizationRepository organizationRepository;
-
-    @MockitoBean
-    private QRCodeGenerator qrCodeGenerator;
-
-    @MockitoBean
-    private S3UploadService s3UploadService;
-
-    @MockitoBean
-    private S3PresignedDownloadService s3PresignedDownloadService;
 
     @Test
     @DisplayName("유효한 조직 UUID로 QR을 성공적으로 조회한다")
@@ -71,9 +59,9 @@ class QRServiceTest extends ServiceIntegrationHelper {
         final byte[] mockQrImage = "mock-qr-image".getBytes();
         final String mockImageUrl = "https://s3.amazonaws.com/bucket/qr-image.png";
 
-        when(qrCodeGenerator.generateQRCode(anyString())).thenReturn(mockQrImage);
-        when(s3UploadService.uploadFile(anyString(), anyString(), anyString(), any(byte[].class)))
-                .thenReturn(mockImageUrl);
+        // SpyBean에서는 doReturn().when() 패턴 사용
+        doReturn(mockQrImage).when(qrCodeGenerator).generateQRCode(anyString());
+        doReturn(mockImageUrl).when(s3UploadService).uploadFile(anyString(), anyString(), anyString(), any(byte[].class));
 
         // when
         qrService.create(organization.getUuid());
@@ -97,8 +85,9 @@ class QRServiceTest extends ServiceIntegrationHelper {
         qrRepository.save(qr);
 
         final String mockDownloadUrl = "https://s3.amazonaws.com/bucket/presigned-download-url";
-        when(s3PresignedDownloadService.generateDownloadUrlFromImageUrl(anyString(), anyString()))
-                .thenReturn(mockDownloadUrl);
+
+        // SpyBean에서는 doReturn().when() 패턴 사용
+        doReturn(mockDownloadUrl).when(s3PresignedDownloadService).generateDownloadUrlFromImageUrl(anyString(), anyString());
 
         // when
         final QRDownloadUrlResponse response = qrService.getDownloadUrl(organization.getUuid());
