@@ -1,6 +1,8 @@
 package feedzupzup.backend.category.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.*;
 
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.RepositoryHelper;
@@ -46,4 +48,65 @@ class OrganizationCategoryTest extends RepositoryHelper {
         assertThat(deletedAt).isNotNull();
     }
 
+    @DisplayName("OrganizationCategory 생성 시 organization이 null이면 예외가 발생한다")
+    @Test
+    void constructor_organizationNull_throwsException() {
+        // when & then
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> new OrganizationCategory(null, Category.ETC, true));
+    }
+
+    @DisplayName("OrganizationCategory 생성 시 category가 null이면 예외가 발생한다")
+    @Test
+    void constructor_categoryNull_throwsException() {
+        // given
+        Organization organization = OrganizationFixture.createAllBlackBox();
+        Organization savedOrganization = organizationRepository.save(organization);
+
+        // when & then
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> new OrganizationCategory(savedOrganization, null, true));
+    }
+
+    @DisplayName("OrganizationCategory 생성 시 isActive가 true인 경우 정상 생성된다")
+    @Test
+    void constructor_isActiveTrue_success() {
+        // given
+        Organization organization = OrganizationFixture.createAllBlackBox();
+        Organization savedOrganization = organizationRepository.save(organization);
+
+        // when
+        OrganizationCategory organizationCategory = new OrganizationCategory(
+                savedOrganization,
+                Category.ETC,
+                true
+        );
+        OrganizationCategory saved = organizationCategoryRepository.save(organizationCategory);
+
+        // then
+        assertThat(saved.isActive()).isTrue();
+        assertThat(saved.getCategory()).isEqualTo(Category.ETC);
+        assertThat(saved.getOrganization()).isEqualTo(savedOrganization);
+    }
+
+    @DisplayName("OrganizationCategory 생성 시 isActive가 false인 경우 정상 생성된다")
+    @Test
+    void constructor_isActiveFalse_success() {
+        // given
+        Organization organization = OrganizationFixture.createAllBlackBox();
+        Organization savedOrganization = organizationRepository.save(organization);
+
+        // when
+        OrganizationCategory organizationCategory = new OrganizationCategory(
+                savedOrganization,
+                Category.ETC,
+                false
+        );
+        OrganizationCategory saved = organizationCategoryRepository.save(organizationCategory);
+
+        // then
+        assertThat(saved.isActive()).isFalse();
+        assertThat(saved.getCategory()).isEqualTo(Category.ETC);
+        assertThat(saved.getOrganization()).isEqualTo(savedOrganization);
+    }
 }
