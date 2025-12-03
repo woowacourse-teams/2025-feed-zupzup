@@ -10,8 +10,4 @@ public class S3UploadException extends InfrastructureException {
     public S3UploadException(final String message) {
         super(errorCode, message);
     }
-
-    public S3UploadException() {
-        super(errorCode, errorCode.getMessage());
-    }
 }
