@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.*;
 
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.dto.request.CheeringRequest;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -52,11 +53,12 @@ class UserOrganizationServiceUnitTest {
         void cheer_organization_not_found() {
             // given
             UUID nonExistentOrganizationId = UUID.randomUUID();
+            CheeringRequest request = new CheeringRequest(100);
 
             given(organizationRepository.findByUuid(nonExistentOrganizationId)).willReturn(Optional.empty());
 
             // when & then
-            assertThatThrownBy(() -> userOrganizationService.getOrganizationByUuid(nonExistentOrganizationId))
+            assertThatThrownBy(() -> userOrganizationService.cheer(request, nonExistentOrganizationId))
                     .isInstanceOf(ResourceNotFoundException.class);
         }
     }
