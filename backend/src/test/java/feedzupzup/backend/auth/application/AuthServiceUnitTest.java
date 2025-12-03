@@ -4,13 +4,13 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.vo.AdminName;
 import feedzupzup.backend.admin.domain.vo.EncodedPassword;
 import feedzupzup.backend.admin.domain.vo.LoginId;
-import feedzupzup.backend.admin.domain.vo.Password;
 import feedzupzup.backend.admin.dto.AdminSession;
 import feedzupzup.backend.auth.dto.request.LoginRequest;
 import feedzupzup.backend.auth.dto.request.SignUpRequest;
@@ -37,6 +37,9 @@ class AuthServiceUnitTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private ActiveSessionStore activeSessionStore;
 
     @Nested
     @DisplayName("회원가입 예외 테스트")
@@ -139,5 +142,18 @@ class AuthServiceUnitTest {
             assertThatThrownBy(() -> authService.getAdminLoginInfo(adminSession))
                     .isInstanceOf(ResourceNotFoundException.class);
         }
+    }
+
+    @Test
+    @DisplayName("로그아웃 시 세션 정보가 삭제된다.")
+    void logout_session_delete_test() {
+        // given
+        final AdminSession adminSession = new AdminSession(1L);
+
+        // when
+        authService.logout(adminSession);
+
+        // then
+        verify(activeSessionStore).removeActiveSession(adminSession.adminId());
     }
 }
