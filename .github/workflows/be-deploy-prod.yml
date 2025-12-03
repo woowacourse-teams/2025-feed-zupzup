@@ -53,7 +53,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [self-hosted, prod]
+    runs-on: [ self-hosted, prod ]
     environment: prod
     steps:
       - name: 체크아웃
@@ -64,41 +64,24 @@ jobs:
 
       - name: 서브모듈 최신화
         run: |
-          git submodule update --remote
+          git submodule update --remote  
 
-      - name: 배포 아티팩트 준비
+      - name: Docker Compose 파일 복사
         run: |
-          rm -rf deploy
-          mkdir -p deploy/scripts
-          cp ./backend/backend-submodule/deploy/appspec.yml deploy/
-          cp ./backend/backend-submodule/deploy/scripts/*.sh deploy/scripts/
-          chmod +x deploy/scripts/*.sh
-          
-          cp ./backend/backend-submodule/docker/docker-compose.prod.yml deploy/docker-compose.yml
-          cp ./backend/backend-submodule/alloy/config.alloy deploy/
-          
-          cd deploy
-          zip -r ../deployment.zip .
-          cd ..
+          sudo cp ./backend/backend-submodule/docker/docker-compose.dev.yml /home/ubuntu/docker/docker-compose.yml
 
-      - name: S3에 배포 아티팩트 업로드
+      - name: EC2 배포
         run: |
-          aws s3 cp deployment.zip \
-            s3://${{ secrets.S3_DEPLOYMENT_BUCKET }}/feed-zupzup/${{ secrets.S3_DEPLOYMENT_DIR }}/deploy/deployment.zip \
-            --region ap-northeast-2
+          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
+          export SERVER_IMAGE_TAG=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.sha }}
 
-      - name: CodeDeploy로 배포
-        run: |          
-          DEPLOYMENT_ID=$(aws deploy create-deployment \
-            --application-name feed-zupzup-prod-deploy \
-            --deployment-group-name feedzupzup-prod-deploy-group \
-            --s3-location bucket=${{ secrets.S3_DEPLOYMENT_BUCKET }},key=feed-zupzup/${{ secrets.S3_DEPLOYMENT_DIR }}/deploy/deployment.zip,bundleType=zip \
-            --region ap-northeast-2 \
-            --query 'deploymentId' \
-            --output text)
+          cd /home/ubuntu/docker
+          docker-compose stop feed-zupzup-server
+          docker-compose rm -f feed-zupzup-server
+          docker-compose up -d feed-zupzup-server
 
-          echo "Deployment ID: $DEPLOYMENT_ID"
-          
-          aws deploy wait deployment-successful \
-            --deployment-id $DEPLOYMENT_ID \
-            --region ap-northeast-2
+          docker images ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }} --format "{{.Tag}} {{.CreatedAt}}" | \
+          sort -k2 -r | tail -n +3 | awk '{print $1}' | \
+          xargs -r -I {} docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:{} || true
+
+          docker image prune -f
