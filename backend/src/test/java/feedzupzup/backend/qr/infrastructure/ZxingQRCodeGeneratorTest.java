@@ -2,24 +2,31 @@ package feedzupzup.backend.qr.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import feedzupzup.backend.qr.config.QRConfiguration;
+import feedzupzup.backend.qr.config.QRProperties;
+import feedzupzup.backend.qr.config.QRProperties.Generation;
+import feedzupzup.backend.qr.config.QRProperties.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
-@SpringBootTest
-@ContextConfiguration(classes = {QRConfiguration.class, ZxingQRCodeGenerator.class})
 class ZxingQRCodeGeneratorTest {
 
-    @Autowired
     private ZxingQRCodeGenerator qrImageGenerator;
+
+    @BeforeEach
+    void setUp() {
+        final QRProperties qrProperties = new QRProperties(
+                "https://test.feedzupzup.com",
+                new Image(300, 300, "png"),
+                new Generation("L", "UTF-8", 1)
+        );
+        qrImageGenerator = new ZxingQRCodeGenerator(qrProperties);
+    }
 
     @Nested
     @DisplayName("QR 이미지 생성 테스트")

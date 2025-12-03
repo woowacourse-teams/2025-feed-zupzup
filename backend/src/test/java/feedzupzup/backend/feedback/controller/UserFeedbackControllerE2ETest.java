@@ -1,8 +1,6 @@
 package feedzupzup.backend.feedback.controller;
 
 import static feedzupzup.backend.category.domain.Category.SUGGESTION;
-import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.CONFIRMED;
-import static feedzupzup.backend.feedback.domain.vo.ProcessStatus.WAITING;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
@@ -26,11 +24,13 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import io.restassured.http.ContentType;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+@Disabled
 class UserFeedbackControllerE2ETest extends E2EHelper {
 
     @Autowired

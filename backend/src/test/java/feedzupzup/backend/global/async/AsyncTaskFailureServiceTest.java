@@ -8,14 +8,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.application.FeedbackClusteringService;
 import feedzupzup.backend.global.async.exception.NonRetryableException;
 import feedzupzup.backend.global.async.exception.RetryableException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 class AsyncTaskFailureServiceTest extends ServiceIntegrationHelper {
 
@@ -24,12 +22,6 @@ class AsyncTaskFailureServiceTest extends ServiceIntegrationHelper {
 
     @Autowired
     private AsyncTaskFailureRepository asyncTaskFailureRepository;
-
-    @MockitoBean
-    private FeedbackClusteringService feedbackClusteringService;
-
-    @MockitoBean
-    private AsyncFailureAlertService asyncFailureAlertService;
 
     @Nested
     @DisplayName("실패 기록 테스트")
@@ -162,12 +154,13 @@ class AsyncTaskFailureServiceTest extends ServiceIntegrationHelper {
                 FEEDBACK_CLUSTERING, FEEDBACK_CLUSTER, "123", "타임아웃 오류", true
             );
             asyncTaskFailureRepository.save(failure);
-            
-            when(feedbackClusteringService.cluster(123L)).thenReturn(456L);
-            
+
+            // SpyBean에서는 doReturn().when() 패턴 사용 (when().thenReturn()은 실제 메서드 호출)
+            doReturn(456L).when(feedbackClusteringService).cluster(123L);
+
             // when
             asyncTaskFailureService.retry(failure.getId());
-            
+
             // then
             assertAll(
                 () -> verify(feedbackClusteringService).cluster(123L),

@@ -1,25 +1,29 @@
 package feedzupzup.backend.feedback.application.event;
 
-import static feedzupzup.backend.global.async.TargetType.*;
-import static feedzupzup.backend.global.async.TaskType.*;
+import static feedzupzup.backend.global.async.TargetType.FEEDBACK;
+import static feedzupzup.backend.global.async.TargetType.FEEDBACK_CLUSTER;
+import static feedzupzup.backend.global.async.TaskType.CLUSTER_LABEL_GENERATION;
+import static feedzupzup.backend.global.async.TaskType.FEEDBACK_CLUSTERING;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 import feedzupzup.backend.category.domain.Category;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
-import feedzupzup.backend.feedback.application.FeedbackClusteringService;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
 import feedzupzup.backend.feedback.domain.event.FeedbackCreatedEvent2;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
-import feedzupzup.backend.global.async.AsyncFailureAlertService;
 import feedzupzup.backend.global.async.AsyncTaskFailure;
 import feedzupzup.backend.global.async.AsyncTaskFailureRepository;
 import feedzupzup.backend.global.async.AsyncTaskFailureService;
@@ -28,13 +32,11 @@ import feedzupzup.backend.global.async.exception.RetryableException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.fixture.OrganizationFixture;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
 
@@ -56,12 +58,6 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
     @Autowired
     private AsyncTaskFailureService asyncTaskFailureService;
 
-    @MockitoBean
-    private FeedbackClusteringService feedbackClusteringService;
-
-    @MockitoBean
-    private AsyncFailureAlertService asyncFailureAlertService;
-
     @Nested
     @DisplayName("피드백 클러스터링 성공 테스트")
     class ClusteringSuccessTest {
@@ -80,7 +76,7 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
             
-            when(feedbackClusteringService.cluster(feedback.getId())).thenReturn(999L);
+            doReturn(999L).when(feedbackClusteringService).cluster(feedback.getId());
             doNothing().when(feedbackClusteringService).createLabel(999L);
             
             // when
@@ -112,7 +108,7 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
             
-            when(feedbackClusteringService.cluster(feedback.getId())).thenReturn(777L);
+            doReturn(777L).when(feedbackClusteringService).cluster(feedback.getId());
             doThrow(new RetryableException("OpenAI API 타임아웃"))
                 .when(feedbackClusteringService).createLabel(777L);
             
@@ -160,10 +156,9 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             );
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
-            
-            when(feedbackClusteringService.cluster(feedback.getId()))
-                .thenThrow(new RetryableException("VoyageAI 연결 타임아웃"));
-            
+
+            doThrow(new RetryableException("VoyageAI 연결 타임아웃")).when(feedbackClusteringService).cluster(feedback.getId());
+
             // when
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
@@ -203,10 +198,9 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             );
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
-            
-            when(feedbackClusteringService.cluster(feedback.getId()))
-                .thenThrow(new NonRetryableException("잘못된 API 키"));
-            
+
+            doThrow(new NonRetryableException("잘못된 API 키")).when(feedbackClusteringService).cluster(feedback.getId());
+
             // when
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
@@ -247,10 +241,9 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             );
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
-            
-            when(feedbackClusteringService.cluster(feedback.getId()))
-                .thenThrow(new RuntimeException("예상치 못한 오류가 발생했습니다"));
-            
+
+            doThrow(new RuntimeException("예상치 못한 오류가 발생했습니다")).when(feedbackClusteringService).cluster(feedback.getId());
+
             // when
             feedbackClusteringHandler.handleFeedbackCreatedEvent(event);
             
@@ -295,7 +288,7 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
             
-            when(feedbackClusteringService.cluster(feedback.getId())).thenReturn(555L);
+            doReturn(555L).when(feedbackClusteringService).cluster(feedback.getId());
             doThrow(new RetryableException("OpenAI Rate limit 초과"))
                 .when(feedbackClusteringService).createLabel(555L);
             
@@ -339,7 +332,7 @@ class FeedbackClusteringHandlerTest extends ServiceIntegrationHelper {
             
             FeedbackCreatedEvent2 event = new FeedbackCreatedEvent2(feedback.getId());
             
-            when(feedbackClusteringService.cluster(feedback.getId())).thenReturn(888L);
+            doReturn(888L).when(feedbackClusteringService).cluster(feedback.getId());
             doThrow(new NonRetryableException("OpenAI 모델 접근 권한 없음"))
                 .when(feedbackClusteringService).createLabel(888L);
             

@@ -10,8 +10,4 @@ public class S3PresignedException extends InfrastructureException {
     public S3PresignedException(final String message) {
         super(errorCode, message);
     }
-
-    public S3PresignedException() {
-        super(errorCode, errorCode.getMessage());
-    }
 }

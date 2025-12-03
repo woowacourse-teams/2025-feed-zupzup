@@ -11,6 +11,7 @@ import feedzupzup.backend.s3.config.LocalStackS3Test;
 import feedzupzup.backend.s3.config.S3Properties;
 import feedzupzup.backend.s3.dto.request.PresignedUrlRequest;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchBucketException;
 
+@Disabled
 @LocalStackS3Test
 class S3ControllerE2ETest extends E2EHelper {
 

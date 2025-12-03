@@ -2,21 +2,28 @@ package feedzupzup.backend.qr.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import feedzupzup.backend.qr.config.QRConfiguration;
+import feedzupzup.backend.qr.config.QRProperties;
+import feedzupzup.backend.qr.config.QRProperties.Generation;
+import feedzupzup.backend.qr.config.QRProperties.Image;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
-@SpringBootTest
-@ContextConfiguration(classes = {QRConfiguration.class, SiteUrl.class})
 class SiteUrlTest {
 
     private static final String BASE_URL = "https://test.feedzupzup.com";
 
-    @Autowired
     private SiteUrl siteUrl;
+
+    @BeforeEach
+    void setUp() {
+        final QRProperties qrProperties = new QRProperties(
+                BASE_URL,
+                new Image(300, 300, "png"),
+                new Generation("L", "UTF-8", 1)
+        );
+        siteUrl = new SiteUrl(qrProperties);
+    }
 
     @Test
     @DisplayName("파라미터 없는 기본 URL을 반환한다")
