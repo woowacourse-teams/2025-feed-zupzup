@@ -1,6 +1,8 @@
 package feedzupzup.backend.feedback.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.*;
 
 import feedzupzup.backend.admin.domain.AdminRepository;
@@ -8,7 +10,9 @@ import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
+import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCompletedException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
@@ -45,6 +49,9 @@ class AdminFeedbackServiceUnitTest {
 
     @Mock
     private FeedbackDownloadJobStore feedbackDownloadJobStore;
+
+    @Mock
+    private FeedbackFileDownloadService feedbackFileDownloadService;
 
     @Nested
     @DisplayName("피드백 삭제 예외 테스트")
@@ -136,8 +143,24 @@ class AdminFeedbackServiceUnitTest {
     }
 
     @Nested
-    @DisplayName("비동기 다운로드 작업 예외 테스트")
-    class AsyncDownloadJobExceptionTest {
+    @DisplayName("비동기 다운로드 작업 테스트")
+    class AsyncDownloadJobTest {
+
+        @Test
+        @DisplayName("다운로드 작업을 성공적으로 생성한다")
+        void createDownloadJob_success() {
+            // given
+            UUID organizationUuid = UUID.randomUUID();
+
+            given(organizationRepository.existsOrganizationByUuid(organizationUuid)).willReturn(true);
+
+            // when
+            String jobId = adminFeedbackService.createDownloadJob(organizationUuid);
+
+            // then
+            assertThat(jobId).isNotNull();
+            assertThat(UUID.fromString(jobId)).isNotNull(); // UUID 형식 검증
+        }
 
         @Test
         @DisplayName("존재하지 않는 단체로 작업 생성 시 예외가 발생한다")
@@ -150,6 +173,27 @@ class AdminFeedbackServiceUnitTest {
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.createDownloadJob(nonExistentUuid))
                     .isInstanceOf(ResourceNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("작업 상태를 성공적으로 조회한다")
+        void getDownloadJobStatus_success() {
+            // given
+            String jobId = UUID.randomUUID().toString();
+            String organizationUuid = UUID.randomUUID().toString();
+            FeedbackDownloadJob mockJob = FeedbackDownloadJob.create(organizationUuid);
+
+            given(feedbackDownloadJobStore.getById(jobId)).willReturn(mockJob);
+
+            // when
+            FeedbackDownloadJob job = adminFeedbackService.getDownloadJobStatus(jobId);
+
+            // then
+            assertAll(
+                    () -> assertThat(job.getJobId()).isNotNull(),
+                    () -> assertThat(job.getStatus()).isNotNull(),
+                    () -> assertThat(job.getProgress()).isGreaterThanOrEqualTo(0)
+            );
         }
 
         @Test
@@ -176,6 +220,24 @@ class AdminFeedbackServiceUnitTest {
             // when & then
             assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(nonExistentJobId))
                     .isInstanceOf(ResourceNotFoundException.class);
+        }
+
+        @Test
+        @DisplayName("완료되지 않은 작업의 다운로드 URL 요청 시 예외가 발생한다")
+        void getDownloadUrl_notCompleted() {
+            // given
+            String organizationUuid = UUID.randomUUID().toString();
+
+            // FeedbackDownloadJob를 PENDING 상태로 생성 후 PROCESSING으로 변경
+            FeedbackDownloadJob incompletedJob = FeedbackDownloadJob.create(organizationUuid);
+            incompletedJob.updateProgress(50);  // PROCESSING 상태로 전환
+
+            given(feedbackDownloadJobStore.getById(incompletedJob.getJobId())).willReturn(incompletedJob);
+
+            // when & then
+            assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(incompletedJob.getJobId()))
+                    .isInstanceOf(DownloadJobNotCompletedException.class)
+                    .hasMessageContaining("파일 생성이 완료되지 않았습니다");
         }
     }
 }

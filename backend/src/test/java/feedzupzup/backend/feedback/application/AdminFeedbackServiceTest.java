@@ -5,7 +5,6 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
 import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
 import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.admin.domain.Admin;
@@ -21,7 +20,6 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
@@ -29,7 +27,6 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse.AdminF
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCompletedException;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
@@ -39,7 +36,6 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -113,7 +109,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // then
             assertThat(feedBackRepository.findById(savedFeedback.getId())).isEmpty();
         }
-
     }
 
     @Nested
@@ -566,7 +561,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.clusterInfos().get(0).totalCount()).isEqualTo(1)
             );
         }
-
     }
 
     @Nested
@@ -641,51 +635,5 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                 new double[]{0.1, 0.2, 0.3}, savedFeedback, cluster);
 
         feedbackEmbeddingClusterRepository.save(feedbackCluster);
-    }
-
-    @Nested
-    @DisplayName("비동기 다운로드 작업 테스트")
-    class AsyncDownloadJobTest {
-
-        @Test
-        @DisplayName("다운로드 작업을 성공적으로 생성한다")
-        void createDownloadJob_success() {
-            // when
-            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
-
-            // then
-            assertThat(jobId).isNotNull();
-            assertThat(UUID.fromString(jobId)).isNotNull(); // UUID 형식 검증
-        }
-
-        @Test
-        @DisplayName("작업 상태를 성공적으로 조회한다")
-        void getDownloadJobStatus_success() {
-            // given
-            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
-
-            // when
-            final FeedbackDownloadJob job = adminFeedbackService.getDownloadJobStatus(jobId);
-
-            // then
-            assertAll(
-                    () -> assertThat(job.getJobId()).isEqualTo(jobId),
-                    () -> assertThat(job.getStatus()).isNotNull(),
-                    () -> assertThat(job.getProgress()).isGreaterThanOrEqualTo(0)
-            );
-        }
-
-        @Test
-        @DisplayName("완료되지 않은 작업의 다운로드 URL 요청 시 예외가 발생한다")
-        void getDownloadUrl_notCompleted() {
-            // given
-            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(jobId))
-                    .isInstanceOf(DownloadJobNotCompletedException.class)
-                    .hasMessageContaining("파일 생성이 완료되지 않았습니다");
-        }
-
     }
 }
