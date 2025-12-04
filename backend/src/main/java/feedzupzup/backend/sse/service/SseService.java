@@ -52,7 +52,7 @@ public class SseService {
     public void sendFeedbackNotificationToOrganization(final UUID organizationUuid, final long totalFeedbackCount) {
         final Map<String, SseEmitter> sseEmitters = sseEmitterRepository.findAllByOrganizationUuid(
                 organizationUuid);
-        log.info("피드백 알림 전송 시작 - Organization: {}", organizationUuid);
+        log.info("피드백 수 전송 시작 - Organization: {}", organizationUuid);
 
         if (sseEmitters.isEmpty()) {
             log.info("전송 대상 연결 없음 - Organization: {}", organizationUuid);
@@ -69,16 +69,16 @@ public class SseService {
 
             try {
                 emitter.send(SseEmitter.event()
-                        .name("feedback-notification")
+                        .name("feedback-total-count-notification")
                         .data(totalFeedbackCount));
                 successCount ++;
             } catch (IOException e) {
-                log.warn("알림 전송 실패 - Emitter: {}, 원인: {}", emitterId, e.getMessage());
+                log.warn("피드백 수 전송 실패 - Emitter: {}, 원인: {}", emitterId, e.getMessage());
                 sseEmitterRepository.remove(emitterId);
                 failCount++;
             }
         }
-        log.info("피드백 알림 전송 완료 - Organization: {}, 성공: {}, 실패: {}",
+        log.info("피드백 수 전송 완료 - Organization: {}, 성공: {}, 실패: {}",
                 organizationUuid, successCount, failCount);
     }
 
