@@ -2,6 +2,7 @@ package feedzupzup.backend.sse.infrastructure;
 
 
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface SseEmitterRepository {
@@ -10,11 +11,7 @@ public interface SseEmitterRepository {
 
     void remove(String id);
 
-    Map<String, SseEmitter> findAllByOrganizationUuid(String organizationUuid);
-
-    Map<String, SseEmitter> findAllByGuestUuid(String organizationUuid, String guestUuid);
-
-    Map<String, SseEmitter> findAll();
+    Map<String, SseEmitter> findAllByOrganizationUuid(UUID organizationUuid);
 
     int count();
 }

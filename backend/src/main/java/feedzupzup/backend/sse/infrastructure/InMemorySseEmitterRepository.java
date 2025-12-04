@@ -1,7 +1,9 @@
 package feedzupzup.backend.sse.infrastructure;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -21,19 +23,15 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     }
 
     @Override
-    public Map<String, SseEmitter> findAllByOrganizationUuid(final String organizationUuid) {
-        return Map.of();
-    }
+    public Map<String, SseEmitter> findAllByOrganizationUuid(final UUID organizationUuid) {
+        final String prefix = organizationUuid.toString() + "_";
 
-    @Override
-    public Map<String, SseEmitter> findAllByGuestUuid(final String organizationUuid,
-            final String guestUuid) {
-        return Map.of();
-    }
-
-    @Override
-    public Map<String, SseEmitter> findAll() {
-        return Map.of();
+        return emitters.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith(prefix))
+                .collect(Collectors.toUnmodifiableMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue)
+        );
     }
 
     @Override

@@ -19,6 +19,7 @@ import feedzupzup.backend.feedback.dto.response.CreateFeedbackResponse;
 import feedzupzup.backend.feedback.dto.response.FeedbackItem;
 import feedzupzup.backend.feedback.dto.response.UserFeedbackListResponse;
 import feedzupzup.backend.feedback.event.FeedbackCreatedEvent;
+import feedzupzup.backend.feedback.event.OrganizationFeedbackCountEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.global.log.BusinessActionLog;
 import feedzupzup.backend.guest.domain.guest.Guest;
@@ -82,6 +83,9 @@ public class UserFeedbackService {
         eventPublisher.publishEvent(new FeedbackCreatedEvent(organization.getId(), "피드줍줍"));
         //TODO : 위 피드백 생성 이벤트 리팩토링 필요
         eventPublisher.publishEvent(new FeedbackCreatedEvent2(savedFeedback.getId()));
+
+        // 현재 피드백 개수를, 접속해있는 유저에게 알려주는 이벤트 발행
+        eventPublisher.publishEvent(new OrganizationFeedbackCountEvent(organization.getUuid()));
 
         return CreateFeedbackResponse.from(savedFeedback);
     }
