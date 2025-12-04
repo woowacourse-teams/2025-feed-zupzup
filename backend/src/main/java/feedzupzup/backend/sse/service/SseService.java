@@ -1,5 +1,6 @@
 package feedzupzup.backend.sse.service;
 
+import feedzupzup.backend.sse.domain.ConnectionType;
 import feedzupzup.backend.sse.infrastructure.SseEmitterRepository;
 import java.io.IOException;
 import java.util.Map;
@@ -18,13 +19,17 @@ public class SseService {
     @Qualifier("inMemorySseEmitterRepository")
     private final SseEmitterRepository sseEmitterRepository;
 
-    public SseEmitter createEmitter(final UUID organizationUuid, final UUID guestUuid) {
+    public SseEmitter createEmitter(
+            final UUID organizationUuid,
+            final String userId,
+            final ConnectionType connectionType
+    ) {
         // TODO: 무제한 타임아웃 -> 하트비트로 수정
         final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        final String emitterId = generateEmitterId(organizationUuid, guestUuid);
+        final String emitterId = generateEmitterId(organizationUuid, userId, connectionType);
 
         sseEmitterRepository.save(emitterId, emitter);
-        log.info("SSE 연결 생성 - Emitter ID: {}", emitterId);
+        log.info("SSE 연결 생성 - Type: {}, Emitter ID: {}", connectionType, emitterId);
 
         emitter.onCompletion(() -> {
             log.info("SSE 연결 정상 종료 - {}", emitterId);
@@ -77,7 +82,14 @@ public class SseService {
                 organizationUuid, successCount, failCount);
     }
 
-    private String generateEmitterId(final UUID organizationUuid, UUID guestUuid) {
-        return organizationUuid + "_" + guestUuid + "_" + System.currentTimeMillis();
+    private String generateEmitterId(
+            final UUID organizationUuid,
+            final String userId,
+            final ConnectionType connectionType
+    ) {
+        return organizationUuid + "_"
+                + connectionType.getPrefix() + "_"
+                + userId + "_"
+                + System.currentTimeMillis();
     }
 }

@@ -1,6 +1,7 @@
 package feedzupzup.backend.sse.controller;
 
-import feedzupzup.backend.guest.dto.GuestInfo;
+import feedzupzup.backend.admin.dto.AdminSession;
+import feedzupzup.backend.sse.api.AdminSseApi;
 import feedzupzup.backend.sse.domain.ConnectionType;
 import feedzupzup.backend.sse.service.SseService;
 import java.util.UUID;
@@ -10,16 +11,16 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequiredArgsConstructor
-public class SseController implements SseApi {
+public class AdminSseController implements AdminSseApi {
 
     private final SseService sseService;
 
     @Override
-    public SseEmitter subscribe(final UUID organizationUuid, final GuestInfo guestInfo) {
+    public SseEmitter subscribeAdmin(final UUID organizationUuid, final AdminSession adminSession) {
         return sseService.createEmitter(
                 organizationUuid,
-                guestInfo.guestUuid().toString(),
-                ConnectionType.GUEST
+                adminSession.adminId().toString(),
+                ConnectionType.ADMIN
         );
     }
 }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
+import feedzupzup.backend.sse.domain.ConnectionType;
 import feedzupzup.backend.sse.infrastructure.SseEmitterRepository;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,11 @@ class SseServiceTest extends ServiceIntegrationHelper {
             final UUID guestUuid = UUID.randomUUID();
 
             // when
-            final SseEmitter emitter = sseService.createEmitter(organizationUuid, guestUuid);
+            final SseEmitter emitter = sseService.createEmitter(
+                    organizationUuid,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
 
             // then
             assertThat(emitter).isNotNull();
@@ -48,7 +53,11 @@ class SseServiceTest extends ServiceIntegrationHelper {
             final int initialCount = sseEmitterRepository.count();
 
             // when
-            sseService.createEmitter(organizationUuid, guestUuid);
+            sseService.createEmitter(
+                    organizationUuid,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
 
             // then
             final int afterCount = sseEmitterRepository.count();
@@ -63,9 +72,21 @@ class SseServiceTest extends ServiceIntegrationHelper {
             final UUID guestUuid = UUID.randomUUID();
 
             // when
-            final SseEmitter emitter1 = sseService.createEmitter(organizationUuid, guestUuid);
-            final SseEmitter emitter2 = sseService.createEmitter(organizationUuid, guestUuid);
-            final SseEmitter emitter3 = sseService.createEmitter(organizationUuid, guestUuid);
+            final SseEmitter emitter1 = sseService.createEmitter(
+                    organizationUuid,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
+            final SseEmitter emitter2 = sseService.createEmitter(
+                    organizationUuid,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
+            final SseEmitter emitter3 = sseService.createEmitter(
+                    organizationUuid,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
 
             // then
             assertAll(
@@ -85,8 +106,16 @@ class SseServiceTest extends ServiceIntegrationHelper {
             final UUID guestUuid = UUID.randomUUID();
 
             // when
-            final SseEmitter emitter1 = sseService.createEmitter(organizationUuid1, guestUuid);
-            final SseEmitter emitter2 = sseService.createEmitter(organizationUuid2, guestUuid);
+            final SseEmitter emitter1 = sseService.createEmitter(
+                    organizationUuid1,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
+            final SseEmitter emitter2 = sseService.createEmitter(
+                    organizationUuid2,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
 
             // then
             assertAll(
@@ -102,14 +131,18 @@ class SseServiceTest extends ServiceIntegrationHelper {
     class EmitterIdGenerationTest {
 
         @Test
-        @DisplayName("emitter ID는 조직 UUID, 게스트 UUID, 타임스탬프를 포함한다")
+        @DisplayName("emitter ID는 조직 UUID, 연결 타입, 사용자 ID, 타임스탬프를 포함한다")
         void createEmitter_emitterIdFormat() {
             // given
             final UUID organizationUuid = UUID.randomUUID();
             final UUID guestUuid = UUID.randomUUID();
 
             // when
-            final SseEmitter emitter = sseService.createEmitter(organizationUuid, guestUuid);
+            final SseEmitter emitter = sseService.createEmitter(
+                    organizationUuid,
+                    guestUuid.toString(),
+                    ConnectionType.GUEST
+            );
 
             // then
             // emitter가 생성되고 리포지토리에 저장되었는지 확인
@@ -129,7 +162,11 @@ class SseServiceTest extends ServiceIntegrationHelper {
                 final UUID guestUuid = UUID.randomUUID();
 
                 // when
-                final SseEmitter emitter = sseService.createEmitter(organizationUuid, guestUuid);
+                final SseEmitter emitter = sseService.createEmitter(
+                        organizationUuid,
+                        guestUuid.toString(),
+                        ConnectionType.GUEST
+                );
 
                 // then
                 assertThat(emitter.getTimeout()).isEqualTo(Long.MAX_VALUE);
@@ -144,8 +181,16 @@ class SseServiceTest extends ServiceIntegrationHelper {
                 final UUID guestUuid2 = UUID.randomUUID();
 
                 // when
-                final SseEmitter emitter1 = sseService.createEmitter(organizationUuid, guestUuid1);
-                final SseEmitter emitter2 = sseService.createEmitter(organizationUuid, guestUuid2);
+                final SseEmitter emitter1 = sseService.createEmitter(
+                        organizationUuid,
+                        guestUuid1.toString(),
+                        ConnectionType.GUEST
+                );
+                final SseEmitter emitter2 = sseService.createEmitter(
+                        organizationUuid,
+                        guestUuid2.toString(),
+                        ConnectionType.GUEST
+                );
 
                 // then
                 assertAll(
