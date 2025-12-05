@@ -4,12 +4,13 @@ import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton'
 import BellOutlineIcon from '@/components/icons/BellOutlineIcon';
 import OutOutlineIcon from '@/components/icons/OutOutlineIcon';
 import SendIcon from '@/components/icons/SendIcon';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import ProfileBox from './components/ProfileBox/ProfileBox';
 import SettingListBox from './components/SettingListBox/SettingListBox';
-import { useLogout } from './hooks/useLogout';
+import WithdrawModal from './components/WithdrawModal/WithdrawModal';
+import LogoutModal from './components/LogoutModal/LogoutModal';
 import { useNotificationSettingsPage } from './hooks/useNotificationSettingsPage';
-import { settingsContainer } from './Settings.style';
+import { settingsContainer, withdrawSettingListBox } from './Settings.style';
 import useAdminAuth from '@/domains/admin/Settings/hooks/useAdminAuth';
 import { usePWAPrompt } from '@/contexts/usePWAPrompt';
 
@@ -22,7 +23,7 @@ declare global {
   }
 }
 
-type ModalState = { type: 'logout' } | { type: null };
+type ModalState = { type: 'logout' } | { type: 'withdraw' } | { type: null };
 
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
@@ -34,7 +35,6 @@ export default function Settings() {
     needsPWAInstall,
   } = useNotificationSettingsPage();
   const { adminAuth, isLoading: isAdminAuthLoading } = useAdminAuth();
-  const { handleLogout } = useLogout();
   const { showPrompt } = usePWAPrompt();
 
   const closeModal = () => {
@@ -105,17 +105,22 @@ export default function Settings() {
         <SettingListBox
           icon={<OutOutlineIcon />}
           title='로그아웃'
-          variant='danger'
           onClick={() => setModalState({ type: 'logout' })}
         />
 
-        {modalState.type === 'logout' && (
-          <ConfirmModal
-            title='로그아웃'
-            message='정말 로그아웃하시겠습니까?'
-            onConfirm={handleLogout}
-            onClose={closeModal}
+        <div css={withdrawSettingListBox}>
+          <SettingListBox
+            icon={<TrashCanIcon />}
+            title='회원탈퇴'
+            variant='danger'
+            onClick={() => setModalState({ type: 'withdraw' })}
           />
+        </div>
+
+        {modalState.type === 'logout' && <LogoutModal onClose={closeModal} />}
+
+        {modalState.type === 'withdraw' && (
+          <WithdrawModal onClose={closeModal} />
         )}
       </div>
     </>

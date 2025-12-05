@@ -1,3 +1,5 @@
+import { CategoryListType } from '@/constants/categoryList';
+
 export const FEEDBACK_FORM_CONSTANTS = {
   ADJECTIVES: [
     '다정한',
@@ -124,5 +126,6 @@ export const FEEDBACK_FORM_CONSTANTS = {
     MIN_LENGTH: 1,
   } as const,
 
-  PLACEHOLDER: '건의하고 싶은 내용을 입력해주세요.',
+  PLACEHOLDER: (category: CategoryListType) =>
+    `${category}하고 싶은 내용을 입력해주세요.`,
 } as const;

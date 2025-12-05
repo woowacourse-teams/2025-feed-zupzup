@@ -43,3 +43,7 @@ export const myFeedbackStyle = (theme: Theme, isMyFeedback: boolean) => css`
   border: 1.5px solid
     ${isMyFeedback ? theme.colors.green[100] : theme.colors.white[100]};
 `;
+
+export const skipTarget = css`
+  scroll-margin-top: 100px;
+`;

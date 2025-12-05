@@ -5,3 +5,7 @@ export const settingsContainer = css`
   flex-direction: column;
   gap: 20px;
 `;
+
+export const withdrawSettingListBox = css`
+  margin-top: 30px;
+`;

@@ -17,6 +17,7 @@ import {
 import { useAppTheme } from '@/hooks/useAppTheme';
 import UserFeedbackList from './components/UserFeedbackList/UserFeedbackList';
 import UserDashboardHeader from './components/UserDashboardHeader/UserDashboardHeader';
+import SkipTarget from '@/components/SkipTarget/SkipTarget';
 
 export default function UserDashboard() {
   const theme = useAppTheme();
@@ -40,6 +41,7 @@ export default function UserDashboard() {
         description='제출된 피드백을 확인하세요'
         keywords='피드백, 피드백확인, 피드백조회, 피드백상태, 건의사항, 피드백방'
       />
+      <SkipTarget targetId='user-feedback-list' />
       <div css={dashboardLayout}>
         <UserDashboardHeader />
         <DashboardOverview />
@@ -59,6 +61,7 @@ export default function UserDashboard() {
           onClick={handleNavigateToOnboarding}
           inset={{ bottom: '32px', left: '100%' }}
           customCSS={goOnboardButton(theme)}
+          aria-label='피드백 제출하러 가기'
         />
         {showButton && (
           <FloatingButton
@@ -66,6 +69,7 @@ export default function UserDashboard() {
             onClick={scrollToTop}
             inset={{ bottom: '32px' }}
             customCSS={goTopButton(theme)}
+            aria-label='페이지 상단으로 이동'
           />
         )}
       </div>

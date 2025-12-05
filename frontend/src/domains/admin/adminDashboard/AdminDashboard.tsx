@@ -12,6 +12,7 @@ import { goTopButton } from '@/domains/user/userDashboard/UserDashboard.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import AdminFeedbackList from './components/AdminFeedbackList/AdminFeedbackList';
 import AISummaryFloatingButton from './components/AISummaryFloatingButton/AISummaryFloatingButton';
+import SkipTarget from '@/components/SkipTarget/SkipTarget';
 
 export default function AdminDashboard() {
   const theme = useAppTheme();
@@ -32,6 +33,7 @@ export default function AdminDashboard() {
         description='수집된 피드백을 관리하고 답변하세요'
         keywords='관리자, 대시보드, 피드백, 관리'
       />
+      <SkipTarget targetId='admin-feedback-list' />
       <section css={dashboardLayout}>
         <DashboardOverview />
         <FilterSection
