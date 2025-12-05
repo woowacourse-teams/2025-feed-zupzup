@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -25,6 +26,11 @@ public class GlobalExceptionHandler {
         final ErrorCode errorCode = ErrorCode.SERVER_ERROR;
         log.error(errorCode.getMessage(), e);
         return ErrorResponse.error(errorCode);
+    }
+
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void handleAsyncRequestTimeout(AsyncRequestTimeoutException e) {
+        log.info("SSE 타임아웃 발생 (정상 동작)");
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

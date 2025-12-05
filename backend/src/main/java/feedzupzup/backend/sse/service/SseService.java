@@ -1,7 +1,7 @@
 package feedzupzup.backend.sse.service;
 
 import feedzupzup.backend.sse.domain.ConnectionType;
-import feedzupzup.backend.sse.infrastructure.SseEmitterRepository;
+import feedzupzup.backend.sse.domain.SseEmitterRepository;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
@@ -46,6 +46,8 @@ public class SseService {
             sseEmitterRepository.remove(emitterId);
         });
 
+        sendToClient(emitter, emitterId, "connect", "EventStream Created");
+
         return emitter;
     }
 
@@ -80,6 +82,17 @@ public class SseService {
         }
         log.info("피드백 수 전송 완료 - Organization: {}, 성공: {}, 실패: {}",
                 organizationUuid, successCount, failCount);
+    }
+
+    private void sendToClient(final SseEmitter emitter, final String id, final String eventName, final Object data) {
+        try {
+            emitter.send(SseEmitter.event()
+                    .name(eventName)
+                    .data(data));
+        } catch (IOException e) {
+            sseEmitterRepository.remove(id);
+            log.error("SSE 연결오류 발생", e);
+        }
     }
 
     private String generateEmitterId(

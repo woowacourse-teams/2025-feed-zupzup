@@ -1,5 +1,8 @@
 package feedzupzup.backend.sse.infrastructure;
 
+import feedzupzup.backend.sse.domain.SseEmitterRepository;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +35,11 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
                         Map.Entry::getKey,
                         Map.Entry::getValue)
         );
+    }
+
+    @Override
+    public Map<String, SseEmitter> findAll() {
+        return Collections.unmodifiableMap(new HashMap<>(emitters));
     }
 
     @Override

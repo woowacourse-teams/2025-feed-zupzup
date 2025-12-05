@@ -1,4 +1,4 @@
-package feedzupzup.backend.sse.infrastructure;
+package feedzupzup.backend.sse.domain;
 
 
 import java.util.Map;
@@ -13,5 +13,6 @@ public interface SseEmitterRepository {
 
     Map<String, SseEmitter> findAllByOrganizationUuid(UUID organizationUuid);
 
+    Map<String, SseEmitter> findAll();
     int count();
 }
