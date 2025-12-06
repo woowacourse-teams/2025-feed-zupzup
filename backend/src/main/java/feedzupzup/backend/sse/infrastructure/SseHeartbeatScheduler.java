@@ -23,7 +23,7 @@ public class SseHeartbeatScheduler {
         final Map<String, SseEmitter> emitters = sseEmitterRepository.findAll();
 
         if (emitters.isEmpty()) {
-            log.info("하트비스 스케줄링 스킵");
+            log.debug("하트비스 스케줄링 스킵");
             return;
         }
 
@@ -37,13 +37,12 @@ public class SseHeartbeatScheduler {
                 emitter.send(SseEmitter.event()
                         .name("heartbeat")
                         .data("ping"));
-
             } catch (IOException e) {
-                log.info("좀비 연결 제거 - " , emitterId, e.getMessage());
+                log.info("좀비 연결 제거 - ID : {} " , emitterId);
                 sseEmitterRepository.remove(emitterId);
             }
         }
 
-        log.info("Heartbeat 완료 ");
+        log.debug("Heartbeat 완료 ");
     }
 }

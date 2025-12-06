@@ -24,7 +24,6 @@ public class SseService {
             final String userId,
             final ConnectionType connectionType
     ) {
-        // TODO: 무제한 타임아웃 -> 하트비트로 수정
         final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
         final String emitterId = generateEmitterId(organizationUuid, userId, connectionType);
 
@@ -36,13 +35,23 @@ public class SseService {
             sseEmitterRepository.remove(emitterId);
         });
 
+        emitter.onError((e) -> {
+            final String message = e.getMessage();
+            if (message != null && message.contains("disconnected client")) {
+                log.debug("SSE 연결 종료(Client Disconnect)");
+            } else {
+                log.error("SSE 연결 에러 발생 - ID: {}, 메시지: {}", emitterId, message, e);
+            }
+            sseEmitterRepository.remove(emitterId);
+        });
+
         emitter.onTimeout(() -> {
             log.warn("SSE 연결 타임아웃 - {}", emitterId);
             sseEmitterRepository.remove(emitterId);
         });
 
         emitter.onError((e) -> {
-            log.error("SSE 연결 에러 - {}: {}", emitterId, e.getMessage());
+            log.warn("SSE 연결 에러 - {}: {}", emitterId, e.getMessage());
             sseEmitterRepository.remove(emitterId);
         });
 

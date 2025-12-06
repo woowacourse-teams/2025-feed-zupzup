@@ -12,7 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -28,9 +28,9 @@ public class GlobalExceptionHandler {
         return ErrorResponse.error(errorCode);
     }
 
-    @ExceptionHandler(AsyncRequestTimeoutException.class)
-    public void handleAsyncRequestTimeout(AsyncRequestTimeoutException e) {
-        log.info("SSE 타임아웃 발생 (정상 동작)");
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    public void handleAsyncRequestNotUsable(AsyncRequestNotUsableException e) {
+        log.debug("SSE 연결이 끊겨 사용자에게 메세지 응답 불가", e);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
