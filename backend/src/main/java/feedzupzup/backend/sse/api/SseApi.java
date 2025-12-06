@@ -1,4 +1,4 @@
-package feedzupzup.backend.sse.controller;
+package feedzupzup.backend.sse.api;
 
 
 import feedzupzup.backend.auth.presentation.annotation.VisitedGuest;

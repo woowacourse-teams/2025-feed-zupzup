@@ -1,6 +1,7 @@
 package feedzupzup.backend.sse.controller;
 
 import feedzupzup.backend.guest.dto.GuestInfo;
+import feedzupzup.backend.sse.api.SseApi;
 import feedzupzup.backend.sse.domain.ConnectionType;
 import feedzupzup.backend.sse.service.SseService;
 import java.util.UUID;
