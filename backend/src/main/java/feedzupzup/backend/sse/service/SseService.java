@@ -5,19 +5,23 @@ import feedzupzup.backend.sse.domain.SseEmitterRepository;
 import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class SseService {
 
-    @Qualifier("inMemorySseEmitterRepository")
     private final SseEmitterRepository sseEmitterRepository;
+
+    public SseService(
+            @Qualifier("inMemorySseEmitterRepository")
+            final SseEmitterRepository sseEmitterRepository
+    ) {
+        this.sseEmitterRepository = sseEmitterRepository;
+    }
 
     public SseEmitter createEmitter(
             final UUID organizationUuid,
@@ -47,11 +51,6 @@ public class SseService {
 
         emitter.onTimeout(() -> {
             log.warn("SSE 연결 타임아웃 - {}", emitterId);
-            sseEmitterRepository.remove(emitterId);
-        });
-
-        emitter.onError((e) -> {
-            log.warn("SSE 연결 에러 - {}: {}", emitterId, e.getMessage());
             sseEmitterRepository.remove(emitterId);
         });
 
