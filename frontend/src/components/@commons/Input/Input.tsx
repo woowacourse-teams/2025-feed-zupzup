@@ -1,7 +1,9 @@
 import { SerializedStyles } from '@emotion/react';
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'css'> {
+export interface InputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'css'
+> {
   customCSS?: SerializedStyles;
 }
 

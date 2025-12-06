@@ -11,8 +11,7 @@ import {
 
 import { useAppTheme } from '@/hooks/useAppTheme';
 
-interface LikeButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface LikeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   like: boolean;
   feedbackId: number | undefined;
   likeCount: number;
