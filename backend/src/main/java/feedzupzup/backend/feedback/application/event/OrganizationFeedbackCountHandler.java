@@ -2,6 +2,8 @@ package feedzupzup.backend.feedback.application.event;
 
 import feedzupzup.backend.feedback.event.OrganizationFeedbackCountEvent;
 import feedzupzup.backend.organization.application.OrganizationStatisticService;
+import feedzupzup.backend.organization.domain.FeedbackAmount;
+import feedzupzup.backend.organization.domain.OrganizationStatisticRepository;
 import feedzupzup.backend.organization.dto.response.OrganizationStatisticResponse;
 import feedzupzup.backend.sse.service.SseService;
 import lombok.RequiredArgsConstructor;
@@ -14,18 +16,18 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class OrganizationFeedbackCountHandler {
 
-    private final OrganizationStatisticService organizationStatisticService;
+    private final OrganizationStatisticRepository organizationStatisticRepository;
     private final SseService sseService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Async
     public void handleFeedbackCreatedEvent(final OrganizationFeedbackCountEvent organizationFeedbackCountEvent) {
-        final OrganizationStatisticResponse organizationStatisticResponse = organizationStatisticService.getStatistic(
-                organizationFeedbackCountEvent.organizationUuid());
+        final FeedbackAmount feedbackAmount = organizationStatisticRepository.findFeedbackAmountByOrganizationId(
+                organizationFeedbackCountEvent.organizationId());
 
         sseService.sendFeedbackNotificationToOrganization(
-                organizationFeedbackCountEvent.organizationUuid(),
-                organizationStatisticResponse.totalCount()
+                organizationFeedbackCountEvent.organizationId(),
+                feedbackAmount.getFeedbackTotalCount()
         );
     }
 }

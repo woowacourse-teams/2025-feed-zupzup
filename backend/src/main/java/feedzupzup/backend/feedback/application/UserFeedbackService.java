@@ -85,7 +85,7 @@ public class UserFeedbackService {
         eventPublisher.publishEvent(new FeedbackCreatedEvent2(savedFeedback.getId()));
 
         // 현재 피드백 개수를, 접속해있는 유저에게 알려주는 이벤트 발행
-        eventPublisher.publishEvent(new OrganizationFeedbackCountEvent(organization.getUuid()));
+        eventPublisher.publishEvent(new OrganizationFeedbackCountEvent(organization.getId()));
 
         return CreateFeedbackResponse.from(savedFeedback);
     }

@@ -59,13 +59,13 @@ public class SseService {
         return emitter;
     }
 
-    public void sendFeedbackNotificationToOrganization(final UUID organizationUuid, final long totalFeedbackCount) {
-        final Map<String, SseEmitter> sseEmitters = sseEmitterRepository.findAllByOrganizationUuid(
-                organizationUuid);
-        log.info("피드백 수 전송 시작 - Organization: {}", organizationUuid);
+    public void sendFeedbackNotificationToOrganization(final Long organizationId, final long totalFeedbackCount) {
+        final Map<String, SseEmitter> sseEmitters = sseEmitterRepository.findAllByOrganizationId(
+                organizationId);
+        log.info("피드백 수 전송 시작 - Organization: {}", organizationId);
 
         if (sseEmitters.isEmpty()) {
-            log.info("전송 대상 연결 없음 - Organization: {}", organizationUuid);
+            log.info("전송 대상 연결 없음 - Organization: {}", organizationId);
             return;
         }
 
@@ -89,7 +89,7 @@ public class SseService {
             }
         }
         log.info("피드백 수 전송 완료 - Organization: {}, 성공: {}, 실패: {}",
-                organizationUuid, successCount, failCount);
+                organizationId, successCount, failCount);
     }
 
     private void sendToClient(final SseEmitter emitter, final String id, final String eventName, final Object data) {

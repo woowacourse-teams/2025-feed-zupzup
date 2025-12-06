@@ -87,7 +87,7 @@ class OrganizationFeedbackCountHandlerTest extends ServiceIntegrationHelper {
         // then - SSE 알림이 발송되었는지 검증 (비동기 처리를 위해 timeout 사용)
         verify(sseService, timeout(2000).times(1))
                 .sendFeedbackNotificationToOrganization(
-                        eq(organization.getUuid()),
+                        eq(organization.getId()),
                         eq(1L)
                 );
     }
@@ -117,11 +117,11 @@ class OrganizationFeedbackCountHandlerTest extends ServiceIntegrationHelper {
 
         // then - 각 피드백 생성마다 SSE 알림이 발송되었는지 검증
         verify(sseService, timeout(2000).times(1))
-                .sendFeedbackNotificationToOrganization(eq(organization.getUuid()), eq(1L));
+                .sendFeedbackNotificationToOrganization(eq(organization.getId()), eq(1L));
         verify(sseService, timeout(2000).times(1))
-                .sendFeedbackNotificationToOrganization(eq(organization.getUuid()), eq(2L));
+                .sendFeedbackNotificationToOrganization(eq(organization.getId()), eq(2L));
         verify(sseService, timeout(2000).times(1))
-                .sendFeedbackNotificationToOrganization(eq(organization.getUuid()), eq(3L));
+                .sendFeedbackNotificationToOrganization(eq(organization.getId()), eq(3L));
     }
 
     @Test
@@ -143,7 +143,7 @@ class OrganizationFeedbackCountHandlerTest extends ServiceIntegrationHelper {
         // then - 정확한 organizationUuid와 totalCount로 SSE 알림이 발송되었는지 검증
         verify(sseService, timeout(2000).times(1))
                 .sendFeedbackNotificationToOrganization(
-                        eq(organization.getUuid()),
+                        eq(organization.getId()),
                         eq(1L)
                 );
     }

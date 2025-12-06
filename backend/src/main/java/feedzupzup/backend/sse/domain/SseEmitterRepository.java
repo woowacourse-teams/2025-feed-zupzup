@@ -11,7 +11,7 @@ public interface SseEmitterRepository {
 
     void remove(String id);
 
-    Map<String, SseEmitter> findAllByOrganizationUuid(UUID organizationUuid);
+    Map<String, SseEmitter> findAllByOrganizationId(Long organizationId);
 
     Map<String, SseEmitter> findAll();
     int count();
