@@ -31,7 +31,8 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
     private static final List<String> EXCLUDE_URI = List.of(
             "/actuator/**",
             "/swagger-ui/**",
-            "/api-docs"
+            "/api-docs",
+            "/sse/**"
     );
     private static final String GLOBAL_TRACE_ID_KEY = "global_trace_id";
     private static final String ADMIN_PREFIX = "admin";
