@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.sse.domain.ConnectionType;
-import feedzupzup.backend.sse.infrastructure.SseEmitterRepository;
+import feedzupzup.backend.sse.domain.SseEmitterRepository;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
