@@ -5,6 +5,7 @@ export const dashboardLayout = css`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  margin-top: 40px;
 `;
 
 export const goOnboardButton = (theme: Theme) => css`
@@ -41,4 +42,8 @@ export const highlightStyle = css`
 export const myFeedbackStyle = (theme: Theme, isMyFeedback: boolean) => css`
   border: 1.5px solid
     ${isMyFeedback ? theme.colors.green[100] : theme.colors.white[100]};
+`;
+
+export const skipTarget = css`
+  scroll-margin-top: 100px;
 `;

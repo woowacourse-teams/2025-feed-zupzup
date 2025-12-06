@@ -1,14 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export interface UseTimeDelayModalOptions {
-  isOpen: boolean;
   loadingDuration: number;
   autoCloseDuration: number;
   onClose: () => void;
 }
 
 export function useTimeDelayModal({
-  isOpen,
   loadingDuration,
   autoCloseDuration,
   onClose,
@@ -17,8 +15,6 @@ export function useTimeDelayModal({
   const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) return;
-
     setIsMinimumDelayActive(true);
     setIsComplete(false);
 
@@ -30,7 +26,7 @@ export function useTimeDelayModal({
     return () => {
       clearTimeout(delayTimer);
     };
-  }, [isOpen, loadingDuration]);
+  }, [loadingDuration]);
 
   useEffect(() => {
     if (!isComplete) return;

@@ -13,6 +13,7 @@ export const ROUTES = {
 
   LOGIN: 'login',
   SIGN_UP: 'signup',
+  AI_SUMMARY: ':id/ai/summary/:clusterId',
 } as const;
 
 export const ADMIN_BASE = ROUTES.ADMIN + '/';

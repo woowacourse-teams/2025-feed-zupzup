@@ -1,4 +1,3 @@
-import { AdminOrganizationType } from '@/apis/adminOrganization.api';
 import { loadingContainer } from '@/components/TimeDelayModal/TimeDelayModal.styles';
 import AdminOrganization from '@/domains/admin/AdminHome/components/AdminOrganization/AdminOrganization';
 import {
@@ -8,17 +7,30 @@ import {
 } from '@/domains/admin/AdminHome/components/AdminOrganizationList/AdminOrganizationList.style';
 import StatusBox from '@/domains/components/StatusBox/StatusBox';
 import useNavigation from '@/domains/hooks/useNavigation';
+import useAdminOrganization from '../../hooks/useAdminOrganization';
+import { AdminAuthData } from '@/types/adminAuth';
+import { getLocalStorage } from '@/utils/localStorage';
+import FloatingButton from '@/domains/components/FloatingButton/FloatingButton';
+import PlusIcon from '@/components/icons/PlusIcon';
+import { addAdminOrganization } from '../../AdminHome.style';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useModalContext } from '@/contexts/useModal';
+import CreateRoomModal from '@/domains/admin/CreateRoomModal/CreateRoomModal';
 
-interface AdminOrganizationListProps {
-  adminOrganizations: AdminOrganizationType[];
-  isLoading: boolean;
-}
+const ADMIN = '관리자1';
 
-export default function AdminOrganizationList({
-  adminOrganizations,
-  isLoading,
-}: AdminOrganizationListProps) {
+export default function AdminOrganizationList() {
+  const theme = useAppTheme();
+  const adminName = getLocalStorage<AdminAuthData>('auth')?.adminName || ADMIN;
+  const { adminOrganizations, isLoading } = useAdminOrganization({ adminName });
+
   const { goPath } = useNavigation();
+
+  const { openModal, closeModal } = useModalContext();
+
+  const handleCreateAdminOrganization = () => {
+    openModal(<CreateRoomModal onClose={closeModal} />);
+  };
 
   if (isLoading) {
     return (
@@ -47,10 +59,20 @@ export default function AdminOrganizationList({
             key={organizations.uuid}
             organizationName={organizations.name}
             waitingCount={organizations.waitingCount}
+            confirmedCount={organizations.confirmedCount}
             postedAt={organizations.postedAt}
             onClick={() => goPath(`/admin/${organizations.uuid}/dashboard`)}
           />
         ))
+      )}
+
+      {!isLoading && (
+        <FloatingButton
+          icon={<PlusIcon color='white' width='24' height='24' />}
+          onClick={handleCreateAdminOrganization}
+          inset={{ bottom: '80px', left: '100%' }}
+          customCSS={addAdminOrganization(theme)}
+        />
       )}
     </div>
   );

@@ -10,7 +10,7 @@ export const container = css`
 export const formContainer = css`
   position: relative;
   width: 100%;
-  height: 317px;
+  height: 410px;
 `;
 
 export const userInfo = (theme: Theme) => css`
@@ -111,13 +111,30 @@ export const textarea = (theme: Theme) => css`
   border: none;
 `;
 
-export const toggleButtonContainer = css`
+export const formFooterContainer = css`
   position: absolute;
   top: 226px;
   left: 10px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  align-items: start;
+  width: calc(100% - 20px);
+`;
+
+export const toggleButtonContainer = css`
+  display: flex;
   align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
 `;
 
 export const toggleButtonText = (theme: Theme) => css`
@@ -125,6 +142,15 @@ export const toggleButtonText = (theme: Theme) => css`
 
   margin-left: 10px;
   color: ${theme.colors.gray[600]};
+  word-break: keep-all;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  @media (max-width: 400px) {
+    margin-left: 0;
+    text-align: right;
+    white-space: normal;
+  }
 `;
 
 export const usernameInput = (theme: Theme) => css`

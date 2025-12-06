@@ -1,7 +1,12 @@
+import { Analytics, suggestionFormEvents } from '@/analytics';
 import BasicButton from '@/components/BasicButton/BasicButton';
 import ArrowLeftIcon from '@/components/icons/ArrowLeftIcon';
 import SendIcon from '@/components/icons/SendIcon';
-import { useState, useCallback } from 'react';
+import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
+import { CategoryListType } from '@/constants/categoryList';
+import { useModalContext } from '@/contexts/useModal';
+import useNavigation from '@/domains/hooks/useNavigation';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import {
   arrowLeftIconContainer,
   buttonGroupContainer,
@@ -14,19 +19,21 @@ import {
 } from '@/domains/user/FeedbackPage/FeedbackPage.styles';
 import FeedbackInput from '@/domains/user/home/components/FeedbackInput/FeedbackForm';
 import { useFeedbackForm } from '@/domains/user/home/hooks/useFeedbackForm';
+import useUploadImage from '@/domains/user/home/hooks/useUploadImage';
+import { useUploadS3Image } from '@/domains/user/home/hooks/useUploadS3Image';
 import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
+import { useCallback } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
-import TimeDelayModal from '@/components/TimeDelayModal/TimeDelayModal';
-import { Analytics, suggestionFormEvents } from '@/analytics';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import useNavigation from '@/domains/hooks/useNavigation';
-import { CategoryListType } from '@/constants/categoryList';
+import IconButton from '@/components/IconButton/IconButton';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
   movePrevStep: () => void;
 }
+
+const UPLOAD_LOADING_DURATION = 800;
+const UPLOAD_SUCCESS_DURATION = 1000;
 
 export default function FeedbackPage({
   movePrevStep,
@@ -34,7 +41,7 @@ export default function FeedbackPage({
 }: FeedbackPageProps) {
   const theme = useAppTheme();
   const { goPath } = useNavigation();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { isOpen: isModalOpen, openModal, closeModal } = useModalContext();
   const { organizationId } = useOrganizationId();
 
   const {
@@ -49,6 +56,16 @@ export default function FeedbackPage({
     handleUsernameFocus,
   } = useFeedbackForm();
 
+  const {
+    file,
+    imgUrl,
+    onChangeFile,
+    presignedUrl,
+    contentType,
+    handleCancelFile,
+  } = useUploadImage();
+
+  const { uploadS3PreSignUrl } = useUploadS3Image();
   const { submitFeedback, submitStatus } = useFeedbackSubmit();
 
   const handleSkipAndNavigate = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -71,15 +88,11 @@ export default function FeedbackPage({
     handleLockToggle();
   };
 
-  const handleModalClose = useCallback(
-    (isError: boolean) => {
-      setIsModalOpen(false);
-      if (!isError) {
-        goPath(`/${organizationId}/dashboard`);
-      }
-    },
-    [goPath]
-  );
+  const handleModalClose = useCallback(() => {
+    closeModal();
+
+    goPath(`/${organizationId}/dashboard`);
+  }, [goPath]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -91,18 +104,34 @@ export default function FeedbackPage({
     try {
       Analytics.track(suggestionFormEvents.formSubmit());
 
-      setIsModalOpen(true);
+      openModal(
+        <TimeDelayModal
+          onClose={() => handleModalClose()}
+          loadingDuration={UPLOAD_LOADING_DURATION}
+          autoCloseDuration={UPLOAD_SUCCESS_DURATION}
+        />
+      );
 
-      submitFeedback({
+      if (file && presignedUrl) {
+        await uploadS3PreSignUrl({
+          presignedUrl,
+          file,
+          contentType: contentType || 'image/png',
+        });
+      }
+
+      await submitFeedback({
         organizationId,
         content: feedback,
         isSecret: isLocked,
         userName: username,
         category,
+        imageUrl: file ? presignedUrl : null,
       });
     } catch (error) {
-      setIsModalOpen(false);
+      closeModal();
       console.error('피드백 제출 실패:', error);
+      return;
     }
   };
 
@@ -110,16 +139,23 @@ export default function FeedbackPage({
 
   return (
     <section css={container}>
-      <div css={arrowLeftIconContainer} onClick={movePrevStep}>
-        <ArrowLeftIcon color={theme.colors.gray[600]} />
+      <div css={arrowLeftIconContainer}>
+        <IconButton
+          aria-label='이전 단계로 돌아가기'
+          onClick={movePrevStep}
+          icon={<ArrowLeftIcon color={theme.colors.gray[600]} />}
+        />
       </div>
 
       <form css={mainContent} onSubmit={onSubmit}>
         <div>
           <div css={contentContainer}>
-            <div css={titleContainer}>
+            {category && (
+              <p className='srOnly'>{`소중한 ${category}을(를) 남겨주세요`}</p>
+            )}
+            <div css={titleContainer} aria-hidden={true}>
               <span css={combinedTitle(theme)}>
-                <strong>소중한 의견</strong>을 들려주세요
+                <strong>소중한 {category}</strong>을(를) 남겨주세요
               </span>
             </div>
           </div>
@@ -129,11 +165,16 @@ export default function FeedbackPage({
             username={username}
             isLocked={isLocked}
             canSubmit={canSubmit}
+            file={file}
+            imgUrl={imgUrl}
+            feedbackCategory={category || '건의'}
+            onChangeFile={onChangeFile}
             onFeedbackChange={handleFeedbackChange}
             onRandomChange={handleRandomChangeWithTracking}
             onLockToggle={handleLockToggleWithTracking}
             onUsernameChange={handleUsernameChange}
             onUsernameFocus={handleUsernameFocus}
+            handleCancelFile={handleCancelFile}
           />
         </div>
 
@@ -155,13 +196,18 @@ export default function FeedbackPage({
                 }
               />
             }
+            aria-label={`피드백 제출 ${canSubmit ? '' : '불가'}`}
           >
-            피드백 제출
+            {category} 제출
           </BasicButton>
 
           <BasicButton
             type='button'
-            icon={<p css={skipIcon}>📄</p>}
+            icon={
+              <p css={skipIcon} aria-hidden={true}>
+                📄
+              </p>
+            }
             variant='secondary'
             onClick={handleSkipAndNavigate}
             disabled={isSubmitting || isModalOpen}
@@ -170,18 +216,6 @@ export default function FeedbackPage({
           </BasicButton>
         </div>
       </form>
-
-      <TimeDelayModal
-        isOpen={isModalOpen}
-        onClose={() => handleModalClose(submitStatus === 'error')}
-        loadingDuration={800}
-        autoCloseDuration={1000}
-        loadingMessage='피드백을 전송하고 있어요...'
-        completeMessage='소중한 의견 감사해요!'
-        width={320}
-        height={200}
-        modalStatus={submitStatus}
-      />
     </section>
   );
 }

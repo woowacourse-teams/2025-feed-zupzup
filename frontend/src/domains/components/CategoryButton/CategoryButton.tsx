@@ -21,8 +21,10 @@ export default function CategoryButton({
 
   return (
     <Button customCSS={container(theme)} onClick={onClick}>
-      <p css={iconCSS}>{icon}</p>
-      <p>{text}</p>
+      <span css={iconCSS} aria-hidden='true'>
+        {icon}
+      </span>
+      <span>{text}</span>
     </Button>
   );
 }

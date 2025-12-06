@@ -2,36 +2,52 @@ import { SerializedStyles } from '@emotion/react';
 import { useModal } from '@/hooks/useModal';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { overlay, modalBox } from './Modal.styles';
+import { useEffect, useRef } from 'react';
 
 export interface ModalProps {
-  isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   width?: number;
   height?: number | undefined;
   customCSS?: SerializedStyles | SerializedStyles[];
   disableUserClose?: boolean;
+  ariaLabelledby?: string;
 }
 
 export default function Modal({
-  isOpen,
   onClose,
   children,
   width = 300,
   height,
   customCSS,
   disableUserClose = false,
+  ariaLabelledby,
 }: ModalProps) {
   const theme = useAppTheme();
+  const modalRef = useRef<HTMLDivElement>(null);
   const { handleOverlayClick } = useModal({
-    isOpen,
     onClose,
     disableUserClose,
   });
 
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.focus();
+    }
+  }, []);
+
   return (
     <div css={overlay} onClick={handleOverlayClick}>
-      <div css={[modalBox(theme, width, height), customCSS]}>{children}</div>
+      <div
+        ref={modalRef}
+        css={[modalBox(theme, width, height), customCSS]}
+        role='dialog'
+        aria-labelledby={ariaLabelledby}
+        aria-modal='true'
+        tabIndex={-1}
+      >
+        {children}
+      </div>
     </div>
   );
 }

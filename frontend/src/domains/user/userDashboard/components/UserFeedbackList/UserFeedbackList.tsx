@@ -1,20 +1,24 @@
 import useGetFeedback from '@/domains/admin/adminDashboard/hooks/useGetFeedback';
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
+import FeedbackBoxSkeletonList from '@/domains/components/FeedbackBoxSkeleton/FeedbackBoxSkeletonList';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import UserFeedbackBox from '@/domains/user/userDashboard/components/UserFeedbackBox/UserFeedbackBox';
 import useHighLighted from '@/domains/user/userDashboard/hooks/useHighLighted';
-import {
-  FeedbackResponse,
-  FeedbackType,
-  FeedbackFilterType,
-  SortType,
-} from '@/types/feedback.types';
+import useMyLikedFeedback from '@/domains/user/userDashboard/hooks/useMyLikedFeedback';
+import { skipTarget } from '@/domains/user/userDashboard/UserDashboard.style';
+import { srFeedbackSummary } from '@/domains/user/userDashboard/utils/srFeedbackSummary';
 import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
 import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
-import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
-import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
+import {
+  FeedbackFilterType,
+  FeedbackResponse,
+  FeedbackType,
+  SortType,
+} from '@/types/feedback.types';
+import { formatRelativeTime } from '@/utils/formatRelativeTime';
 import { memo, useCallback, useMemo } from 'react';
-import { getLocalStorage } from '@/utils/localStorage';
+import { useMyFeedbackData } from '../../hooks/useMyFeedbackData';
+import FeedbackStatusMessage from '../FeedbackStatusMessage/FeedbackStatusMessage';
 
 interface UserFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -26,7 +30,7 @@ export default memo(function UserFeedbackList({
   selectedSort,
 }: UserFeedbackListProps) {
   const { organizationId } = useOrganizationId();
-  const likedFeedbackIds = getLocalStorage<number[]>('feedbackIds') || [];
+  const { myLikeFeedbackIds } = useMyLikedFeedback();
 
   const apiUrl = useMemo(
     () =>
@@ -62,7 +66,7 @@ export default memo(function UserFeedbackList({
 
   useGetFeedback({ fetchMore, hasNext, loading });
 
-  const { myFeedbacks } = useMyFeedbackData(selectedSort);
+  const { myFeedbacks } = useMyFeedbackData();
 
   const { highlightedId } = useHighLighted();
 
@@ -71,34 +75,52 @@ export default memo(function UserFeedbackList({
     [selectedFilter, myFeedbacks, feedbacks]
   );
 
-  const getFeedbackIsLike = useCallback((feedbackId: number) => {
-    return likedFeedbackIds?.includes(feedbackId) || false;
-  }, []);
+  const getFeedbackIsLike = useCallback(
+    (feedbackId: number) => {
+      return myLikeFeedbackIds?.includes(feedbackId) || false;
+    },
+    [myLikeFeedbackIds]
+  );
 
   return (
     <>
-      <div>
+      <div id='user-feedback-list' tabIndex={-1} css={skipTarget}>
         <FeedbackBoxList>
-          {displayFeedbacks.map((feedback: FeedbackType) => (
-            <UserFeedbackBox
-              userName={feedback.userName}
-              key={feedback.feedbackId}
-              type={feedback.status}
-              content={feedback.content}
-              postedAt={feedback.postedAt}
-              isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
-              isSecret={feedback.isSecret}
-              feedbackId={feedback.feedbackId}
-              likeCount={feedback.likeCount}
-              comment={feedback.comment}
-              isMyFeedback={myFeedbacks.some(
-                (myFeedback) => myFeedback.feedbackId === feedback.feedbackId
-              )}
-              isHighlighted={feedback.feedbackId === highlightedId}
-              category={feedback.category}
-            />
-          ))}
+          {displayFeedbacks.map((feedback: FeedbackType) => {
+            const isMyFeedback = myFeedbacks.some(
+              (myFeedback) => myFeedback.feedbackId === feedback.feedbackId
+            );
+            const postedAt = formatRelativeTime(feedback.postedAt ?? '');
+            return (
+              <div key={feedback.feedbackId}>
+                <span className='srOnly'>
+                  {srFeedbackSummary({
+                    feedback,
+                    myFeedback: isMyFeedback,
+                    postedAt,
+                    isAdmin: false,
+                  })}
+                </span>
+                <UserFeedbackBox
+                  userName={feedback.userName}
+                  type={feedback.status}
+                  content={feedback.content}
+                  postedAt={postedAt}
+                  isLiked={getFeedbackIsLike(feedback.feedbackId) || false}
+                  isSecret={feedback.isSecret}
+                  feedbackId={feedback.feedbackId}
+                  likeCount={feedback.likeCount}
+                  comment={feedback.comment}
+                  isMyFeedback={isMyFeedback}
+                  isHighlighted={feedback.feedbackId === highlightedId}
+                  category={feedback.category}
+                  imgUrl={feedback.imageUrl}
+                />
+              </div>
+            );
+          })}
         </FeedbackBoxList>
+        {loading && <FeedbackBoxSkeletonList count={2} />}
         <FeedbackStatusMessage
           loading={loading}
           filterType={selectedFilter as FeedbackFilterType}

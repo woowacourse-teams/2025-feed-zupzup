@@ -1,7 +1,7 @@
 import { SerializedStyles } from '@emotion/react';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import Tag from '@/components/Tag/Tag';
-import Dropdown from '@/domains/components/Dropdown/Dropdown'; // CategorySelector 사용
+import Dropdown from '@/domains/components/Dropdown/Dropdown';
 import {
   filterSectionContainer,
   filterTagsContainer,
@@ -12,6 +12,7 @@ import {
 import Button from '@/components/@commons/Button/Button';
 import { FeedbackFilterType, SortType } from '@/types/feedback.types';
 import { memo } from 'react';
+import useSortResetOnMineFilter from './hooks/useSortResetOnMineFilter';
 
 export interface FilterSectionProps {
   selectedFilter: FeedbackFilterType | '';
@@ -46,6 +47,8 @@ export default memo(function FilterSection({
 }: FilterSectionProps) {
   const theme = useAppTheme();
 
+  useSortResetOnMineFilter(selectedFilter, selectedSort, onSortChange);
+
   const handleFilterClick = (filterValue: FeedbackFilterType) => {
     if (selectedFilter === filterValue) {
       onFilterChange('');
@@ -54,22 +57,25 @@ export default memo(function FilterSection({
     }
   };
 
+  const isSortDisabled = selectedFilter === 'MINE';
+
   return (
     <div css={[filterSectionContainer, customCSS]}>
       <div css={filterTagsContainer}>
         {filterOptions(isAdmin ?? false).map((option) => (
-          <Tag
-            key={option.value}
-            customCSS={tagStyle(theme, selectedFilter === option.value)}
+          <Button
+            type='button'
+            customCSS={tagButton(theme)}
+            onClick={() => handleFilterClick(option.value)}
+            aria-label={`${option.label} 필터 ${selectedFilter === option.value ? '선택됨' : '선택안됨'}`}
           >
-            <Button
-              type='button'
-              customCSS={tagButton(theme)}
-              onClick={() => handleFilterClick(option.value)}
+            <Tag
+              key={option.value}
+              customCSS={tagStyle(theme, selectedFilter === option.value)}
             >
               {option.label}
-            </Button>
-          </Tag>
+            </Tag>
+          </Button>
         ))}
       </div>
 
@@ -81,6 +87,7 @@ export default memo(function FilterSection({
           placeholder='정렬 기준'
           width='100px'
           height='32px'
+          disabled={isSortDisabled}
         />
       </div>
     </div>

@@ -14,7 +14,7 @@ const REGEX = {
 };
 
 export const VALIDATION_RULES = {
-  ID: { min: 5, max: 10 },
+  ID: { min: 5, max: 20 },
   PASSWORD: { min: 5 },
   NAME: { min: 1, max: 10 },
 };

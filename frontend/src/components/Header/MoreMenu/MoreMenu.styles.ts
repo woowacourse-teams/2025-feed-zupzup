@@ -3,7 +3,7 @@ import { css } from '@emotion/react';
 export const moreMenuContainer = css`
   display: flex;
   flex-direction: column;
-  width: 160px;
+  min-width: 200px;
   padding: 10px;
   background-color: white;
   border-radius: 10px;

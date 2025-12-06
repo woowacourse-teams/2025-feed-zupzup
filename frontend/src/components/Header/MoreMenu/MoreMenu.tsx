@@ -1,36 +1,42 @@
 import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
+import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
+import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
 import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { useModalContext } from '@/contexts/useModal';
+import { useToast } from '@/contexts/useToast';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
 }
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
-  const { openModal, closeModal, isOpen } = useModalContext();
+  const { openModal, closeModal } = useModalContext();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
+  const { organizationId } = useOrganizationId();
+  const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
+  const { showToast } = useToast();
 
   const handleRoomInfoEditClick = () => {
-    openModal(<EditRoomModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<EditRoomModal onClose={closeModal} />);
     closeMoreMenu();
   };
 
   const handleShareClick = () => {
-    openModal(<QRModal isOpen={isOpen} onClose={closeModal} />);
+    openModal(<QRModal onClose={closeModal} />);
     closeMoreMenu();
   };
 
   const handleDeleteClick = () => {
     openModal(
       <ConfirmModal
-        isOpen={isOpen}
         onClose={closeModal}
         title='방 삭제 확인'
         message={
@@ -45,6 +51,17 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     closeMoreMenu();
   };
 
+  const downloadFeedbacksFile = async () => {
+    showToast(
+      '피드백 데이터를 추출 중입니다. 잠시만 기다려주세요.',
+      'origin',
+      2000
+    );
+
+    closeMoreMenu();
+    await refetch();
+  };
+
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
@@ -57,6 +74,11 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       menu: '방 삭제',
       onClick: handleDeleteClick,
     },
+    {
+      icon: <FileDownloadIcon />,
+      menu: '피드백 추출',
+      onClick: downloadFeedbacksFile,
+    },
   ];
 
   return (
@@ -67,6 +89,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
           icon={item.icon}
           menu={item.menu}
           onClick={item.onClick}
+          disabled={isFetching && item.menu === '피드백 추출'}
         />
       ))}
     </div>

@@ -3,7 +3,9 @@ import {
   adminOrganizationContainer,
   organizationTitle,
   organizationTitleContainer,
+  organizationCountContainer,
   pendingText,
+  smallText,
 } from '@/domains/admin/AdminHome/components/AdminOrganization/AdminOrganization.style';
 import { dot } from '@/domains/components/DashboardPanel/DashboardPanel.style';
 import { useAppTheme } from '@/hooks/useAppTheme';
@@ -13,11 +15,13 @@ export interface AdminOrganizationProps {
   organizationName: string;
   waitingCount: number;
   postedAt: string;
+  confirmedCount: number;
   onClick: () => void;
 }
 export default function AdminOrganization({
   organizationName,
   waitingCount,
+  confirmedCount,
   postedAt,
   onClick,
 }: AdminOrganizationProps) {
@@ -32,9 +36,14 @@ export default function AdminOrganization({
         </div>
         <ArrowRightIcon />
       </div>
-      <p css={pendingText(theme)}>
-        <strong>{waitingCount}</strong> 건 미처리
-      </p>
+      <div css={organizationCountContainer}>
+        <p css={pendingText(theme)}>
+          <strong>{waitingCount}</strong> 건 미처리
+        </p>
+        <p css={smallText(theme)}>
+          <strong>{confirmedCount}</strong> 건 완료
+        </p>
+      </div>
       {postedAt ? (
         <p>최근 피드백: {formatRelativeTime(postedAt)}</p>
       ) : (

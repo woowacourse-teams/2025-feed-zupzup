@@ -7,9 +7,9 @@ import {
   message,
   buttonContainer,
 } from '@/components/Modal/Modal.styles';
+import { useEffect, useRef } from 'react';
 
 export interface AlertModalProps {
-  isOpen: boolean;
   onClose: () => void;
   title: string;
   message?: string;
@@ -18,7 +18,6 @@ export interface AlertModalProps {
 }
 
 export default function AlertModal({
-  isOpen,
   onClose,
   title: alertTitle,
   message: alertMessage,
@@ -26,20 +25,29 @@ export default function AlertModal({
   confirmText = '확인',
 }: AlertModalProps) {
   const theme = useAppTheme();
+  const titleId = 'alert-modal-title';
+  const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleConfirm = () => {
     onConfirm?.();
     onClose();
   };
 
+  useEffect(() => {
+    confirmButtonRef.current?.focus();
+  }, []);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose} ariaLabelledby={titleId}>
       <div css={content}>
-        <p css={title(theme)}>{alertTitle}</p>
+        <p id={titleId} css={title(theme)}>
+          {alertTitle}
+        </p>
         {alertMessage && <p css={message(theme)}>{alertMessage}</p>}
       </div>
       <div css={buttonContainer}>
         <BasicButton
+          ref={confirmButtonRef}
           variant='primary'
           width='100%'
           height='30px'

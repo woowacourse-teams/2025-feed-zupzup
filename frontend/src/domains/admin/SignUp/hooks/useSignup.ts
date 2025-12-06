@@ -5,12 +5,12 @@ import {
 } from '@/apis/admin.api';
 import { ApiError } from '@/apis/apiClient';
 import { ADMIN_BASE, ROUTES } from '@/constants/routes';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
 import useNavigation from '@/domains/hooks/useNavigation';
 import { NotificationService } from '@/services/notificationService';
 import { setLocalStorage } from '@/utils/localStorage';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
+
 interface UseSignupProps {
   confirmPasswordErrors: string;
   errors: {
@@ -31,7 +31,6 @@ export default function useSignup({
   setToast,
 }: UseSignupProps) {
   const { goPath } = useNavigation();
-  const { showErrorModal } = useErrorModalContext();
 
   const { mutate: adminSignup, isPending } = useMutation<
     AdminAuthResponse,
@@ -39,9 +38,6 @@ export default function useSignup({
     PostAdminSignupParams
   >({
     mutationFn: postAdminSignup,
-    onError: (error) => {
-      showErrorModal(error, '회원가입 요청 실패');
-    },
     onSuccess: (response) => {
       setLocalStorage('auth', response.data);
       goPath(ADMIN_BASE + ROUTES.ADMIN_HOME);
@@ -55,7 +51,21 @@ export default function useSignup({
     const isConfirmPasswordValid =
       !confirmPasswordErrors && signUpValue.password !== '';
 
-    if (!isValid || !isConfirmPasswordValid) {
+    if (
+      signUpValue.name === '' ||
+      signUpValue.id === '' ||
+      signUpValue.password === ''
+    ) {
+      setToast('모든 항목을 입력해주세요.');
+      return;
+    }
+
+    if (!isConfirmPasswordValid) {
+      setToast('비밀번호 확인을 다시 확인해주세요.');
+      return;
+    }
+
+    if (!isValid) {
       setToast('입력하신 정보를 다시 확인해주세요.');
       return;
     }

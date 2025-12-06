@@ -1,12 +1,11 @@
 import { ApiError } from '@/apis/apiClient';
 import { deleteLike, postLike } from '@/apis/userFeedback.api';
-import { useErrorModalContext } from '@/contexts/useErrorModal';
-import { getLocalStorage, setLocalStorage } from '@/utils/localStorage';
+import useMyLikedFeedback from '@/domains/user/userDashboard/hooks/useMyLikedFeedback';
 import { useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 
 interface useLikeButtonManagerProps {
-  like: boolean | undefined;
+  like: boolean;
   feedbackId: number | undefined;
   likeCount: number;
 }
@@ -16,49 +15,35 @@ export default function useLikeButtonManager({
   feedbackId,
   likeCount,
 }: useLikeButtonManagerProps) {
-  const [isLiked, setIsLiked] = useState(like);
-  const [tempLikeCount, setTempLikeCount] = useState(likeCount);
-  const { showErrorModal } = useErrorModalContext();
+  const [optimisticLike, setOptimisticLike] = useState<boolean | null>(null);
+  const [optimisticCount, setOptimisticCount] = useState<number | null>(null);
 
-  const addLikeFeedbackIds = (feedbackId: number) => {
-    const likeFeedbackIds = getLocalStorage<number[]>('feedbackIds') ?? [];
-    likeFeedbackIds.push(feedbackId);
+  const isLiked = optimisticLike ?? like;
+  const tempLikeCount = optimisticCount ?? likeCount;
 
-    setLocalStorage<number[]>('feedbackIds', likeFeedbackIds);
-  };
-
-  const removeLikeFeedbackIds = (feedbackId: number) => {
-    const likeFeedbackIds = getLocalStorage<number[]>('feedbackIds') ?? [];
-    const filteredFeedbackIds = likeFeedbackIds.filter(
-      (id) => id !== feedbackId
-    );
-
-    setLocalStorage<number[]>('feedbackIds', filteredFeedbackIds);
-  };
+  const { refetchMyLikeFeedbackIds } = useMyLikedFeedback();
 
   const { mutate: likeMutation } = useMutation({
     mutationFn: postLike,
-    onSuccess: () => {
-      addLikeFeedbackIds(feedbackId || 0);
-      setIsLiked(true);
-    },
     onError: (e: ApiError) => {
-      setIsLiked(false);
-      setTempLikeCount((prev) => prev - 1);
-      showErrorModal(e, '에러');
+      setOptimisticLike(null);
+      setOptimisticCount(null);
+      console.error(e);
+    },
+    onSettled: () => {
+      refetchMyLikeFeedbackIds();
     },
   });
 
   const { mutate: deleteLikeMutation } = useMutation({
     mutationFn: deleteLike,
-    onSuccess: () => {
-      removeLikeFeedbackIds(feedbackId || 0);
-      setIsLiked(false);
-    },
     onError: (e: ApiError) => {
-      setIsLiked(false);
-      setTempLikeCount((prev) => prev + 1);
-      showErrorModal(e, '에러');
+      setOptimisticLike(null);
+      setOptimisticCount(null);
+      console.error(e);
+    },
+    onSettled: () => {
+      refetchMyLikeFeedbackIds();
     },
   });
 
@@ -67,10 +52,12 @@ export default function useLikeButtonManager({
     if (feedbackId === undefined) return;
 
     if (!isLiked) {
-      setTempLikeCount((prev) => prev + 1);
+      setOptimisticCount(tempLikeCount + 1);
+      setOptimisticLike(true);
       likeMutation({ feedbackId });
     } else {
-      setTempLikeCount((prev) => prev - 1);
+      setOptimisticCount(tempLikeCount - 1);
+      setOptimisticLike(false);
       deleteLikeMutation({ feedbackId });
     }
   };

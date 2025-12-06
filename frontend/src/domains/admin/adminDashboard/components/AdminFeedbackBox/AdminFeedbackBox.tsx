@@ -1,22 +1,27 @@
-import IconButton from '@/components/IconButton/IconButton';
-import CheckIcon from '@/components/icons/CheckIcon';
 import LockIcon from '@/components/icons/LockIcon';
-import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import FeedbackAnswer from '@/domains/components/FeedbackAnswer/FeedbackAnswer';
 import FeedbackBoxBackGround from '@/domains/components/FeedbackBoxBackGround/FeedbackBoxBackGround';
 import FeedbackBoxFooter from '@/domains/components/FeedbackBoxFooter/FeedbackBoxFooter';
 import FeedbackBoxHeader from '@/domains/components/FeedbackBoxHeader/FeedbackBoxHeader';
-import FeedbackText from '@/domains/components/FeedbackText/FeedbackText';
 import { FeedbackType } from '@/types/feedback.types';
 import { FeedbackStatusType } from '@/types/feedbackStatus.types';
-import { iconWrap, textWrap, topContainer } from './AdminFeedbackBox.styles';
+import {
+  checkButton,
+  deleteButton,
+  iconWrap,
+  textWrap,
+  topContainer,
+} from './AdminFeedbackBox.styles';
 import { memo } from 'react';
+import FeedbackContent from '@/domains/components/FeedbackText/FeedbackContent';
+import { useAppTheme } from '@/hooks/useAppTheme';
 
 interface AdminFeedbackBox extends Omit<FeedbackType, 'status' | 'imageUrl'> {
   type: FeedbackStatusType;
   feedbackId: number;
   onConfirm: (feedbackId: number) => void;
   onDelete: (feedbackId: number) => void;
+  imgUrl: string | null;
 }
 
 export default memo(function AdminFeedbackBox({
@@ -31,7 +36,10 @@ export default memo(function AdminFeedbackBox({
   comment,
   postedAt,
   category,
+  imgUrl,
 }: AdminFeedbackBox) {
+  const theme = useAppTheme();
+
   return (
     <FeedbackBoxBackGround type={type}>
       <div css={topContainer}>
@@ -41,21 +49,25 @@ export default memo(function AdminFeedbackBox({
           feedbackId={feedbackId}
           category={category}
         />
-        <div css={iconWrap}>
+        <div css={iconWrap(theme)}>
           {type === 'WAITING' && (
-            <IconButton
-              icon={<CheckIcon />}
+            <button
+              css={checkButton(theme)}
               onClick={() => onConfirm(feedbackId)}
-            />
+            >
+              완료
+            </button>
           )}
-          <IconButton
-            icon={<TrashCanIcon />}
+          <button
+            css={deleteButton(theme)}
             onClick={() => onDelete(feedbackId)}
-          />
+          >
+            삭제
+          </button>
         </div>
       </div>
       <div css={textWrap}>
-        <FeedbackText type={type} text={content} />
+        <FeedbackContent text={content} imgUrl={imgUrl} />
         {isSecret && (
           <p>
             <LockIcon />
@@ -65,6 +77,7 @@ export default memo(function AdminFeedbackBox({
       {type === 'CONFIRMED' && comment && <FeedbackAnswer answer={comment} />}
       <FeedbackBoxFooter
         type={type}
+        isAdmin={true}
         likeCount={likeCount}
         postedAt={postedAt}
         feedbackId={feedbackId}

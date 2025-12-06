@@ -1,11 +1,15 @@
+import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
+import { ADMIN_BASE, ROUTES } from '@/constants/routes';
+import { ErrorCatcher } from '@/contexts/ErrorCatcher';
+import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
 import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { ADMIN_BASE, ROUTES } from '@/constants/routes';
 import App from './App';
-import AuthRedirectRoute from '@/components/AuthRedirectRoute/AuthRedirectRoute';
-import ProtectedRoute from '@/domains/components/ProtectedRoute/ProtectedRoute';
+import AISummary from './domains/admin/AISummary/AISummary';
 import { isAuthenticated } from './utils/isAuthenticated';
-import OnBoarding from './domains/admin/OnBoarding/OnBoarding';
+import GlobalErrorBoundary from './error/GlobalError/GlobalErrorBoundary';
+import GlobalErrorFallback from './error/GlobalError/GlobalErrorFallback';
+import Loading from '@/components/Loading/Loading';
 
 const AdminDashboard = lazy(
   () =>
@@ -47,13 +51,23 @@ const NotFoundPage = lazy(
     )
 );
 
+const OnBoarding = lazy(
+  () =>
+    import(
+      /* webpackChunkName: "onboarding" */ './domains/admin/OnBoarding/OnBoarding'
+    )
+);
+
 export const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
     element: (
-      <Suspense fallback={<div>Loading...</div>}>
-        <App />
-      </Suspense>
+      <GlobalErrorBoundary fallback={GlobalErrorFallback}>
+        <ErrorCatcher />
+        <Suspense fallback={<Loading />}>
+          <App />
+        </Suspense>
+      </GlobalErrorBoundary>
     ),
     children: [
       {
@@ -86,9 +100,13 @@ export const router = createBrowserRouter([
         path: ROUTES.ADMIN,
         element: <ProtectedRoute redirectPath='/login' />,
         children: [
-          { path: ROUTES.ADMIN_HOME, element: <AdminHome /> },
+          {
+            path: ROUTES.ADMIN_HOME,
+            element: <AdminHome />,
+          },
           { path: ROUTES.DASHBOARD, element: <AdminDashboard /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <Settings /> },
+          { path: ROUTES.AI_SUMMARY, element: <AISummary /> },
         ],
       },
       { path: '*', element: <NotFoundPage /> },

@@ -6,7 +6,12 @@ import { getNotificationSettings } from '@/apis/notifications.api';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 
 export const useNotificationSettingsPage = () => {
-  const { fcmStatus, isEnabled: localEnabled, updateState } = useFCMManager();
+  const {
+    fcmStatus,
+    isEnabled: localEnabled,
+    updateState,
+    needsPWAInstall,
+  } = useFCMManager();
 
   const { data: serverSettings, isLoading: isQueryLoading } = useQuery({
     queryKey: QUERY_KEYS.notificationSettings(),
@@ -43,5 +48,6 @@ export const useNotificationSettingsPage = () => {
     isLoading: isQueryLoading || updateMutation.isPending,
     fcmStatus,
     updateNotificationSetting,
+    needsPWAInstall,
   };
 };

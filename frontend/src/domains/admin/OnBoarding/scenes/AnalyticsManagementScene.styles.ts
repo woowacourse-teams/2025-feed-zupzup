@@ -2,10 +2,30 @@ import { css } from '@emotion/react';
 
 export const container = css`
   position: relative;
-  width: 90%;
-  height: 100%;
-  aspect-ratio: 16/9;
+  width: 85%;
+  max-width: 350px;
+  aspect-ratio: 4/3;
   margin: 0 auto;
+
+  @media (max-height: 700px) {
+    width: 85%;
+    max-width: 300px;
+  }
+
+  @media (max-height: 500px) {
+    width: 75%;
+    max-width: 250px;
+  }
+
+  @media (max-height: 400px) {
+    width: 65%;
+    max-width: 200px;
+  }
+
+  @media (max-height: 350px) {
+    width: 55%;
+    max-width: 150px;
+  }
 `;
 
 export const background = css`
@@ -31,6 +51,14 @@ export const mainChartContainer = css`
   justify-content: center;
   padding: 16px;
   background-color: #7356ff;
+
+  @media (max-height: 500px) {
+    padding: 12px;
+  }
+
+  @media (max-height: 400px) {
+    padding: 8px;
+  }
 `;
 
 export const chartIconWrapper = css`

@@ -43,12 +43,17 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
   return (
     <section css={container}>
       <div>
-        <p css={title(theme)}>
+        <p css={title(theme)} aria-hidden='true'>
           <span css={[place(theme), { opacity: isLoading ? 0 : 1 }]}>
             {groupName} <span css={title(theme)}>에</span>
           </span>
           <br /> 오신 것을 환영합니다
         </p>
+
+        {!isLoading && (
+          <p className='srOnly'>{`${groupName}에 오신 것을 환영합니다`}</p>
+        )}
+
         <div css={questionContainer(theme)}>
           <p css={questionTitle(theme)}>카테고리 선택</p>
           <p css={question(theme)}>건의하고 싶은 카테고리를 선택해주세요</p>
@@ -64,8 +69,13 @@ export default function OnBoarding({ onCategoryClick }: OnBoardingProps) {
           ))}
         </div>
       </div>
+
       <BasicButton
-        icon={<p css={skipIcon}>📄</p>}
+        icon={
+          <p css={skipIcon} aria-hidden='true'>
+            📄
+          </p>
+        }
         variant='secondary'
         onClick={handleViewSuggestionsClick}
       >

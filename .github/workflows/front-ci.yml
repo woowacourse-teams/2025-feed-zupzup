@@ -5,6 +5,13 @@ on:
     branches: [fe/develop, fe/production]
   pull_request:
     branches: [fe/develop, fe/production]
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+    inputs:
+      run_lighthouse:
+        description: "Run Lighthouse? (for develop only)"
+        required: true
+        default: "true"
 
 defaults:
   run:
@@ -16,17 +23,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Type Check
         run: npm run type-check
 
@@ -35,17 +39,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Run ESLint
         run: npm run lint
 
@@ -54,17 +55,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Run Tests
         run: npm test
         env:
@@ -73,29 +71,58 @@ jobs:
   build-dev:
     runs-on: ubuntu-latest
     needs: [type-check, lint, test]
+    if: github.base_ref == 'fe/develop' || github.ref == 'refs/heads/fe/develop'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
-
       - name: Install dependencies
         run: npm ci
-
       - name: Build project
         run: npm run build:dev
 
   build-prod:
     runs-on: ubuntu-latest
     needs: [type-check, lint, test]
+    if: github.base_ref == 'fe/production' || github.ref == 'refs/heads/fe/production'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: "./frontend/package-lock.json"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build project
+        run: npm run build:prod
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: [type-check, lint, test]
+    if: |
+      (
+
+        github.event_name == 'push' && github.ref == 'refs/heads/fe/develop'
+      ) ||
+      (
+        
+        github.event_name == 'pull_request' && 
+        github.base_ref == 'fe/production' && 
+        github.event.action != 'closed'
+      )
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -104,8 +131,112 @@ jobs:
           cache: npm
           cache-dependency-path: "./frontend/package-lock.json"
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        id: npm-cache
+        with:
+          path: |
+            **/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
 
       - name: Build project
-        run: npm run build:prod
+        run: |
+          if [[ "${{ github.base_ref }}" == "fe/production" || "${{ github.ref }}" == "refs/heads/fe/production" ]]; then
+            echo "Running production build..."
+            npm run build:prod
+          else
+            echo "Running development build..."
+            npm run build:dev
+          fi
+
+      - name: Run Lighthouse CI for Desktop
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          npm install -g @lhci/cli
+          lhci collect --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
+          lhci upload --config=lighthouserc.cjs || echo 'Fail to Run Lighthouse CI 💦'
+
+      - name: Run Lighthouse CI for Mobile
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        run: |
+          lhci collect --config=lighthouserc.mobile.cjs || echo 'Fail to Run Lighthouse CI Mobile 💦'
+          lhci upload --config=lighthouserc.mobile.cjs || echo 'Fail to Run Lighthouse CI Mobile 💦'
+
+      - name: Format lighthouse score
+        id: format_lighthouse_score
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { formatLighthouse } = await import('${{ github.workspace }}/frontend/scripts/format-lighthouse.js');
+            await formatLighthouse();
+
+      - name: Comment PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const body = process.env.LHCI_COMMENTS;
+            if (!body) {
+              core.setFailed('LHCI_COMMENTS is missing');
+              return;
+            }
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number: prNumber,
+            });
+
+            const prev = comments.find(c => c.body?.startsWith('### Lighthouse report ✨\n'));
+            if (prev) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: prev.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number: prNumber, body
+              });
+            }
+        env:
+          LHCI_COMMENTS: ${{ steps.format_lighthouse_score.outputs.comments }}
+
+      - name: Get merged PR number
+        id: get_pr
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          echo "=== Commit message ==="
+          git log -1 --pretty=%B
+          echo ""
+          PR_NUM=$(git log -1 --pretty=%B | grep -oP '#\K\d+' | head -1 || echo "")
+          echo "Extracted PR number: '$PR_NUM'"
+          echo "pr_number=$PR_NUM" >> $GITHUB_OUTPUT
+
+          if [ -n "$PR_NUM" ]; then
+            PR_URL="https://github.com/${{ github.repository }}/pull/$PR_NUM"
+            echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+            echo "PR URL: $PR_URL"
+          fi
+
+      - name: Update Google SpreadSheet
+        if: |
+          (github.event_name == 'push') ||
+          (github.event_name == 'pull_request' && github.base_ref == 'fe/production')
+        run: node ./scripts/update-google-sheet.js
+        env:
+          LHCI_GOOGLE_CLIENT_EMAIL: ${{ secrets.LHCI_GOOGLE_CLIENT_EMAIL }}
+          LHCI_GOOGLE_PRIVATE_KEY: ${{ secrets.LHCI_GOOGLE_PRIVATE_KEY }}
+          LHCI_GOOGLE_SPREAD_SHEET_ID: ${{ secrets.LHCI_GOOGLE_SPREAD_SHEET_ID }}
+          LHCI_SCORES: ${{ steps.format_lighthouse_score.outputs.scores }}
+          LHCI_MONITORING_TIME: ${{ steps.format_lighthouse_score.outputs.monitoringTime }}
+          PR_NUMBER: ${{ steps.get_pr.outputs.pr_number || github.event.pull_request.number || '' }}
+          PR_URL: ${{ steps.get_pr.outputs.pr_url || github.event.pull_request.html_url || '' }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
