@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="false" packagingData="false">
+  <!-- 콘솔 출력 설정 -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/>
+
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+  <!-- 테스트 실행 시 로그 출력 완전 차단 -->
+  <root level="OFF">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+
+  <!-- 필요한 경우 특정 패키지만 INFO 레벨로 설정 -->
+  <logger name="feedzupzup.backend" level="WARN"/>
+
+  <!-- Testcontainers 로그 최소화 -->
+  <logger name="org.testcontainers" level="WARN"/>
+  <logger name="com.github.dockerjava" level="WARN"/>
+  <logger name="tc" level="WARN"/>
+
+  <!-- Hibernate 로그 최소화 -->
+  <logger name="org.hibernate" level="WARN"/>
+
+  <!-- Spring 로그 최소화 -->
+  <logger name="org.springframework" level="WARN"/>
+</configuration>
