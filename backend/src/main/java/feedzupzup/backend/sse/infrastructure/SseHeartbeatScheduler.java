@@ -18,7 +18,7 @@ public class SseHeartbeatScheduler {
     @Qualifier("inMemorySseEmitterRepository")
     private final SseEmitterRepository sseEmitterRepository;
 
-    @Scheduled(cron = "0/10 * * * * *")
+    @Scheduled(cron = "0 */5 * * * *")
     public void sendHeartbeat() {
         final Map<String, SseEmitter> emitters = sseEmitterRepository.findAll();
 
