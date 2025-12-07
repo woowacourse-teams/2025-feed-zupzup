@@ -1,5 +1,8 @@
 package feedzupzup.backend.sse.service;
 
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.sse.domain.ConnectionType;
 import feedzupzup.backend.sse.domain.SseEmitterRepository;
 import java.io.IOException;
@@ -15,12 +18,15 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class SseService {
 
     private final SseEmitterRepository sseEmitterRepository;
+    private final OrganizationRepository organizationRepository;
 
     public SseService(
             @Qualifier("inMemorySseEmitterRepository")
-            final SseEmitterRepository sseEmitterRepository
+            final SseEmitterRepository sseEmitterRepository,
+            final OrganizationRepository organizationRepository
     ) {
         this.sseEmitterRepository = sseEmitterRepository;
+        this.organizationRepository = organizationRepository;
     }
 
     public SseEmitter createEmitter(
@@ -29,7 +35,10 @@ public class SseService {
             final ConnectionType connectionType
     ) {
         final SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
-        final String emitterId = generateEmitterId(organizationUuid, userId, connectionType);
+        final Organization organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 조직 UUID 입니다."));
+
+        final String emitterId = generateEmitterId(organization.getId(), userId, connectionType);
 
         sseEmitterRepository.save(emitterId, emitter);
         log.info("SSE 연결 생성 - Type: {}, Emitter ID: {}", connectionType, emitterId);
@@ -104,11 +113,11 @@ public class SseService {
     }
 
     private String generateEmitterId(
-            final UUID organizationUuid,
+            final Long organizationId,
             final String userId,
             final ConnectionType connectionType
     ) {
-        return organizationUuid + "_"
+        return organizationId + "_"
                 + connectionType.getPrefix() + "_"
                 + userId + "_"
                 + System.currentTimeMillis();
