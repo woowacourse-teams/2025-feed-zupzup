@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -27,7 +28,7 @@ public interface AdminSseApi {
     )
     @GetMapping(value = "/admin/sse/subscribe/{organizationUuid}",
             produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    SseEmitter subscribeAdmin(
+    ResponseEntity<SseEmitter> subscribeAdmin(
             @Parameter(description = "단체 UUID", example = "123e4567-e89b-12d3-a456-426614174000")
             @PathVariable("organizationUuid") final UUID organizationUuid,
             @Parameter(hidden = true) @AdminAuthenticationPrincipal final AdminSession adminSession
