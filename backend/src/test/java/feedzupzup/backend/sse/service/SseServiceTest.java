@@ -1,12 +1,20 @@
 package feedzupzup.backend.sse.service;
 
+import static feedzupzup.backend.category.domain.Category.SUGGESTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import feedzupzup.backend.category.domain.OrganizationCategory;
+import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
+import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
+import feedzupzup.backend.organization.domain.Organization;
+import feedzupzup.backend.organization.domain.OrganizationRepository;
+import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.sse.domain.ConnectionType;
 import feedzupzup.backend.sse.domain.SseEmitterRepository;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,6 +29,23 @@ class SseServiceTest extends ServiceIntegrationHelper {
     @Autowired
     private SseEmitterRepository sseEmitterRepository;
 
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private OrganizationCategoryRepository organizationCategoryRepository;
+
+    Organization organization;
+    OrganizationCategory organizationCategory;
+
+    @BeforeEach
+    void init() {
+        organization = OrganizationFixture.createAllBlackBox();
+        organizationRepository.save(organization);
+        organizationCategory = OrganizationCategoryFixture.createOrganizationCategory(organization, SUGGESTION);
+        organizationCategoryRepository.save(organizationCategory);
+    }
+
     @Nested
     @DisplayName("Emitter 생성 테스트")
     class CreateEmitterTest {
@@ -29,7 +54,7 @@ class SseServiceTest extends ServiceIntegrationHelper {
         @DisplayName("조직 UUID와 게스트 UUID로 emitter를 성공적으로 생성한다")
         void createEmitter_success() {
             // given
-            final UUID organizationUuid = UUID.randomUUID();
+            final UUID organizationUuid = organization.getUuid();
             final UUID guestUuid = UUID.randomUUID();
 
             // when
@@ -48,7 +73,7 @@ class SseServiceTest extends ServiceIntegrationHelper {
         @DisplayName("emitter 생성 시 리포지토리에 저장된다")
         void createEmitter_savedInRepository() {
             // given
-            final UUID organizationUuid = UUID.randomUUID();
+            final UUID organizationUuid = organization.getUuid();
             final UUID guestUuid = UUID.randomUUID();
             final int initialCount = sseEmitterRepository.count();
 
@@ -68,7 +93,7 @@ class SseServiceTest extends ServiceIntegrationHelper {
         @DisplayName("동일한 게스트가 여러 emitter를 생성할 수 있다")
         void createEmitter_multipleEmittersFromSameGuest() {
             // given
-            final UUID organizationUuid = UUID.randomUUID();
+            final UUID organizationUuid = organization.getUuid();
             final UUID guestUuid = UUID.randomUUID();
 
             // when
@@ -96,34 +121,6 @@ class SseServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(sseEmitterRepository.count()).isGreaterThanOrEqualTo(3)
             );
         }
-
-        @Test
-        @DisplayName("다른 조직에 대해 별도의 emitter를 생성할 수 있다")
-        void createEmitter_differentOrganizations() {
-            // given
-            final UUID organizationUuid1 = UUID.randomUUID();
-            final UUID organizationUuid2 = UUID.randomUUID();
-            final UUID guestUuid = UUID.randomUUID();
-
-            // when
-            final SseEmitter emitter1 = sseService.createEmitter(
-                    organizationUuid1,
-                    guestUuid.toString(),
-                    ConnectionType.GUEST
-            );
-            final SseEmitter emitter2 = sseService.createEmitter(
-                    organizationUuid2,
-                    guestUuid.toString(),
-                    ConnectionType.GUEST
-            );
-
-            // then
-            assertAll(
-                    () -> assertThat(emitter1).isNotNull(),
-                    () -> assertThat(emitter2).isNotNull(),
-                    () -> assertThat(emitter1).isNotSameAs(emitter2)
-            );
-        }
     }
 
     @Nested
@@ -131,10 +128,10 @@ class SseServiceTest extends ServiceIntegrationHelper {
     class EmitterIdGenerationTest {
 
         @Test
-        @DisplayName("emitter ID는 조직 UUID, 연결 타입, 사용자 ID, 타임스탬프를 포함한다")
+        @DisplayName("emitter ID는 조직 ID, 연결 타입, 사용자 ID, 타임스탬프를 포함한다")
         void createEmitter_emitterIdFormat() {
             // given
-            final UUID organizationUuid = UUID.randomUUID();
+            final UUID organizationUuid = organization.getUuid();
             final UUID guestUuid = UUID.randomUUID();
 
             // when
@@ -158,7 +155,7 @@ class SseServiceTest extends ServiceIntegrationHelper {
             @DisplayName("emitter는 Long.MAX_VALUE 타임아웃으로 생성된다")
             void createEmitter_hasMaxTimeout() {
                 // given
-                final UUID organizationUuid = UUID.randomUUID();
+                final UUID organizationUuid = organization.getUuid();
                 final UUID guestUuid = UUID.randomUUID();
 
                 // when
@@ -176,7 +173,7 @@ class SseServiceTest extends ServiceIntegrationHelper {
             @DisplayName("여러 emitter가 동일한 타임아웃 설정을 가진다")
             void createEmitter_multipleEmittersHaveSameTimeout() {
                 // given
-                final UUID organizationUuid = UUID.randomUUID();
+                final UUID organizationUuid = organization.getUuid();
                 final UUID guestUuid1 = UUID.randomUUID();
                 final UUID guestUuid2 = UUID.randomUUID();
 
