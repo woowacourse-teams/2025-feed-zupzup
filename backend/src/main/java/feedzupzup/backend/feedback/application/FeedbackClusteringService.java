@@ -26,20 +26,19 @@ public class FeedbackClusteringService {
     private static final double SIMILARITY_THRESHOLD = 0.83;
     private static final List<Integer> NEW_CLUSTER_LABEL_THRESHOLDS = List.of(1, 5, 15, 30);
 
-    private final EmbeddingExtractor embeddingExtractor;
+    private final EmbeddingService embeddingService;
     private final ClusterLabelGenerator clusterLabelGenerator;
     private final FeedbackRepository feedbackRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
 
-    // TODO : embedding 트랜잭션애 포함되어 커넥션 잡아먹음. 추후 수정 필요
     @Transactional
     public Long cluster(final Long createdFeedbackId) {
         final Feedback createdFeedback = getFeedback(createdFeedbackId);
         if (feedbackEmbeddingClusterRepository.existsByFeedback(createdFeedback)) {
             throw new AlreadyClusteringException("이미 클러스터링 된 피드백입니다. (feedabckId = " + createdFeedbackId + ")");
         }
-        final double[] createdFeedbackEmbedding = embeddingExtractor.extract(createdFeedback.getContent().getValue());
+        final double[] createdFeedbackEmbedding = embeddingService.extractEmbedding(createdFeedback.getContent().getValue());
 
         final Optional<FeedbackEmbeddingCluster> assignedCluster = assignCluster(createdFeedback, createdFeedbackEmbedding);
 
