@@ -9,7 +9,7 @@
 
   <turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/>
 
-  <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
   <!-- 테스트 실행 시 로그 출력 완전 차단 -->
   <root level="OFF">
