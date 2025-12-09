@@ -22,7 +22,7 @@ public class SseHeartbeatScheduler {
         this.sseEmitterRepository = sseEmitterRepository;
     }
 
-    @Scheduled(cron = "0 */5 * * * *")
+    @Scheduled(cron = "0/45 * * * * *")
     public void sendHeartbeat() {
         final Map<String, SseEmitter> emitters = sseEmitterRepository.findAll();
 
