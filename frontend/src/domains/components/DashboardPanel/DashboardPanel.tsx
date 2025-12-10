@@ -13,6 +13,7 @@ export interface DashboardPanelProps {
   content: string;
   caption?: string;
   color: string | undefined;
+  srMessage?: string;
 }
 
 export default function DashboardPanel({
@@ -20,16 +21,20 @@ export default function DashboardPanel({
   content,
   caption,
   color,
+  srMessage,
 }: DashboardPanelProps) {
   const theme = useAppTheme();
   return (
-    <div css={dashboard(theme)}>
-      <div css={dotLayout}>
-        <div css={dot(theme, color)} />
-        <p css={panelTitle(theme)}>{title}</p>
+    <>
+      {srMessage && <span className='srOnly'>{srMessage}</span>}
+      <div css={dashboard(theme)} aria-hidden={!!srMessage}>
+        <div css={dotLayout}>
+          <div css={dot(theme, color)} />
+          <p css={panelTitle(theme)}>{title}</p>
+        </div>
+        <p css={panelContent(theme)}>{content}</p>
+        <p css={captionContent(theme)}>{caption}</p>
       </div>
-      <p css={panelContent(theme)}>{content}</p>
-      <p css={captionContent(theme)}>{caption}</p>
-    </div>
+    </>
   );
 }

@@ -8,11 +8,16 @@ export interface TagProps {
   customCSS?: SerializedStyles;
 }
 
-export default function Tag({ children, onClick, customCSS }: TagProps) {
+export default function Tag({
+  children,
+  onClick,
+  customCSS,
+  ...props
+}: TagProps) {
   const theme = useAppTheme();
 
   return (
-    <div css={[container(theme), customCSS]} onClick={onClick}>
+    <div css={[container(theme), customCSS]} onClick={onClick} {...props}>
       {children}
     </div>
   );

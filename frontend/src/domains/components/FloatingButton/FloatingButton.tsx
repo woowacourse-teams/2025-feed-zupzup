@@ -21,12 +21,12 @@ interface FloatingButtonProps {
 export default memo(function FloatingButton({
   icon,
   text,
-  onClick,
   inset,
   customCSS,
+  ...props
 }: FloatingButtonProps) {
   return (
-    <Button onClick={onClick} css={[floatingButton(inset), customCSS]}>
+    <Button css={[floatingButton(inset), customCSS]} {...props}>
       {icon} {text}
     </Button>
   );

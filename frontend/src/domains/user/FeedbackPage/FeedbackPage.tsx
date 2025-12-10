@@ -25,6 +25,7 @@ import { skipIcon } from '@/domains/user/OnBoarding/OnBoarding.styles';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useCallback } from 'react';
 import useFeedbackSubmit from './hooks/useFeedbackSubmit';
+import IconButton from '@/components/IconButton/IconButton';
 
 interface FeedbackPageProps {
   category: CategoryListType | null;
@@ -138,14 +139,21 @@ export default function FeedbackPage({
 
   return (
     <section css={container}>
-      <div css={arrowLeftIconContainer} onClick={movePrevStep}>
-        <ArrowLeftIcon color={theme.colors.gray[600]} />
+      <div css={arrowLeftIconContainer}>
+        <IconButton
+          aria-label='이전 단계로 돌아가기'
+          onClick={movePrevStep}
+          icon={<ArrowLeftIcon color={theme.colors.gray[600]} />}
+        />
       </div>
 
       <form css={mainContent} onSubmit={onSubmit}>
         <div>
           <div css={contentContainer}>
-            <div css={titleContainer}>
+            {category && (
+              <p className='srOnly'>{`소중한 ${category}을(를) 남겨주세요`}</p>
+            )}
+            <div css={titleContainer} aria-hidden={true}>
               <span css={combinedTitle(theme)}>
                 <strong>소중한 {category}</strong>을(를) 남겨주세요
               </span>
@@ -159,6 +167,7 @@ export default function FeedbackPage({
             canSubmit={canSubmit}
             file={file}
             imgUrl={imgUrl}
+            feedbackCategory={category || '건의'}
             onChangeFile={onChangeFile}
             onFeedbackChange={handleFeedbackChange}
             onRandomChange={handleRandomChangeWithTracking}
@@ -187,13 +196,18 @@ export default function FeedbackPage({
                 }
               />
             }
+            aria-label={`피드백 제출 ${canSubmit ? '' : '불가'}`}
           >
-            피드백 제출
+            {category} 제출
           </BasicButton>
 
           <BasicButton
             type='button'
-            icon={<p css={skipIcon}>📄</p>}
+            icon={
+              <p css={skipIcon} aria-hidden={true}>
+                📄
+              </p>
+            }
             variant='secondary'
             onClick={handleSkipAndNavigate}
             disabled={isSubmitting || isModalOpen}

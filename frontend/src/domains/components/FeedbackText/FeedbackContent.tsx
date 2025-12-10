@@ -1,7 +1,6 @@
 import Button from '@/components/@commons/Button/Button';
 import SmallTriangleIcon from '@/components/icons/SmallTriangleIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
-import { FeedbackStatusType } from '@/types/feedbackStatus.types';
 import { useState } from 'react';
 import {
   feedbackImage,
@@ -12,13 +11,11 @@ import {
 
 export interface FeedbackContentProps {
   text: string;
-  type: FeedbackStatusType;
   imgUrl: string | null;
 }
 
 export default function FeedbackContent({
   text,
-  type,
   imgUrl,
 }: FeedbackContentProps) {
   const theme = useAppTheme();
@@ -43,19 +40,21 @@ export default function FeedbackContent({
 
   return (
     <div css={feedbackTextContainer}>
-      <p css={feedbackText(theme, type)}>{text}</p>
+      <p css={feedbackText(theme)}>{text}</p>
 
       {imgUrl && (
         <Button
           onClick={handleShowImg}
           css={feedbackImageButton(theme, showImg)}
+          aria-expanded={showImg}
+          aria-label={showImg ? '첨부 이미지 접기' : '첨부 이미지 펼치기'}
         >
           {showImg ? (
             <SmallTriangleIcon />
           ) : (
             <SmallTriangleIcon style={{ transform: 'rotate(90deg)' }} />
           )}
-          <p>첨부 이미지</p>
+          <p>첨부 이미지 </p>
         </Button>
       )}
       {(showImg || isLeaving) && imgUrl && (

@@ -38,6 +38,7 @@ export default function Dropdown({
   id,
   name,
   disabled = false,
+  ...props
 }: DropdownProps) {
   const theme = useAppTheme();
   const [isOpen, setIsOpen] = useState(false);
@@ -101,6 +102,7 @@ export default function Dropdown({
         aria-haspopup='listbox'
         aria-expanded={isOpen}
         aria-label={placeholder}
+        {...props}
       >
         <span css={dropdownText(theme, !!selectedOption)}>{displayText}</span>
         <ArrowBottomIcon />
