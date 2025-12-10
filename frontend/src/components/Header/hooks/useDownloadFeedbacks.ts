@@ -36,7 +36,6 @@ export default function useDownloadFeedbacks() {
       }
 
       if (feedbackDownloadStatus?.jobStatus === 'COMPLETED') {
-        console.log('download start');
         await fileDownload();
         showToast('피드백 데이터가 다운로드되었습니다.', 'success', 3000);
       }
