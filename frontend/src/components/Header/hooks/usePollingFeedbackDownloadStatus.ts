@@ -22,7 +22,6 @@ export default function usePollingFeedbackDownloadStatus({
     select: (response) => response.data,
     enabled: jobId !== '',
     refetchInterval: (query) => {
-      console.log('refetching...', query);
       const data = query.state.data;
       if (!data) return 2000;
       if (
