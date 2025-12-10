@@ -158,8 +158,6 @@ export default memo(function UserFeedbackList({
 
             if (!feedback) return null;
 
-            // console.log(feedbacks, virtualRow.index);
-
             const isMyFeedback = myFeedbackIdSet.has(feedback.feedbackId);
             const postedAt = formatRelativeTime(feedback.postedAt ?? '');
 
