@@ -13,6 +13,7 @@ import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useNavigate } from 'react-router-dom';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
@@ -24,6 +25,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { organizationId } = useOrganizationId();
   const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal onClose={closeModal} />);
@@ -64,7 +66,8 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   };
 
   const handleCustomerPageClick = () => {
-    window.location.href = `/${organizationId}/submit`;
+    navigate(`/${organizationId}/submit`);
+    closeMoreMenu();
   };
 
   const moreMenuList = [
