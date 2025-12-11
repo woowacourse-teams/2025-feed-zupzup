@@ -2,6 +2,7 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
+import ExternalIcon from '@/components/icons/External';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
@@ -62,6 +63,10 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     await refetch();
   };
 
+  const handleCustomerPageClick = () => {
+    window.location.href = `/${organizationId}/submit`;
+  };
+
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
@@ -78,6 +83,11 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       icon: <FileDownloadIcon />,
       menu: '피드백 추출',
       onClick: downloadFeedbacksFile,
+    },
+    {
+      icon: <ExternalIcon />,
+      menu: '고객 페이지로 이동',
+      onClick: handleCustomerPageClick,
     },
   ];
 
