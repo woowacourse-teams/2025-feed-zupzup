@@ -2,6 +2,7 @@ import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
+import ExternalIcon from '@/components/icons/External';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
@@ -12,6 +13,7 @@ import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
 import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useNavigate } from 'react-router-dom';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
@@ -23,6 +25,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { organizationId } = useOrganizationId();
   const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleRoomInfoEditClick = () => {
     openModal(<EditRoomModal onClose={closeModal} />);
@@ -62,6 +65,11 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     await refetch();
   };
 
+  const handleCustomerPageClick = () => {
+    navigate(`/${organizationId}/submit`);
+    closeMoreMenu();
+  };
+
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
@@ -78,6 +86,11 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       icon: <FileDownloadIcon />,
       menu: '피드백 추출',
       onClick: downloadFeedbacksFile,
+    },
+    {
+      icon: <ExternalIcon />,
+      menu: '고객 페이지로 이동',
+      onClick: handleCustomerPageClick,
     },
   ];
 
