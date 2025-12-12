@@ -1,4 +1,3 @@
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
@@ -6,12 +5,10 @@ import ExternalIcon from '@/components/icons/External';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
-import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { useModalContext } from '@/contexts/useModal';
 import { useToast } from '@/contexts/useToast';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
 import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
-import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +18,6 @@ interface MoreMenuProps {
 
 export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const { openModal, closeModal } = useModalContext();
-  const { deleteOrganization, isDeleting } = useDeleteOrganization();
   const { organizationId } = useOrganizationId();
   const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
   const { showToast } = useToast();
@@ -34,23 +30,6 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
 
   const handleShareClick = () => {
     openModal(<QRModal onClose={closeModal} />);
-    closeMoreMenu();
-  };
-
-  const handleDeleteClick = () => {
-    openModal(
-      <ConfirmModal
-        onClose={closeModal}
-        title='방 삭제 확인'
-        message={
-          isDeleting
-            ? '삭제 중입니다.'
-            : '삭제한 방은 되돌릴 수 없습니다. \n정말로 방을 삭제하시겠습니까?'
-        }
-        onConfirm={deleteOrganization}
-        disabled={isDeleting}
-      />
-    );
     closeMoreMenu();
   };
 
@@ -73,15 +52,10 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
-      menu: '방정보 수정',
+      menu: '방정보 수정/삭제',
       onClick: handleRoomInfoEditClick,
     },
     { icon: <ShareIcon />, menu: 'QR/URL 공유', onClick: handleShareClick },
-    {
-      icon: <TrashCanIcon color='#222222' />,
-      menu: '방 삭제',
-      onClick: handleDeleteClick,
-    },
     {
       icon: <FileDownloadIcon />,
       menu: '피드백 추출',
