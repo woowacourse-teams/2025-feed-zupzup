@@ -3,11 +3,11 @@ package feedzupzup.backend.feedback.application;
 import feedzupzup.backend.feedback.domain.ClusterLabelGenerator;
 import feedzupzup.backend.feedback.domain.EmbeddingCluster;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
-import feedzupzup.backend.feedback.domain.EmbeddingExtractor;
 import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
+import feedzupzup.backend.feedback.exception.ClusterException.EmbeddingExtractionFailedException;
 import feedzupzup.backend.feedback.exception.FeedbackException.AlreadyClusteringException;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import java.util.Comparator;
@@ -31,42 +31,53 @@ public class FeedbackClusteringService {
     private final FeedbackRepository feedbackRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
+    private final VoyageRetryQueueService retryQueueService;
 
+    /**
+     * 최초 클러스터링 (재시도 스케줄링 포함)
+     */
     @Transactional
     public Long cluster(final Long createdFeedbackId) {
         final Feedback createdFeedback = getFeedback(createdFeedbackId);
+
         if (feedbackEmbeddingClusterRepository.existsByFeedback(createdFeedback)) {
-            throw new AlreadyClusteringException("이미 클러스터링 된 피드백입니다. (feedabckId = " + createdFeedbackId + ")");
-        }
-        final double[] createdFeedbackEmbedding = embeddingService.extractEmbedding(createdFeedback.getContent().getValue());
-
-        final Optional<FeedbackEmbeddingCluster> assignedCluster = assignCluster(createdFeedback, createdFeedbackEmbedding);
-
-        if (assignedCluster.isEmpty()) {
-            final EmbeddingCluster empty = EmbeddingCluster.createEmpty();
-            embeddingClusterRepository.save(empty);
-            final FeedbackEmbeddingCluster newCluster = FeedbackEmbeddingCluster.createNewCluster(createdFeedbackEmbedding,
-                    createdFeedback, empty);
-            return feedbackEmbeddingClusterRepository.save(newCluster).getId();
+            throw new AlreadyClusteringException("이미 클러스터링 된 피드백입니다. (feedbackId = " + createdFeedbackId + ")");
         }
 
-        return feedbackEmbeddingClusterRepository.save(assignedCluster.get()).getId();
+        try {
+            final double[] embedding = embeddingService.extractEmbedding(
+                    createdFeedback.getContent().getValue()
+            );
+            return assignAndSaveCluster(createdFeedback, embedding);
+
+        } catch (Exception e) {
+            retryQueueService.scheduleRetryWithOutbox(createdFeedbackId, e.getMessage());
+            throw new EmbeddingExtractionFailedException("feedbackId = " + createdFeedbackId, e);
+        }
     }
 
-    private Optional<FeedbackEmbeddingCluster> assignCluster(final Feedback createdFeedback, final double[] createdFeedbackEmbedding) {
-        double originClusterScore = 1.0;
-        final List<FeedbackEmbeddingCluster> representations = feedbackEmbeddingClusterRepository.findAllRepresentativeClusters(
-                createdFeedback.getOrganization().getUuid(), originClusterScore);
+    /**
+     * 재시도 클러스터링 (재시도 스케줄링 없음)
+     * VoyageRetryTaskProcessor에서만 호출
+     */
+    @Transactional
+    public Long clusterForRetry(final Long createdFeedbackId) {
+        final Feedback createdFeedback = getFeedback(createdFeedbackId);
 
-        return representations.stream()
-                .map(representation -> representation.assignMyCluster(createdFeedback, createdFeedbackEmbedding))
-                .max(Comparator.comparingDouble(FeedbackEmbeddingCluster::getSimilarityScore))
-                .filter(bestSimilarity -> bestSimilarity.getSimilarityScore() >= SIMILARITY_THRESHOLD);
-    }
+        // 이미 완료된 경우 조기 종료
+        Optional<FeedbackEmbeddingCluster> existingCluster =
+                feedbackEmbeddingClusterRepository.findByFeedback(createdFeedback);
+        if (existingCluster.isPresent()) {
+            log.info("[재시도] 이미 클러스터링 완료됨: feedbackId={}, clusterId={}",
+                    createdFeedbackId, existingCluster.get().getId());
+            return existingCluster.get().getId();
+        }
 
-    private Feedback getFeedback(final Long feedbackId) {
-        return feedbackRepository.findById(feedbackId)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
+        // 재시도 스케줄링 없이 바로 실패 (TaskProcessor가 재시도 관리)
+        final double[] embedding = embeddingService.extractEmbedding(
+                createdFeedback.getContent().getValue()
+        );
+        return assignAndSaveCluster(createdFeedback, embedding);
     }
 
     @Transactional
@@ -88,5 +99,41 @@ public class FeedbackClusteringService {
 
         final EmbeddingCluster embeddingCluster = feedbackEmbeddingCluster.getEmbeddingCluster();
         embeddingCluster.updateLabel(label);
+    }
+
+    /**
+     * 클러스터 할당 및 저장 (공통 로직)
+     */
+    private Long assignAndSaveCluster(final Feedback createdFeedback, final double[] embedding) {
+        final Optional<FeedbackEmbeddingCluster> assignedCluster = assignCluster(createdFeedback, embedding);
+
+        if (assignedCluster.isEmpty()) {
+            // 새 클러스터 생성
+            final EmbeddingCluster empty = EmbeddingCluster.createEmpty();
+            embeddingClusterRepository.save(empty);
+            final FeedbackEmbeddingCluster newCluster = FeedbackEmbeddingCluster.createNewCluster(
+                    embedding, createdFeedback, empty
+            );
+            return feedbackEmbeddingClusterRepository.save(newCluster).getId();
+        }
+
+        // 기존 클러스터에 할당
+        return feedbackEmbeddingClusterRepository.save(assignedCluster.get()).getId();
+    }
+
+    private Optional<FeedbackEmbeddingCluster> assignCluster(final Feedback createdFeedback, final double[] createdFeedbackEmbedding) {
+        double originClusterScore = 1.0;
+        final List<FeedbackEmbeddingCluster> representations = feedbackEmbeddingClusterRepository.findAllRepresentativeClusters(
+                createdFeedback.getOrganization().getUuid(), originClusterScore);
+
+        return representations.stream()
+                .map(representation -> representation.assignMyCluster(createdFeedback, createdFeedbackEmbedding))
+                .max(Comparator.comparingDouble(FeedbackEmbeddingCluster::getSimilarityScore))
+                .filter(bestSimilarity -> bestSimilarity.getSimilarityScore() >= SIMILARITY_THRESHOLD);
+    }
+
+    private Feedback getFeedback(final Long feedbackId) {
+        return feedbackRepository.findById(feedbackId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + feedbackId + ")인 피드백을 찾을 수 없습니다."));
     }
 }
