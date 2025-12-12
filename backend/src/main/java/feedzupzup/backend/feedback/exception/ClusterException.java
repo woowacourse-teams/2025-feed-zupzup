@@ -21,4 +21,18 @@ public class ClusterException extends DomainException {
             super(errorCode, errorCode.getMessage());
         }
     }
+
+    public static class EmbeddingExtractionFailedException extends ClusterException {
+
+        private static final ErrorCode errorCode = ErrorCode.EMBEDDING_EXTRACTION_FAILED;
+
+        public EmbeddingExtractionFailedException(final String message) {
+            super(errorCode, message);
+        }
+
+        public EmbeddingExtractionFailedException(final String message, final Throwable cause) {
+            super(errorCode, message);
+            initCause(cause);
+        }
+    }
 }
