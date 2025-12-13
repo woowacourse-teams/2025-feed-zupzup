@@ -8,7 +8,7 @@ import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
 import { useModalContext } from '@/contexts/useModal';
 import { useToast } from '@/contexts/useToast';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
-import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
+import ManageRoomModal from '@/domains/admin/ManageRoomModal/ManageRoomModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,7 +24,7 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
   const navigate = useNavigate();
 
   const handleRoomInfoEditClick = () => {
-    openModal(<EditRoomModal onClose={closeModal} />);
+    openModal(<ManageRoomModal onClose={closeModal} />);
     closeMoreMenu();
   };
 
