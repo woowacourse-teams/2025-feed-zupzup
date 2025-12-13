@@ -64,13 +64,7 @@ public class VoyageRetryConsumer {
     )
     public void consumeDLQ(VoyageRetryTask task) {
         Long feedbackId = task.getFeedbackId();
-
-        log.error("====================================================");
-        log.error("[DLQ] Redis 재시도 최종 실패 - AsyncTaskFailureService로 위임");
-        log.error("[DLQ] feedbackId: {}", feedbackId);
-        log.error("[DLQ] 총 6회 시도 실패 (최초 1회 + 재시도 5회)");
-        log.error("====================================================");
-
+        log.error("재시도 5회 실패 DLQ로 이동 feedbackId: {}", feedbackId);
         // TODO : Discord 알람 발송 추가 예정
     }
 }
