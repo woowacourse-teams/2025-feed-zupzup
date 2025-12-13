@@ -51,7 +51,7 @@ public class FeedbackClusteringService {
             return assignAndSaveCluster(createdFeedback, embedding);
 
         } catch (Exception e) {
-            retryQueueService.scheduleRetryWithOutbox(createdFeedbackId, e.getMessage());
+            retryQueueService.retryTask(createdFeedbackId, e.getMessage());
             throw new EmbeddingExtractionFailedException("feedbackId = " + createdFeedbackId, e);
         }
     }

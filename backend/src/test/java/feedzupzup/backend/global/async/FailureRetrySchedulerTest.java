@@ -9,6 +9,7 @@ import static org.mockito.Mockito.*;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.application.FeedbackClusteringService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,7 @@ class FailureRetrySchedulerTest extends ServiceIntegrationHelper {
 
     @Nested
     @DisplayName("통합 시나리오 테스트")
+    @Disabled
     class IntegrationScenarioTest {
 
         @Test

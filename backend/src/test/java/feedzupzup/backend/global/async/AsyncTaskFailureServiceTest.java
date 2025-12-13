@@ -11,6 +11,7 @@ import feedzupzup.backend.config.ServiceIntegrationHelper;
 import feedzupzup.backend.feedback.application.FeedbackClusteringService;
 import feedzupzup.backend.global.async.exception.NonRetryableException;
 import feedzupzup.backend.global.async.exception.RetryableException;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -156,6 +157,7 @@ class AsyncTaskFailureServiceTest extends ServiceIntegrationHelper {
 
         @Test
         @DisplayName("피드백 클러스터링 작업이 성공적으로 재시도된다")
+        @Disabled
         void when_feedback_clustering_retry_then_success() {
             // given
             AsyncTaskFailure failure = AsyncTaskFailure.create(

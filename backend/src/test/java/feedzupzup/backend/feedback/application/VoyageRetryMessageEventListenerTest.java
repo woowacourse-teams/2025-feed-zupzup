@@ -41,7 +41,7 @@ class VoyageRetryMessageEventListenerTest {
         // then
         // 1. Redis 전송 확인
         verify(rqueueMessageEnqueuer).enqueue(
-                eq("voyage-retry-queue"),
+                eq("voyage-retry-execution-queue"),
                 any(VoyageRetryTask.class)
         );
 
