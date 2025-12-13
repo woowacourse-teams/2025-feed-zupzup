@@ -71,7 +71,8 @@ public class AsyncTaskFailureService {
 
         switch (taskType) {
             case FEEDBACK_CLUSTERING -> {
-                log.info("클러스터링 재시도 작업은 별도 처리");
+                log.info("클러스터링 재시도 작업은 별도 처리: taskFailureId={}, targetId={}", failure.getId(), targetId);
+                asyncTaskFailureRepository.delete(failure);
 //                Long feedbackId = Long.valueOf(targetId);
 //                feedbackClusteringService.cluster(feedbackId);
 //                asyncTaskFailureRepository.delete(failure);
