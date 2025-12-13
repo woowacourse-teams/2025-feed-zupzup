@@ -1,6 +1,9 @@
 package feedzupzup.backend.feedback.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 
 import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer;
 import feedzupzup.backend.config.ServiceIntegrationHelper;
@@ -28,6 +31,10 @@ class VoyageRetryQueueServiceTest extends ServiceIntegrationHelper {
         // given
         Long feedbackId = 1L;
         String errorMessage = "Voyage AI 호출 실패";
+
+        doThrow(new RuntimeException("Redis 연결 실패"))
+                .when(rqueueMessageEnqueuer)
+                .enqueue(anyString(), any());
 
         // when
         voyageRetryQueueService.retryTask(feedbackId, errorMessage);

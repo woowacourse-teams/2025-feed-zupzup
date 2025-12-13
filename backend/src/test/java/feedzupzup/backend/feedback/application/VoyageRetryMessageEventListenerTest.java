@@ -50,24 +50,26 @@ class VoyageRetryMessageEventListenerTest {
     }
 
     @Test
-    @DisplayName("Redis 전송 실패 시 예외 발생")
-    void handleOutboxCreated_redisFailure_throwsException() {
+    @DisplayName("Redis 전송 실패 시 에러 메시지 업데이트")
+    void handleOutboxCreated_redisFailure_updatesErrorMessage() {
         // given
-        Long feedbackId = 1L;
-        VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(feedbackId);
+        final Long feedbackId = 1L;
+        final VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(feedbackId);
 
-        // Redis 전송 실패 설정
+        final feedzupzup.backend.feedback.domain.VoyageRetryOutbox outbox =
+                org.mockito.Mockito.mock(feedzupzup.backend.feedback.domain.VoyageRetryOutbox.class);
+        org.mockito.Mockito.when(outboxRepository.findByFeedbackId(feedbackId))
+                .thenReturn(java.util.Optional.of(outbox));
+
         doThrow(new RuntimeException("Redis 연결 실패"))
                 .when(rqueueMessageEnqueuer)
                 .enqueue(any(), any());
 
-        // when & then
-        org.junit.jupiter.api.Assertions.assertThrows(
-                RuntimeException.class,
-                () -> voyageRetryMessageEventListener.handleOutboxCreated(event)
-        );
+        // when
+        voyageRetryMessageEventListener.handleOutboxCreated(event);
 
-        // Outbox 삭제가 호출되지 않아야 함 (트랜잭션 롤백)
+        // then
         verify(outboxRepository, org.mockito.Mockito.never()).deleteByFeedbackId(any());
+        verify(outbox).updateErrorMessage("Redis 연결 실패");
     }
 }
