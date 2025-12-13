@@ -23,7 +23,7 @@ public class VoyageRetryMessageEventListener {
     private static final String VOYAGE_RETRY_EXECUTION_QUEUE = "voyage-retry-execution-queue";
 
     private final RqueueMessageEnqueuer rqueueMessageEnqueuer;
-    private final VoyageRetryOutboxRepository outboxRepository;
+    private final VoyageRetryOutboxRepository voyageRetryOutboxRepository;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -33,9 +33,9 @@ public class VoyageRetryMessageEventListener {
         final VoyageRetryTask task = VoyageRetryTask.of(feedbackId);
         try {
             rqueueMessageEnqueuer.enqueue(VOYAGE_RETRY_EXECUTION_QUEUE, task);
-            outboxRepository.deleteByFeedbackId(feedbackId);
+            voyageRetryOutboxRepository.deleteByFeedbackId(feedbackId);
         } catch (Exception e) {
-            final VoyageRetryOutbox voyageRetryOutbox = outboxRepository.findByFeedbackId(feedbackId)
+            final VoyageRetryOutbox voyageRetryOutbox = voyageRetryOutboxRepository.findByFeedbackId(feedbackId)
                     .orElseThrow(() -> new ResourceNotFoundException("voyage_retry_outbox에 존재하지 않는 feedback 입니다."));
             voyageRetryOutbox.updateErrorMessage(e.getMessage());
         }

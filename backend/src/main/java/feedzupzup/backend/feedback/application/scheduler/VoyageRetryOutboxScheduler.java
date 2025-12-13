@@ -16,13 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VoyageRetryOutboxScheduler {
 
-    private final VoyageRetryOutboxRepository outboxRepository;
-    private final ApplicationEventPublisher eventPublisher;
+    private final VoyageRetryOutboxRepository voyageRetryOutboxRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Scheduled(fixedRate = 300000)
     @Transactional
     public void pollOutboxAndRetry() {
-        List<VoyageRetryOutbox> outboxes = outboxRepository.findAll();
+        List<VoyageRetryOutbox> outboxes = voyageRetryOutboxRepository.findAll();
 
         if (outboxes.isEmpty()) {
             return;
@@ -31,7 +31,7 @@ public class VoyageRetryOutboxScheduler {
         for (VoyageRetryOutbox outbox : outboxes) {
             try {
                 VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(outbox.getFeedbackId());
-                eventPublisher.publishEvent(event);
+                applicationEventPublisher.publishEvent(event);
                 log.info("폴링 성공: feedbackId={} 이벤트 재발행", outbox.getFeedbackId());
             } catch (Exception e) {
                 log.error("폴링 실패: feedbackId={} 이벤트 발행 중 오류 발생", outbox.getFeedbackId(), e);

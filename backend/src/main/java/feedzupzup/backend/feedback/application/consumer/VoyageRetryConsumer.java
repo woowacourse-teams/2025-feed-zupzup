@@ -5,7 +5,6 @@ import feedzupzup.backend.feedback.application.FeedbackClusteringService;
 import feedzupzup.backend.feedback.application.VoyageRetryQueueService;
 import feedzupzup.backend.feedback.application.dto.VoyageRetryTask;
 import feedzupzup.backend.feedback.exception.ClusterException.VoyageRetryFailedException;
-import feedzupzup.backend.global.async.AsyncTaskFailureService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,7 @@ public class VoyageRetryConsumer {
     private static final String VOYAGE_RETRY_EXECUTION_QUEUE = "voyage-retry-execution-queue";
     private static final String VOYAGE_RETRY_DLQ = "voyage-retry-dlq";
 
-    private final FeedbackClusteringService clusteringService;
+    private final FeedbackClusteringService feedbackClusteringService;
     private final VoyageRetryQueueService voyageRetryQueueService;
 
     /**
@@ -50,7 +49,7 @@ public class VoyageRetryConsumer {
     public void consumeRetryTask(final VoyageRetryTask task) {
         Long feedbackId = task.getFeedbackId();
         try {
-            clusteringService.clusterForRetry(feedbackId);
+            feedbackClusteringService.clusterForRetry(feedbackId);
             voyageRetryQueueService.deleteOutboxByFeedbackId(feedbackId);
 
         } catch (Exception e) {

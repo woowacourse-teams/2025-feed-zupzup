@@ -15,19 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class VoyageRetryQueueService {
 
-    private final VoyageRetryOutboxRepository outboxRepository;
-    private final ApplicationEventPublisher eventPublisher;
+    private final VoyageRetryOutboxRepository voyageRetryOutboxRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void retryTask(final Long feedbackId, final String errorMessage) {
         VoyageRetryOutbox outbox = VoyageRetryOutbox.create(feedbackId, errorMessage);
-        outboxRepository.save(outbox);
+        voyageRetryOutboxRepository.save(outbox);
         VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(feedbackId);
-        eventPublisher.publishEvent(event);
+        applicationEventPublisher.publishEvent(event);
     }
 
     @Transactional
     public void deleteOutboxByFeedbackId(final Long feedbackId) {
-        outboxRepository.deleteByFeedbackId(feedbackId);
+        voyageRetryOutboxRepository.deleteByFeedbackId(feedbackId);
     }
 }

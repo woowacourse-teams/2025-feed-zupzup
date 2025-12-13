@@ -31,7 +31,7 @@ public class FeedbackClusteringService {
     private final FeedbackRepository feedbackRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
     private final EmbeddingClusterRepository embeddingClusterRepository;
-    private final VoyageRetryQueueService retryQueueService;
+    private final VoyageRetryQueueService voyageRetryQueueService;
 
     /**
      * 최초 클러스터링 (재시도 스케줄링 포함)
@@ -51,7 +51,7 @@ public class FeedbackClusteringService {
             return assignAndSaveCluster(createdFeedback, embedding);
 
         } catch (Exception e) {
-            retryQueueService.retryTask(createdFeedbackId, e.getMessage());
+            voyageRetryQueueService.retryTask(createdFeedbackId, e.getMessage());
             throw new EmbeddingExtractionFailedException("feedbackId = " + createdFeedbackId, e);
         }
     }
