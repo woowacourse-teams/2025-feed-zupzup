@@ -9,3 +9,12 @@ services:
       - ./mysql/data:/var/lib/mysql
     ports:
       - "33061:3306"
+
+  feed-zupzup-redis:
+    image: redis:7-alpine
+    container_name: feed-zupzup-redis
+    command: redis-server --requirepass 12341234
+    volumes:
+      - ./redis/data:/data
+    ports:
+      - "63791:6379"
