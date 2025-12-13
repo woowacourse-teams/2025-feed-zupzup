@@ -10,7 +10,10 @@ import feedzupzup.backend.feedback.domain.ClusterInfo;
 import feedzupzup.backend.feedback.domain.EmbeddingCluster;
 import feedzupzup.backend.feedback.domain.EmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.Feedback;
-import feedzupzup.backend.feedback.domain.FeedbackDownloadJobStore;
+import feedzupzup.backend.feedback.infrastructure.FeedbackDownloadJobDynamoDBRepository;
+import feedzupzup.backend.lambda.dto.FeedbackExcelLambdaRequest;
+import feedzupzup.backend.lambda.dto.FeedbackExcelLambdaRequest.FeedbackData;
+import feedzupzup.backend.lambda.service.FeedbackExcelLambdaService;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackPage;
@@ -59,8 +62,8 @@ public class AdminFeedbackService {
     private final EmbeddingClusterRepository embeddingClusterRepository;
     private final FeedbackEmbeddingClusterRepository feedbackEmbeddingClusterRepository;
     private final S3PresignedDownloadService s3PresignedDownloadService;
-    private final FeedbackDownloadJobStore feedbackDownloadJobStore;
-    private final FeedbackFileDownloadService feedbackFileDownloadService;
+    private final FeedbackDownloadJobDynamoDBRepository feedbackDownloadJobDynamoDBRepository;
+    private final FeedbackExcelLambdaService feedbackExcelLambdaService;
 
     @Transactional
     @BusinessActionLog
@@ -172,20 +175,45 @@ public class AdminFeedbackService {
     }
 
     public String createDownloadJob(final UUID organizationUuid) {
-        if (!organizationRepository.existsOrganizationByUuid(organizationUuid)) {
-            throw new ResourceNotFoundException("해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다.");
-        }
+        final var organization = organizationRepository.findByUuid(organizationUuid)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 ID(id = " + organizationUuid + ")인 단체를 찾을 수 없습니다."));
 
         final FeedbackDownloadJob job = FeedbackDownloadJob.create(organizationUuid.toString());
-        feedbackDownloadJobStore.save(job);
+        feedbackDownloadJobDynamoDBRepository.save(job);
 
-        feedbackFileDownloadService.createAndUploadFileAsync(job.getJobId(), organizationUuid);
+        final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
+        final List<FeedbackData> feedbackDataList = feedbacks.stream()
+                .map(this::convertToFeedbackData)
+                .toList();
+
+        final FeedbackExcelLambdaRequest lambdaRequest = new FeedbackExcelLambdaRequest(
+                job.getJobId(),
+                organizationUuid.toString(),
+                feedbackDataList
+        );
+
+        feedbackExcelLambdaService.invokeFeedbackExcelGeneration(lambdaRequest);
 
         return job.getJobId();
     }
 
+    private FeedbackData convertToFeedbackData(final Feedback feedback) {
+        return new FeedbackData(
+                feedback.getId(),
+                feedback.getContent() != null ? feedback.getContent().getValue() : "",
+                feedback.getOrganizationCategory() != null ? feedback.getOrganizationCategory().getCategory().getKoreanName() : "",
+                feedback.getImageUrl() != null ? feedback.getImageUrl().getValue() : null,
+                feedback.getLikeCountValue(),
+                feedback.isSecret(),
+                feedback.getStatus() != null ? feedback.getStatus().name() : "",
+                feedback.getComment() != null ? feedback.getComment().getValue() : "",
+                feedback.getUserName() != null ? feedback.getUserName().getValue() : "",
+                feedback.getPostedAt() != null ? feedback.getPostedAt().getValue().toString() : ""
+        );
+    }
+
     public FeedbackDownloadJob getDownloadJobStatus(final String jobId) {
-        final FeedbackDownloadJob job = feedbackDownloadJobStore.getById(jobId);
+        final FeedbackDownloadJob job = feedbackDownloadJobDynamoDBRepository.getById(jobId);
         if (job == null) {
             throw new ResourceNotFoundException("해당 ID(id = " + jobId + ")인 작업을 찾을 수 없습니다.");
         }
@@ -193,7 +221,7 @@ public class AdminFeedbackService {
     }
 
     public String getDownloadUrl(final String jobId) {
-        final FeedbackDownloadJob job = feedbackDownloadJobStore.getById(jobId);
+        final FeedbackDownloadJob job = feedbackDownloadJobDynamoDBRepository.getById(jobId);
         if (job == null) {
             throw new ResourceNotFoundException("해당 ID(id = " + jobId + ")인 작업을 찾을 수 없습니다.");
         }

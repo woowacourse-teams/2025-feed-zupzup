@@ -43,6 +43,8 @@ dependencies {
 
     //aws
     implementation 'software.amazon.awssdk:s3:2.30.16'
+    implementation 'software.amazon.awssdk:dynamodb-enhanced:2.30.16'
+    implementation 'software.amazon.awssdk:lambda:2.30.16'
 
     //QR
     implementation 'com.google.zxing:core:3.5.2'
