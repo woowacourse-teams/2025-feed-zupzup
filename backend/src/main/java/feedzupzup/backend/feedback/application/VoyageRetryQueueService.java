@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -17,8 +18,8 @@ public class VoyageRetryQueueService {
     private final VoyageRetryOutboxRepository outboxRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
-    public void scheduleRetryWithOutbox(final Long feedbackId, final String errorMessage) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void retryTask(final Long feedbackId, final String errorMessage) {
         VoyageRetryOutbox outbox = VoyageRetryOutbox.create(feedbackId, errorMessage);
         outboxRepository.save(outbox);
         OutboxCreatedEvent event = OutboxCreatedEvent.of(feedbackId);
