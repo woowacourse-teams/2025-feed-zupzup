@@ -25,7 +25,7 @@ public class VoyageRetryMessageEventListener {
     private final RqueueMessageEnqueuer rqueueMessageEnqueuer;
     private final VoyageRetryOutboxRepository voyageRetryOutboxRepository;
 
-    @Async
+    @Async("retryExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleOutboxCreated(final VoyageRetryOutboxCreatedEvent event) {
