@@ -71,10 +71,11 @@ public class AsyncTaskFailureService {
 
         switch (taskType) {
             case FEEDBACK_CLUSTERING -> {
-                Long feedbackId = Long.valueOf(targetId);
-                feedbackClusteringService.cluster(feedbackId);
-                asyncTaskFailureRepository.delete(failure);
-                log.info("피드백 클러스터링 재시도 성공: 피드백ID={} 실패작업 기록 삭제 완료", feedbackId);
+                log.info("클러스터링 재시도 작업은 별도 처리");
+//                Long feedbackId = Long.valueOf(targetId);
+//                feedbackClusteringService.cluster(feedbackId);
+//                asyncTaskFailureRepository.delete(failure);
+//                log.info("피드백 클러스터링 재시도 성공: 피드백ID={} 실패작업 기록 삭제 완료", feedbackId);
             }
             case CLUSTER_LABEL_GENERATION -> {
                 Long clusterId = Long.valueOf(targetId);
