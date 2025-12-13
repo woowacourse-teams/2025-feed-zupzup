@@ -28,7 +28,6 @@ public class RandomExponentialBackOff implements TaskExecutionBackOff {
         long minDelay = MIN_DELAYS[failureCount];
         long maxDelay = MAX_DELAYS[failureCount];
 
-        // minDelay와 maxDelay 사이의 랜덤한 값 반환
         return random.nextLong(minDelay, maxDelay + 1);
     }
 }
