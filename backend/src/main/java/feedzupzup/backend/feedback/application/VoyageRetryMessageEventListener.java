@@ -2,8 +2,10 @@ package feedzupzup.backend.feedback.application;
 
 import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer;
 import feedzupzup.backend.feedback.application.dto.VoyageRetryTask;
+import feedzupzup.backend.feedback.domain.VoyageRetryOutbox;
 import feedzupzup.backend.feedback.domain.VoyageRetryOutboxRepository;
 import feedzupzup.backend.feedback.domain.event.OutboxCreatedEvent;
+import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -18,7 +20,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class VoyageRetryMessageEventListener {
 
-    private static final String VOYAGE_RETRY_QUEUE = "voyage-retry-queue";
+    private static final String VOYAGE_RETRY_EXECUTION_QUEUE = "voyage-retry-execution-queue";
 
     private final RqueueMessageEnqueuer rqueueMessageEnqueuer;
     private final VoyageRetryOutboxRepository outboxRepository;
@@ -29,13 +31,13 @@ public class VoyageRetryMessageEventListener {
     public void handleOutboxCreated(final OutboxCreatedEvent event) {
         final Long feedbackId = event.getFeedbackId();
         final VoyageRetryTask task = VoyageRetryTask.of(feedbackId);
-        rqueueMessageEnqueuer.enqueue(VOYAGE_RETRY_QUEUE, task);
-
         try {
+            rqueueMessageEnqueuer.enqueue(VOYAGE_RETRY_EXECUTION_QUEUE, task);
             outboxRepository.deleteByFeedbackId(feedbackId);
         } catch (Exception e) {
-            log.warn("Redis 메세지 발송 후 Outbox에서 메세지 삭제 실패");
+            final VoyageRetryOutbox voyageRetryOutbox = outboxRepository.findByFeedbackId(feedbackId)
+                    .orElseThrow(() -> new ResourceNotFoundException("voyage_retry_outbox에 존재하지 않는 feedback 입니다."));
+            voyageRetryOutbox.updateErrorMessage(e.getMessage());
         }
-
     }
 }

@@ -50,4 +50,8 @@ public class VoyageRetryOutbox extends BaseTimeEntity {
                 .errorMessage(errorMessage)
                 .build();
     }
+
+    public void updateErrorMessage(final String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }
