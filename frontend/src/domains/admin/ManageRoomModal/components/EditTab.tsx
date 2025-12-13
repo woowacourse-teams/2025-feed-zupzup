@@ -43,12 +43,11 @@ export default function EditTab({ onClose }: EditTabProps) {
   const handleRoomEditButton = async () => {
     try {
       await editRoom();
-      onClose();
-      openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
-    } catch (e) {
-      console.error(e);
+    } catch {
       return;
     }
+    onClose();
+    openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
   };
 
   return (

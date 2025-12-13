@@ -29,7 +29,11 @@ export default function DeleteTab({ onClose }: DeleteTabProps) {
   const [isDeleteChecked, setIsDeleteChecked] = useState(false);
 
   const handleDeleteButton = async () => {
-    await deleteOrganization();
+    try {
+      await deleteOrganization();
+    } catch {
+      return;
+    }
     onClose();
   };
 
