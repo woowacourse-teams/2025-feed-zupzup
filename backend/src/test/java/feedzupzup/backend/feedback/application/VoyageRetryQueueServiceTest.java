@@ -24,13 +24,13 @@ class VoyageRetryQueueServiceTest extends ServiceIntegrationHelper {
 
     @Test
     @DisplayName("재시도 스케줄링 시 Outbox 저장")
-    void scheduleRetryWithOutbox_savesOutbox() {
+    void retryTask() {
         // given
         Long feedbackId = 1L;
         String errorMessage = "Voyage AI 호출 실패";
 
         // when
-        voyageRetryQueueService.scheduleRetryWithOutbox(feedbackId, errorMessage);
+        voyageRetryQueueService.retryTask(feedbackId, errorMessage);
 
         // then
         VoyageRetryOutbox savedOutbox = outboxRepository.findByFeedbackId(feedbackId)
@@ -41,15 +41,15 @@ class VoyageRetryQueueServiceTest extends ServiceIntegrationHelper {
 
     @Test
     @DisplayName("같은 feedbackId로 중복 Outbox 생성 시 예외 발생")
-    void scheduleRetryWithOutbox_duplicateFeedbackId_throwsException() {
+    void retryTask_duplicateFeedbackId_throwsException() {
         // given
         Long feedbackId = 1L;
-        voyageRetryQueueService.scheduleRetryWithOutbox(feedbackId, "첫 번째 에러");
+        voyageRetryQueueService.retryTask(feedbackId, "첫 번째 에러");
 
         // when & then
         org.junit.jupiter.api.Assertions.assertThrows(
                 org.springframework.dao.DataIntegrityViolationException.class,
-                () -> voyageRetryQueueService.scheduleRetryWithOutbox(feedbackId, "두 번째 에러")
+                () -> voyageRetryQueueService.retryTask(feedbackId, "두 번째 에러")
         );
     }
 
