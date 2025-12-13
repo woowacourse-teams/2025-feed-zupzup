@@ -4,11 +4,11 @@ import com.github.sonus21.rqueue.annotation.RqueueListener;
 import feedzupzup.backend.feedback.application.FeedbackClusteringService;
 import feedzupzup.backend.feedback.application.VoyageRetryQueueService;
 import feedzupzup.backend.feedback.application.dto.VoyageRetryTask;
+import feedzupzup.backend.feedback.exception.ClusterException.VoyageRetryFailedException;
+import feedzupzup.backend.global.async.AsyncTaskFailureService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 /**
  * Voyage AI 재시도 Rqueue Consumer
@@ -23,11 +23,12 @@ import org.springframework.web.client.RestClient;
 @RequiredArgsConstructor
 public class VoyageRetryConsumer {
 
-    private static final String VOYAGE_RETRY_QUEUE = "voyage-retry-queue";
+    private static final String VOYAGE_RETRY_EXECUTION_QUEUE = "voyage-retry-execution-queue";
     private static final String VOYAGE_RETRY_DLQ = "voyage-retry-dlq";
 
     private final FeedbackClusteringService clusteringService;
     private final VoyageRetryQueueService voyageRetryQueueService;
+    private final AsyncTaskFailureService asyncTaskFailureService;
 
     /**
      * 메인 큐 리스너
@@ -40,41 +41,38 @@ public class VoyageRetryConsumer {
      * concurrency: 10개 스레드로 병렬 처리
      */
     @RqueueListener(
-            value = VOYAGE_RETRY_QUEUE,
-            numRetries = "5",
-            visibilityTimeout = "60000",
-            deadLetterQueue = VOYAGE_RETRY_DLQ,
-            concurrency = "10"
+            value = VOYAGE_RETRY_EXECUTION_QUEUE, // Execution Queue
+            numRetries = "5", // 재시도 횟수
+            visibilityTimeout = "60000", // 타임 아웃
+            deadLetterQueue = VOYAGE_RETRY_DLQ, // DLQ
+            deadLetterQueueListenerEnabled = "true", // DLQ 리스너 활성화
+            concurrency = "10" // 워커 스레드
     )
-    public void consumeRetryTask(VoyageRetryTask task) {
+    public void consumeRetryTask(final VoyageRetryTask task) {
         Long feedbackId = task.getFeedbackId();
         try {
             clusteringService.clusterForRetry(feedbackId);
             voyageRetryQueueService.deleteOutboxByFeedbackId(feedbackId);
 
         } catch (Exception e) {
-            log.error("[Consumer] 처리 실패: feedbackId={}", feedbackId, e);
-            throw new RuntimeException("Voyage AI 재시도 실패", e);
+            log.error("메세지 처리 실패: feedbackId={}", feedbackId, e);
+            throw new VoyageRetryFailedException("Voyage AI 재시도 실패: feedbackId=" + feedbackId, e);
         }
     }
 
-    /**
-     * DLQ 리스너 (최종 실패 처리)
-     *
-     * 5회 재시도 모두 실패 시 호출
-     * DLQ는 Redis에서 관리, 수동 처리 필요
-     */
-    @RqueueListener(value = VOYAGE_RETRY_DLQ, concurrency = "1")
+    @RqueueListener(
+            value = VOYAGE_RETRY_DLQ,
+            concurrency = "1"
+    )
     public void consumeDLQ(VoyageRetryTask task) {
         Long feedbackId = task.getFeedbackId();
 
         log.error("====================================================");
-        log.error("[DLQ] 최종 실패 - 수동 처리 필요!");
+        log.error("[DLQ] Redis 재시도 최종 실패 - AsyncTaskFailureService로 위임");
         log.error("[DLQ] feedbackId: {}", feedbackId);
         log.error("[DLQ] 총 6회 시도 실패 (최초 1회 + 재시도 5회)");
-        log.error("[DLQ] Redis DLQ에서 확인 가능: {}", VOYAGE_RETRY_DLQ);
         log.error("====================================================");
 
-        // Discord 알림 발송 구현
+        // TODO : Discord 알람 발송 추가 예정
     }
 }
