@@ -28,7 +28,6 @@ public class VoyageRetryConsumer {
 
     private final FeedbackClusteringService clusteringService;
     private final VoyageRetryQueueService voyageRetryQueueService;
-    private final AsyncTaskFailureService asyncTaskFailureService;
 
     /**
      * 메인 큐 리스너

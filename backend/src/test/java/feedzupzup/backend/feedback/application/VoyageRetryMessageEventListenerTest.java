@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer;
 import feedzupzup.backend.feedback.application.dto.VoyageRetryTask;
 import feedzupzup.backend.feedback.domain.VoyageRetryOutboxRepository;
-import feedzupzup.backend.feedback.domain.event.OutboxCreatedEvent;
+import feedzupzup.backend.feedback.domain.event.VoyageRetryOutboxCreatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +33,7 @@ class VoyageRetryMessageEventListenerTest {
     void handleOutboxCreated_sendsToRedisAndDeletesOutbox() {
         // given
         Long feedbackId = 1L;
-        OutboxCreatedEvent event = OutboxCreatedEvent.of(feedbackId);
+        VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(feedbackId);
 
         // when
         voyageRetryMessageEventListener.handleOutboxCreated(event);
@@ -54,7 +54,7 @@ class VoyageRetryMessageEventListenerTest {
     void handleOutboxCreated_redisFailure_throwsException() {
         // given
         Long feedbackId = 1L;
-        OutboxCreatedEvent event = OutboxCreatedEvent.of(feedbackId);
+        VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(feedbackId);
 
         // Redis 전송 실패 설정
         doThrow(new RuntimeException("Redis 연결 실패"))

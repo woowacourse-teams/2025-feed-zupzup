@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.application.scheduler;
 
 import feedzupzup.backend.feedback.domain.VoyageRetryOutbox;
 import feedzupzup.backend.feedback.domain.VoyageRetryOutboxRepository;
-import feedzupzup.backend.feedback.domain.event.OutboxCreatedEvent;
+import feedzupzup.backend.feedback.domain.event.VoyageRetryOutboxCreatedEvent;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class VoyageRetryOutboxScheduler {
 
         for (VoyageRetryOutbox outbox : outboxes) {
             try {
-                OutboxCreatedEvent event = OutboxCreatedEvent.of(outbox.getFeedbackId());
+                VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(outbox.getFeedbackId());
                 eventPublisher.publishEvent(event);
                 log.info("폴링 성공: feedbackId={} 이벤트 재발행", outbox.getFeedbackId());
             } catch (Exception e) {

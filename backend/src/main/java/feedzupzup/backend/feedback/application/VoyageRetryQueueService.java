@@ -2,7 +2,7 @@ package feedzupzup.backend.feedback.application;
 
 import feedzupzup.backend.feedback.domain.VoyageRetryOutbox;
 import feedzupzup.backend.feedback.domain.VoyageRetryOutboxRepository;
-import feedzupzup.backend.feedback.domain.event.OutboxCreatedEvent;
+import feedzupzup.backend.feedback.domain.event.VoyageRetryOutboxCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,7 +22,7 @@ public class VoyageRetryQueueService {
     public void retryTask(final Long feedbackId, final String errorMessage) {
         VoyageRetryOutbox outbox = VoyageRetryOutbox.create(feedbackId, errorMessage);
         outboxRepository.save(outbox);
-        OutboxCreatedEvent event = OutboxCreatedEvent.of(feedbackId);
+        VoyageRetryOutboxCreatedEvent event = VoyageRetryOutboxCreatedEvent.of(feedbackId);
         eventPublisher.publishEvent(event);
     }
 

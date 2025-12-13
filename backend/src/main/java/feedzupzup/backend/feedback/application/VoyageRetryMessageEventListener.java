@@ -4,7 +4,7 @@ import com.github.sonus21.rqueue.core.RqueueMessageEnqueuer;
 import feedzupzup.backend.feedback.application.dto.VoyageRetryTask;
 import feedzupzup.backend.feedback.domain.VoyageRetryOutbox;
 import feedzupzup.backend.feedback.domain.VoyageRetryOutboxRepository;
-import feedzupzup.backend.feedback.domain.event.OutboxCreatedEvent;
+import feedzupzup.backend.feedback.domain.event.VoyageRetryOutboxCreatedEvent;
 import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ public class VoyageRetryMessageEventListener {
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void handleOutboxCreated(final OutboxCreatedEvent event) {
-        final Long feedbackId = event.getFeedbackId();
+    public void handleOutboxCreated(final VoyageRetryOutboxCreatedEvent event) {
+        final Long feedbackId = event.feedbackId();
         final VoyageRetryTask task = VoyageRetryTask.of(feedbackId);
         try {
             rqueueMessageEnqueuer.enqueue(VOYAGE_RETRY_EXECUTION_QUEUE, task);
