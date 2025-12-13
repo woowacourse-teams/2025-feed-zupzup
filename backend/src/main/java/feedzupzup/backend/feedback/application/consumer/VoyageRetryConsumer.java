@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
  *   1차: 0~1초, 2차: 1~2초, 3차: 2~4초, 4차: 4~8초, 5차: 8~16초
  * - 모두 실패 시 DLQ로 이동
  */
-@Slf4j
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class VoyageRetryConsumer {
 
@@ -47,7 +47,7 @@ public class VoyageRetryConsumer {
             concurrency = "10" // 워커 스레드
     )
     public void consumeRetryTask(final VoyageRetryTask task) {
-        Long feedbackId = task.getFeedbackId();
+        final Long feedbackId = task.getFeedbackId();
         try {
             feedbackClusteringService.clusterForRetry(feedbackId);
             voyageRetryQueueService.deleteOutboxByFeedbackId(feedbackId);
@@ -62,8 +62,8 @@ public class VoyageRetryConsumer {
             value = VOYAGE_RETRY_DLQ,
             concurrency = "1"
     )
-    public void consumeDLQ(VoyageRetryTask task) {
-        Long feedbackId = task.getFeedbackId();
+    public void consumeDLQ(final VoyageRetryTask task) {
+        final Long feedbackId = task.getFeedbackId();
         log.error("재시도 5회 실패 DLQ로 이동 feedbackId: {}", feedbackId);
         // TODO : Discord 알람 발송 추가 예정
     }

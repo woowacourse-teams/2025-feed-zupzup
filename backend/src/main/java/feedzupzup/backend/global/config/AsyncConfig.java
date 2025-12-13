@@ -14,7 +14,7 @@ public class AsyncConfig {
 
     @Bean(name = "externalApiExecutor")
     public Executor externalApiExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(200);
@@ -27,7 +27,7 @@ public class AsyncConfig {
 
     @Bean(name = "retryExecutor")
     public Executor retryExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(3);
         executor.setMaxPoolSize(5);
         executor.setQueueCapacity(100);
