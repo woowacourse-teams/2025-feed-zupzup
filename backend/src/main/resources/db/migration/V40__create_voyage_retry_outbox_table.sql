@@ -8,5 +8,4 @@ CREATE TABLE voyage_retry_outbox
     INDEX idx_created_at (created_at)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_unicode_ci
-    COMMENT = 'Voyage AI 재시도 Outbox (Redis 전송 후 즉시 삭제)';
+  COLLATE = utf8mb4_unicode_ci;
