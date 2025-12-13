@@ -10,10 +10,7 @@ import AlertModal from '@/components/AlertModal/AlertModal';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState, useEffect } from 'react';
 import useEditRoom from '../hooks/useEditRoom';
-import {
-  editTabContainer,
-  buttonContainer,
-} from '@/domains/admin/ManageRoomModal/ManageRoomModal.styles';
+import { editTabContainer, buttonContainer } from './EditTab.styles';
 
 interface EditTabProps {
   onClose: () => void;

@@ -9,77 +9,24 @@ export const modalTitle = (theme: Theme) => css`
   text-align: center;
 `;
 
-export const tabContainer = css`
+export const tabContainer = (theme: Theme) => css`
   display: flex;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 4px solid ${theme.colors.gray[200]};
   margin-bottom: 16px;
+  margin: 0 -24px;
 `;
 
-export const tabButton = (isActive: boolean) => css`
+export const tabButton = (theme: Theme, isActive: boolean) => css`
   flex: 1;
-  padding: 12px 16px;
+  padding: 8px 0;
   border: none;
   background: transparent;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: ${isActive ? 600 : 400};
-  color: ${isActive ? '#222' : '#888'};
-  border-bottom: 2px solid ${isActive ? '#222' : 'transparent'};
-  transition: all 0.2s ease;
-`;
-
-export const buttonContainer = (theme: Theme) => css`
-  display: flex;
-  gap: 10px;
-
   ${theme.typography.pretendard.caption}
-`;
-
-// EditTab styles
-export const editTabContainer = css`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-// DeleteTab styles
-export const deleteContent = css`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  align-items: flex-start;
-`;
-
-export const deleteWarningText = (theme: Theme) => css`
-  ${theme.typography.pretendard.captionSmall}
-
-  color: ${theme.colors.gray[600]};
-  line-height: 1.5;
-`;
-
-export const deleteItemsList = (theme: Theme) => css`
-  margin: 0;
-  padding-left: 20px;
-  list-style-type: disc;
-  ${theme.typography.pretendard.captionSmall}
-
-  color: ${theme.colors.gray[600]};
-  line-height: 1.8;
-`;
-
-export const deleteAgreementLabel = (theme: Theme) => css`
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  ${theme.typography.pretendard.captionSmall}
-
-  color: ${theme.colors.black[100]};
   cursor: pointer;
-  line-height: 1.5;
-`;
-
-export const deleteCheckbox = css`
-  margin-top: 2px;
-  cursor: pointer;
+  color: ${isActive ? theme.colors.purple[100] : theme.colors.gray[400]};
+  border-bottom: 4px solid
+    ${isActive ? theme.colors.purple[100] : 'transparent'};
+  margin-bottom: -4px;
+  transition: all 0.2s ease;
+  text-align: center;
 `;

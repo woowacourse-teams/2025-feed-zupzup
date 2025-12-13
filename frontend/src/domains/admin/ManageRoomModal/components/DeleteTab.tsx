@@ -1,15 +1,21 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
-import useDeleteOrganization from '../hooks/useDeleteOrganization';
+import useDeleteOrganization from '@/domains/admin/ManageRoomModal/hooks/useDeleteOrganization';
+import useOrganizationName from '@/domains/hooks/useOrganizationName';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import {
   deleteContent,
-  deleteWarningText,
+  warningText,
+  roomInfoBox,
+  roomInfoLabel,
+  roomInfoName,
+  deleteItemsTitle,
   deleteItemsList,
   deleteAgreementLabel,
   deleteCheckbox,
   buttonContainer,
-} from '@/domains/admin/ManageRoomModal/ManageRoomModal.styles';
+} from './DeleteTab.styles';
 
 interface DeleteTabProps {
   onClose: () => void;
@@ -18,6 +24,8 @@ interface DeleteTabProps {
 export default function DeleteTab({ onClose }: DeleteTabProps) {
   const theme = useAppTheme();
   const { deleteOrganization, isDeleting } = useDeleteOrganization();
+  const { organizationId } = useOrganizationId();
+  const { groupName } = useOrganizationName({ organizationId });
   const [isDeleteChecked, setIsDeleteChecked] = useState(false);
 
   const handleDeleteButton = async () => {
@@ -28,13 +36,24 @@ export default function DeleteTab({ onClose }: DeleteTabProps) {
   return (
     <>
       <div css={deleteContent}>
-        <p css={deleteWarningText(theme)}>
-          삭제 시 정보가 삭제되며 복구 불가합니다.
+        <p css={warningText(theme)}>
+          삭제 시 모든 데이터가 영구적으로 삭제되며, 복구할 수 없습니다.
         </p>
-        <ul css={deleteItemsList(theme)}>
-          <li>피드백 방 정보</li>
-          <li>받은 모든 피드백 데이터</li>
-        </ul>
+
+        <div css={roomInfoBox(theme)}>
+          <p css={roomInfoLabel(theme)}>삭제할 방</p>
+          <p css={roomInfoName(theme)}>{groupName || '알 수 없음'}</p>
+        </div>
+
+        <div>
+          <p css={deleteItemsTitle(theme)}>삭제되는 항목</p>
+          <ul css={deleteItemsList(theme)}>
+            <li>피드백 방 정보 및 설정</li>
+            <li>받은 모든 피드백 데이터</li>
+            <li>공유된 QR코드 및 URL</li>
+          </ul>
+        </div>
+
         <label css={deleteAgreementLabel(theme)}>
           <input
             type='checkbox'
@@ -42,9 +61,10 @@ export default function DeleteTab({ onClose }: DeleteTabProps) {
             onChange={(e) => setIsDeleteChecked(e.target.checked)}
             css={deleteCheckbox}
           />
-          <span>위 내용을 모두 확인했고, 삭제하는 것에 동의합니다.</span>
+          <span>위 내용을 확인했으며, 삭제에 동의합니다.</span>
         </label>
       </div>
+
       <div css={buttonContainer(theme)}>
         <BasicButton
           variant='secondary'

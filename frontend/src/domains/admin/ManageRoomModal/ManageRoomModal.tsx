@@ -22,16 +22,16 @@ export default function ManageRoomModal({ onClose }: ManageRoomModalProps) {
 
   return (
     <Modal onClose={onClose} customCSS={modalWidth}>
-      <p css={modalTitle(theme)}>피드백 방 수정하기</p>
-      <div css={tabContainer}>
+      <p css={modalTitle(theme)}>방 수정/삭제하기</p>
+      <div css={tabContainer(theme)}>
         <button
-          css={tabButton(activeTab === 'edit')}
+          css={tabButton(theme, activeTab === 'edit')}
           onClick={() => setActiveTab('edit')}
         >
           피드백 방 수정
         </button>
         <button
-          css={tabButton(activeTab === 'delete')}
+          css={tabButton(theme, activeTab === 'delete')}
           onClick={() => setActiveTab('delete')}
         >
           피드백 방 삭제
