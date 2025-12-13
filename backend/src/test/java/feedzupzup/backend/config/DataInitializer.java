@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class DataInitializer {
     @PersistenceContext
     private EntityManager em;
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final Optional<RedisTemplate<String, Object>> redisTemplate;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteAll() {
@@ -40,7 +41,9 @@ public class DataInitializer {
         em.createNativeQuery(ON_FOREIGN_CONSTRAINTS).executeUpdate();
 
         // Redis 초기화
-        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushDb();
+        redisTemplate.ifPresent(template ->
+            template.getConnectionFactory().getConnection().serverCommands().flushDb()
+        );
     }
 
     private void init() {
