@@ -32,8 +32,4 @@ public class Guest extends BaseTimeEntity {
         this.guestUuid = guestUuid;
         this.connectedTime = connectedTime;
     }
-
-    public boolean isPersisted() {
-        return this.id != null;
-    }
 }
