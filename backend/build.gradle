@@ -93,6 +93,15 @@ dependencies {
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework:spring-aspects'
 
+    //redis - Lettuce for Spring Data Redis (required by Rqueue)
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //rqueue - Redis-based delayed queue
+    implementation 'com.github.sonus21:rqueue-spring-boot-starter:3.2.0-RELEASE'
+
+    //http client - Spring Boot 3.x managed version
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
+
     //http client - Spring Boot 3.x managed version
     implementation 'org.apache.httpcomponents.client5:httpclient5'
 }

@@ -1,6 +1,7 @@
 package feedzupzup.backend.feedback.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,4 +29,6 @@ public interface FeedbackEmbeddingClusterRepository extends JpaRepository<Feedba
     boolean existsByFeedback_Id(Long feedbackId);
 
     void deleteByFeedback_Id(Long feedbackId);
+
+    Optional<FeedbackEmbeddingCluster> findByFeedback(Feedback feedback);
 }

@@ -43,6 +43,9 @@ public enum ErrorCode {
     //cluster error
     EMPTY_CLUSTERING_CONTENT(BAD_REQUEST, "C01", "클러스터링 내용은 비어있을 수 없습니다."),
     INVALID_VECTOR_DIMENSION(BAD_REQUEST, "C02", "벡터 차원이 일치하지 않습니다."),
+    EMBEDDING_EXTRACTION_FAILED(INTERNAL_SERVER_ERROR, "C03", "임베딩 추출에 실패했습니다."),
+    DUPLICATE_RETRY_REQUEST(BAD_REQUEST, "C04", "이미 진행 중인 재시도 요청입니다."),
+    VOYAGE_RETRY_FAILED(INTERNAL_SERVER_ERROR, "C05", "Voyage AI 클러스터링 재시도에 실패했습니다."),
 
     //Admin Domain Error
     INVALID_ADMIN_ID_FORMAT(BAD_REQUEST, "A01", "관리자 ID는 공백을 포함할 수 없습니다."),

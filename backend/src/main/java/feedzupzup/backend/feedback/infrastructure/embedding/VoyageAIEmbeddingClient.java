@@ -7,8 +7,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -21,11 +19,6 @@ public class VoyageAIEmbeddingClient {
     private final RestClient voyageAiEmbeddingRestClient;
     private final VoyageAIErrorHandler voyageAIErrorHandler;
 
-    @Retryable(
-            retryFor = {RetryableException.class},
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 200, multiplier = 2)
-    )
     public double[] extractEmbedding(final String text) {
         Map<String, Object> requestBody = Map.of(
                 "input", text,

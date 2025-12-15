@@ -17,13 +17,10 @@ public class FailureRetryScheduler {
     @Scheduled(fixedDelayString = "${app.async.retry-scheduler.interval:300000}")
     public void retryFailedTasks() {
         List<AsyncTaskFailure> retryableFailures = asyncTaskFailureRepository.findAllByRetryable(true);
-        
         if (retryableFailures.isEmpty()) {
             return;
         }
-        
         log.info("재시도할 실패 작업 {} 개 발견", retryableFailures.size());
-
         for (AsyncTaskFailure failure : retryableFailures) {
             asyncTaskFailureService.retry(failure.getId());
         }

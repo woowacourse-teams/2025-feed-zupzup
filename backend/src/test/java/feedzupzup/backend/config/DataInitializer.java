@@ -2,13 +2,16 @@ package feedzupzup.backend.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,8 @@ public class DataInitializer {
     @PersistenceContext
     private EntityManager em;
 
+    private final Optional<RedisTemplate<String, Object>> redisTemplate;
+
     private final DataSource dataSource;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -34,6 +39,19 @@ public class DataInitializer {
             init();
         }
 
+        // DB 초기화
+        em.createNativeQuery(OFF_FOREIGN_CONSTRAINTS).executeUpdate();
+        truncationDMLs.stream()
+                .map(em::createNativeQuery)
+                .forEach(Query::executeUpdate);
+        em.createNativeQuery(ON_FOREIGN_CONSTRAINTS).executeUpdate();
+
+        // Redis 초기화
+        redisTemplate.ifPresent(template ->
+            template.getConnectionFactory().getConnection().serverCommands().flushDb()
+        );
+
+        // DB 초기화
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 

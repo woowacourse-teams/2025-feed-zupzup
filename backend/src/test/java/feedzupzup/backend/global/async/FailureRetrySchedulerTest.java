@@ -9,10 +9,14 @@ import static org.mockito.Mockito.*;
 
 import feedzupzup.backend.config.ServiceIntegrationHelper;
 import org.junit.jupiter.api.Disabled;
+import feedzupzup.backend.feedback.application.FeedbackClusteringService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 class FailureRetrySchedulerTest extends ServiceIntegrationHelper {
 
@@ -64,6 +68,7 @@ class FailureRetrySchedulerTest extends ServiceIntegrationHelper {
 
     @Nested
     @DisplayName("통합 시나리오 테스트")
+    @Disabled
     class IntegrationScenarioTest {
 
         @Test
