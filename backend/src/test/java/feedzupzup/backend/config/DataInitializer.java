@@ -2,6 +2,7 @@ package feedzupzup.backend.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -49,6 +50,8 @@ public class DataInitializer {
         redisTemplate.ifPresent(template ->
             template.getConnectionFactory().getConnection().serverCommands().flushDb()
         );
+
+        // DB 초기화
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement()) {
 
