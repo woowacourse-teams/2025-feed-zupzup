@@ -42,7 +42,10 @@ dependencies {
     implementation 'org.springframework.session:spring-session-jdbc'
 
     //aws
-    implementation 'software.amazon.awssdk:s3:2.30.16'
+    implementation('software.amazon.awssdk:s3:2.30.16') {
+        exclude group: 'software.amazon.awssdk', module: 'apache-client'
+    }
+    implementation 'software.amazon.awssdk:url-connection-client:2.30.16'
 
     //QR
     implementation 'com.google.zxing:core:3.5.2'
@@ -78,7 +81,10 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured:5.5.0'
 
     //firebase
-    implementation 'com.google.firebase:firebase-admin:9.5.0'
+    implementation('com.google.firebase:firebase-admin:9.5.0') {
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+    }
 
     //profanity filter
     implementation 'io.github.vaneproject:vane-badwordfiltering:1.0.0'
@@ -86,6 +92,9 @@ dependencies {
     //retry and rate limiting
     implementation 'org.springframework.retry:spring-retry'
     implementation 'org.springframework:spring-aspects'
+
+    //http client - Spring Boot 3.x managed version
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
 }
 
 tasks.register('copySecret', Copy) {
