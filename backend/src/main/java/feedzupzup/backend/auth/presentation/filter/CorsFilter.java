@@ -26,8 +26,8 @@ public class CorsFilter extends OncePerRequestFilter {
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain filterChain) throws ServletException, IOException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpServletRequest httpRequest = request;
+        HttpServletResponse httpResponse = response;
 
         String origin = httpRequest.getHeader("Origin");
 

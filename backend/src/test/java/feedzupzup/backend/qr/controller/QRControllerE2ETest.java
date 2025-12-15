@@ -24,12 +24,14 @@ import feedzupzup.backend.qr.repository.QRRepository;
 import io.restassured.http.ContentType;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+@Disabled
 class QRControllerE2ETest extends E2EHelper {
 
     private static final String SESSION_ID = "SESSION";

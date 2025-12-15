@@ -2,7 +2,6 @@ package feedzupzup.backend.sse.domain;
 
 
 import java.util.Map;
-import java.util.UUID;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface SseEmitterRepository {
