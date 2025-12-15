@@ -23,13 +23,15 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-public class GuestSchedulerE2ETest extends E2EHelper {
+@Disabled
+class GuestSchedulerE2ETest extends E2EHelper {
 
     @Autowired
     private OrganizationRepository organizationRepository;

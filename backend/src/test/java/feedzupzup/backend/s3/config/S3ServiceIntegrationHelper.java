@@ -9,7 +9,14 @@ import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.S3Object;
 
-@LocalStackS3Test
+/**
+ * S3 통합 테스트를 위한 베이스 클래스
+ *
+ * LocalStackS3TestConfig는 IntegrationTestSupport에서 이미 Import되어 있으므로
+ * 별도의 @LocalStackS3Test 애노테이션 없이 사용할 수 있습니다.
+ *
+ * Context 캐싱을 위해 추가 설정 없이 ServiceIntegrationHelper를 상속합니다.
+ */
 public abstract class S3ServiceIntegrationHelper extends ServiceIntegrationHelper {
 
     @Autowired

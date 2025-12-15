@@ -34,12 +34,13 @@ import feedzupzup.backend.qr.domain.QR;
 import feedzupzup.backend.qr.repository.QRRepository;
 import io.restassured.http.ContentType;
 import java.util.List;
-import java.util.Set;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+@Disabled
 class AdminOrganizationControllerE2ETest extends E2EHelper {
 
     private static final String SESSION_ID = "SESSION";

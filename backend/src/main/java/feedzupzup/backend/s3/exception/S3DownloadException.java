@@ -10,8 +10,4 @@ public class S3DownloadException extends InfrastructureException {
     public S3DownloadException(final String message) {
         super(errorCode, message);
     }
-
-    public S3DownloadException() {
-        super(errorCode, errorCode.getMessage());
-    }
 }

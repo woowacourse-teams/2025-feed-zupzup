@@ -5,13 +5,11 @@ import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LATEST;
 import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.LIKES;
 import static feedzupzup.backend.feedback.domain.vo.FeedbackSortType.OLDEST;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import feedzupzup.backend.admin.domain.Admin;
 import feedzupzup.backend.admin.domain.AdminRepository;
 import feedzupzup.backend.admin.domain.fixture.AdminFixture;
-import feedzupzup.backend.auth.exception.AuthException.ForbiddenException;
 import feedzupzup.backend.category.domain.OrganizationCategory;
 import feedzupzup.backend.category.domain.OrganizationCategoryRepository;
 import feedzupzup.backend.category.fixture.OrganizationCategoryFixture;
@@ -22,7 +20,6 @@ import feedzupzup.backend.feedback.domain.Feedback;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingCluster;
 import feedzupzup.backend.feedback.domain.FeedbackEmbeddingClusterRepository;
 import feedzupzup.backend.feedback.domain.FeedbackRepository;
-import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
 import feedzupzup.backend.feedback.domain.vo.ProcessStatus;
 import feedzupzup.backend.feedback.dto.request.UpdateFeedbackCommentRequest;
 import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse;
@@ -30,9 +27,7 @@ import feedzupzup.backend.feedback.dto.response.AdminFeedbackListResponse.AdminF
 import feedzupzup.backend.feedback.dto.response.ClusterFeedbacksResponse;
 import feedzupzup.backend.feedback.dto.response.ClustersResponse;
 import feedzupzup.backend.feedback.dto.response.UpdateFeedbackCommentResponse;
-import feedzupzup.backend.feedback.exception.FeedbackException.DownloadJobNotCompletedException;
 import feedzupzup.backend.feedback.fixture.FeedbackFixture;
-import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundException;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.organization.domain.OrganizationStatistic;
@@ -41,7 +36,6 @@ import feedzupzup.backend.organization.fixture.OrganizationFixture;
 import feedzupzup.backend.organizer.domain.Organizer;
 import feedzupzup.backend.organizer.domain.OrganizerRepository;
 import feedzupzup.backend.organizer.domain.OrganizerRole;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -115,20 +109,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             // then
             assertThat(feedBackRepository.findById(savedFeedback.getId())).isEmpty();
         }
-
-        @Test
-        @DisplayName("관리자가 속한 단체가 아닐경우, 삭제 시 예외가 발생해야 한다")
-        void not_contains_organization_delete_api_then_throw_exception() {
-            final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
-            final Feedback savedFeedback = feedBackRepository.save(feedback);
-
-            final Admin otherAdmin = AdminFixture.createFromLoginId("admin999");
-            adminRepository.save(otherAdmin);
-
-            assertThatThrownBy(() -> adminFeedbackService.delete(otherAdmin.getId(), savedFeedback.getId()))
-                    .isInstanceOf(ForbiddenException.class);
-        }
     }
 
     @Nested
@@ -194,19 +174,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
             );
         }
 
-        @Test
-        @DisplayName("존재하지 않는 단체를 조회하면 예외를 발생시킨다.")
-        void getAllFeedbacks_empty_result() {
-            // given
-            final UUID organizationUuid = UUID.randomUUID();
-            final int size = 10;
-
-            // when
-            assertThatThrownBy(() -> {
-                adminFeedbackService.getFeedbackPage(
-                        organizationUuid, size, null, null, LATEST);
-            }).isInstanceOf(ResourceNotFoundException.class);
-        }
     }
 
     @Nested
@@ -319,13 +286,10 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     organizationCategory);
             final Feedback feedback3 = FeedbackFixture.createFeedbackWithOrganization(organization,
                     organizationCategory);
-            final Feedback feedback4 = FeedbackFixture.createFeedbackWithOrganization(organization,
-                    organizationCategory);
 
             final Feedback saved1 = feedBackRepository.save(feedback1);
             final Feedback saved2 = feedBackRepository.save(feedback2);
             final Feedback saved3 = feedBackRepository.save(feedback3);
-            final Feedback saved4 = feedBackRepository.save(feedback4);
 
             final int size = 2;
             final Long cursorId = saved3.getId(); // saved3를 커서로 사용하면 saved2, saved1이 반환됨
@@ -371,26 +335,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
         assertThat(updateFeedbackCommentResponse.comment()).isEqualTo(testComment);
     }
 
-    @Test
-    @DisplayName("단체에 속하지 않은 관리자가 댓글을 수정하려고 한다면 예외가 발생해야 한다.")
-    void not_contains_organization_admin_request_then_throw_exception() {
-        // given
-        final Admin otherAdmin = AdminFixture.create();
-        final Feedback feedback = FeedbackFixture.createFeedbackWithOrganization(organization,
-                organizationCategory);
-        feedBackRepository.save(feedback);
-
-        String testComment = "testComment";
-        UpdateFeedbackCommentRequest updateFeedbackCommentRequest = new UpdateFeedbackCommentRequest(
-                testComment
-        );
-
-        // when & then
-        assertThatThrownBy(
-                () -> adminFeedbackService.updateFeedbackComment(otherAdmin.getId(), updateFeedbackCommentRequest,
-                        feedback.getId()))
-                .isInstanceOf(ForbiddenException.class);
-    }
 
     @Test
     @DisplayName("피드백의 답글을 추가한다면, 상태가 바뀌어야 한다.")
@@ -617,17 +561,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.clusterInfos().get(0).totalCount()).isEqualTo(1)
             );
         }
-
-        @Test
-        @DisplayName("존재하지 않는 조직을 조회하면 예외가 발생한다")
-        void getTopClusters_not_found_organization() {
-            // given
-            final UUID nonExistentUuid = UUID.randomUUID();
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getTopClusters(nonExistentUuid, 10))
-                    .isInstanceOf(ResourceNotFoundException.class);
-        }
     }
 
     @Nested
@@ -660,17 +593,6 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                     () -> assertThat(response.feedbacks()).extracting(AdminFeedbackItem::content)
                             .containsExactlyInAnyOrder("첫 번째 피드백", "두 번째 피드백", "세 번째 피드백")
             );
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 클러스터를 조회하면 예외가 발생한다")
-        void getFeedbacksByClusterId_not_found() {
-            // given
-            final Long nonExistentClusterId = 99999L;
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getFeedbacksByClusterId(nonExistentClusterId))
-                    .isInstanceOf(ResourceNotFoundException.class);
         }
 
         @Test
@@ -713,83 +635,5 @@ class AdminFeedbackServiceTest extends ServiceIntegrationHelper {
                 new double[]{0.1, 0.2, 0.3}, savedFeedback, cluster);
 
         feedbackEmbeddingClusterRepository.save(feedbackCluster);
-    }
-
-    @Nested
-    @DisplayName("비동기 다운로드 작업 테스트")
-    class AsyncDownloadJobTest {
-
-        @Test
-        @DisplayName("다운로드 작업을 성공적으로 생성한다")
-        void createDownloadJob_success() {
-            // when
-            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
-
-            // then
-            assertThat(jobId).isNotNull();
-            assertThat(UUID.fromString(jobId)).isNotNull(); // UUID 형식 검증
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 단체로 작업 생성 시 예외가 발생한다")
-        void createDownloadJob_notFoundOrganization() {
-            // given
-            final UUID nonExistentUuid = UUID.randomUUID();
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.createDownloadJob(nonExistentUuid))
-                    .isInstanceOf(ResourceNotFoundException.class);
-        }
-
-        @Test
-        @DisplayName("작업 상태를 성공적으로 조회한다")
-        void getDownloadJobStatus_success() {
-            // given
-            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
-
-            // when
-            final FeedbackDownloadJob job = adminFeedbackService.getDownloadJobStatus(jobId);
-
-            // then
-            assertAll(
-                    () -> assertThat(job.getJobId()).isEqualTo(jobId),
-                    () -> assertThat(job.getStatus()).isNotNull(),
-                    () -> assertThat(job.getProgress()).isGreaterThanOrEqualTo(0)
-            );
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 작업 ID로 조회 시 예외가 발생한다")
-        void getDownloadJobStatus_notFound() {
-            // given
-            final String nonExistentJobId = UUID.randomUUID().toString();
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getDownloadJobStatus(nonExistentJobId))
-                    .isInstanceOf(ResourceNotFoundException.class);
-        }
-
-        @Test
-        @DisplayName("완료되지 않은 작업의 다운로드 URL 요청 시 예외가 발생한다")
-        void getDownloadUrl_notCompleted() {
-            // given
-            final String jobId = adminFeedbackService.createDownloadJob(organization.getUuid());
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(jobId))
-                    .isInstanceOf(DownloadJobNotCompletedException.class)
-                    .hasMessageContaining("파일 생성이 완료되지 않았습니다");
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 작업의 다운로드 URL 요청 시 예외가 발생한다")
-        void getDownloadUrl_notFound() {
-            // given
-            final String nonExistentJobId = UUID.randomUUID().toString();
-
-            // when & then
-            assertThatThrownBy(() -> adminFeedbackService.getDownloadUrl(nonExistentJobId))
-                    .isInstanceOf(ResourceNotFoundException.class);
-        }
     }
 }

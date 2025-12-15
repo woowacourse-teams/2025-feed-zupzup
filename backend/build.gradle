@@ -101,6 +101,9 @@ dependencies {
 
     //http client - Spring Boot 3.x managed version
     implementation 'org.apache.httpcomponents.client5:httpclient5'
+
+    //http client - Spring Boot 3.x managed version
+    implementation 'org.apache.httpcomponents.client5:httpclient5'
 }
 
 tasks.register('copySecret', Copy) {

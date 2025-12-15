@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -25,6 +26,11 @@ public class GlobalExceptionHandler {
         final ErrorCode errorCode = ErrorCode.SERVER_ERROR;
         log.error(errorCode.getMessage(), e);
         return ErrorResponse.error(errorCode);
+    }
+
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    public void handleAsyncRequestNotUsable(AsyncRequestNotUsableException e) {
+        log.debug("SSE 연결이 끊겨 사용자에게 메세지 응답 불가", e);
     }
 
     @ExceptionHandler(NoResourceFoundException.class)

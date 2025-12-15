@@ -1,5 +1,7 @@
 package feedzupzup.backend.config;
 
+import feedzupzup.backend.auth.application.PasswordEncoder;
+import feedzupzup.backend.auth.fake.FakePasswordEncoder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -18,6 +20,11 @@ public class TestcontainersConfiguration {
         return new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
             .withExposedPorts(6379)
             .withReuse(true);
+    }
+
+    @Bean
+    PasswordEncoder fakePasswordEncoder() {
+        return new FakePasswordEncoder();
     }
 
     @Bean
