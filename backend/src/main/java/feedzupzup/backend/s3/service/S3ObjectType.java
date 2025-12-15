@@ -19,7 +19,8 @@ public enum S3ObjectType {
     HEIC("image/heic", "IMAGE", "heic"),
     HEIF("image/heif", "IMAGE", "heif"),
     RAW("image/x-raw", "IMAGE", "raw", "arw", "cr2", "nrw", "k25"),
-    PSD("image/vnd.adobe.photoshop", "IMAGE", "psd");
+    PSD("image/vnd.adobe.photoshop", "IMAGE", "psd"),
+    XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "DOCUMENT", "xlsx");
 
     private final String contentType;
     private final String mediaType;

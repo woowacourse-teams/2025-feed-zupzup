@@ -37,7 +37,7 @@ class S3ObjectTypeTest {
         @DisplayName("지원하지 않는 확장자 목록으로 요청 시 NotSupportedException 발생")
         void throwsNotSupportedExceptionForVariousUnsupportedExtensions() {
             // given
-            String[] unsupportedExtensions = {"doc", "pdf", "xlsx", "mp4", "avi", "mp3", "wav", "zip", "rar"};
+            String[] unsupportedExtensions = {"doc", "pdf", "mp4", "avi", "mp3", "wav", "zip", "rar"};
 
             // when & then
             for (String extension : unsupportedExtensions) {
