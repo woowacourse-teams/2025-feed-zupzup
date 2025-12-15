@@ -3,6 +3,7 @@ package feedzupzup.backend.admin.domain.vo;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import feedzupzup.backend.admin.domain.exception.AdminException;
+import feedzupzup.backend.admin.domain.exception.AdminException.InvalidAdminPasswordException;
 import feedzupzup.backend.global.response.ErrorCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,5 +22,16 @@ class PasswordTest {
                 .hasMessage("password = test length = 4")
                 .extracting("errorCode")
                 .isEqualTo(ErrorCode.INVALID_PASSWORD_FORMAT);
+    }
+
+    @Test
+    @DisplayName("공백이 포함되어 있으면 예외가 발생한다.")
+    void password_contains_space_exception_test() {
+        //given
+        String password = " password";
+
+        //when & then
+        assertThatThrownBy(() -> new Password(password))
+                .isInstanceOf(InvalidAdminPasswordException.class);
     }
 }
