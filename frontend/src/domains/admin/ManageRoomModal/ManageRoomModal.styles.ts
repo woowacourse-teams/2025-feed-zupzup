@@ -12,8 +12,7 @@ export const modalTitle = (theme: Theme) => css`
 export const tabContainer = (theme: Theme) => css`
   display: flex;
   border-bottom: 4px solid ${theme.colors.gray[200]};
-  margin-bottom: 16px;
-  margin: 0 -24px;
+  margin: 0 -24px 16px;
 `;
 
 export const tabButton = (theme: Theme, isActive: boolean) => css`
