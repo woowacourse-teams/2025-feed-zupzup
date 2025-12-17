@@ -14,8 +14,8 @@ import {
   deleteItemsList,
   deleteAgreementLabel,
   deleteCheckbox,
-  buttonContainer,
 } from './DeleteTab.styles';
+import { buttonContainer } from '../ManageRoomModal.styles';
 
 interface DeleteTabProps {
   onClose: () => void;

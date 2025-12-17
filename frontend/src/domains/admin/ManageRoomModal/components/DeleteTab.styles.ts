@@ -69,10 +69,3 @@ export const deleteCheckbox = css`
   margin-top: 2px;
   cursor: pointer;
 `;
-
-export const buttonContainer = (theme: Theme) => css`
-  display: flex;
-  gap: 10px;
-
-  ${theme.typography.pretendard.caption}
-`;

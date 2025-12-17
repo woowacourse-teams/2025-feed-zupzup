@@ -30,3 +30,10 @@ export const tabButton = (theme: Theme, isActive: boolean) => css`
   transition: all 0.2s ease;
   text-align: center;
 `;
+
+export const buttonContainer = (theme: Theme) => css`
+  display: flex;
+  gap: 10px;
+
+  ${theme.typography.pretendard.caption}
+`;
