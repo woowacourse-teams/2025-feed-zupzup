@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.openxml4j.opc.ZipPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -49,6 +50,7 @@ public class FeedbackPoiExcelDownloader implements FeedbackExcelDownloader {
     ) {
         log.info("피드백 엑셀 다운로드 시작: 조직={}, 피드백 개수={}", organization.getName().getValue(), feedbacks.size());
 
+        ZipPackage.setUseTempFilePackageParts(true);
         final int windowSize = 10;
         final ExecutorService executor = Executors.newFixedThreadPool(PRODUCER_THREAD + DOWNLOAD_THREADS);
 

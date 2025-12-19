@@ -15,7 +15,8 @@ import feedzupzup.backend.feedback.domain.vo.FeedbackDownloadJob;
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.s3.service.S3UploadService;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +91,7 @@ class FeedbackFileDownloadServiceUnitTest {
         given(feedbackDownloadJobStore.getById(jobId)).willReturn(feedbackDownloadJob);
         given(organizationRepository.findByUuid(organizationUuid)).willReturn(Optional.of(organization));
         given(feedBackRepository.findByOrganization(organization)).willReturn(feedbacks);
-        given(s3UploadService.uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(byte[].class)))
+        given(s3UploadService.uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(File.class)))
                 .willReturn(s3Url);
 
         // when
@@ -100,8 +101,8 @@ class FeedbackFileDownloadServiceUnitTest {
         verify(feedbackDownloadJobStore).getById(jobId);
         verify(organizationRepository).findByUuid(organizationUuid);
         verify(feedBackRepository).findByOrganization(organization);
-        verify(feedbackExcelDownloader).download(eq(organization), eq(feedbacks), any(ByteArrayOutputStream.class), eq(jobId));
-        verify(s3UploadService).uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(byte[].class));
+        verify(feedbackExcelDownloader).download(eq(organization), eq(feedbacks), any(OutputStream.class), eq(jobId));
+        verify(s3UploadService).uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(File.class));
         verify(feedbackDownloadJob).completeWithUrl(s3Url);
     }
 
@@ -117,7 +118,7 @@ class FeedbackFileDownloadServiceUnitTest {
         given(feedbackDownloadJobStore.getById(jobId)).willReturn(feedbackDownloadJob);
         given(organizationRepository.findByUuid(organizationUuid)).willReturn(Optional.of(organization));
         given(feedBackRepository.findByOrganization(organization)).willReturn(emptyFeedbacks);
-        given(s3UploadService.uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(byte[].class)))
+        given(s3UploadService.uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(File.class)))
                 .willReturn(s3Url);
 
         // when
@@ -127,8 +128,8 @@ class FeedbackFileDownloadServiceUnitTest {
         verify(feedbackDownloadJobStore).getById(jobId);
         verify(organizationRepository).findByUuid(organizationUuid);
         verify(feedBackRepository).findByOrganization(organization);
-        verify(feedbackExcelDownloader).download(eq(organization), eq(emptyFeedbacks), any(ByteArrayOutputStream.class), eq(jobId));
-        verify(s3UploadService).uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(byte[].class));
+        verify(feedbackExcelDownloader).download(eq(organization), eq(emptyFeedbacks), any(OutputStream.class), eq(jobId));
+        verify(s3UploadService).uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(File.class));
         verify(feedbackDownloadJob).completeWithUrl(s3Url);
     }
 
@@ -149,7 +150,7 @@ class FeedbackFileDownloadServiceUnitTest {
         verify(feedbackDownloadJobStore).getById(jobId);
         verify(organizationRepository).findByUuid(organizationUuid);
         verify(feedbackDownloadJob).fail(anyString());
-        verify(s3UploadService, never()).uploadFile(anyString(), anyString(), anyString(), any(byte[].class));
+        verify(s3UploadService, never()).uploadFile(anyString(), anyString(), anyString(), any(File.class));
     }
 
     @Test
@@ -186,7 +187,7 @@ class FeedbackFileDownloadServiceUnitTest {
         given(feedbackDownloadJobStore.getById(jobId)).willReturn(feedbackDownloadJob);
         given(organizationRepository.findByUuid(organizationUuid)).willReturn(Optional.of(organization));
         given(feedBackRepository.findByOrganization(organization)).willReturn(feedbacks);
-        given(s3UploadService.uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(byte[].class)))
+        given(s3UploadService.uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(File.class)))
                 .willThrow(exception);
 
         // when
@@ -196,8 +197,8 @@ class FeedbackFileDownloadServiceUnitTest {
         verify(feedbackDownloadJobStore).getById(jobId);
         verify(organizationRepository).findByUuid(organizationUuid);
         verify(feedBackRepository).findByOrganization(organization);
-        verify(feedbackExcelDownloader).download(eq(organization), eq(feedbacks), any(ByteArrayOutputStream.class), eq(jobId));
-        verify(s3UploadService).uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(byte[].class));
+        verify(feedbackExcelDownloader).download(eq(organization), eq(feedbacks), any(OutputStream.class), eq(jobId));
+        verify(s3UploadService).uploadFile(eq("xlsx"), eq("feedback_file"), eq(jobId), any(File.class));
         verify(feedbackDownloadJob).fail(anyString());
         verify(feedbackDownloadJob, never()).completeWithUrl(anyString());
     }

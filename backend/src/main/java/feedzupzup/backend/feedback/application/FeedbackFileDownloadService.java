@@ -9,7 +9,10 @@ import feedzupzup.backend.global.exception.ResourceException.ResourceNotFoundExc
 import feedzupzup.backend.organization.domain.Organization;
 import feedzupzup.backend.organization.domain.OrganizationRepository;
 import feedzupzup.backend.s3.service.S3UploadService;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +41,7 @@ public class FeedbackFileDownloadService {
             return;
         }
 
+        File tempFile = null;
         try {
             final Organization organization = organizationRepository.findByUuid(organizationUuid)
                     .orElseThrow(() -> new ResourceNotFoundException(
@@ -45,17 +49,24 @@ public class FeedbackFileDownloadService {
 
             final List<Feedback> feedbacks = feedBackRepository.findByOrganization(organization);
 
-            final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            feedbackExcelDownloader.download(organization, feedbacks, byteArrayOutputStream, jobId);
-            final byte[] excelData = byteArrayOutputStream.toByteArray();
+            tempFile = Files.createTempFile("feedback_", ".xlsx").toFile();
+            try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+                feedbackExcelDownloader.download(organization, feedbacks, fos, jobId);
+            }
 
-            final String s3Url = s3UploadService.uploadFile("xlsx", "feedback_file", jobId, excelData);
+            final String s3Url = s3UploadService.uploadFile("xlsx", "feedback_file", jobId, tempFile);
 
             job.completeWithUrl(s3Url);
 
         } catch (Exception e) {
             log.error("피드백 엑셀 파일 생성 중 오류 발생. jobId={}", jobId, e);
             job.fail("파일 생성 중 오류가 발생했습니다: " + e.getMessage());
+        } finally {
+            if (tempFile != null && tempFile.exists()) {
+                if (!tempFile.delete()) {
+                    log.warn("임시 파일 삭제 실패: {}", tempFile.getAbsolutePath());
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package feedzupzup.backend.s3.service;
 
 import feedzupzup.backend.s3.config.S3Properties;
 import feedzupzup.backend.s3.exception.S3UploadException;
+import java.io.File;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,21 @@ public class S3UploadService {
         return generateObjectUrl(objectKey);
     }
 
+    public String uploadFile(
+            final String extension,
+            final String objectDir,
+            final String objectId,
+            final File file
+    ) {
+        final String objectKey = generateObjectKey(
+                extension,
+                objectDir,
+                UUID.fromString(objectId)
+        );
+        putObject(objectKey, extension, file);
+        return generateObjectUrl(objectKey);
+    }
+
     private String generateObjectKey(
             final String extension,
             final String objectDir,
@@ -61,6 +77,29 @@ public class S3UploadService {
 
         try {
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(fileData));
+        } catch (S3Exception e) {
+            throw new S3UploadException("S3 서버 오류로 파일 업로드에 실패했습니다: " + objectKey);
+        } catch (SdkClientException e) {
+            throw new S3UploadException("클라이언트 오류로 파일 업로드에 실패했습니다: " + objectKey);
+        } catch (Exception e) {
+            throw new S3UploadException("파일 업로드에 실패했습니다: " + objectKey);
+        }
+    }
+
+    private void putObject(
+            final String objectKey,
+            final String extension,
+            final File file
+    ) {
+        final PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(s3Properties.bucketName())
+                .key(objectKey)
+                .contentType(S3ObjectType.fromExtension(extension).getContentType())
+                .contentLength(file.length())
+                .build();
+
+        try {
+            s3Client.putObject(putObjectRequest, RequestBody.fromFile(file));
         } catch (S3Exception e) {
             throw new S3UploadException("S3 서버 오류로 파일 업로드에 실패했습니다: " + objectKey);
         } catch (SdkClientException e) {
