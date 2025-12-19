@@ -4,6 +4,7 @@ import { useState } from 'react';
 import useDeleteOrganization from '@/domains/admin/ManageRoomModal/hooks/useDeleteOrganization';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useToast } from '@/contexts/useToast';
 import {
   deleteContent,
   warningText,
@@ -27,11 +28,13 @@ export default function DeleteTab({ onClose }: DeleteTabProps) {
   const { organizationId } = useOrganizationId();
   const { groupName } = useOrganizationName({ organizationId });
   const [isDeleteChecked, setIsDeleteChecked] = useState(false);
+  const { showToast } = useToast();
 
   const handleDeleteButton = async () => {
     try {
       await deleteOrganization();
     } catch {
+      showToast('방 삭제에 실패했습니다.');
       return;
     }
     onClose();

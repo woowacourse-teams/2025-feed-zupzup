@@ -6,6 +6,7 @@ import { useCategorySelection } from '@/domains/admin/CreateRoomModal/hooks/useC
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useModalContext } from '@/contexts/useModal';
+import { useToast } from '@/contexts/useToast';
 import AlertModal from '@/components/AlertModal/AlertModal';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState, useEffect } from 'react';
@@ -22,6 +23,7 @@ export default function EditTab({ onClose }: EditTabProps) {
   const { organizationId } = useOrganizationId();
   const { groupName, categories } = useOrganizationName({ organizationId });
   const { openModal, closeModal } = useModalContext();
+  const { showToast } = useToast();
 
   const [organizationName, setOrganizationName] = useState('');
 
@@ -45,6 +47,7 @@ export default function EditTab({ onClose }: EditTabProps) {
     try {
       await editRoom();
     } catch {
+      showToast('방 수정에 실패했습니다.');
       return;
     }
     onClose();
