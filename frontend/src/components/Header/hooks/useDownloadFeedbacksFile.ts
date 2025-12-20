@@ -34,6 +34,7 @@ export default function useDownloadFeedbacksFile({
       return response;
     },
     enabled: Boolean(downloadEnabled && jobId),
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

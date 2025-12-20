@@ -74,7 +74,7 @@ export default function MoreMenu({
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
-      menu: '방정보 수정',
+      menu: '방정보 수정/삭제',
       onClick: handleRoomInfoEditClick,
     },
     { icon: <ShareIcon />, menu: 'QR/URL 공유', onClick: handleShareClick },
