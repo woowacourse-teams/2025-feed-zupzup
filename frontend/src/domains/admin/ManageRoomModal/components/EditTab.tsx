@@ -1,34 +1,29 @@
 import BasicButton from '@/components/BasicButton/BasicButton';
-import Modal from '@/components/Modal/Modal';
 import RoomCategoryList from '@/domains/admin/components/RoomCategoryList/RoomCategoryList';
 import RoomCategoryTagList from '@/domains/admin/components/RoomCategoryTagList/RoomCategoryTagList';
+import RoomNameInput from '@/domains/admin/components/RoomNameInput/RoomNameInput';
 import { useCategorySelection } from '@/domains/admin/CreateRoomModal/hooks/useCategorySelection';
-import {
-  editRoomModalContainer,
-  editRoomModalTitle,
-  buttonContainer,
-} from '@/domains/admin/EditRoomModal/EditRoomModal.styles';
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { useState, useEffect } from 'react';
-import RoomNameInput from '../components/RoomNameInput/RoomNameInput';
 import useOrganizationName from '@/domains/hooks/useOrganizationName';
-import useEditRoom from './hooks/useEditRoom';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useModalContext } from '@/contexts/useModal';
+import { useToast } from '@/contexts/useToast';
 import AlertModal from '@/components/AlertModal/AlertModal';
-import { modalWidth } from '@/components/Modal/Modal.styles';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import { useState, useEffect } from 'react';
+import useEditRoom from '../hooks/useEditRoom';
+import { editTabContainer } from './EditTab.styles';
+import { buttonContainer } from '../ManageRoomModal.styles';
 
-interface EditRoomModalProps {
+interface EditTabProps {
   onClose: () => void;
 }
 
-export default function EditRoomModal({ onClose }: EditRoomModalProps) {
+export default function EditTab({ onClose }: EditTabProps) {
   const theme = useAppTheme();
   const { organizationId } = useOrganizationId();
-  const { groupName, categories } = useOrganizationName({
-    organizationId,
-  });
+  const { groupName, categories } = useOrganizationName({ organizationId });
   const { openModal, closeModal } = useModalContext();
+  const { showToast } = useToast();
 
   const [organizationName, setOrganizationName] = useState('');
 
@@ -51,18 +46,17 @@ export default function EditRoomModal({ onClose }: EditRoomModalProps) {
   const handleRoomEditButton = async () => {
     try {
       await editRoom();
-      onClose();
-      openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
-    } catch (e) {
-      console.error(e);
+    } catch {
+      showToast('방 수정에 실패했습니다.');
       return;
     }
+    onClose();
+    openModal(<AlertModal onClose={closeModal} title='방 수정 완료' />);
   };
 
   return (
-    <Modal onClose={onClose} customCSS={modalWidth}>
-      <section css={editRoomModalContainer}>
-        <p css={editRoomModalTitle}>피드백 방 수정하기</p>
+    <>
+      <section css={editTabContainer}>
         <RoomNameInput
           roomName={organizationName}
           onChange={(e) => {
@@ -102,6 +96,6 @@ export default function EditRoomModal({ onClose }: EditRoomModalProps) {
           수정하기
         </BasicButton>
       </div>
-    </Modal>
+    </>
   );
 }

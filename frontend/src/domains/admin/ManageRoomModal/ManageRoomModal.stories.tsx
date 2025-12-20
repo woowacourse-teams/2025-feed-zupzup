@@ -1,9 +1,9 @@
-import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
+import ManageRoomModal from '@/domains/admin/ManageRoomModal/ManageRoomModal';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 
-const meta: Meta<typeof EditRoomModal> = {
-  title: 'components/EditRoomModal',
-  component: EditRoomModal,
+const meta: Meta<typeof ManageRoomModal> = {
+  title: 'components/ManageRoomModal',
+  component: ManageRoomModal,
   tags: ['autodocs'],
   argTypes: {
     onClose: { action: 'closed' },
@@ -19,10 +19,10 @@ const meta: Meta<typeof EditRoomModal> = {
 
 export default meta;
 
-type Story = StoryObj<typeof EditRoomModal>;
+type Story = StoryObj<typeof ManageRoomModal>;
 
 export const Default: Story = {
   render: () => {
-    return <EditRoomModal onClose={() => {}} />;
+    return <ManageRoomModal onClose={() => {}} />;
   },
 };
