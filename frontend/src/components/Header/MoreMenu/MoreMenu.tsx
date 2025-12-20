@@ -1,6 +1,8 @@
-import useDownloadFeedbacks from '@/components/Header/hooks/useDownloadFeedbacks';
+import { FileDownloadType } from '@/apis/adminFeedback.api';
+import useStartDownloadFeedbacks from '@/components/Header/hooks/useStartDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
+import ProgressMenuItem from '@/components/Header/ProgressMenuItem/ProgressMenuItem';
 import ExternalIcon from '@/components/icons/External';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
@@ -8,18 +10,28 @@ import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
 import { useModalContext } from '@/contexts/useModal';
 import { useToast } from '@/contexts/useToast';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
-import ManageRoomModal from '@/domains/admin/ManageRoomModal/ManageRoomModal';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import { useNavigate } from 'react-router-dom';
+import ManageRoomModal from '../../../domains/admin/ManageRoomModal/ManageRoomModal';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
+  feedbackDownloadStatus?: FileDownloadType | undefined;
+  setJobId: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
+export default function MoreMenu({
+  closeMoreMenu,
+  setJobId,
+  feedbackDownloadStatus,
+}: MoreMenuProps) {
   const { openModal, closeModal } = useModalContext();
   const { organizationId } = useOrganizationId();
-  const { refetch, isFetching } = useDownloadFeedbacks(organizationId);
+
+  const { mutateAsync: startDownloadFeedbacks } = useStartDownloadFeedbacks({
+    organizationId,
+    setJobId,
+  });
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -40,8 +52,18 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
       2000
     );
 
-    closeMoreMenu();
-    await refetch();
+    try {
+      await startDownloadFeedbacks();
+    } catch {
+      showToast(
+        '피드백 데이터 추출에 실패했습니다. 다시 시도해주세요.',
+        'error',
+        3000
+      );
+      return;
+    } finally {
+      closeMoreMenu();
+    }
   };
 
   const handleCustomerPageClick = () => {
@@ -57,14 +79,17 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
     },
     { icon: <ShareIcon />, menu: 'QR/URL 공유', onClick: handleShareClick },
     {
-      icon: <FileDownloadIcon />,
-      menu: '피드백 추출',
-      onClick: downloadFeedbacksFile,
-    },
-    {
       icon: <ExternalIcon />,
       menu: '고객 페이지로 이동',
       onClick: handleCustomerPageClick,
+    },
+  ];
+
+  const downloadMoreMenuList = [
+    {
+      icon: <FileDownloadIcon />,
+      menu: '피드백 추출',
+      onClick: downloadFeedbacksFile,
     },
   ];
 
@@ -76,7 +101,17 @@ export default function MoreMenu({ closeMoreMenu }: MoreMenuProps) {
           icon={item.icon}
           menu={item.menu}
           onClick={item.onClick}
-          disabled={isFetching && item.menu === '피드백 추출'}
+        />
+      ))}
+
+      {downloadMoreMenuList.map((item, index) => (
+        <ProgressMenuItem
+          key={index}
+          icon={item.icon}
+          menu={item.menu}
+          onClick={item.onClick}
+          progress={feedbackDownloadStatus?.progress || 0}
+          disabled={feedbackDownloadStatus?.jobStatus === 'PROCESSING'}
         />
       ))}
     </div>

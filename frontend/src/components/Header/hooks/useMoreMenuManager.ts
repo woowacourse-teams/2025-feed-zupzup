@@ -2,25 +2,23 @@ import { useEffect, useRef, useState } from 'react';
 
 export default function useMoreMenuManager() {
   const [isOpenMoreMenu, setIsOpenMoreMenu] = useState(false);
-  const moreButtonRef = useRef<HTMLElement | null>(null);
+  const moreButtonRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!isOpenMoreMenu) return;
 
-    const onPointerDown = (e: PointerEvent) => {
+    const handlePointerDown = (e: PointerEvent) => {
       const target = e.target as Node;
 
-      if (moreButtonRef.current && moreButtonRef.current.contains(target)) {
-        window.removeEventListener('pointerdown', onPointerDown);
-        return;
-      }
+      if (moreButtonRef.current?.contains(target)) return;
 
       setIsOpenMoreMenu(false);
     };
 
-    window.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('pointerdown', handlePointerDown);
+
     return () => {
-      window.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('pointerdown', handlePointerDown);
     };
   }, [isOpenMoreMenu]);
 
