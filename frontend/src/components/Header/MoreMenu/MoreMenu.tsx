@@ -71,8 +71,7 @@ export default function MoreMenu({
     );
 
     try {
-      const { data } = await startDownloadFeedbacks();
-      setJobId(data.jobId);
+      await startDownloadFeedbacks();
     } catch {
       showToast(
         '피드백 데이터 추출에 실패했습니다. 다시 시도해주세요.',

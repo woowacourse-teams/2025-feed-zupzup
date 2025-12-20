@@ -5,7 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 interface UsePollingFeedbackDownloadStatusProps {
   jobId: string;
   organizationId: string;
-  pollingEnabled?: boolean;
 }
 
 export default function usePollingFeedbackDownloadStatus({

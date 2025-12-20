@@ -80,7 +80,7 @@ export async function getOrgFileDownloadStatus({
   jobId,
 }: GetOrgFileDownloadParams): Promise<GetOrgFileDownloadStatusResponse> {
   const response = await apiClient.get(
-    `/admin/organizations/${organizationUuid}/download-jobs/${jobId}/status `
+    `/admin/organizations/${organizationUuid}/download-jobs/${jobId}/status`
   );
 
   return response as GetOrgFileDownloadStatusResponse;
