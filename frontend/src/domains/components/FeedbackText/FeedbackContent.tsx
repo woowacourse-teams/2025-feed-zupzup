@@ -1,5 +1,4 @@
 import Button from '@/components/@commons/Button/Button';
-
 import SmallTriangleIcon from '@/components/icons/SmallTriangleIcon';
 import { useAppTheme } from '@/hooks/useAppTheme';
 import { useState } from 'react';
@@ -28,14 +27,14 @@ export default function FeedbackContent({
   const isLeaving = imageStatus === 'loading';
 
   const handleShowImg = () => {
-    if (imageStatus === 'loaded') {
-      setImageStatus('loading');
+    setImageStatus((currentStatus) =>
+      currentStatus === 'loaded' ? 'loading' : 'loaded'
+    );
+  };
 
-      setTimeout(() => {
-        setImageStatus('idle');
-      }, 350);
-    } else {
-      setImageStatus('loaded');
+  const handleImageAnimationEnd = () => {
+    if (imageStatus === 'loading') {
+      setImageStatus('idle');
     }
   };
 
@@ -62,7 +61,8 @@ export default function FeedbackContent({
         <img
           css={feedbackImage(showImg && !isLeaving)}
           src={imgUrl}
-          alt='피드백 첨부 이미지'
+          alt='첨부 이미지'
+          onAnimationEnd={handleImageAnimationEnd}
         />
       )}
     </div>
