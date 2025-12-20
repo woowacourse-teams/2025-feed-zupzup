@@ -13,13 +13,12 @@ interface ToggleButtonProps extends React.ComponentProps<'button'> {
 }
 
 export default function BasicToggleButton({
-  name,
   isToggled,
-  onClick,
+  ...props
 }: ToggleButtonProps) {
   const theme = useAppTheme();
   return (
-    <Button css={toggleWrapper} onClick={onClick} name={name} type='button'>
+    <Button css={toggleWrapper} {...props} type='button'>
       <div css={trackStyle(theme, isToggled)} />
       <div css={circleStyle(isToggled)} />
     </Button>

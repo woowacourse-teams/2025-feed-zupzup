@@ -67,7 +67,7 @@ export default memo(function AdminFeedbackBox({
         </div>
       </div>
       <div css={textWrap}>
-        <FeedbackContent type={type} text={content} imgUrl={imgUrl} />
+        <FeedbackContent text={content} imgUrl={imgUrl} />
         {isSecret && (
           <p>
             <LockIcon />

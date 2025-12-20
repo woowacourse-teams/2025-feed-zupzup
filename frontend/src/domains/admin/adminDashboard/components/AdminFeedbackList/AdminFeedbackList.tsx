@@ -1,18 +1,21 @@
 import FeedbackBoxList from '@/domains/components/FeedbackBoxList/FeedbackBoxList';
-import AdminFeedbackBox from '../AdminFeedbackBox/AdminFeedbackBox';
+import FeedbackBoxSkeletonList from '@/domains/components/FeedbackBoxSkeleton/FeedbackBoxSkeletonList';
+import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
 import FeedbackStatusMessage from '@/domains/user/userDashboard/components/FeedbackStatusMessage/FeedbackStatusMessage';
+import { skipTarget } from '@/domains/user/userDashboard/UserDashboard.style';
+import { srFeedbackSummary } from '@/domains/user/userDashboard/utils/srFeedbackSummary';
+import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
+import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
 import {
   FeedbackFilterType,
   FeedbackResponse,
   FeedbackType,
   SortType,
 } from '@/types/feedback.types';
-import useCursorInfiniteScroll from '@/hooks/useCursorInfiniteScroll';
-import useGetFeedback from '../../hooks/useGetFeedback';
-import { createFeedbacksUrl } from '@/domains/utils/createFeedbacksUrl';
-import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { formatRelativeTime } from '@/utils/formatRelativeTime';
 import { memo, useMemo } from 'react';
-import FeedbackBoxSkeletonList from '@/domains/components/FeedbackBoxSkeleton/FeedbackBoxSkeletonList';
+import useGetFeedback from '../../hooks/useGetFeedback';
+import AdminFeedbackBox from '../AdminFeedbackBox/AdminFeedbackBox';
 
 interface AdminFeedbackListProps {
   selectedFilter: '' | FeedbackFilterType;
@@ -57,25 +60,37 @@ export default memo(function AdminFeedbackList({
   useGetFeedback({ fetchMore, hasNext, loading });
 
   return (
-    <div>
+    <div id='admin-feedback-list' tabIndex={-1} css={skipTarget}>
       <FeedbackBoxList>
-        {feedbacks.map((feedback) => (
-          <AdminFeedbackBox
-            key={feedback.feedbackId}
-            feedbackId={feedback.feedbackId}
-            onConfirm={openFeedbackCompleteModal}
-            onDelete={openFeedbackDeleteModal}
-            type={feedback.status}
-            content={feedback.content}
-            postedAt={feedback.postedAt}
-            isSecret={feedback.isSecret}
-            likeCount={feedback.likeCount}
-            userName={feedback.userName}
-            category={feedback.category}
-            comment={feedback.comment}
-            imgUrl={feedback.imageUrl}
-          />
-        ))}
+        {feedbacks.map((feedback) => {
+          const postedAt = formatRelativeTime(feedback.postedAt ?? '');
+          return (
+            <div key={feedback.feedbackId}>
+              <span className='srOnly'>
+                {srFeedbackSummary({
+                  feedback,
+                  myFeedback: false,
+                  postedAt,
+                  isAdmin: true,
+                })}
+              </span>
+              <AdminFeedbackBox
+                feedbackId={feedback.feedbackId}
+                onConfirm={openFeedbackCompleteModal}
+                onDelete={openFeedbackDeleteModal}
+                type={feedback.status}
+                content={feedback.content}
+                postedAt={postedAt}
+                isSecret={feedback.isSecret}
+                likeCount={feedback.likeCount}
+                userName={feedback.userName}
+                category={feedback.category}
+                comment={feedback.comment}
+                imgUrl={feedback.imageUrl}
+              />
+            </div>
+          );
+        })}
       </FeedbackBoxList>
       {loading && <FeedbackBoxSkeletonList count={2} />}
       <div>

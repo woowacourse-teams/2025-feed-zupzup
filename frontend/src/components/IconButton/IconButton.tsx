@@ -12,9 +12,10 @@ export default function IconButton({
   icon,
   onClick,
   customCSS,
+  ...props
 }: IconButtonProps) {
   return (
-    <Button customCSS={customCSS ?? []} onClick={onClick}>
+    <Button customCSS={customCSS ?? []} onClick={onClick} {...props}>
       {icon}
     </Button>
   );

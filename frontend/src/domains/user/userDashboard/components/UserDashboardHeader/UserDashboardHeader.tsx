@@ -28,7 +28,7 @@ export default function UserDashboardHeader() {
       </div>
       <GhostButton
         icon={<ProfileIcon />}
-        text='관리자 이용하기'
+        text='관리자 페이지로 이동'
         onClick={handleNavigateToOnboarding}
       />
     </div>

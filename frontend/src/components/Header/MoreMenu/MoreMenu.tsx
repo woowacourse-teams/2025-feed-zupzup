@@ -1,19 +1,18 @@
 import { FileDownloadType } from '@/apis/adminFeedback.api';
-import ConfirmModal from '@/components/ConfirmModal/ConfirmModal';
 import useStartDownloadFeedbacks from '@/components/Header/hooks/useStartDownloadFeedbacks';
 import { moreMenuContainer } from '@/components/Header/MoreMenu/MoreMenu.styles';
 import MoreMenuItem from '@/components/Header/MoreMenuItem/MoreMenuItem';
 import ProgressMenuItem from '@/components/Header/ProgressMenuItem/ProgressMenuItem';
+import ExternalIcon from '@/components/icons/External';
 import FileDownloadIcon from '@/components/icons/FileDownloadIcon';
 import ShareIcon from '@/components/icons/ShareIcon';
 import SmallSettingIcon from '@/components/icons/SmallSettingIcon';
-import TrashCanIcon from '@/components/icons/TrashCanIcon';
 import { useModalContext } from '@/contexts/useModal';
 import { useToast } from '@/contexts/useToast';
 import QRModal from '@/domains/admin/components/QRModal/QRModal';
-import EditRoomModal from '@/domains/admin/EditRoomModal/EditRoomModal';
-import useDeleteOrganization from '@/domains/admin/EditRoomModal/hooks/useDeleteOrganization';
 import { useOrganizationId } from '@/domains/hooks/useOrganizationId';
+import { useNavigate } from 'react-router-dom';
+import ManageRoomModal from '../../../domains/admin/ManageRoomModal/ManageRoomModal';
 
 interface MoreMenuProps {
   closeMoreMenu: () => void;
@@ -27,39 +26,22 @@ export default function MoreMenu({
   feedbackDownloadStatus,
 }: MoreMenuProps) {
   const { openModal, closeModal } = useModalContext();
-  const { deleteOrganization, isDeleting } = useDeleteOrganization();
-  const { showToast } = useToast();
   const { organizationId } = useOrganizationId();
 
   const { mutateAsync: startDownloadFeedbacks } = useStartDownloadFeedbacks({
     organizationId,
     setJobId,
   });
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleRoomInfoEditClick = () => {
-    openModal(<EditRoomModal onClose={closeModal} />);
+    openModal(<ManageRoomModal onClose={closeModal} />);
     closeMoreMenu();
   };
 
   const handleShareClick = () => {
     openModal(<QRModal onClose={closeModal} />);
-    closeMoreMenu();
-  };
-
-  const handleDeleteClick = () => {
-    openModal(
-      <ConfirmModal
-        onClose={closeModal}
-        title='방 삭제 확인'
-        message={
-          isDeleting
-            ? '삭제 중입니다.'
-            : '삭제한 방은 되돌릴 수 없습니다. \n정말로 방을 삭제하시겠습니까?'
-        }
-        onConfirm={deleteOrganization}
-        disabled={isDeleting}
-      />
-    );
     closeMoreMenu();
   };
 
@@ -84,6 +66,11 @@ export default function MoreMenu({
     }
   };
 
+  const handleCustomerPageClick = () => {
+    navigate(`/${organizationId}/submit`);
+    closeMoreMenu();
+  };
+
   const moreMenuList = [
     {
       icon: <SmallSettingIcon />,
@@ -92,9 +79,9 @@ export default function MoreMenu({
     },
     { icon: <ShareIcon />, menu: 'QR/URL 공유', onClick: handleShareClick },
     {
-      icon: <TrashCanIcon color='#222222' />,
-      menu: '방 삭제',
-      onClick: handleDeleteClick,
+      icon: <ExternalIcon />,
+      menu: '고객 페이지로 이동',
+      onClick: handleCustomerPageClick,
     },
   ];
 

@@ -1,24 +1,28 @@
-import { useAppTheme } from '@/hooks/useAppTheme';
-import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
-import {
-  container,
-  formContainer,
-  randomButton,
-  textarea,
-  textareaContainer,
-  formFooterContainer,
-  toggleButtonText,
-  topInputBorder,
-  userInfo,
-  usernameInput,
-  toggleButtonContainer,
-} from './FeedbackForm.styles';
 import Button from '@/components/@commons/Button/Button';
 import Input from '@/components/@commons/Input/Input';
 import TextArea from '@/components/@commons/TextArea/TextArea';
 import BasicToggleButton from '@/components/BasicToggleButton/BasicToggleButton';
 import TextareaCounter from '@/components/TextareaCounter/TextareaCounter';
+import { CategoryListType } from '@/constants/categoryList';
 import ImageUploadWithPreview from '@/domains/user/home/components/ImageUploadWithPreview/ImageUploadWithPreview';
+import { FEEDBACK_FORM_CONSTANTS } from '@/domains/user/home/constants/FeedbackForm';
+import { useAppTheme } from '@/hooks/useAppTheme';
+import useFocusOnMount from '@/hooks/useFocusOnMount';
+import { useOneTimeAnnounce } from '@/hooks/useOneTimeAnnounce';
+import { useRef } from 'react';
+import {
+  container,
+  formContainer,
+  formFooterContainer,
+  randomButton,
+  textarea,
+  textareaContainer,
+  toggleButtonContainer,
+  toggleButtonText,
+  topInputBorder,
+  userInfo,
+  usernameInput,
+} from './FeedbackForm.styles';
 
 export interface FeedbackFormProps {
   className?: string;
@@ -28,6 +32,7 @@ export interface FeedbackFormProps {
   canSubmit: boolean;
   file: File | null;
   imgUrl: string | null;
+  feedbackCategory: CategoryListType;
   onChangeFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFeedbackChange: (value: string) => void;
   onUsernameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -44,6 +49,7 @@ export default function FeedbackForm({
   isLocked,
   file,
   imgUrl,
+  feedbackCategory,
   onChangeFile,
   onFeedbackChange,
   onUsernameChange,
@@ -54,11 +60,20 @@ export default function FeedbackForm({
 }: FeedbackFormProps) {
   const theme = useAppTheme();
 
+  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const isInitialLoad = useOneTimeAnnounce(3000);
+  useFocusOnMount({
+    ref: textAreaRef as React.RefObject<HTMLElement>,
+    targetId: 'feedbackText',
+  });
+
   return (
     <div css={container} className={className}>
       <div css={formContainer}>
         <div css={userInfo(theme)}>
           <Input
+            id='username'
             css={topInputBorder(theme)}
             value={username}
             onChange={onUsernameChange}
@@ -67,6 +82,8 @@ export default function FeedbackForm({
             customCSS={usernameInput(theme)}
             maxLength={10}
             minLength={1}
+            aria-live='polite'
+            aria-label={`현재 닉네임은 ${username || '익명'} 입니다`}
           />
         </div>
 
@@ -74,6 +91,7 @@ export default function FeedbackForm({
           onClick={onRandomChange}
           css={randomButton(theme)}
           type='button'
+          aria-label='사용자 이름을 랜덤으로 변경'
         >
           랜덤변경
         </Button>
@@ -82,9 +100,12 @@ export default function FeedbackForm({
 
         <div css={textareaContainer(theme)}>
           <TextArea
+            ref={textAreaRef}
+            id='feedbackText'
+            aria-labelledby='feedbackLabel'
             value={feedback}
             onChange={(e) => onFeedbackChange(e.target.value)}
-            placeholder={FEEDBACK_FORM_CONSTANTS.PLACEHOLDER}
+            placeholder={FEEDBACK_FORM_CONSTANTS.PLACEHOLDER(feedbackCategory)}
             customCSS={textarea(theme)}
             maxLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MAX_LENGTH}
             minLength={FEEDBACK_FORM_CONSTANTS.DEFAULTS.MIN_LENGTH}
@@ -95,6 +116,15 @@ export default function FeedbackForm({
             bottom='8px'
           />
         </div>
+
+        <p
+          id='nicknameStatus'
+          aria-live='polite'
+          className='srOnly'
+          aria-hidden={!isInitialLoad}
+        >
+          닉네임을 변경하거나 편집하시려면 상위 입력란을 이용하세요.
+        </p>
       </div>
       <div css={formFooterContainer}>
         <ImageUploadWithPreview
@@ -108,8 +138,11 @@ export default function FeedbackForm({
             isToggled={isLocked}
             onClick={onLockToggle}
             name='lock'
+            aria-label={`비밀글 설정 토글 버튼 : ${isLocked ? '설정됨' : '설정되지 않음'}`}
           />
-          <p css={toggleButtonText(theme)}>비밀글로 작성</p>
+          <p css={toggleButtonText(theme)} aria-hidden={true}>
+            비밀글로 작성
+          </p>
         </div>
       </div>
     </div>
