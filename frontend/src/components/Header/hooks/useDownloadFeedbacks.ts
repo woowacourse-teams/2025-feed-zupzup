@@ -42,7 +42,7 @@ export default function useDownloadFeedbacks() {
     };
 
     handleDownload();
-  }, [showToast, feedbackDownloadStatus, fileDownload]);
+  }, [showToast, feedbackDownloadStatus?.jobStatus, fileDownload]);
 
   return {
     feedbackDownloadStatus,
