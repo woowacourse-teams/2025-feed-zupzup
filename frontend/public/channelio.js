@@ -2,6 +2,18 @@
 /* global ChannelIO */
 (function () {
   var w = window;
+  var hostname = w.location.hostname;
+
+  var isDevEnvironment =
+    hostname === 'localhost' ||
+    hostname === '127.0.0.1' ||
+    hostname.includes('dev');
+
+  if (isDevEnvironment) {
+    w.ChannelIO = function () {};
+    return;
+  }
+
   if (w.ChannelIO) {
     return w.console.error('ChannelIO script included twice.');
   }
@@ -35,7 +47,9 @@
   }
 })();
 
-ChannelIO('boot', {
-  pluginKey: 'e63d6484-428b-4745-9e39-54a8cb382f91',
-  hideChannelButtonOnBoot: true,
-});
+if (window.ChannelIO && window.ChannelIO.q) {
+  ChannelIO('boot', {
+    pluginKey: 'e63d6484-428b-4745-9e39-54a8cb382f91',
+    hideChannelButtonOnBoot: true,
+  });
+}

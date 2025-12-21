@@ -25,6 +25,8 @@ declare global {
 
 type ModalState = { type: 'logout' } | { type: 'withdraw' } | { type: null };
 
+const isProduction = process.env.ENV_MODE === 'production';
+
 export default function Settings() {
   const [modalState, setModalState] = useState<ModalState>({ type: null });
   const {
@@ -95,12 +97,14 @@ export default function Settings() {
           }
         />
 
-        <SettingListBox
-          icon={<SendIcon />}
-          title='고객센터'
-          description='문의사항을 채널톡으로 전달하세요'
-          onClick={handleCustomerServiceClick}
-        />
+        {isProduction && (
+          <SettingListBox
+            icon={<SendIcon />}
+            title='고객센터'
+            description='문의사항을 채널톡으로 전달하세요'
+            onClick={handleCustomerServiceClick}
+          />
+        )}
 
         <SettingListBox
           icon={<OutOutlineIcon />}
